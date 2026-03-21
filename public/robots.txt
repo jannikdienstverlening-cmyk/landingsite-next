@@ -1,0 +1,9 @@
+User-agent: *
+Allow: /
+
+Disallow: /admin
+Disallow: /intake/
+Disallow: /genereren/
+Disallow: /api/
+
+Sitemap: https://landingsite.nl/sitemap.xml

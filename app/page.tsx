@@ -812,8 +812,46 @@ export default function Home() {
     }
   }
 
+  const jsonLd = {
+    '@context': 'https://schema.org',
+    '@graph': [
+      {
+        '@type': 'Organization',
+        '@id': 'https://landingsite.nl/#organization',
+        name: 'Landingsite.nl',
+        url: 'https://landingsite.nl',
+        description: 'Professionele landingspagina\'s laten maken voor Nederlandse ondernemers. Snel, betaalbaar en gericht op conversie.',
+        areaServed: 'NL',
+        priceRange: '€299 - €899',
+      },
+      {
+        '@type': 'FAQPage',
+        mainEntity: faqs.map(f => ({
+          '@type': 'Question',
+          name: f.q,
+          acceptedAnswer: { '@type': 'Answer', text: f.a },
+        })),
+      },
+      {
+        '@type': 'Service',
+        name: 'Landingspagina laten maken',
+        provider: { '@type': 'Organization', name: 'Landingsite.nl' },
+        description: 'Professionele, converterende landingspagina binnen 48 uur online.',
+        offers: [
+          { '@type': 'Offer', name: 'Starter', price: '299', priceCurrency: 'EUR' },
+          { '@type': 'Offer', name: 'Pro', price: '499', priceCurrency: 'EUR' },
+          { '@type': 'Offer', name: 'Premium', price: '899', priceCurrency: 'EUR' },
+        ],
+      },
+    ],
+  }
+
   return (
     <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
       <style>{STYLES}</style>
 
       {/* ── NAV ── */}
@@ -833,6 +871,7 @@ export default function Home() {
         </div>
       </nav>
 
+      <main>
       {/* ── HERO ── */}
       <section className="hero">
         <div className="container">
@@ -1133,6 +1172,7 @@ export default function Home() {
         </div>
       </section>
 
+      </main>
       {/* ── FOOTER ── */}
       <footer className="footer">
         <div className="container">
