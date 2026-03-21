@@ -68,6 +68,8 @@ const STYLES = `
   }
 
   .nav-links a:hover { color: var(--ink); }
+  .nav-links .btn-primary { color: #fff; }
+  .nav-links .btn-primary:hover { color: #fff; }
 
   /* BUTTONS */
   .btn-primary {
