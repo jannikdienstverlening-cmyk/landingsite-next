@@ -156,20 +156,24 @@ const STYLES = `
 
   /* HERO */
   .hero {
-    padding: 5rem 0;
+    padding: 5rem 0 3rem;
+    text-align: center;
   }
 
   .hero-inner {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 4rem;
+    display: flex;
+    flex-direction: column;
     align-items: center;
+  }
+
+  .hero-text {
+    max-width: 700px;
   }
 
   .hero-h1 {
     font-family: var(--font-syne), sans-serif;
     font-weight: 800;
-    font-size: clamp(2.6rem, 4.5vw, 3.8rem);
+    font-size: clamp(2.8rem, 5.5vw, 4.5rem);
     letter-spacing: -0.04em;
     line-height: 1.05;
     color: var(--ink);
@@ -205,10 +209,16 @@ const STYLES = `
     font-family: var(--font-dm-mono), monospace;
   }
 
+  .hero-image {
+    width: 100%;
+    max-width: 900px;
+    margin-top: 3rem;
+  }
+
   .hero-image img {
     width: 100%;
-    border-radius: 4px;
-    box-shadow: 8px 8px 0 var(--rule);
+    border-radius: 8px;
+    box-shadow: 0 12px 40px rgba(0,0,0,0.15);
     display: block;
   }
 
@@ -732,8 +742,7 @@ const STYLES = `
   @media (max-width: 768px) {
     .nav-links { display: none; }
 
-    .hero { padding: 3.5rem 0 3rem; }
-    .hero-inner { grid-template-columns: 1fr; gap: 2.5rem; }
+    .hero { padding: 3.5rem 0 2rem; }
     .hero-h1 { font-size: 2.4rem; }
 
     .problem-grid { grid-template-columns: 1fr; }
@@ -826,15 +835,15 @@ export default function Home() {
       <section className="hero">
         <div className="container">
           <div className="hero-inner">
-            <div>
+            <div className="hero-text">
               <p className="section-label">Voor zzp&apos;ers en kleine bedrijven</p>
               <h1 className="hero-h1">
-                Jouw landingspagina. Live in <em>48 uur.</em>
+                Jouw landingspagina.<br />Live in <em>48 uur.</em>
               </h1>
               <p className="hero-sub">
                 Geen bureau. Geen weken wachten. Geen vage offertes. Een professionele, converterende pagina voor jouw campagne of product. Vaste prijs. Direct resultaat.
               </p>
-              <div className="hero-ctas">
+              <div className="hero-ctas" style={{ justifyContent: 'center' }}>
                 <a href="#pricing" className="btn-primary">Kies je pakket →</a>
                 <a href="#how" className="btn-outline">Hoe werkt het?</a>
               </div>
