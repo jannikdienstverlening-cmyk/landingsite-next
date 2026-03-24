@@ -49,7 +49,7 @@ export const metadata: Metadata = {
     images: ['/image_1.png'],
   },
   verification: {
-    google: 'b1zb9KbeJjn0en587SxszRJ09cnt0CzRAANU47-3y-Q',
+    google: 'iN4lNqCMdhok5XwzhIlYx3uX-XSAuYl08Iju7wdV76M',
   },
   keywords: [
     'landingspagina laten maken',
