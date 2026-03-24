@@ -71,6 +71,9 @@ export default function IntakePage() {
   })
 
   useEffect(() => {
+    let attempts = 0
+    const MAX_ATTEMPTS = 12 // 12 x 2.5s = 30 seconden
+
     async function laadOrder() {
       const { data, error } = await supabase
         .from('orders')
@@ -86,6 +89,18 @@ export default function IntakePage() {
 
       if (data.status === 'completed') {
         router.push('/bedankt')
+        return
+      }
+
+      // Wacht op Stripe webhook als betaling nog pending is
+      if (data.status === 'pending') {
+        attempts++
+        if (attempts < MAX_ATTEMPTS) {
+          setTimeout(laadOrder, 2500)
+          return
+        }
+        setError('Betaling kon niet worden bevestigd. Neem contact op via info@landingsite.nl met je orderreferentie.')
+        setLoading(false)
         return
       }
 

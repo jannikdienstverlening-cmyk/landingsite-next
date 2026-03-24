@@ -648,6 +648,66 @@ const STYLES = `
     line-height: 1.75;
   }
 
+  /* CONTACT */
+  .contact {
+    padding: 5rem 0;
+  }
+
+  .contact-header {
+    margin-bottom: 3rem;
+  }
+
+  .contact-form-wrap {
+    max-width: 580px;
+  }
+
+  .contact-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .contact-form input,
+  .contact-form textarea {
+    width: 100%;
+    background: var(--paper);
+    border: 1px solid var(--rule);
+    padding: 0.9rem 1rem;
+    font-family: var(--font-dm-mono), monospace;
+    font-size: 0.88rem;
+    outline: none;
+    color: var(--ink);
+    transition: border-color 0.2s;
+  }
+
+  .contact-form input:focus,
+  .contact-form textarea:focus {
+    border-color: var(--accent);
+  }
+
+  .contact-form textarea {
+    resize: vertical;
+    min-height: 120px;
+  }
+
+  .contact-success {
+    padding: 1rem 1.25rem;
+    background: #edfbf3;
+    border: 1px solid #a3e6c0;
+    font-size: 0.85rem;
+    color: #1a7a4a;
+    margin-top: 0.5rem;
+  }
+
+  .contact-error {
+    padding: 1rem 1.25rem;
+    background: #fff0ee;
+    border: 1px solid #f9c4bb;
+    font-size: 0.85rem;
+    color: #c00;
+    margin-top: 0.5rem;
+  }
+
   /* END CTA */
   .endcta {
     padding: 6rem 0;
@@ -796,6 +856,33 @@ const faqs = [
 export default function Home() {
   const [loading, setLoading] = useState<string | null>(null)
   const [openFaq, setOpenFaq] = useState<number | null>(null)
+  const [contactForm, setContactForm] = useState({ naam: '', email: '', bericht: '' })
+  const [contactStatus, setContactStatus] = useState<'idle' | 'sending' | 'ok' | 'error'>('idle')
+  const [contactError, setContactError] = useState('')
+
+  async function verstuurContact(e: React.FormEvent) {
+    e.preventDefault()
+    setContactStatus('sending')
+    setContactError('')
+    try {
+      const res = await fetch('/api/contact', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(contactForm),
+      })
+      const data = await res.json()
+      if (!res.ok) {
+        setContactError(data.error || 'Verzenden mislukt.')
+        setContactStatus('error')
+      } else {
+        setContactStatus('ok')
+        setContactForm({ naam: '', email: '', bericht: '' })
+      }
+    } catch {
+      setContactError('Verbindingsfout. Probeer het later opnieuw.')
+      setContactStatus('error')
+    }
+  }
 
   async function bestel(pakket: string) {
     setLoading(pakket)
@@ -864,6 +951,7 @@ export default function Home() {
             <li><a href="#how">Hoe het werkt</a></li>
             <li><a href="#pricing">Prijzen</a></li>
             <li><a href="#faq">FAQ</a></li>
+            <li><a href="#contact">Contact</a></li>
             <li>
               <a href="#pricing" className="btn-primary">Bestel direct</a>
             </li>
@@ -1156,6 +1244,55 @@ export default function Home() {
                 </div>
               </div>
             ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ── CONTACT ── */}
+      <section className="contact" id="contact">
+        <div className="container">
+          <div className="contact-header">
+            <p className="section-label">Contact</p>
+            <h2 className="section-title">Heb je een vraag?</h2>
+            <p className="section-subtitle">Stuur ons een bericht. We reageren binnen 1 werkdag.</p>
+          </div>
+          <div className="contact-form-wrap">
+            <form className="contact-form" onSubmit={verstuurContact}>
+              <input
+                type="text"
+                placeholder="Jouw naam"
+                required
+                value={contactForm.naam}
+                onChange={e => setContactForm(f => ({ ...f, naam: e.target.value }))}
+              />
+              <input
+                type="email"
+                placeholder="Jouw e-mailadres"
+                required
+                value={contactForm.email}
+                onChange={e => setContactForm(f => ({ ...f, email: e.target.value }))}
+              />
+              <textarea
+                placeholder="Jouw bericht..."
+                required
+                value={contactForm.bericht}
+                onChange={e => setContactForm(f => ({ ...f, bericht: e.target.value }))}
+              />
+              <button
+                type="submit"
+                className={`btn-primary${contactStatus === 'sending' ? ' btn-loading' : ''}`}
+                disabled={contactStatus === 'sending'}
+                style={{ alignSelf: 'flex-start' }}
+              >
+                {contactStatus === 'sending' ? 'Versturen...' : 'Verstuur bericht →'}
+              </button>
+              {contactStatus === 'ok' && (
+                <p className="contact-success">✓ Bericht verzonden! We nemen zo snel mogelijk contact op.</p>
+              )}
+              {contactStatus === 'error' && (
+                <p className="contact-error">{contactError}</p>
+              )}
+            </form>
           </div>
         </div>
       </section>
