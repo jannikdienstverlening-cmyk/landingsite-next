@@ -19,10 +19,7 @@ export async function POST(req: NextRequest) {
       {
         price_data: {
           currency: 'eur',
-          product_data: {
-            name: `Landingsite.nl — ${info.naam} Pakket`,
-            description: `Professionele landingspagina — ${info.prijs_label} eenmalig`,
-          },
+          product: info.stripe_product_id,
           unit_amount: info.prijs,
         },
         quantity: 1,
