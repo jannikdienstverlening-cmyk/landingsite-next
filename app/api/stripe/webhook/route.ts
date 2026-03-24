@@ -2,6 +2,8 @@ import { NextRequest } from 'next/server'
 import { stripe } from '@/lib/stripe'
 import { supabase } from '@/lib/supabase'
 
+export const dynamic = 'force-dynamic'
+
 export async function POST(req: NextRequest) {
   const body = await req.text()
   const sig = req.headers.get('stripe-signature')!
