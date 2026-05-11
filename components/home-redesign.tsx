@@ -2,8 +2,9 @@ import Link from 'next/link'
 import { FAQAccordion, PricingButton } from '@/components/home-actions'
 import { ConversionFlowVisual } from '@/components/visuals/ConversionFlowVisual'
 import { FinalCtaVisual } from '@/components/visuals/FinalCtaVisual'
-import { LaunchCommandVisual } from '@/components/visuals/LaunchCommandVisual'
+import { LandingSiteHeroPreview } from '@/components/visuals/LandingSiteHeroPreview'
 import { LaunchTimelineVisual } from '@/components/visuals/LaunchTimelineVisual'
+import { PortfolioPreviewCard } from '@/components/visuals/PortfolioPreviewCard'
 import { PricingLaunchVisual } from '@/components/visuals/PricingLaunchVisual'
 
 type Package = {
@@ -32,6 +33,7 @@ export function Header() {
         <a href="#probleem">Probleem</a>
         <a href="#proces">Proces</a>
         <a href="#showcase">Flow</a>
+        <a href="#portfolio">Portfolio</a>
         <a href="#prijzen">Prijzen</a>
         <a href="#faq">FAQ</a>
       </nav>
@@ -71,7 +73,7 @@ export function Hero() {
             ))}
           </div>
         </div>
-        <LaunchCommandVisual />
+        <LandingSiteHeroPreview />
       </div>
     </section>
   )
@@ -195,6 +197,48 @@ export function BenefitsGrid() {
   )
 }
 
+export function PortfolioSection() {
+  const cases = [
+    {
+      name: 'WIA Management',
+      domain: 'wiamanagement.nl',
+      url: 'https://www.wiamanagement.nl/',
+      label: 'B2B leadgeneratie',
+      description:
+        'Een zakelijke landingspagina voor werkgevers die snel een passende WIA-specialist zoeken.',
+      tone: 'green' as const,
+    },
+    {
+      name: 'Ontwikkelbegeleiding.nl',
+      domain: 'ontwikkelbegeleiding.nl',
+      url: 'https://www.ontwikkelbegeleiding.nl/',
+      label: 'Coaching & begeleiding',
+      description:
+        'Een heldere pagina voor persoonlijke ontwikkeling, begeleiding en aanvragen.',
+      tone: 'blue' as const,
+    },
+  ]
+
+  return (
+    <section className="launch-section portfolio-section" id="portfolio">
+      <div className="launch-container">
+        <div className="portfolio-heading">
+          <p className="launch-kicker">Portfolio</p>
+          <h2>Voorbeelden van pagina&apos;s die al live zijn.</h2>
+          <p>
+            Van B2B leadgeneratie tot coaching en begeleiding: elke pagina krijgt een duidelijk doel.
+          </p>
+        </div>
+        <div className="portfolio-grid">
+          {cases.map((item) => (
+            <PortfolioPreviewCard key={item.name} {...item} />
+          ))}
+        </div>
+      </div>
+    </section>
+  )
+}
+
 export function PricingSection({ packages }: { packages: Package[] }) {
   return (
     <section className="launch-section pricing-section-new" id="prijzen">
@@ -238,31 +282,32 @@ export function PricingSection({ packages }: { packages: Package[] }) {
 }
 
 export function ComparisonSection() {
-  const rows = [
-    ['Weken wachten', '48 uur live'],
-    ['Vage offerte', 'Vaste prijs'],
-    ['Complete website', 'Eén doel'],
-    ['Hoge kosten', 'Vanaf €299'],
-  ]
+  const traditional = ['Weken wachten', 'Vage offerte', 'Complete website', 'Hoge kosten']
+  const landingsite = ['48 uur live', 'Vaste prijs', 'Eén doel', 'Vanaf €299']
 
   return (
-    <section className="launch-section comparison-section-new">
-      <div className="launch-container comparison-new-grid">
-        <div>
+    <section className="launch-section comparison-section-new" id="vergelijking">
+      <div className="launch-container comparison-section-inner">
+        <div className="comparison-heading">
           <p className="launch-kicker">Vergelijking</p>
-          <h2>Een campagnepagina vraagt om een ander proces.</h2>
+          <h2>
+            Een campagne<wbr />
+            pagina vraagt om een ander proces.
+          </h2>
+          <p>Geen weken wachten op een complete website. Eén pagina, één doel, snel live.</p>
         </div>
-        <div className="comparison-blocks">
+
+        <div className="comparison-cards">
           <div className="comparison-col old-way">
             <h3>Traditioneel bureau</h3>
-            {rows.map(([old]) => (
-              <p key={old}>{old}</p>
+            {traditional.map((item) => (
+              <p key={item}>{item}</p>
             ))}
           </div>
           <div className="comparison-col new-way">
             <h3>Landingsite.nl</h3>
-            {rows.map(([, current]) => (
-              <p key={current}>{current}</p>
+            {landingsite.map((item) => (
+              <p key={item}>{item}</p>
             ))}
           </div>
         </div>

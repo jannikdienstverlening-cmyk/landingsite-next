@@ -6,6 +6,7 @@ import {
   Footer,
   Header,
   Hero,
+  PortfolioSection,
   PricingSection,
   ProblemSection,
   ProcessTimeline,
@@ -140,6 +141,7 @@ export default function Home() {
         <ProcessTimeline />
         <ShowcaseSection />
         <BenefitsGrid />
+        <PortfolioSection />
         <PricingSection packages={packages} />
         <ComparisonSection />
         <FAQSection faqs={faqs} />
