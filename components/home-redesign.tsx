@@ -1,6 +1,10 @@
 import Link from 'next/link'
 import { FAQAccordion, PricingButton } from '@/components/home-actions'
-import { LaunchCommandVisual } from '@/components/launch-command-visual'
+import { ConversionFlowVisual } from '@/components/visuals/ConversionFlowVisual'
+import { FinalCtaVisual } from '@/components/visuals/FinalCtaVisual'
+import { LaunchCommandVisual } from '@/components/visuals/LaunchCommandVisual'
+import { LaunchTimelineVisual } from '@/components/visuals/LaunchTimelineVisual'
+import { PricingLaunchVisual } from '@/components/visuals/PricingLaunchVisual'
 
 type Package = {
   id: 'starter' | 'pro' | 'premium'
@@ -94,7 +98,7 @@ export function ProblemSection() {
         <div className="problem-stack">
           {problems.map((problem, index) => (
             <article className="problem-card" key={problem}>
-              <span>0{index + 1}</span>
+              <span className="issue-number">{`${String(index + 1).padStart(2, '0')} `}</span>
               <strong>{problem}</strong>
             </article>
           ))}
@@ -109,45 +113,19 @@ export function ProblemSection() {
 }
 
 export function ProcessTimeline() {
-  const steps = [
-    {
-      number: '01',
-      title: 'Kies pakket',
-      body: 'Selecteer Starter, Pro of Premium en betaal direct veilig online.',
-      badge: 'Checkout',
-    },
-    {
-      number: '02',
-      title: 'Vul intake in',
-      body: 'Geef aanbod, doelgroep, bewijs en contactgegevens door in een korte launch-brief.',
-      badge: 'Input',
-    },
-    {
-      number: '03',
-      title: 'Pagina live',
-      body: 'Je krijgt een live preview, formulier, hosting vanaf €15 per maand en instructies voor je domein.',
-      badge: 'Launch',
-    },
-  ]
-
   return (
     <section className="launch-section process-section" id="proces">
       <div className="launch-container">
-        <div className="section-heading-row">
-          <p className="launch-kicker">Van intake naar live</p>
-          <h2>Een 48-uurs launch-proces zonder ruis.</h2>
-        </div>
-        <div className="timeline">
-          {steps.map((step) => (
-            <article className="timeline-step" key={step.number}>
-              <div className="timeline-index">{step.number}</div>
-              <div>
-                <span>{step.badge}</span>
-                <h3>{step.title}</h3>
-                <p>{step.body}</p>
-              </div>
-            </article>
-          ))}
+        <div className="process-layout">
+          <div className="section-heading-row">
+            <p className="launch-kicker">Van intake naar live</p>
+            <h2>Een 48-uurs launch-proces zonder ruis.</h2>
+            <p>
+              Geen wekenlange afstemming. Je ziet per fase wat er gebeurt, wanneer input nodig is
+              en wanneer je pagina klaar is om verkeer te ontvangen.
+            </p>
+          </div>
+          <LaunchTimelineVisual />
         </div>
       </div>
     </section>
@@ -155,7 +133,7 @@ export function ProcessTimeline() {
 }
 
 export function ShowcaseSection() {
-  const tabs = ['Leadpagina', 'Actiepagina', 'Dienstpagina', 'Productpagina']
+  const categories = ['Leadpagina', 'Actiepagina', 'Dienstpagina', 'Productpagina']
 
   return (
     <section className="launch-section showcase-section" id="showcase">
@@ -168,42 +146,14 @@ export function ShowcaseSection() {
             USP’s, bewijs, CTA’s, formulier en FAQ. Niet als losse blokken, maar als flow.
           </p>
           <div className="showcase-tabs" aria-label="Voorbeelden van pagina-types">
-            {tabs.map((tab) => (
-              <span key={tab}>{tab}</span>
+            {categories.map((category, index) => (
+              <span className={index === 0 ? 'is-active' : undefined} key={category}>
+                {category}
+              </span>
             ))}
           </div>
         </div>
-
-        <div className="flow-mockup" aria-label="Voorbeeld van een complete conversieflow">
-          <div className="flow-panel flow-hero">
-            <span>Hero</span>
-            <strong>Heldere belofte + CTA</strong>
-          </div>
-          <div className="flow-panel flow-usps">
-            <span>USP’s</span>
-            <i />
-            <i />
-            <i />
-          </div>
-          <div className="flow-panel flow-form">
-            <span>Contactformulier</span>
-            <i />
-            <i />
-          </div>
-          <div className="flow-panel flow-reviews">
-            <span>Reviews</span>
-            <strong>★★★★★</strong>
-          </div>
-          <div className="flow-panel flow-faq">
-            <span>FAQ</span>
-            <i />
-            <i />
-          </div>
-          <div className="flow-panel flow-cta">
-            <span>CTA</span>
-            <strong>Start aanvraag</strong>
-          </div>
-        </div>
+        <ConversionFlowVisual />
       </div>
     </section>
   )
@@ -249,9 +199,16 @@ export function PricingSection({ packages }: { packages: Package[] }) {
   return (
     <section className="launch-section pricing-section-new" id="prijzen">
       <div className="launch-container">
-        <div className="section-heading-row pricing-intro">
-          <p className="launch-kicker">Pakketten</p>
-          <h2>Vaste prijzen voor een snelle launch.</h2>
+        <div className="pricing-intro-wrap">
+          <div className="section-heading-row pricing-intro">
+            <p className="launch-kicker">Pakketten</p>
+            <h2>Vaste prijzen voor een snelle launch.</h2>
+            <p>
+              Kies de route die past bij je campagne. De bouwprijs is vast, hosting loopt helder
+              door voor €15 per maand.
+            </p>
+          </div>
+          <PricingLaunchVisual />
         </div>
         <div className="pricing-new-grid">
           {packages.map((pakket) => (
@@ -331,13 +288,16 @@ export function FAQSection({ faqs }: { faqs: FAQ[] }) {
 export function FinalCTA() {
   return (
     <section className="final-cta">
-      <div className="launch-container">
-        <p className="launch-kicker">Klaar om live te gaan?</p>
-        <h2>Verspil geen klikken aan een pagina die niet converteert.</h2>
-        <p>Start vandaag. Binnen 48 uur staat je landingspagina live.</p>
-        <a href="#prijzen" className="launch-button launch-button-primary">
-          Start je landingspagina
-        </a>
+      <div className="launch-container final-cta-grid">
+        <div>
+          <p className="launch-kicker">Klaar om live te gaan?</p>
+          <h2>Verspil geen klikken aan een pagina die niet converteert.</h2>
+          <p>Start vandaag. Binnen 48 uur staat je landingspagina live.</p>
+          <a href="#prijzen" className="launch-button launch-button-primary">
+            Start je landingspagina
+          </a>
+        </div>
+        <FinalCtaVisual />
       </div>
     </section>
   )
