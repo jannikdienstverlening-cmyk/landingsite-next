@@ -1,7 +1,6 @@
 import { NextRequest } from 'next/server'
-import { Resend } from 'resend'
-
-const resend = new Resend(process.env.RESEND_API_KEY)
+import { escapeHtml } from '@/lib/html'
+import { getResend } from '@/lib/resend'
 
 export async function POST(req: NextRequest) {
   const { naam, email, bericht } = await req.json()
@@ -16,7 +15,11 @@ export async function POST(req: NextRequest) {
   }
 
   try {
-    await resend.emails.send({
+    const safeNaam = escapeHtml(naam)
+    const safeEmail = escapeHtml(email)
+    const safeBericht = escapeHtml(bericht)
+
+    await getResend().emails.send({
       from: 'Landingsite.nl <noreply@landingsite.nl>',
       to: 'info@landingsite.nl',
       replyTo: email,
@@ -30,12 +33,12 @@ export async function POST(req: NextRequest) {
     Nieuw contactbericht via Landingsite.nl
   </h2>
   <div style="background: #ece8df; border: 1px solid #d4cec3; padding: 1.5rem; margin-bottom: 1.5rem;">
-    <p style="margin-bottom: 0.5rem;"><strong>Naam:</strong> ${naam}</p>
-    <p style="margin-bottom: 0.5rem;"><strong>E-mail:</strong> <a href="mailto:${email}" style="color: #c8440a;">${email}</a></p>
+    <p style="margin-bottom: 0.5rem;"><strong>Naam:</strong> ${safeNaam}</p>
+    <p style="margin-bottom: 0.5rem;"><strong>E-mail:</strong> <a href="mailto:${safeEmail}" style="color: #c8440a;">${safeEmail}</a></p>
   </div>
   <div style="background: #fff; border: 1px solid #d4cec3; padding: 1.5rem;">
     <p style="margin-bottom: 0.5rem;"><strong>Bericht:</strong></p>
-    <p style="white-space: pre-wrap; color: #4a4540;">${bericht}</p>
+    <p style="white-space: pre-wrap; color: #4a4540;">${safeBericht}</p>
   </div>
   <hr style="border: none; border-top: 1px solid #d4cec3; margin: 2rem 0;">
   <p style="color: #6b6458; font-size: 0.75rem;">© 2026 Landingsite.nl — Dit bericht is verzonden via het contactformulier.</p>

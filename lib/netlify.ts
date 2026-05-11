@@ -1,7 +1,16 @@
 import crypto from 'crypto'
 
 const NETLIFY_API = 'https://api.netlify.com/api/v1'
-const TOKEN = process.env.NETLIFY_ACCESS_TOKEN!
+
+function getNetlifyToken() {
+  const token = process.env.NETLIFY_ACCESS_TOKEN
+
+  if (!token) {
+    throw new Error('NETLIFY_ACCESS_TOKEN is missing.')
+  }
+
+  return token
+}
 
 function slug(bedrijfsnaam: string): string {
   return bedrijfsnaam
@@ -15,11 +24,13 @@ export async function deployNailSite(
   bedrijfsnaam: string,
   html: string
 ): Promise<{ siteId: string; siteUrl: string }> {
+  const token = getNetlifyToken()
+
   // 1. Maak een nieuwe Netlify site aan
   const createRes = await fetch(`${NETLIFY_API}/sites`, {
     method: 'POST',
     headers: {
-      Authorization: `Bearer ${TOKEN}`,
+      Authorization: `Bearer ${token}`,
       'Content-Type': 'application/json',
     },
     body: JSON.stringify({
@@ -39,7 +50,7 @@ export async function deployNailSite(
   const deployRes = await fetch(`${NETLIFY_API}/sites/${site.id}/deploys`, {
     method: 'POST',
     headers: {
-      Authorization: `Bearer ${TOKEN}`,
+      Authorization: `Bearer ${token}`,
       'Content-Type': 'application/json',
     },
     body: JSON.stringify({
@@ -58,7 +69,7 @@ export async function deployNailSite(
     {
       method: 'PUT',
       headers: {
-        Authorization: `Bearer ${TOKEN}`,
+        Authorization: `Bearer ${token}`,
         'Content-Type': 'application/octet-stream',
       },
       body: htmlBuffer,

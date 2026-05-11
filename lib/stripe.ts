@@ -1,6 +1,20 @@
 import Stripe from 'stripe'
 
-export const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!)
+let stripe: Stripe | null = null
+
+export function getStripe() {
+  const secretKey = process.env.STRIPE_SECRET_KEY
+
+  if (!secretKey) {
+    throw new Error('STRIPE_SECRET_KEY is missing.')
+  }
+
+  if (!stripe) {
+    stripe = new Stripe(secretKey)
+  }
+
+  return stripe
+}
 
 export const PAKKETTEN = {
   starter: {

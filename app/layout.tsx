@@ -12,9 +12,12 @@ const instrumentSerif = Instrument_Serif({
 })
 
 export const metadata: Metadata = {
-  title: 'Goedkope Landingspagina Laten Maken | Snel Online v.a. €299',
+  title: {
+    default: 'Landingspagina Laten Maken in 48 uur | Landingsite.nl',
+    template: '%s | Landingsite.nl',
+  },
   description:
-    'Snel en goedkoop een professionele landingspagina laten maken? Binnen 48 uur online vanaf €299. Vraag direct aan op Landingsite.nl.',
+    'Laat een professionele landingspagina maken voor je campagne, product of dienst. Binnen 48 uur online, vaste prijs vanaf €299 en hosting inbegrepen.',
   metadataBase: new URL('https://landingsite.nl'),
   alternates: {
     canonical: '/',
@@ -29,21 +32,21 @@ export const metadata: Metadata = {
     locale: 'nl_NL',
     url: 'https://landingsite.nl',
     siteName: 'Landingsite.nl',
-    title: 'Goedkope Landingspagina Laten Maken | Snel Online v.a. €299',
+    title: 'Landingspagina laten maken in 48 uur',
     description:
-      'Snel en goedkoop een professionele landingspagina laten maken? Binnen 48 uur online vanaf €299. Vraag direct aan op Landingsite.nl.',
+      'Professionele landingspagina voor Nederlandse ondernemers. Binnen 48 uur live, vaste prijs vanaf €299 en hosting inbegrepen.',
     images: [
       {
         url: '/image_1.png',
         width: 1200,
         height: 630,
-        alt: 'Landingsite.nl — Professionele landingspaginas snel online',
+        alt: 'Landingsite.nl — professionele landingspagina snel online',
       },
     ],
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Goedkope Landingspagina Laten Maken | Snel Online v.a. €299',
+    title: 'Landingspagina laten maken in 48 uur',
     description:
       'Binnen 48 uur een professionele landingspagina online. Vanaf €299. Geen bureau, geen gedoe.',
     images: ['/image_1.png'],
@@ -53,7 +56,7 @@ export const metadata: Metadata = {
   },
   keywords: [
     'landingspagina laten maken',
-    'goedkope landingspagina',
+    'snelle landingspagina',
     'landingspagina',
     'one pager laten maken',
     'conversiepagina',

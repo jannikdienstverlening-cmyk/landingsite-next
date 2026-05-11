@@ -1,6 +1,5 @@
-import { Resend } from 'resend'
-
-const resend = new Resend(process.env.RESEND_API_KEY)
+import { escapeHtml } from './html'
+import { getResend } from './resend'
 
 export async function stuurBevEstigingEmail(opts: {
   email: string
@@ -9,11 +8,14 @@ export async function stuurBevEstigingEmail(opts: {
   netlifyUrl: string
 }) {
   const { email, bedrijfsnaam, pakket, netlifyUrl } = opts
+  const safeBedrijfsnaam = escapeHtml(bedrijfsnaam)
+  const safePakket = escapeHtml(pakket)
+  const safeNetlifyUrl = escapeHtml(netlifyUrl)
 
-  await resend.emails.send({
+  await getResend().emails.send({
     from: 'Landingsite.nl <noreply@landingsite.nl>',
     to: email,
-    subject: `✅ Jouw landingspagina is klaar — ${bedrijfsnaam}`,
+    subject: `✅ Jouw landingspagina is klaar — ${safeBedrijfsnaam}`,
     html: `
 <!DOCTYPE html>
 <html lang="nl">
@@ -23,10 +25,10 @@ export async function stuurBevEstigingEmail(opts: {
   <p style="color: #6b6458; margin-bottom: 2rem;">Bedankt voor je bestelling bij Landingsite.nl</p>
 
   <div style="background: #ece8df; border: 1px solid #d4cec3; padding: 1.5rem; margin-bottom: 1.5rem;">
-    <p><strong>Bedrijf:</strong> ${bedrijfsnaam}</p>
-    <p><strong>Pakket:</strong> ${pakket}</p>
-    <p style="margin-top: 1rem;"><strong>Jouw preview URL:</strong></p>
-    <a href="${netlifyUrl}" style="color: #c8440a; word-break: break-all;">${netlifyUrl}</a>
+  <p><strong>Bedrijf:</strong> ${safeBedrijfsnaam}</p>
+  <p><strong>Pakket:</strong> ${safePakket}</p>
+  <p style="margin-top: 1rem;"><strong>Jouw preview URL:</strong></p>
+    <a href="${safeNetlifyUrl}" style="color: #c8440a; word-break: break-all;">${safeNetlifyUrl}</a>
   </div>
 
   <h2 style="font-size: 1.2rem; margin-bottom: 1rem;">Eigen domein koppelen</h2>
@@ -35,7 +37,7 @@ export async function stuurBevEstigingEmail(opts: {
   <div style="background: #0d0d0d; color: #f5f2eb; padding: 1rem; font-family: monospace; margin: 1rem 0;">
     <p>Type: CNAME</p>
     <p>Naam: www (of @ voor root)</p>
-    <p>Waarde: ${netlifyUrl.replace('https://', '')}</p>
+    <p>Waarde: ${safeNetlifyUrl.replace('https://', '')}</p>
     <p>TTL: 3600</p>
   </div>
 

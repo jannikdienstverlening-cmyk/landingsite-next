@@ -1,5 +1,5 @@
 import { NextRequest } from 'next/server'
-import { supabase } from '@/lib/supabase'
+import { getSupabase } from '@/lib/supabase'
 import { genereerLandingspagina, IntakeData } from '@/lib/claude'
 import { deployNailSite } from '@/lib/netlify'
 import { stuurBevEstigingEmail } from '@/lib/email'
@@ -8,6 +8,7 @@ import type { Pakket } from '@/lib/supabase'
 export async function POST(req: NextRequest) {
   const body = await req.json()
   const { order_id } = body
+  const supabase = getSupabase()
 
   // Haal order op
   const { data: order, error: orderErr } = await supabase
@@ -35,11 +36,15 @@ export async function POST(req: NextRequest) {
   }
 
   // Maak generated_page record aan
-  const { data: page } = await supabase
+  const { data: page, error: pageErr } = await supabase
     .from('generated_pages')
     .insert({ order_id, status: 'generating' })
     .select()
     .single()
+
+  if (pageErr || !page) {
+    return Response.json({ error: 'Generatie-record kon niet worden aangemaakt' }, { status: 500 })
+  }
 
   // Update order status
   await supabase.from('orders').update({ status: 'generating' }).eq('id', order_id)

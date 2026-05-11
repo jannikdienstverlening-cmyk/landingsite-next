@@ -1,7 +1,7 @@
 'use client'
 
-import { useState, useEffect } from 'react'
-import { supabase } from '@/lib/supabase'
+import { useState } from 'react'
+import Link from 'next/link'
 
 const styles = `
   body { font-family: var(--font-dm-mono), monospace; }
@@ -57,32 +57,40 @@ export default function AdminPage() {
   const [orders, setOrders] = useState<OrderRow[]>([])
   const [regenLoading, setRegenLoading] = useState<string | null>(null)
 
-  function login() {
-    if (pw === process.env.NEXT_PUBLIC_ADMIN_PASSWORD || pw === 'admin') {
+  async function login() {
+    const ok = await laadOrders(pw)
+    if (ok) {
       setAuth(true)
-      laadOrders()
     } else {
       setPwErr('Onjuist wachtwoord')
     }
   }
 
-  async function laadOrders() {
-    const { data } = await supabase
-      .from('orders')
-      .select(`
-        id, email, pakket, status, created_at,
-        intake_forms ( bedrijfsnaam ),
-        generated_pages ( netlify_url, status )
-      `)
-      .order('created_at', { ascending: false })
-      .limit(100)
+  async function laadOrders(password = pw) {
+    const res = await fetch('/api/admin/orders', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ password }),
+    })
+    const data = await res.json()
 
-    if (data) setOrders(data as unknown as OrderRow[])
+    if (!res.ok) return false
+    setOrders(data.orders as OrderRow[])
+    return true
   }
 
   async function regenereer(orderId: string) {
     setRegenLoading(orderId)
-    await supabase.from('orders').update({ status: 'paid' }).eq('id', orderId)
+    const regenRes = await fetch('/api/admin/regenerate', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ password: pw, order_id: orderId }),
+    })
+    if (!regenRes.ok) {
+      setRegenLoading(null)
+      return
+    }
+
     const res = await fetch('/api/generate', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -92,10 +100,6 @@ export default function AdminPage() {
     if (data.success) await laadOrders()
     setRegenLoading(null)
   }
-
-  useEffect(() => {
-    if (auth) laadOrders()
-  }, [auth])
 
   const stats = {
     totaal: orders.length,
@@ -133,7 +137,7 @@ export default function AdminPage() {
     <>
       <style>{styles}</style>
       <nav>
-        <a href="/" className="nav-logo">landing<span>site</span>.nl — admin</a>
+        <Link href="/" className="nav-logo">landing<span>site</span>.nl — admin</Link>
         <button onClick={() => setAuth(false)} style={{ background: 'transparent', border: '1px solid #444', color: 'var(--paper)', cursor: 'pointer', padding: '0.4rem 0.9rem', fontFamily: 'var(--font-dm-mono)', fontSize: '0.7rem' }}>Uitloggen</button>
       </nav>
 

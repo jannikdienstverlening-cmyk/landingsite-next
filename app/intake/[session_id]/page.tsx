@@ -1,8 +1,8 @@
 'use client'
 
 import { useState, useEffect } from 'react'
+import Link from 'next/link'
 import { useParams, useRouter } from 'next/navigation'
-import { supabase } from '@/lib/supabase'
 import type { Pakket } from '@/lib/supabase'
 
 const styles = `
@@ -75,25 +75,22 @@ export default function IntakePage() {
     const MAX_ATTEMPTS = 12 // 12 x 2.5s = 30 seconden
 
     async function laadOrder() {
-      const { data, error } = await supabase
-        .from('orders')
-        .select('id, pakket, status')
-        .eq('stripe_session_id', session_id)
-        .single()
+      const res = await fetch(`/api/order?session_id=${encodeURIComponent(session_id)}`)
+      const data = await res.json()
 
-      if (error || !data) {
+      if (!res.ok || !data.order) {
         setError('Order niet gevonden. Heb je al betaald?')
         setLoading(false)
         return
       }
 
-      if (data.status === 'completed') {
-        router.push('/bedankt')
+      if (data.order.status === 'completed') {
+        router.push(`/genereren/${data.order.id}`)
         return
       }
 
       // Wacht op Stripe webhook als betaling nog pending is
-      if (data.status === 'pending') {
+      if (data.order.status === 'pending') {
         attempts++
         if (attempts < MAX_ATTEMPTS) {
           setTimeout(laadOrder, 2500)
@@ -104,8 +101,8 @@ export default function IntakePage() {
         return
       }
 
-      setOrderId(data.id)
-      setPakket(data.pakket as Pakket)
+      setOrderId(data.order.id)
+      setPakket(data.order.pakket as Pakket)
       setLoading(false)
     }
     laadOrder()
@@ -121,47 +118,19 @@ export default function IntakePage() {
     setSubmitting(true)
     setError('')
 
-    const extraFields: Record<string, unknown> = {
-      contacttelefoon: form.contacttelefoon,
-      contactemail: form.contactemail,
-    }
-
-    if (pakket === 'pro' || pakket === 'premium') {
-      extraFields.doelgroep = form.doelgroep
-      extraFields.werkgebied = form.werkgebied
-      extraFields.social_facebook = form.social_facebook
-      extraFields.social_instagram = form.social_instagram
-      extraFields.social_linkedin = form.social_linkedin
-      extraFields.testimonials = [
-        form.testimonial_1_naam ? { naam: form.testimonial_1_naam, tekst: form.testimonial_1_tekst } : null,
-        form.testimonial_2_naam ? { naam: form.testimonial_2_naam, tekst: form.testimonial_2_tekst } : null,
-      ].filter(Boolean)
-      extraFields.faq = [
-        form.faq_1_vraag ? { vraag: form.faq_1_vraag, antwoord: form.faq_1_antwoord } : null,
-        form.faq_2_vraag ? { vraag: form.faq_2_vraag, antwoord: form.faq_2_antwoord } : null,
-        form.faq_3_vraag ? { vraag: form.faq_3_vraag, antwoord: form.faq_3_antwoord } : null,
-      ].filter(Boolean)
-    }
-
-    if (pakket === 'premium') {
-      extraFields.extra_wensen = form.extra_wensen
-      extraFields.sfeer = form.sfeer
-    }
-
     // Sla intake op
-    const { error: intakeErr } = await supabase.from('intake_forms').insert({
-      order_id: orderId,
-      bedrijfsnaam: form.bedrijfsnaam,
-      niche: form.niche,
-      beschrijving: form.beschrijving,
-      usp_1: form.usp_1,
-      usp_2: form.usp_2,
-      usp_3: form.usp_3,
-      extra_fields: extraFields,
+    const intakeRes = await fetch('/api/intake', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        session_id,
+        form,
+      }),
     })
+    const intakeData = await intakeRes.json()
 
-    if (intakeErr) {
-      setError('Opslaan mislukt: ' + intakeErr.message)
+    if (!intakeRes.ok) {
+      setError(intakeData.error || 'Opslaan mislukt.')
       setSubmitting(false)
       return
     }
@@ -170,7 +139,7 @@ export default function IntakePage() {
     const res = await fetch('/api/generate', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ order_id: orderId }),
+      body: JSON.stringify({ order_id: intakeData.order_id ?? orderId }),
     })
     const data = await res.json()
 
@@ -187,7 +156,7 @@ export default function IntakePage() {
     return (
       <>
         <style>{styles}</style>
-        <nav><a href="/" className="nav-logo">landing<span>site</span>.nl</a></nav>
+        <nav><Link href="/" className="nav-logo">landing<span>site</span>.nl</Link></nav>
         <div className="intake-wrap">
           <p style={{ color: 'var(--muted)', fontFamily: 'var(--font-dm-mono)' }}>Betaling controleren...</p>
         </div>
@@ -198,7 +167,7 @@ export default function IntakePage() {
   return (
     <>
       <style>{styles}</style>
-      <nav><a href="/" className="nav-logo">landing<span>site</span>.nl</a></nav>
+      <nav><Link href="/" className="nav-logo">landing<span>site</span>.nl</Link></nav>
 
       <div className="intake-wrap">
         <div className="intake-header">

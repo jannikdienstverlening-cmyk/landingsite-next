@@ -1,6 +1,6 @@
 import { NextRequest } from 'next/server'
-import { stripe, PAKKETTEN } from '@/lib/stripe'
-import { supabase } from '@/lib/supabase'
+import { getStripe, PAKKETTEN } from '@/lib/stripe'
+import { getSupabase } from '@/lib/supabase'
 import type { Pakket } from '@/lib/supabase'
 
 export async function POST(req: NextRequest) {
@@ -12,8 +12,11 @@ export async function POST(req: NextRequest) {
 
   const info = PAKKETTEN[pakket]
   const baseUrl = process.env.NEXT_PUBLIC_BASE_URL
+  if (!baseUrl) {
+    return Response.json({ error: 'Basis-URL ontbreekt.' }, { status: 500 })
+  }
 
-  const session = await stripe.checkout.sessions.create({
+  const session = await getStripe().checkout.sessions.create({
     payment_method_types: ['card', 'ideal'],
     line_items: [
       {
@@ -35,7 +38,7 @@ export async function POST(req: NextRequest) {
   })
 
   // Sla order op in Supabase
-  await supabase.from('orders').insert({
+  await getSupabase().from('orders').insert({
     stripe_session_id: session.id,
     email: '',
     pakket,

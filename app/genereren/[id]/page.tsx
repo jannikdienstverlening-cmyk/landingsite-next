@@ -1,8 +1,8 @@
 'use client'
 
 import { useEffect, useState } from 'react'
+import Link from 'next/link'
 import { useParams } from 'next/navigation'
-import { supabase } from '@/lib/supabase'
 
 const styles = `
   body { font-family: var(--font-dm-mono), monospace; }
@@ -33,13 +33,10 @@ export default function GeneratingPage() {
 
   useEffect(() => {
     const interval = setInterval(async () => {
-      const { data } = await supabase
-        .from('generated_pages')
-        .select('status, netlify_url')
-        .eq('order_id', id)
-        .single()
+      const res = await fetch(`/api/generated?order_id=${encodeURIComponent(id)}`)
+      const data = await res.json()
 
-      if (data) {
+      if (res.ok) {
         setStatus(data.status as Status)
         if (data.netlify_url) setNetlifyUrl(data.netlify_url)
         if (data.status === 'completed' || data.status === 'failed') {
@@ -62,7 +59,7 @@ export default function GeneratingPage() {
   return (
     <>
       <style>{styles}</style>
-      <nav><a href="/" className="nav-logo">landing<span>site</span>.nl</a></nav>
+      <nav><Link href="/" className="nav-logo">landing<span>site</span>.nl</Link></nav>
 
       <div className="gen-wrap">
         {status === 'completed' ? (

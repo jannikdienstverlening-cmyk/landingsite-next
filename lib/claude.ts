@@ -1,7 +1,21 @@
 import Anthropic from '@anthropic-ai/sdk'
-import { Pakket } from './supabase'
+import type { Pakket } from './supabase'
 
-const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY })
+let client: Anthropic | null = null
+
+function getClaudeClient() {
+  const apiKey = process.env.ANTHROPIC_API_KEY
+
+  if (!apiKey) {
+    throw new Error('ANTHROPIC_API_KEY is missing.')
+  }
+
+  if (!client) {
+    client = new Anthropic({ apiKey })
+  }
+
+  return client
+}
 
 export interface IntakeData {
   pakket: Pakket
@@ -181,7 +195,7 @@ ${JSON.stringify(intake, null, 2)}
 
 Genereer nu de volledige HTML-pagina door alle placeholders te vervangen.`
 
-  const message = await client.messages.create({
+  const message = await getClaudeClient().messages.create({
     model: 'claude-opus-4-6',
     max_tokens: 8096,
     messages: [{ role: 'user', content: userPrompt }],
