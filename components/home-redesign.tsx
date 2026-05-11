@@ -206,6 +206,9 @@ export function PortfolioSection() {
       label: 'B2B leadgeneratie',
       description:
         'Een zakelijke landingspagina voor werkgevers die snel een passende WIA-specialist zoeken.',
+      imageSrc: '/images/portfolio/wiamanagement-screenshot.webp',
+      imageAlt: 'Screenshot van de homepage van WIA Management',
+      tags: ['Leadpagina', 'B2B', 'Aanvraagflow', 'Rekentool'],
       tone: 'green' as const,
     },
     {
@@ -215,6 +218,9 @@ export function PortfolioSection() {
       label: 'Coaching & begeleiding',
       description:
         'Een heldere pagina voor persoonlijke ontwikkeling, begeleiding en aanvragen.',
+      imageSrc: '/images/portfolio/ontwikkelbegeleiding-screenshot.webp',
+      imageAlt: 'Screenshot van de homepage van Ontwikkelbegeleiding.nl',
+      tags: ['Leadpagina', 'Coaching', 'Intake', 'Persoonlijk'],
       tone: 'blue' as const,
     },
   ]
