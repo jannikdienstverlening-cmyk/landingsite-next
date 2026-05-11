@@ -361,10 +361,16 @@ export function Footer() {
         <Link href="/" className="launch-logo">
           landing<span>site</span>.nl
         </Link>
-        <div>
+        <div className="footer-links">
           <Link href="/algemene-voorwaarden">Algemene voorwaarden</Link>
           <Link href="/privacybeleid">Privacybeleid</Link>
         </div>
+        <p className="footer-credit">
+          Website ontwikkeld door{' '}
+          <a href="https://landingsite.nl" target="_blank" rel="noreferrer">
+            Landingsite.nl
+          </a>
+        </p>
       </div>
     </footer>
   )

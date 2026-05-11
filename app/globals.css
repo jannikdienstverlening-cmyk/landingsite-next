@@ -1213,10 +1213,27 @@ textarea {
   gap: 20px;
 }
 
-.footer-grid div {
+.footer-links {
   display: flex;
   gap: 18px;
   flex-wrap: wrap;
+}
+
+.footer-credit {
+  color: rgba(145, 160, 183, 0.78);
+  font-family: var(--font-dm-mono), ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 0.68rem;
+  line-height: 1.5;
+  text-align: right;
+}
+
+.footer-credit a {
+  color: #dbe6f7;
+  text-decoration: none;
+}
+
+.footer-credit a:hover {
+  color: var(--accent);
 }
 
 .contact-form {
@@ -2490,6 +2507,10 @@ textarea {
   .footer-grid {
     align-items: flex-start;
     flex-direction: column;
+  }
+
+  .footer-credit {
+    text-align: left;
   }
 }
 
