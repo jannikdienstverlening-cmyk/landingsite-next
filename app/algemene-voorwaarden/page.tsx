@@ -18,7 +18,7 @@ export default function AlgemeneVoorwaardenPage() {
           Terug naar Landingsite.nl
         </Link>
         <h1>Algemene voorwaarden</h1>
-        <p className="updated">Laatst bijgewerkt: 9 mei 2026</p>
+        <p className="updated">Laatst bijgewerkt: 11 mei 2026</p>
 
         <div className="legal-content">
           <section>
@@ -57,7 +57,8 @@ export default function AlgemeneVoorwaardenPage() {
           <section>
             <h2>5. Hosting en domein</h2>
             <p>
-              Landingsite.nl levert een live pagina en instructies voor domeinkoppeling. De klant is
+              Hosting kost €15 per maand, tenzij anders schriftelijk afgesproken. Landingsite.nl
+              levert een live pagina en instructies voor domeinkoppeling. De klant is
               verantwoordelijk voor toegang tot de eigen domeinbeheerder en correcte DNS-instellingen.
             </p>
           </section>

@@ -62,7 +62,7 @@ export function Hero() {
             </a>
           </div>
           <div className="launch-trust" aria-label="Belangrijkste voordelen">
-            {['Vaste prijs', 'Binnen 48 uur', 'Hosting inbegrepen', 'Geld-terug garantie'].map((item) => (
+            {['Vaste prijs', 'Binnen 48 uur', 'Hosting €15 p/m', 'Geld-terug garantie'].map((item) => (
               <span key={item}>{item}</span>
             ))}
           </div>
@@ -125,7 +125,7 @@ export function ProcessTimeline() {
     {
       number: '03',
       title: 'Pagina live',
-      body: 'Je krijgt een live preview, formulier, hosting en instructies voor je domein.',
+      body: 'Je krijgt een live preview, formulier, hosting vanaf €15 per maand en instructies voor je domein.',
       badge: 'Launch',
     },
   ]
@@ -213,7 +213,7 @@ export function BenefitsGrid() {
   const benefits = [
     ['Mobiel perfect', 'Gebouwd voor bezoekers die vanaf advertenties op hun telefoon binnenkomen.'],
     ['Gericht op conversie', 'Elke sectie heeft een duidelijke taak richting aanvraag of contact.'],
-    ['Hosting inbegrepen', 'Je pagina wordt live gezet en gekoppeld aan je eigen domein.'],
+    ['Hosting €15 per maand', 'Je pagina wordt live gezet en gekoppeld aan je eigen domein voor een vaste maandprijs.'],
     ['Vaste prijs', 'Geen uurtje-factuurtje. Je weet vooraf waar je aan toe bent.'],
     ['Leads in je mail', 'Aanvragen komen direct binnen op het door jou gekozen e-mailadres.'],
   ]

@@ -17,7 +17,7 @@ export const metadata: Metadata = {
     template: '%s | Landingsite.nl',
   },
   description:
-    'Laat een professionele landingspagina maken voor je campagne, product of dienst. Binnen 48 uur online, vaste prijs vanaf €299 en hosting inbegrepen.',
+    'Laat een professionele landingspagina maken voor je campagne, product of dienst. Binnen 48 uur online, vaste prijs vanaf €299 en hosting voor €15 per maand.',
   metadataBase: new URL('https://landingsite.nl'),
   alternates: {
     canonical: '/',
@@ -34,7 +34,7 @@ export const metadata: Metadata = {
     siteName: 'Landingsite.nl',
     title: 'Landingspagina laten maken in 48 uur',
     description:
-      'Professionele landingspagina voor Nederlandse ondernemers. Binnen 48 uur live, vaste prijs vanaf €299 en hosting inbegrepen.',
+      'Professionele landingspagina voor Nederlandse ondernemers. Binnen 48 uur live, vaste prijs vanaf €299 en hosting voor €15 per maand.',
     images: [
       {
         url: '/image_1.png',

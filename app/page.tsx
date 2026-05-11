@@ -27,7 +27,7 @@ const faqs = [
   },
   {
     q: 'Wordt de pagina ook gehost?',
-    a: 'Ja. We zetten de pagina live en geven je duidelijke DNS-instructies voor je eigen domein. Je hoeft geen losse hostingpartij te regelen.',
+    a: 'Ja. Hosting kost €15 per maand. We zetten je pagina live en geven je duidelijke DNS-instructies voor je eigen domein.',
   },
   {
     q: 'Waarom geen complete website?',
@@ -52,7 +52,7 @@ const packages = [
       'Jij levert tekst en beeld aan',
       'Mobiel geoptimaliseerd design',
       'Contactformulier inbegrepen',
-      'Hosting op jouw domein',
+      'Hosting €15 per maand',
     ],
   },
   {
@@ -68,6 +68,7 @@ const packages = [
       'FAQ en reviewsectie',
       'Koppeling met social media',
       'Werkgebied en doelgroepfocus',
+      'Hosting €15 per maand',
       '1 correctieronde inbegrepen',
     ],
   },
@@ -83,6 +84,7 @@ const packages = [
       'AI schrijft alle teksten voor je',
       'Aangepast design en sfeer',
       'Alle tools en pixels voorbereiden',
+      'Hosting €15 per maand',
       '3 correctierondes inbegrepen',
     ],
   },
@@ -97,7 +99,7 @@ const jsonLd = {
       name: 'Landingsite.nl',
       url: 'https://landingsite.nl',
       description:
-        'Professionele landingspagina’s laten maken voor Nederlandse ondernemers. Binnen 48 uur live, vaste prijs en hosting inbegrepen.',
+        'Professionele landingspagina’s laten maken voor Nederlandse ondernemers. Binnen 48 uur live, vaste prijs en hosting voor €15 per maand.',
       areaServed: 'NL',
       priceRange: '€299 - €899',
     },
