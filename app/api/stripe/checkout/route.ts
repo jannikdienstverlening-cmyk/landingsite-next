@@ -41,22 +41,26 @@ export async function POST(req: NextRequest) {
       phone_number_collection: { enabled: false },
     })
 
-    // Sla order op in Supabase
-    const { error } = await getSupabase().from('orders').insert({
-      stripe_session_id: session.id,
-      email: '',
-      pakket,
-      status: 'pending',
-    })
-
-    if (error) {
-      console.error('Could not create pending order', error)
-      return Response.json({ error: 'Checkout kon niet worden opgeslagen.' }, { status: 500 })
-    }
-
     if (!session.url) {
       console.error('Stripe checkout session did not include a URL', { sessionId: session.id })
       return Response.json({ error: 'Checkout kon niet worden geopend.' }, { status: 500 })
+    }
+
+    // Sla order alvast op voor de intake-flow. Dit mag de Stripe redirect niet blokkeren:
+    // als Supabase tijdelijk niet bereikbaar is, krijgt de klant nog steeds de checkout.
+    try {
+      const { error } = await getSupabase().from('orders').insert({
+        stripe_session_id: session.id,
+        email: '',
+        pakket,
+        status: 'pending',
+      })
+
+      if (error) {
+        console.error('Could not create pending order', error)
+      }
+    } catch (orderError) {
+      console.error('Could not create pending order', orderError)
     }
 
     return Response.json({ url: session.url })
