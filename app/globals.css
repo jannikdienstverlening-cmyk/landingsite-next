@@ -1069,6 +1069,13 @@ textarea {
   margin-top: auto;
 }
 
+.checkout-error {
+  margin-top: 12px;
+  color: #ffb4b4;
+  font-size: 0.82rem;
+  line-height: 1.45;
+}
+
 .comparison-section-new {
   background: #090d16;
 }

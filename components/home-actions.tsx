@@ -11,9 +11,11 @@ export function PricingButton({
   label: string
 }) {
   const [loading, setLoading] = useState(false)
+  const [error, setError] = useState('')
 
   async function bestel() {
     setLoading(true)
+    setError('')
     try {
       const res = await fetch('/api/stripe/checkout', {
         method: 'POST',
@@ -21,21 +23,35 @@ export function PricingButton({
         body: JSON.stringify({ pakket }),
       })
       const data = await res.json()
-      if (data.url) window.location.href = data.url
+      if (!res.ok || !data.url) {
+        setError(data.error || 'Checkout openen lukt nu niet. Probeer het later opnieuw.')
+        return
+      }
+
+      window.location.href = data.url
+    } catch {
+      setError('Checkout openen lukt nu niet. Probeer het later opnieuw.')
     } finally {
       setLoading(false)
     }
   }
 
   return (
-    <button
-      className={`button button-primary button-full${loading ? ' is-loading' : ''}`}
-      onClick={bestel}
-      disabled={loading}
-      type="button"
-    >
-      {loading ? 'Checkout openen...' : label}
-    </button>
+    <>
+      <button
+        className={`button button-primary button-full${loading ? ' is-loading' : ''}`}
+        onClick={bestel}
+        disabled={loading}
+        type="button"
+      >
+        {loading ? 'Checkout openen...' : label}
+      </button>
+      {error && (
+        <p className="checkout-error" role="alert">
+          {error}
+        </p>
+      )}
+    </>
   )
 }
 
