@@ -1,87 +1,78 @@
-import crypto from 'crypto'
+import { createHash } from 'node:crypto'
 
 const NETLIFY_API = 'https://api.netlify.com/api/v1'
 
-function getNetlifyToken() {
+function getToken() {
   const token = process.env.NETLIFY_ACCESS_TOKEN
-
-  if (!token) {
-    throw new Error('NETLIFY_ACCESS_TOKEN is missing.')
-  }
-
+  if (!token) throw new Error('NETLIFY_ACCESS_TOKEN ontbreekt.')
   return token
 }
 
-function slug(bedrijfsnaam: string): string {
-  return bedrijfsnaam
-    .toLowerCase()
-    .replace(/[^a-z0-9\s-]/g, '')
-    .replace(/\s+/g, '-')
-    .slice(0, 40)
+function headers(json = false) {
+  return {
+    Authorization: `Bearer ${getToken()}`,
+    ...(json ? { 'Content-Type': 'application/json' } : {}),
+  }
 }
 
-export async function deployNailSite(
-  bedrijfsnaam: string,
-  html: string
-): Promise<{ siteId: string; siteUrl: string }> {
-  const token = getNetlifyToken()
+function slug(value: string) {
+  return value.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+    .replace(/[^a-z0-9\s-]/g, '').trim().replace(/\s+/g, '-').replace(/-+/g, '-').slice(0, 35) || 'landingsite'
+}
 
-  // 1. Maak een nieuwe Netlify site aan
-  const createRes = await fetch(`${NETLIFY_API}/sites`, {
-    method: 'POST',
-    headers: {
-      Authorization: `Bearer ${token}`,
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({
-      name: `${slug(bedrijfsnaam)}-${Date.now()}`,
-    }),
-  })
-  if (!createRes.ok) {
-    const err = await createRes.text()
-    throw new Error(`Netlify site aanmaken mislukt: ${err}`)
+type NetlifySite = { id: string; name?: string; subdomain?: string; ssl_url?: string; url?: string }
+
+export async function ensureNetlifySite(opts: {
+  bedrijfsnaam: string
+  pageId: string
+  existingSiteId?: string | null
+  existingUrl?: string | null
+}) {
+  if (opts.existingSiteId && opts.existingUrl) return { siteId: opts.existingSiteId, siteUrl: opts.existingUrl }
+
+  const name = `${slug(opts.bedrijfsnaam)}-${opts.pageId.replaceAll('-', '').slice(0, 10)}`
+  const listResponse = await fetch(`${NETLIFY_API}/sites?name=${encodeURIComponent(name)}`, { headers: headers() })
+  if (listResponse.ok) {
+    const sites = await listResponse.json() as NetlifySite[]
+    const existing = sites.find(site => site.name === name || site.subdomain === name)
+    if (existing) return siteResult(existing)
   }
-  const site = await createRes.json()
 
-  // 2. Deploy via file digest API
-  const htmlBuffer = Buffer.from(html, 'utf-8')
-  const sha1 = crypto.createHash('sha1').update(htmlBuffer).digest('hex')
-
-  const deployRes = await fetch(`${NETLIFY_API}/sites/${site.id}/deploys`, {
+  const response = await fetch(`${NETLIFY_API}/sites`, {
     method: 'POST',
-    headers: {
-      Authorization: `Bearer ${token}`,
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({
-      files: { '/index.html': sha1 },
-    }),
+    headers: headers(true),
+    body: JSON.stringify({ name }),
   })
-  if (!deployRes.ok) {
-    const err = await deployRes.text()
-    throw new Error(`Netlify deploy aanmaken mislukt: ${err}`)
-  }
-  const deploy = await deployRes.json()
+  if (!response.ok) throw new Error(`Netlify-site aanmaken mislukt (${response.status}): ${await response.text()}`)
+  return siteResult(await response.json() as NetlifySite)
+}
 
-  // 3. Upload het HTML bestand
-  const uploadRes = await fetch(
-    `${NETLIFY_API}/deploys/${deploy.id}/files/index.html`,
-    {
+function siteResult(site: NetlifySite) {
+  if (!site.id) throw new Error('Netlify gaf geen site-ID terug.')
+  const siteUrl = site.ssl_url ?? site.url ?? (site.subdomain ? `https://${site.subdomain}.netlify.app` : '')
+  if (!siteUrl) throw new Error('Netlify gaf geen site-URL terug.')
+  return { siteId: site.id, siteUrl }
+}
+
+export async function deployToNetlifySite(siteId: string, html: string) {
+  const htmlBuffer = Buffer.from(html, 'utf8')
+  const digest = createHash('sha1').update(htmlBuffer).digest('hex')
+  const deployResponse = await fetch(`${NETLIFY_API}/sites/${encodeURIComponent(siteId)}/deploys`, {
+    method: 'POST',
+    headers: headers(true),
+    body: JSON.stringify({ files: { '/index.html': digest } }),
+  })
+  if (!deployResponse.ok) throw new Error(`Netlify-deploy aanmaken mislukt (${deployResponse.status}): ${await deployResponse.text()}`)
+
+  const deploy = await deployResponse.json() as { id?: string; required?: string[] }
+  if (!deploy.id) throw new Error('Netlify gaf geen deploy-ID terug.')
+  if (deploy.required?.includes(digest)) {
+    const uploadResponse = await fetch(`${NETLIFY_API}/deploys/${encodeURIComponent(deploy.id)}/files/index.html`, {
       method: 'PUT',
-      headers: {
-        Authorization: `Bearer ${token}`,
-        'Content-Type': 'application/octet-stream',
-      },
+      headers: { ...headers(), 'Content-Type': 'text/html; charset=utf-8' },
       body: htmlBuffer,
-    }
-  )
-  if (!uploadRes.ok) {
-    const err = await uploadRes.text()
-    throw new Error(`Netlify bestand uploaden mislukt: ${err}`)
+    })
+    if (!uploadResponse.ok) throw new Error(`Netlify-upload mislukt (${uploadResponse.status}): ${await uploadResponse.text()}`)
   }
-
-  return {
-    siteId: site.id,
-    siteUrl: `https://${site.subdomain}.netlify.app`,
-  }
+  return { deployId: deploy.id }
 }

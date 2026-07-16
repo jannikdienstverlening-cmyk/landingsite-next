@@ -1,81 +1,85 @@
+import type Stripe from 'stripe'
 import { NextRequest } from 'next/server'
-import { getStripe } from '@/lib/stripe'
-import { getSupabase } from '@/lib/supabase'
 import { escapeHtml } from '@/lib/html'
 import { getResend } from '@/lib/resend'
+import { getStripe, PAKKETTEN } from '@/lib/stripe'
+import { getSupabase, type Pakket } from '@/lib/supabase'
 
 export const dynamic = 'force-dynamic'
 
-export async function POST(req: NextRequest) {
-  const body = await req.text()
-  const sig = req.headers.get('stripe-signature')!
+function isPackage(value: string | undefined): value is Pakket {
+  return Boolean(value && value in PAKKETTEN)
+}
 
-  let event
+async function markPaid(session: Stripe.Checkout.Session, eventId: string) {
+  const pakket = session.metadata?.pakket
+  if (!isPackage(pakket)) throw new Error(`Ongeldig pakket in Stripe-sessie ${session.id}.`)
+  const email = session.customer_details?.email ?? session.customer_email ?? ''
+  const kvkNumber = session.custom_fields?.find(field => field.key === 'kvk')?.numeric?.value ?? ''
+  const businessName = session.customer_details?.business_name ?? session.customer_details?.name ?? ''
+  const paymentIntent = typeof session.payment_intent === 'string' ? session.payment_intent : session.payment_intent?.id ?? null
+  const now = new Date().toISOString()
+  const supabase = getSupabase()
+  const { error } = await supabase.from('orders').upsert({
+    stripe_session_id: session.id,
+    stripe_payment_intent: paymentIntent,
+    email,
+    business_name: businessName,
+    kvk_number: kvkNumber,
+    pakket,
+    status: 'paid',
+    last_error: null,
+    updated_at: now,
+  }, { onConflict: 'stripe_session_id' })
+  if (error) throw new Error(`Order opslaan mislukt: ${error.message}`)
+
+  const amount = new Intl.NumberFormat('nl-NL', { style: 'currency', currency: 'EUR' }).format((session.amount_total ?? 0) / 100)
+  const adminUrl = `${process.env.NEXT_PUBLIC_BASE_URL ?? 'https://landingsite.nl'}/admin`
+  await getResend().emails.send({
+    from: process.env.RESEND_FROM ?? 'Landingsite.nl <noreply@landingsite.nl>',
+    to: process.env.ADMIN_EMAIL ?? 'jannikklumpenaar@gmail.com',
+    replyTo: email || undefined,
+    subject: `Nieuwe bestelling — ${PAKKETTEN[pakket].naam} (${amount})`,
+    html: `<div style="font-family:Arial,sans-serif;line-height:1.6;color:#0b2019;max-width:620px;margin:auto;padding:32px">
+      <p style="color:#16845c;font-weight:800">Betaling ontvangen</p><h1 style="font-size:26px">Nieuwe bestelling</h1>
+      <p><strong>Pakket:</strong> ${escapeHtml(PAKKETTEN[pakket].naam)}<br><strong>Bedrag:</strong> ${escapeHtml(amount)}<br><strong>Bedrijf:</strong> ${escapeHtml(businessName || 'Onbekend')}<br><strong>KvK:</strong> ${escapeHtml(kvkNumber || 'Niet beschikbaar')}<br><strong>Klant:</strong> ${escapeHtml(session.customer_details?.name ?? 'Onbekend')}<br><strong>E-mail:</strong> ${escapeHtml(email || 'Niet beschikbaar')}</p>
+      <p><a href="${escapeHtml(adminUrl)}" style="display:inline-block;background:#0b3d2e;color:#fff;padding:12px 18px;border-radius:999px;text-decoration:none">Open dashboard</a></p>
+    </div>`,
+  }, { idempotencyKey: `stripe-${eventId}` })
+}
+
+export async function POST(request: NextRequest) {
+  const signature = request.headers.get('stripe-signature')
+  const secret = process.env.STRIPE_WEBHOOK_SECRET
+  if (!signature || !secret) return Response.json({ error: 'Webhookconfiguratie ontbreekt.' }, { status: 400 })
+
+  let event: Stripe.Event
   try {
-    event = getStripe().webhooks.constructEvent(body, sig, process.env.STRIPE_WEBHOOK_SECRET!)
+    event = getStripe().webhooks.constructEvent(await request.text(), signature, secret)
   } catch {
-    return Response.json({ error: 'Webhook signature invalid' }, { status: 400 })
+    return Response.json({ error: 'Ongeldige webhookhandtekening.' }, { status: 400 })
   }
 
-  if (event.type === 'checkout.session.completed') {
-    const session = event.data.object
-    const klantEmail = session.customer_details?.email ?? ''
-    const klantNaam = session.customer_details?.name ?? 'Onbekend'
-    const pakket = session.metadata?.pakket ?? 'onbekend'
-    const bedrag = session.amount_total ? `€${(session.amount_total / 100).toFixed(2)}` : '?'
-    const safeKlantEmail = escapeHtml(klantEmail)
-    const safeKlantNaam = escapeHtml(klantNaam)
-    const safePakket = escapeHtml(pakket)
-    const safeBedrag = escapeHtml(bedrag)
-    const safeSessionId = escapeHtml(session.id)
-    const adminUrl = escapeHtml(`${process.env.NEXT_PUBLIC_BASE_URL}/admin`)
+  const supabase = getSupabase()
+  const { data: handled } = await supabase.from('stripe_webhook_events').select('event_id').eq('event_id', event.id).maybeSingle()
+  if (handled) return Response.json({ received: true, duplicate: true })
 
-    // Update order in Supabase
-    await getSupabase()
-      .from('orders')
-      .update({
-        status: 'paid',
-        email: klantEmail,
-        stripe_payment_intent: session.payment_intent as string,
-      })
-      .eq('stripe_session_id', session.id)
+  try {
+    if (event.type === 'checkout.session.completed') {
+      const session = event.data.object
+      if (session.payment_status === 'paid') await markPaid(session, event.id)
+    } else if (event.type === 'checkout.session.async_payment_succeeded') {
+      await markPaid(event.data.object, event.id)
+    }
 
-    // Stuur notificatie naar Jannik
-    await getResend().emails.send({
-      from: 'Landingsite.nl <noreply@landingsite.nl>',
-      to: 'jannikklumpenaar@gmail.com',
-      subject: `💰 Nieuwe bestelling — ${pakket} pakket (${bedrag})`,
-      html: `
-<!DOCTYPE html>
-<html lang="nl">
-<head><meta charset="UTF-8"></head>
-<body style="font-family: 'Courier New', monospace; background: #f5f2eb; color: #0d0d0d; padding: 2rem; max-width: 600px; margin: 0 auto;">
-  <h2 style="font-size: 1.5rem; margin-bottom: 0.5rem;">Nieuwe bestelling ontvangen!</h2>
-  <p style="color: #6b6458; margin-bottom: 2rem; font-size: 0.85rem;">Er is zojuist een betaling binnengekomen op Landingsite.nl.</p>
-
-  <div style="background: #ece8df; border: 1px solid #d4cec3; padding: 1.5rem; margin-bottom: 1.5rem;">
-    <p style="margin-bottom: 0.5rem;"><strong>Pakket:</strong> ${safePakket.charAt(0).toUpperCase() + safePakket.slice(1)}</p>
-    <p style="margin-bottom: 0.5rem;"><strong>Bedrag:</strong> ${safeBedrag}</p>
-    <p style="margin-bottom: 0.5rem;"><strong>Klant:</strong> ${safeKlantNaam}</p>
-    <p style="margin-bottom: 0.5rem;"><strong>E-mail:</strong> <a href="mailto:${safeKlantEmail}" style="color: #c8440a;">${safeKlantEmail}</a></p>
-    <p style="margin-bottom: 0;"><strong>Session ID:</strong> <span style="font-size: 0.75rem; color: #6b6458;">${safeSessionId}</span></p>
-  </div>
-
-  <p style="font-size: 0.85rem; margin-bottom: 1rem;">
-    De klant ontvangt nu het intakeformulier. Zodra ingevuld start de automatische generatie.
-  </p>
-
-  <a href="${adminUrl}" style="display: inline-block; background: #0d0d0d; color: #f5f2eb; font-family: 'Courier New', monospace; font-size: 0.75rem; letter-spacing: 0.06em; text-transform: uppercase; padding: 0.8rem 1.5rem; text-decoration: none;">
-    Bekijk in admin →
-  </a>
-
-  <hr style="border: none; border-top: 1px solid #d4cec3; margin: 2rem 0;">
-  <p style="color: #6b6458; font-size: 0.75rem;">© 2026 Landingsite.nl</p>
-</body>
-</html>
-      `,
-    })
+    const { error } = await supabase.from('stripe_webhook_events').upsert({
+      event_id: event.id,
+      event_type: event.type,
+    }, { onConflict: 'event_id', ignoreDuplicates: true })
+    if (error) throw error
+    return Response.json({ received: true })
+  } catch (error) {
+    console.error('Stripe-webhook verwerken mislukt', { eventId: event.id, error })
+    return Response.json({ error: 'Webhookverwerking mislukt.' }, { status: 500 })
   }
-
-  return Response.json({ received: true })
 }

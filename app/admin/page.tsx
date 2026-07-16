@@ -1,203 +1,21 @@
 'use client'
 
-import { useState } from 'react'
 import Link from 'next/link'
+import { useEffect, useState } from 'react'
 
-const styles = `
-  body { font-family: var(--font-dm-mono), monospace; }
-  .admin-wrap { min-height: 100vh; padding: 5rem 2rem 3rem; max-width: 1100px; margin: 0 auto; }
-  nav { position: fixed; top: 0; left: 0; right: 0; z-index: 100; padding: 1rem 2rem; display: flex; justify-content: space-between; align-items: center; background: var(--ink); color: var(--paper); }
-  .nav-logo { font-family: var(--font-syne), sans-serif; font-weight: 800; font-size: 1.1rem; color: var(--paper); text-decoration: none; }
-  .nav-logo span { color: var(--accent-light); }
-  .admin-title { font-family: var(--font-syne), sans-serif; font-size: 2rem; font-weight: 800; margin-bottom: 0.5rem; }
-  .admin-sub { font-size: 0.8rem; color: var(--muted); margin-bottom: 2.5rem; }
-  .stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; margin-bottom: 2.5rem; }
-  @media(max-width: 768px) { .stats { grid-template-columns: repeat(2, 1fr); } }
-  .stat-box { background: var(--surface); border: 1px solid var(--rule); padding: 1.25rem; }
-  .stat-num { font-family: var(--font-syne), sans-serif; font-size: 2rem; font-weight: 800; color: var(--accent); }
-  .stat-label { font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); }
-  table { width: 100%; border-collapse: collapse; font-size: 0.78rem; }
-  th { text-align: left; font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--muted); padding: 0.75rem 1rem; border-bottom: 2px solid var(--rule); }
-  td { padding: 0.9rem 1rem; border-bottom: 1px solid var(--rule); vertical-align: top; }
-  tr:hover td { background: var(--surface); }
-  .status-badge { display: inline-block; font-size: 0.6rem; letter-spacing: 0.08em; text-transform: uppercase; padding: 0.2rem 0.6rem; border: 1px solid; }
-  .status-completed { color: #1a7a4a; border-color: #1a7a4a; }
-  .status-pending { color: var(--muted); border-color: var(--muted); }
-  .status-paid { color: #2563eb; border-color: #2563eb; }
-  .status-generating { color: var(--accent); border-color: var(--accent); }
-  .status-failed { color: #dc2626; border-color: #dc2626; }
-  .link-btn { color: var(--accent); text-decoration: none; font-size: 0.75rem; }
-  .link-btn:hover { text-decoration: underline; }
-  .regen-btn { font-family: var(--font-dm-mono), monospace; font-size: 0.65rem; letter-spacing: 0.06em; text-transform: uppercase; background: transparent; border: 1px solid var(--ink); color: var(--ink); padding: 0.3rem 0.7rem; cursor: pointer; transition: background 0.2s; }
-  .regen-btn:hover { background: var(--ink); color: var(--paper); }
-  .login-wrap { min-height: 100vh; display: flex; align-items: center; justify-content: center; }
-  .login-box { width: 100%; max-width: 360px; padding: 2.5rem; background: var(--surface); border: 1px solid var(--rule); }
-  .login-title { font-family: var(--font-syne), sans-serif; font-size: 1.5rem; font-weight: 800; margin-bottom: 1.5rem; }
-  .login-input { width: 100%; background: var(--paper); border: 1px solid var(--rule); padding: 0.9rem 1rem; font-family: var(--font-dm-mono), monospace; font-size: 0.9rem; outline: none; margin-bottom: 1rem; }
-  .login-input:focus { border-color: var(--accent); }
-  .login-btn { width: 100%; background: var(--ink); color: var(--paper); font-family: var(--font-dm-mono), monospace; font-size: 0.8rem; letter-spacing: 0.08em; text-transform: uppercase; padding: 1rem; border: none; cursor: pointer; transition: background 0.2s; }
-  .login-btn:hover { background: var(--accent); }
-  .login-err { font-size: 0.8rem; color: #dc2626; margin-bottom: 1rem; }
-`
+const css=`.admin-page{min-height:100vh;background:#f1f6f3;color:#0a2119;padding:100px 24px 60px}.admin-nav{position:fixed;inset:0 0 auto;z-index:10;height:68px;background:#071c16;color:#fff;display:flex;align-items:center;justify-content:space-between;padding:0 28px}.admin-logo{font-family:var(--font-syne),sans-serif;font-weight:850;text-decoration:none}.admin-logo span{color:#47dda3}.admin-nav button{background:transparent;border:1px solid #ffffff35;color:#fff;border-radius:99px;padding:8px 13px;cursor:pointer}.admin-wrap{width:min(1120px,100%);margin:auto}.admin-head{display:flex;justify-content:space-between;align-items:end;margin-bottom:32px}.admin-head h1{font-family:var(--font-syne),sans-serif;font-size:3rem;letter-spacing:-.055em;margin:0}.admin-head p{color:#657a72;font-size:.75rem}.refresh{border:0;border-radius:99px;background:#0b4936;color:#fff;padding:11px 16px;cursor:pointer}.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:30px}.stat{padding:20px;border:1px solid #d5e2dc;border-radius:16px;background:#fff}.stat strong{display:block;font-family:var(--font-syne),sans-serif;font-size:1.9rem}.stat span{font-size:.64rem;color:#70847c;text-transform:uppercase}.table-wrap{overflow:auto;border:1px solid #d5e2dc;border-radius:18px;background:#fff}table{width:100%;min-width:900px;border-collapse:collapse;font-size:.68rem}th,td{text-align:left;padding:14px;border-bottom:1px solid #e2ebe7;vertical-align:top}th{font-size:.58rem;text-transform:uppercase;letter-spacing:.08em;color:#71867d}td a{color:#147c59}.status{display:inline-block;padding:4px 7px;border-radius:99px;background:#edf3f0;text-transform:uppercase;font-size:.55rem}.status-completed{background:#dff8ec;color:#126d4a}.status-failed{background:#fee9e7;color:#a52f27}.status-generating{background:#e6efff;color:#1d57b8}.regen{border:1px solid #9bb0a7;background:transparent;border-radius:99px;padding:6px 9px;cursor:pointer}.row-error{max-width:250px;color:#a52f27}.login-page{min-height:100vh;display:grid;place-items:center;background:#071c16;padding:24px}.login-box{width:min(400px,100%);background:#f3f8f5;border-radius:24px;padding:36px;color:#0a2119}.login-box h1{font-family:var(--font-syne),sans-serif;font-size:2.1rem;letter-spacing:-.05em}.login-box label{display:block;font-size:.7rem;font-weight:800}.login-box input{width:100%;padding:13px;margin:8px 0 14px;border:1px solid #cbdad3;border-radius:11px}.login-box button{width:100%;padding:14px;border:0;border-radius:99px;background:#0b4936;color:#fff;font-weight:800}.admin-error{color:#a52f27;font-size:.7rem}@media(max-width:700px){.stats{grid-template-columns:1fr 1fr}.admin-head{align-items:flex-start;flex-direction:column;gap:16px}}`
+type OrderRow={id:string;email:string;pakket:'starter'|'pro'|'premium';status:string;created_at:string;last_error:string|null;intake_forms:{bedrijfsnaam:string}|Array<{bedrijfsnaam:string}>|null;generated_pages:Array<{netlify_url:string|null;status:string;created_at:string}>|{netlify_url:string|null;status:string;created_at:string}|null}
 
-interface OrderRow {
-  id: string
-  email: string
-  pakket: string
-  status: string
-  created_at: string
-  intake_forms: { bedrijfsnaam: string } | null
-  generated_pages: { netlify_url: string | null; status: string } | null
-}
+function intakeName(order:OrderRow){const intake=Array.isArray(order.intake_forms)?order.intake_forms[0]:order.intake_forms;return intake?.bedrijfsnaam??'—'}
+function latestPage(order:OrderRow){const pages=Array.isArray(order.generated_pages)?order.generated_pages:[order.generated_pages].filter(Boolean) as Array<{netlify_url:string|null;status:string;created_at:string}>;return pages.sort((a,b)=>b.created_at.localeCompare(a.created_at))[0]}
 
-export default function AdminPage() {
-  const [auth, setAuth] = useState(false)
-  const [pw, setPw] = useState('')
-  const [pwErr, setPwErr] = useState('')
-  const [orders, setOrders] = useState<OrderRow[]>([])
-  const [regenLoading, setRegenLoading] = useState<string | null>(null)
-
-  async function login() {
-    const ok = await laadOrders(pw)
-    if (ok) {
-      setAuth(true)
-    } else {
-      setPwErr('Onjuist wachtwoord')
-    }
-  }
-
-  async function laadOrders(password = pw) {
-    const res = await fetch('/api/admin/orders', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ password }),
-    })
-    const data = await res.json()
-
-    if (!res.ok) return false
-    setOrders(data.orders as OrderRow[])
-    return true
-  }
-
-  async function regenereer(orderId: string) {
-    setRegenLoading(orderId)
-    const regenRes = await fetch('/api/admin/regenerate', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ password: pw, order_id: orderId }),
-    })
-    if (!regenRes.ok) {
-      setRegenLoading(null)
-      return
-    }
-
-    const res = await fetch('/api/generate', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ order_id: orderId }),
-    })
-    const data = await res.json()
-    if (data.success) await laadOrders()
-    setRegenLoading(null)
-  }
-
-  const stats = {
-    totaal: orders.length,
-    betaald: orders.filter(o => o.status !== 'pending').length,
-    completed: orders.filter(o => o.status === 'completed').length,
-    omzet: orders.filter(o => o.status !== 'pending').reduce((sum, o) => {
-      return sum + ({ starter: 299, pro: 499, premium: 899 }[o.pakket] ?? 0)
-    }, 0),
-  }
-
-  if (!auth) {
-    return (
-      <>
-        <style>{styles}</style>
-        <div className="login-wrap">
-          <div className="login-box">
-            <h2 className="login-title">Admin</h2>
-            {pwErr && <p className="login-err">{pwErr}</p>}
-            <input
-              className="login-input"
-              type="password"
-              placeholder="Wachtwoord"
-              value={pw}
-              onChange={e => setPw(e.target.value)}
-              onKeyDown={e => e.key === 'Enter' && login()}
-            />
-            <button className="login-btn" onClick={login}>Inloggen</button>
-          </div>
-        </div>
-      </>
-    )
-  }
-
-  return (
-    <>
-      <style>{styles}</style>
-      <nav>
-        <Link href="/" className="nav-logo">landing<span>site</span>.nl — admin</Link>
-        <button onClick={() => setAuth(false)} style={{ background: 'transparent', border: '1px solid #444', color: 'var(--paper)', cursor: 'pointer', padding: '0.4rem 0.9rem', fontFamily: 'var(--font-dm-mono)', fontSize: '0.7rem' }}>Uitloggen</button>
-      </nav>
-
-      <div className="admin-wrap">
-        <h1 className="admin-title">Dashboard</h1>
-        <p className="admin-sub">Overzicht van alle orders en gegenereerde pagina&apos;s</p>
-
-        <div className="stats">
-          <div className="stat-box"><div className="stat-num">{stats.totaal}</div><div className="stat-label">Orders</div></div>
-          <div className="stat-box"><div className="stat-num">{stats.betaald}</div><div className="stat-label">Betaald</div></div>
-          <div className="stat-box"><div className="stat-num">{stats.completed}</div><div className="stat-label">Afgerond</div></div>
-          <div className="stat-box"><div className="stat-num">€{stats.omzet}</div><div className="stat-label">Omzet</div></div>
-        </div>
-
-        <table>
-          <thead>
-            <tr>
-              <th>Datum</th>
-              <th>Bedrijf</th>
-              <th>E-mail</th>
-              <th>Pakket</th>
-              <th>Status</th>
-              <th>Pagina</th>
-              <th>Acties</th>
-            </tr>
-          </thead>
-          <tbody>
-            {orders.map(order => (
-              <tr key={order.id}>
-                <td style={{ whiteSpace: 'nowrap' }}>{new Date(order.created_at).toLocaleDateString('nl-NL')}</td>
-                <td>{order.intake_forms?.bedrijfsnaam ?? '—'}</td>
-                <td style={{ color: 'var(--muted)' }}>{order.email}</td>
-                <td style={{ textTransform: 'capitalize' }}>{order.pakket}</td>
-                <td><span className={`status-badge status-${order.status}`}>{order.status}</span></td>
-                <td>
-                  {order.generated_pages?.netlify_url ? (
-                    <a href={order.generated_pages.netlify_url} target="_blank" rel="noopener noreferrer" className="link-btn">
-                      Bekijk →
-                    </a>
-                  ) : '—'}
-                </td>
-                <td>
-                  {(order.status === 'failed' || order.status === 'paid') && (
-                    <button
-                      className="regen-btn"
-                      onClick={() => regenereer(order.id)}
-                      disabled={regenLoading === order.id}
-                    >
-                      {regenLoading === order.id ? 'Bezig...' : 'Regenereer'}
-                    </button>
-                  )}
-                </td>
-              </tr>
-            ))}
-            {orders.length === 0 && (
-              <tr><td colSpan={7} style={{ color: 'var(--muted)', textAlign: 'center', padding: '3rem' }}>Nog geen orders</td></tr>
-            )}
-          </tbody>
-        </table>
-      </div>
-    </>
-  )
-}
+export default function AdminPage(){const[auth,setAuth]=useState<boolean|null>(null);const[password,setPassword]=useState('');const[orders,setOrders]=useState<OrderRow[]>([]);const[error,setError]=useState('');const[busy,setBusy]=useState<string|null>(null)
+  async function load(){const response=await fetch('/api/admin/orders',{cache:'no-store'});if(response.status===401){setAuth(false);return}const data=await response.json();if(!response.ok){setError(data.error||'Orders ophalen mislukt.');return}setOrders(data.orders);setAuth(true)}
+  useEffect(()=>{let active=true;fetch('/api/admin/orders',{cache:'no-store'}).then(async response=>({response,data:await response.json()})).then(({response,data})=>{if(!active)return;if(response.status===401){setAuth(false);return}if(!response.ok){setError(data.error||'Orders ophalen mislukt.');setAuth(false);return}setOrders(data.orders);setAuth(true)}).catch(()=>{if(active){setError('Dashboard controleren mislukt.');setAuth(false)}});return()=>{active=false}},[])
+  async function login(event:React.FormEvent){event.preventDefault();setError('');const response=await fetch('/api/admin/login',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({password})});const data=await response.json();if(!response.ok){setError(data.error||'Inloggen mislukt.');return}setPassword('');setAuth(true);await load()}
+  async function logout(){await fetch('/api/admin/logout',{method:'POST'});setAuth(false);setOrders([])}
+  async function regenerate(orderId:string){setBusy(orderId);setError('');const response=await fetch('/api/admin/regenerate',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({order_id:orderId})});const data=await response.json();if(!response.ok)setError(data.error||'Herstarten mislukt.');await load();setBusy(null)}
+  if(auth===null)return <><style>{css}</style><div className="login-page"><p style={{color:'#fff'}}>Dashboard controleren…</p></div></>
+  if(!auth)return <><style>{css}</style><main className="login-page"><form className="login-box" onSubmit={login}><p>Landingsite.nl</p><h1>Beveiligd dashboard</h1><label htmlFor="admin-password">Wachtwoord</label><input id="admin-password" type="password" autoComplete="current-password" value={password} onChange={e=>setPassword(e.target.value)} required/>{error&&<p className="admin-error" role="alert">{error}</p>}<button type="submit">Veilig inloggen</button></form></main></>
+  const revenue=orders.filter(order=>order.status!=='pending').reduce((sum,order)=>sum+({starter:299,pro:499,premium:899}[order.pakket]),0)
+  return <><style>{css}</style><nav className="admin-nav"><Link href="/" className="admin-logo">landing<span>site</span>.nl · admin</Link><button onClick={logout}>Uitloggen</button></nav><main className="admin-page"><div className="admin-wrap"><header className="admin-head"><div><h1>Orders</h1><p>Veilige status, previews en herstartbare workflows.</p></div><button className="refresh" onClick={load}>Vernieuwen</button></header>{error&&<p className="admin-error" role="alert">{error}</p>}<div className="stats"><div className="stat"><strong>{orders.length}</strong><span>Orders</span></div><div className="stat"><strong>{orders.filter(o=>o.status==='generating').length}</strong><span>Bezig</span></div><div className="stat"><strong>{orders.filter(o=>o.status==='completed').length}</strong><span>Afgerond</span></div><div className="stat"><strong>€{revenue}</strong><span>Bruto orderwaarde</span></div></div><div className="table-wrap"><table><thead><tr><th>Datum</th><th>Bedrijf</th><th>E-mail</th><th>Pakket</th><th>Status</th><th>Preview</th><th>Melding</th><th>Actie</th></tr></thead><tbody>{orders.map(order=>{const page=latestPage(order);return <tr key={order.id}><td>{new Date(order.created_at).toLocaleDateString('nl-NL')}</td><td>{intakeName(order)}</td><td>{order.email||'—'}</td><td>{order.pakket}</td><td><span className={`status status-${order.status}`}>{order.status}</span></td><td>{page?.netlify_url?<a href={page.netlify_url} target="_blank" rel="noopener noreferrer">Open ↗</a>:'—'}</td><td className="row-error">{order.last_error||'—'}</td><td>{['paid','failed','completed'].includes(order.status)&&<button className="regen" disabled={busy===order.id} onClick={()=>regenerate(order.id)}>{busy===order.id?'Starten…':'Genereer opnieuw'}</button>}</td></tr>})}{!orders.length&&<tr><td colSpan={8}>Nog geen orders.</td></tr>}</tbody></table></div></div></main></>}

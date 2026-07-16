@@ -1,104 +1,16 @@
 'use client'
 
-import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import { useParams } from 'next/navigation'
+import { useEffect, useState } from 'react'
 
-const styles = `
-  body { font-family: var(--font-dm-mono), monospace; }
-  .gen-wrap { min-height: 100vh; display: flex; align-items: center; justify-content: center; flex-direction: column; text-align: center; padding: 2rem; }
-  .gen-icon { font-size: 3.5rem; margin-bottom: 1.5rem; animation: pulse 2s ease-in-out infinite; }
-  @keyframes pulse { 0%,100% { transform: scale(1); } 50% { transform: scale(1.1); } }
-  .gen-title { font-family: var(--font-syne), sans-serif; font-size: 2rem; font-weight: 800; letter-spacing: -0.03em; margin-bottom: 0.75rem; }
-  .gen-sub { font-size: 0.9rem; color: var(--muted); max-width: 40ch; margin: 0 auto 2rem; }
-  .gen-steps { list-style: none; text-align: left; display: inline-block; }
-  .gen-steps li { font-size: 0.8rem; color: var(--muted); padding: 0.4rem 0; display: flex; gap: 0.75rem; align-items: center; }
-  .gen-steps li.done { color: var(--green, #1a7a4a); }
-  .gen-steps li.active { color: var(--ink); }
-  .result-box { margin-top: 2.5rem; padding: 2rem; background: var(--surface); border: 1px solid var(--rule); max-width: 500px; width: 100%; }
-  .result-url { font-size: 0.85rem; color: var(--accent); word-break: break-all; margin: 0.5rem 0 1.5rem; }
-  .result-btn { display: inline-block; background: var(--accent); color: #fff; font-family: var(--font-dm-mono), monospace; font-size: 0.75rem; letter-spacing: 0.08em; text-transform: uppercase; padding: 0.9rem 2rem; text-decoration: none; box-shadow: 3px 3px 0 var(--ink); transition: background 0.2s; }
-  .result-btn:hover { background: var(--accent-light); }
-  nav { position: fixed; top: 0; left: 0; right: 0; z-index: 100; padding: 1rem 2rem; display: flex; justify-content: space-between; align-items: center; background: rgba(245,242,235,0.95); backdrop-filter: blur(8px); border-bottom: 1px solid var(--rule); }
-  .nav-logo { font-family: var(--font-syne), sans-serif; font-weight: 800; font-size: 1.1rem; color: var(--ink); text-decoration: none; }
-  .nav-logo span { color: var(--accent); }
-`
+const css = `.status-shell{min-height:100vh;background:#071c16;color:#f0f8f4;display:grid;place-items:center;padding:32px}.status-card{width:min(680px,100%);text-align:center}.status-logo{position:fixed;top:26px;left:32px;color:#f0f8f4;text-decoration:none;font-family:var(--font-syne),sans-serif;font-weight:850}.status-logo span{color:#59d9a6}.orb{width:92px;height:92px;margin:0 auto 30px;border-radius:30px;background:radial-gradient(circle at 30% 25%,#7df4c2,#17865d 52%,#0b3a2b);box-shadow:0 25px 70px #30d29235;animation:float 2.5s ease-in-out infinite}.status-card h1{font-family:var(--font-syne),sans-serif;font-size:clamp(2.3rem,7vw,4.4rem);line-height:1;letter-spacing:-.06em;margin:0 0 18px}.status-card>p{color:#a8c1b7;max-width:520px;margin:0 auto 34px}.progress{width:min(480px,100%);margin:auto;text-align:left;border:1px solid #ffffff1c;border-radius:20px;padding:14px 24px;background:#ffffff08}.progress div{display:flex;gap:12px;align-items:center;padding:13px 0;color:#a8c1b7;border-bottom:1px solid #ffffff12}.progress div:last-child{border:0}.progress .done{color:#7df4c2}.progress .active{color:#fff}.result{background:#f2f8f5;color:#092019;border-radius:26px;padding:32px;margin-top:30px}.result a.button{display:inline-block;margin-top:18px;background:#147d59;color:#fff;text-decoration:none;border-radius:999px;padding:14px 22px;font-weight:800}.result-url{font-size:.78rem;color:#5f736b;word-break:break-all}.support{color:#7df4c2}.error-orb{background:#b63c34;box-shadow:0 25px 70px #d74b4135;animation:none}@keyframes float{50%{transform:translateY(-8px) rotate(3deg)}}@media(prefers-reduced-motion:reduce){.orb{animation:none}}`
+type Status = 'generating'|'completed'|'failed'
 
-type Status = 'generating' | 'completed' | 'failed' | 'unknown'
-
-export default function GeneratingPage() {
-  const { id } = useParams<{ id: string }>()
-  const [status, setStatus] = useState<Status>('generating')
-  const [netlifyUrl, setNetlifyUrl] = useState<string | null>(null)
-
-  useEffect(() => {
-    const interval = setInterval(async () => {
-      const res = await fetch(`/api/generated?order_id=${encodeURIComponent(id)}`)
-      const data = await res.json()
-
-      if (res.ok) {
-        setStatus(data.status as Status)
-        if (data.netlify_url) setNetlifyUrl(data.netlify_url)
-        if (data.status === 'completed' || data.status === 'failed') {
-          clearInterval(interval)
-        }
-      }
-    }, 3000)
-
-    return () => clearInterval(interval)
-  }, [id])
-
-  const steps = [
-    { label: 'Betaling bevestigd', done: true },
-    { label: 'Intake ontvangen', done: true },
-    { label: 'Claude genereert je pagina...', done: status === 'completed', active: status === 'generating' },
-    { label: 'Pagina deployen naar Netlify', done: status === 'completed', active: false },
-    { label: 'E-mail versturen', done: status === 'completed', active: false },
-  ]
-
-  return (
-    <>
-      <style>{styles}</style>
-      <nav><Link href="/" className="nav-logo">landing<span>site</span>.nl</Link></nav>
-
-      <div className="gen-wrap">
-        {status === 'completed' ? (
-          <>
-            <div className="gen-icon">✅</div>
-            <h1 className="gen-title">Jouw pagina is live!</h1>
-            <p className="gen-sub">Je ontvangt ook een e-mail met de link en DNS-instructies voor je eigen domein.</p>
-            {netlifyUrl && (
-              <div className="result-box">
-                <p style={{ fontSize: '0.75rem', textTransform: 'uppercase', letterSpacing: '0.08em', color: 'var(--muted)', marginBottom: '0.5rem' }}>Jouw preview URL</p>
-                <p className="result-url">{netlifyUrl}</p>
-                <a href={netlifyUrl} target="_blank" rel="noopener noreferrer" className="result-btn">
-                  Bekijk pagina →
-                </a>
-              </div>
-            )}
-          </>
-        ) : status === 'failed' ? (
-          <>
-            <div className="gen-icon">❌</div>
-            <h1 className="gen-title">Er ging iets mis</h1>
-            <p className="gen-sub">Geen zorgen — we hebben dit geregistreerd. Stuur een mail naar <a href="mailto:info@landingsite.nl" style={{ color: 'var(--accent)' }}>info@landingsite.nl</a> en we lossen het snel op.</p>
-          </>
-        ) : (
-          <>
-            <div className="gen-icon">🤖</div>
-            <h1 className="gen-title">Claude is aan het werk...</h1>
-            <p className="gen-sub">Je landingspagina wordt nu automatisch gegenereerd. Dit duurt maximaal 1-2 minuten.</p>
-            <ul className="gen-steps">
-              {steps.map((step, i) => (
-                <li key={i} className={step.done ? 'done' : step.active ? 'active' : ''}>
-                  <span>{step.done ? '✓' : step.active ? '⏳' : '○'}</span>
-                  {step.label}
-                </li>
-              ))}
-            </ul>
-          </>
-        )}
-      </div>
-    </>
-  )
+export default function GeneratingPage(){
+  const {id}=useParams<{id:string}>();const[status,setStatus]=useState<Status>('generating');const[url,setUrl]=useState<string|null>(null);const[message,setMessage]=useState('')
+  useEffect(()=>{const token=new URLSearchParams(window.location.search).get('token');if(!token){setStatus('failed');setMessage('De beveiligde statuslink ontbreekt. Open de link opnieuw vanuit je intake.');return}let stopped=false;let timeout:number
+    async function poll(){if(stopped)return;try{const response=await fetch(`/api/generated?order_id=${encodeURIComponent(id)}&token=${encodeURIComponent(token!)}`,{cache:'no-store'});const data=await response.json();if(!response.ok)throw new Error(data.error||'Status ophalen mislukt.');setStatus(data.status);setUrl(data.netlify_url);setMessage(data.message||'');if(data.status==='generating')timeout=window.setTimeout(poll,document.hidden?12000:4000)}catch(error){setMessage(error instanceof Error?error.message:'Status ophalen mislukt.');timeout=window.setTimeout(poll,10000)}}poll();return()=>{stopped=true;window.clearTimeout(timeout)}},[id])
+  const steps=['Betaling bevestigd','Briefing veilig ontvangen','Copy en ontwerp opbouwen','Pagina publiceren','Oplevering versturen']
+  return <><style>{css}</style><main className="status-shell"><Link href="/" className="status-logo">landing<span>site</span>.nl</Link><div className="status-card">{status==='completed'?<><div className="orb"/><h1>Je eerste versie staat live.</h1><p>Bekijk de pagina op desktop én mobiel. Je ontvangt dezelfde link ook per e-mail.</p>{url&&<div className="result"><strong>Jouw beveiligde oplevering is afgerond</strong><p className="result-url">{url}</p><a className="button" href={url} target="_blank" rel="noopener noreferrer">Bekijk landingspagina</a></div>}</>:status==='failed'?<><div className="orb error-orb"/><h1>Dit vraagt onze aandacht.</h1><p>{message||'De generatie is veilig gestopt; er is niets dubbel gepubliceerd of afgeschreven.'} Mail <a className="support" href="mailto:info@landingsite.nl">info@landingsite.nl</a> en vermeld je betaalreferentie.</p></>:<><div className="orb"/><h1>We bouwen je pagina.</h1><p>Je workflow kan veilig hervatten als een externe dienst even hapert. Je mag dit venster sluiten; de oplevering gaat door.</p><div className="progress">{steps.map((step,index)=><div className={index<2?'done':index===2?'active':''} key={step}><span>{index<2?'✓':index===2?'●':'○'}</span>{step}</div>)}</div>{message&&<p>{message}</p>}</>}</div></main></>
 }

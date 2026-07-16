@@ -1,55 +1,33 @@
 import { escapeHtml } from './html'
 import { getResend } from './resend'
 
-export async function stuurBevEstigingEmail(opts: {
+export async function sendDeliveryEmail(opts: {
   email: string
   bedrijfsnaam: string
   pakket: string
   netlifyUrl: string
+  idempotencyKey: string
 }) {
-  const { email, bedrijfsnaam, pakket, netlifyUrl } = opts
-  const safeBedrijfsnaam = escapeHtml(bedrijfsnaam)
-  const safePakket = escapeHtml(pakket)
-  const safeNetlifyUrl = escapeHtml(netlifyUrl)
+  const company = escapeHtml(opts.bedrijfsnaam)
+  const url = escapeHtml(opts.netlifyUrl)
+  const host = escapeHtml(new URL(opts.netlifyUrl).hostname)
 
   await getResend().emails.send({
-    from: 'Landingsite.nl <noreply@landingsite.nl>',
-    to: email,
-    subject: `✅ Jouw landingspagina is klaar — ${safeBedrijfsnaam}`,
-    html: `
-<!DOCTYPE html>
-<html lang="nl">
-<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"></head>
-<body style="font-family: 'Courier New', monospace; background: #f5f2eb; color: #0d0d0d; padding: 2rem; max-width: 600px; margin: 0 auto;">
-  <h1 style="font-size: 1.8rem; margin-bottom: 0.5rem;">🎉 Jouw pagina is live!</h1>
-  <p style="color: #6b6458; margin-bottom: 2rem;">Bedankt voor je bestelling bij Landingsite.nl</p>
-
-  <div style="background: #ece8df; border: 1px solid #d4cec3; padding: 1.5rem; margin-bottom: 1.5rem;">
-  <p><strong>Bedrijf:</strong> ${safeBedrijfsnaam}</p>
-  <p><strong>Pakket:</strong> ${safePakket}</p>
-  <p style="margin-top: 1rem;"><strong>Jouw preview URL:</strong></p>
-    <a href="${safeNetlifyUrl}" style="color: #c8440a; word-break: break-all;">${safeNetlifyUrl}</a>
-  </div>
-
-  <h2 style="font-size: 1.2rem; margin-bottom: 1rem;">Eigen domein koppelen</h2>
-  <p>Wil je de pagina op jouw eigen domein hosten? Voeg deze DNS-record toe bij jouw domeinbeheerder:</p>
-
-  <div style="background: #0d0d0d; color: #f5f2eb; padding: 1rem; font-family: monospace; margin: 1rem 0;">
-    <p>Type: CNAME</p>
-    <p>Naam: www (of @ voor root)</p>
-    <p>Waarde: ${safeNetlifyUrl.replace('https://', '')}</p>
-    <p>TTL: 3600</p>
-  </div>
-
-  <p style="color: #6b6458; font-size: 0.85rem; margin-top: 1rem;">
-    Na het instellen van de DNS-record duurt het tot 24 uur voordat het domein actief is.
-    Heb je vragen? Stuur een mail naar <a href="mailto:info@landingsite.nl" style="color: #c8440a;">info@landingsite.nl</a>
-  </p>
-
-  <hr style="border: none; border-top: 1px solid #d4cec3; margin: 2rem 0;">
-  <p style="color: #6b6458; font-size: 0.75rem;">© 2026 Landingsite.nl</p>
-</body>
-</html>
-    `,
-  })
+    from: process.env.RESEND_FROM ?? 'Landingsite.nl <noreply@landingsite.nl>',
+    to: opts.email,
+    subject: `Je landingspagina voor ${opts.bedrijfsnaam} staat klaar`,
+    html: `<div style="font-family:Arial,sans-serif;line-height:1.65;color:#0b2019;background:#f3f8f5;padding:32px">
+      <div style="max-width:620px;margin:auto;background:#fff;border:1px solid #dce7e2;border-radius:18px;padding:32px">
+        <p style="color:#16845c;font-size:13px;font-weight:800;letter-spacing:.08em;text-transform:uppercase">Klaar voor controle</p>
+        <h1 style="font-size:28px;line-height:1.2;margin:10px 0 16px">Je landingspagina staat live</h1>
+        <p>Hoi, de eerste versie voor <strong>${company}</strong> is gegenereerd en gepubliceerd. Bekijk hem rustig op:</p>
+        <p style="margin:26px 0"><a href="${url}" style="display:inline-block;background:#0b3d2e;color:#fff;padding:13px 20px;border-radius:999px;text-decoration:none;font-weight:700">Bekijk jouw pagina</a></p>
+        <p style="font-size:13px;color:#61716b;word-break:break-all">${url}</p>
+        <h2 style="font-size:19px;margin-top:30px">Eigen domein</h2>
+        <p>Een eigen domein vereist eerst dat het domein in Netlify wordt toegevoegd. Daarna verschillen de juiste DNS-records per provider en tussen een hoofddomein en <em>www</em>. Stuur ons je domeinnaam; we helpen je met de exacte koppeling naar <strong>${host}</strong>.</p>
+        <p>Hosting van €15 per maand wordt pas na jouw akkoord geactiveerd en is maandelijks opzegbaar.</p>
+        <hr style="border:0;border-top:1px solid #dce7e2;margin:30px 0"><p style="font-size:13px;color:#61716b">Vragen of wijzigingen? Mail naar <a href="mailto:info@landingsite.nl">info@landingsite.nl</a>.</p>
+      </div>
+    </div>`,
+  }, { idempotencyKey: opts.idempotencyKey })
 }

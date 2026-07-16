@@ -1,78 +1,18 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
+import { BUSINESS, BUSINESS_ADDRESS } from '@/lib/business'
 
-export const metadata: Metadata = {
-  title: 'Privacybeleid',
-  description: 'Privacybeleid van Landingsite.nl.',
-  robots: {
-    index: true,
-    follow: true,
-  },
-}
+export const metadata:Metadata={title:'Privacybeleid',description:'Hoe Landingsite.nl persoonsgegevens verwerkt en beveiligt.',alternates:{canonical:'/privacybeleid'}}
 
-export default function PrivacybeleidPage() {
-  return (
-    <main className="legal-page">
-      <div className="container legal-shell">
-        <Link href="/" className="legal-back">
-          Terug naar Landingsite.nl
-        </Link>
-        <h1>Privacybeleid</h1>
-        <p className="updated">Laatst bijgewerkt: 9 mei 2026</p>
-
-        <div className="legal-content">
-          <section>
-            <h2>1. Welke gegevens we verwerken</h2>
-            <p>
-              We verwerken gegevens die je zelf invult, zoals naam, e-mailadres, bedrijfsinformatie,
-              pakketkeuze, intake-antwoorden en berichten via het contactformulier.
-            </p>
-          </section>
-
-          <section>
-            <h2>2. Waarom we gegevens gebruiken</h2>
-            <ul>
-              <li>Om je bestelling en betaling te verwerken.</li>
-              <li>Om je landingspagina te genereren, leveren en ondersteunen.</li>
-              <li>Om contact met je op te nemen over je aanvraag of bestelling.</li>
-              <li>Om wettelijke administratie te kunnen voeren.</li>
-            </ul>
-          </section>
-
-          <section>
-            <h2>3. Betalingen en leveranciers</h2>
-            <p>
-              Betalingen lopen via Stripe. Voor hosting, e-mail en pagina-generatie kunnen we
-              betrouwbare externe diensten gebruiken. Zij verwerken gegevens alleen voor zover dat
-              nodig is voor de dienst.
-            </p>
-          </section>
-
-          <section>
-            <h2>4. Bewaartermijn</h2>
-            <p>
-              We bewaren gegevens niet langer dan nodig is voor levering, support, administratie en
-              wettelijke verplichtingen.
-            </p>
-          </section>
-
-          <section>
-            <h2>5. Jouw rechten</h2>
-            <p>
-              Je kunt vragen om inzage, correctie of verwijdering van je persoonsgegevens. Stuur je
-              verzoek naar <a href="mailto:info@landingsite.nl">info@landingsite.nl</a>.
-            </p>
-          </section>
-
-          <section>
-            <h2>6. Beveiliging</h2>
-            <p>
-              We nemen passende technische en organisatorische maatregelen om persoonsgegevens te
-              beschermen tegen ongeoorloofde toegang, verlies of misbruik.
-            </p>
-          </section>
-        </div>
-      </div>
-    </main>
-  )
-}
+export default function PrivacyPage(){return <main className="legal-page"><div className="container legal-shell"><Link href="/" className="legal-back">← Terug naar Landingsite.nl</Link><h1>Privacybeleid</h1><p className="updated">Laatst bijgewerkt: 16 juli 2026</p><div className="legal-content">
+  <section><h2>1. Wie is verantwoordelijk?</h2><p>{BUSINESS.legalName}, handelend via {BUSINESS.brandName}, is verwerkingsverantwoordelijke voor de persoonsgegevens die via deze website en dienstverlening worden verzameld. Vestigingsadres: {BUSINESS_ADDRESS}, {BUSINESS.address.country}. KvK-nummer: {BUSINESS.chamberOfCommerceNumber}. Btw-identificatienummer: {BUSINESS.vatId}. Voor privacyvragen of verzoeken kun je mailen naar <a href={`mailto:${BUSINESS.email}`}>{BUSINESS.email}</a>.</p></section>
+  <section><h2>2. Welke gegevens verwerken we?</h2><p>Afhankelijk van je gebruik verwerken we naam, bedrijfsnaam, KvK-nummer, contactgegevens, factuurgegevens, gekozen pakket, Stripe-referenties, intake-antwoorden, geüploade afbeeldingen, correspondentie en technische beveiligingsgegevens zoals een gehashte versie van het IP-adres. Via opgeleverde klantpagina’s verwerken we ook gegevens die bezoekers in een leadformulier invullen.</p></section>
+  <section><h2>3. Doelen en grondslagen</h2><ul><li><strong>Overeenkomst:</strong> betaling verwerken, de intake aanbieden, je pagina genereren, publiceren, corrigeren en ondersteunen.</li><li><strong>Gerechtvaardigd belang:</strong> misbruik voorkomen, fouten onderzoeken en de dienst beveiligen en verbeteren.</li><li><strong>Wettelijke plicht:</strong> financiële administratie en fiscale bewaarplichten.</li><li><strong>Toestemming:</strong> alleen waar we daar afzonderlijk om vragen; toestemming kun je altijd intrekken.</li></ul></section>
+  <section><h2>4. AI en aangeleverde inhoud</h2><p>Intakegegevens worden gebruikt om conceptcopy te laten maken met Anthropic. De AI levert uitsluitend gestructureerde tekst; de uiteindelijke code wordt door onze eigen gecontroleerde template opgebouwd. Deel geen bijzondere persoonsgegevens of informatie die niet nodig is voor je pagina. Aangeleverde instructies worden niet als systeemopdrachten uitgevoerd.</p></section>
+  <section><h2>5. Dienstverleners</h2><p>We gebruiken Stripe voor betalingen, Supabase voor database en klantassets, Anthropic voor ondersteunde tekstgeneratie, Netlify voor publicatie, Resend voor e-mail en Vercel voor de applicatie en herstartbare workflows. Deze partijen verwerken alleen wat voor hun taak nodig is. Waar verwerking buiten de Europese Economische Ruimte plaatsvindt, gebruiken we passende contractuele of wettelijke waarborgen.</p></section>
+  <section><h2>6. Bewaartermijnen</h2><p>Financiële administratie bewaren we in beginsel zeven jaar. Order-, intake- en oplevergegevens bewaren we zolang dat voor levering en support nodig is en normaal maximaal twee jaar na afronding, tenzij een geschil of wettelijke plicht langer bewaren vereist. Contactaanvragen en leads bewaren we normaal maximaal twaalf maanden na de laatste inhoudelijke behandeling. Beveiligingslogs bewaren we zo kort mogelijk.</p></section>
+  <section><h2>7. Beveiliging</h2><p>We gebruiken versleutelde verbindingen, afgeschermde serviceaccounts, beveiligde admincookies, invoervalidatie, beperkte verzoekfrequenties en getekende statuslinks. Betaalkaartgegevens komen niet op onze servers terecht maar worden door Stripe verwerkt. Geen systeem is volledig risicoloos; meld een vermoeden van misbruik direct via ons e-mailadres.</p></section>
+  <section><h2>8. Cookies en tracking</h2><p>De publieke website gebruikt momenteel geen advertentie- of analysetrackers. Voor het afgeschermde dashboard wordt na inloggen een strikt noodzakelijke, beveiligde sessiecookie geplaatst. Stripe kan tijdens de betaalflow eigen strikt noodzakelijke cookies gebruiken.</p></section>
+  <section><h2>9. Jouw rechten</h2><p>Je kunt vragen om inzage, correctie, verwijdering, beperking, overdraagbaarheid of bezwaar. We kunnen om identificatie vragen voordat we een verzoek uitvoeren. Je kunt ook een klacht indienen bij de <a href="https://autoriteitpersoonsgegevens.nl/" target="_blank" rel="noopener noreferrer">Autoriteit Persoonsgegevens</a>.</p></section>
+  <section><h2>10. Wijzigingen</h2><p>Bij wezenlijke wijzigingen passen we de datum bovenaan aan en informeren we bestaande klanten wanneer dat redelijkerwijs nodig is.</p></section>
+</div></div></main>}

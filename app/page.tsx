@@ -1,153 +1,22 @@
-import {
-  BenefitsGrid,
-  ComparisonSection,
-  FAQSection,
-  FinalCTA,
-  Footer,
-  Header,
-  Hero,
-  PortfolioSection,
-  PricingSection,
-  ProblemSection,
-  ProcessTimeline,
-  ShowcaseSection,
-} from '@/components/home-redesign'
+import { BenefitsGrid, ComparisonSection, FAQSection, FinalCTA, Footer, Header, Hero, PortfolioSection, PricingSection, ProblemSection, ProcessTimeline, ShowcaseSection } from '@/components/home-redesign'
+import { BUSINESS } from '@/lib/business'
 
-const faqs = [
-  {
-    q: 'Hoe snel is mijn pagina live?',
-    a: 'Na betaling en intake leveren we je eerste pagina binnen 48 uur op. Bij complete input lukt dat vaak sneller.',
-  },
-  {
-    q: 'Wat lever ik zelf aan?',
-    a: 'Je vult een korte intake in met je aanbod, doelgroep, sterke punten en contactgegevens. Beeldmateriaal is handig, maar niet verplicht.',
-  },
-  {
-    q: 'Kan ik achteraf nog iets aanpassen?',
-    a: 'Ja. Pro bevat 1 correctieronde en Premium bevat 3 correctierondes. Starter is bedoeld voor ondernemers die direct live willen met minimale afstemming.',
-  },
-  {
-    q: 'Wordt de pagina ook gehost?',
-    a: 'Ja. Hosting kost €15 per maand. We zetten je pagina live en geven je duidelijke DNS-instructies voor je eigen domein.',
-  },
-  {
-    q: 'Waarom geen complete website?',
-    a: 'Een campagne heeft focus nodig. Een landingspagina stuurt bezoekers naar één actie en haalt alle afleiding weg die op een normale website blijft hangen.',
-  },
-  {
-    q: 'Wat als ik niet tevreden ben?',
-    a: 'Als de pagina niet voldoet aan de afgesproken specificaties, lossen we dat op binnen je correctieronde of krijg je je geld terug.',
-  },
+const faqs=[
+  {q:'Wanneer start de termijn van 48 uur?',a:'Zodra je betaling is bevestigd én je intake compleet is. Binnen 48 uur ontvang je de eerste live preview. Correcties en een eventuele domeinkoppeling kunnen daarna nog extra tijd vragen.'},
+  {q:'Wat moet ik zelf aanleveren?',a:'Minimaal je aanbod, doelgroep, drie sterke punten en contactgegevens. Je kunt in de intake ook je logo, hoofdbeeld, echte reviews, FAQ en social links uploaden. Hoe concreter je input, hoe sterker het resultaat.'},
+  {q:'Is het contactformulier echt werkend?',a:'Ja. Aanvragen worden veilig opgeslagen en naar het door jou gekozen e-mailadres gestuurd. Het formulier gebruikt spambeperking en geen mailto-link.'},
+  {q:'Kan ik wijzigingen laten doen?',a:'Starter is een snelle eerste versie zonder correctieronde. Pro bevat één correctieronde; Premium bevat drie correctierondes. Een ronde bundelt wijzigingen binnen de afgesproken pagina en is geen volledig nieuw concept.'},
+  {q:'Hoe werkt hosting van €15 per maand?',a:'De bouwprijs in de checkout is eenmalig. Managed hosting wordt pas na oplevering en jouw aparte akkoord geactiveerd, kost €15 per maand exclusief btw en is maandelijks opzegbaar.'},
+  {q:'Kunnen jullie mijn eigen domein koppelen?',a:'Ja. We voegen het domein eerst aan de hosting toe en geven daarna de juiste DNS-instellingen voor jouw provider. Een hoofddomein en www-adres vragen vaak verschillende records; daarom sturen we geen generiek record dat mogelijk niet klopt.'},
+  {q:'Garandeert een landingspagina meer leads?',a:'Nee. We optimaliseren structuur, duidelijkheid, techniek en formulieren, maar resultaten hangen ook af van je aanbod, verkeer, markt en opvolging. We beloven daarom geen specifieke omzet of conversieratio.'},
 ]
 
-const packages = [
-  {
-    id: 'starter' as const,
-    name: 'Starter',
-    price: '€299',
-    tagline: 'Voor snel valideren',
-    tier: 'Compact',
-    label: 'Kies Starter',
-    features: [
-      '1 tot 3 secties',
-      'Jij levert tekst en beeld aan',
-      'Mobiel geoptimaliseerd design',
-      'Contactformulier inbegrepen',
-      'Hosting €15 per maand',
-    ],
-  },
-  {
-    id: 'pro' as const,
-    name: 'Pro',
-    price: '€499',
-    tagline: 'Voor leads en campagnes',
-    tier: 'Launch',
-    label: 'Kies Pro',
-    highlighted: true,
-    features: [
-      'Tot 6 uitgebreide secties',
-      'FAQ en reviewsectie',
-      'Koppeling met social media',
-      'Werkgebied en doelgroepfocus',
-      'Hosting €15 per maand',
-      '1 correctieronde inbegrepen',
-    ],
-  },
-  {
-    id: 'premium' as const,
-    name: 'Premium',
-    price: '€899',
-    tagline: 'Voor volledig ontzorgd',
-    tier: 'Studio',
-    label: 'Kies Premium',
-    features: [
-      'Onbeperkt secties',
-      'AI schrijft alle teksten voor je',
-      'Aangepast design en sfeer',
-      'Alle tools en pixels voorbereiden',
-      'Hosting €15 per maand',
-      '3 correctierondes inbegrepen',
-    ],
-  },
+const packages=[
+  {id:'starter' as const,name:'Starter',price:'€299',fit:'Voor een snelle validatie',tagline:'Een compacte, professionele pagina op basis van jouw aangeleverde copy.',label:'Kies Starter',features:['Eén gefocuste landingspagina','Hero, voordelen, werkwijze en CTA','Werkend leadformulier','Mobiel en technisch geoptimaliseerd','Live preview binnen 48 uur']},
+  {id:'pro' as const,name:'Pro',price:'€499',fit:'Voor campagnes en leadgroei',tagline:'Meer inhoud, bewijs en doelgroepfocus voor een volwassen campagne.',label:'Kies Pro',highlighted:true,features:['Alles uit Starter','Doelgroep- en werkgebiedfocus','Echte reviews en FAQ-sectie','Social links geïntegreerd','1 gebundelde correctieronde']},
+  {id:'premium' as const,name:'Premium',price:'€899',fit:'Voor volledige ontzorging',tagline:'Strategische positionering en complete copy op basis van je briefing.',label:'Kies Premium',features:['Alles uit Pro','Volledige conversiecopy geschreven','Eigen visuele sfeer en positionering','Uitgebreide inhoudelijke uitwerking','3 gebundelde correctierondes']},
 ]
 
-const jsonLd = {
-  '@context': 'https://schema.org',
-  '@graph': [
-    {
-      '@type': 'Organization',
-      '@id': 'https://landingsite.nl/#organization',
-      name: 'Landingsite.nl',
-      url: 'https://landingsite.nl',
-      description:
-        'Professionele landingspagina’s laten maken voor Nederlandse ondernemers. Binnen 48 uur live, vaste prijs en hosting voor €15 per maand.',
-      areaServed: 'NL',
-      priceRange: '€299 - €899',
-    },
-    {
-      '@type': 'Service',
-      name: 'Landingspagina laten maken',
-      provider: { '@id': 'https://landingsite.nl/#organization' },
-      description: 'Professionele, converterende landingspagina binnen 48 uur online.',
-      offers: packages.map((pakket) => ({
-        '@type': 'Offer',
-        name: pakket.name,
-        price: pakket.price.replace('€', ''),
-        priceCurrency: 'EUR',
-      })),
-    },
-    {
-      '@type': 'FAQPage',
-      mainEntity: faqs.map((faq) => ({
-        '@type': 'Question',
-        name: faq.q,
-        acceptedAnswer: { '@type': 'Answer', text: faq.a },
-      })),
-    },
-  ],
-}
+const jsonLd={'@context':'https://schema.org','@graph':[{'@type':'ProfessionalService','@id':'https://landingsite.nl/#organization',name:BUSINESS.brandName,legalName:BUSINESS.legalName,url:BUSINESS.website,email:BUSINESS.email,taxID:BUSINESS.chamberOfCommerceNumber,vatID:BUSINESS.vatId,address:{'@type':'PostalAddress',streetAddress:BUSINESS.address.street,postalCode:BUSINESS.address.postalCode,addressLocality:BUSINESS.address.city,addressCountry:BUSINESS.address.countryCode},description:'Professionele landingspagina’s voor Nederlandse ondernemers.',areaServed:'NL'},{'@type':'Service',name:'Landingspagina laten maken',provider:{'@id':'https://landingsite.nl/#organization'},areaServed:'NL',offers:packages.map(item=>({'@type':'Offer',name:item.name,price:item.price.replace('€',''),priceCurrency:'EUR',availability:'https://schema.org/InStock'}))},{'@type':'FAQPage',mainEntity:faqs.map(item=>({'@type':'Question',name:item.q,acceptedAnswer:{'@type':'Answer',text:item.a}}))}]}
 
-export default function Home() {
-  return (
-    <>
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
-      />
-      <Header />
-      <main>
-        <Hero />
-        <ProblemSection />
-        <ProcessTimeline />
-        <ShowcaseSection />
-        <BenefitsGrid />
-        <PortfolioSection />
-        <PricingSection packages={packages} />
-        <ComparisonSection />
-        <FAQSection faqs={faqs} />
-        <FinalCTA />
-      </main>
-      <Footer />
-    </>
-  )
-}
+export default function Home(){return <><script type="application/ld+json" dangerouslySetInnerHTML={{__html:JSON.stringify(jsonLd).replace(/</g,'\\u003c')}}/><Header/><main><Hero/><ProblemSection/><ProcessTimeline/><ShowcaseSection/><BenefitsGrid/><PortfolioSection/><PricingSection packages={packages}/><ComparisonSection/><FAQSection faqs={faqs}/><FinalCTA/></main><Footer/></>}

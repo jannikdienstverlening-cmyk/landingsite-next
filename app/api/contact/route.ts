@@ -1,54 +1,30 @@
+import { randomUUID } from 'node:crypto'
 import { NextRequest } from 'next/server'
 import { escapeHtml } from '@/lib/html'
+import { clientIp, checkRateLimit, rateLimitResponse } from '@/lib/rate-limit'
 import { getResend } from '@/lib/resend'
+import { contactSchema, validationMessage } from '@/lib/validation'
 
-export async function POST(req: NextRequest) {
-  const { naam, email, bericht } = await req.json()
-
-  if (!naam || !email || !bericht) {
-    return Response.json({ error: 'Vul alle velden in.' }, { status: 400 })
-  }
-
-  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
-  if (!emailRegex.test(email)) {
-    return Response.json({ error: 'Ongeldig e-mailadres.' }, { status: 400 })
-  }
+export async function POST(request: NextRequest) {
+  const limit = checkRateLimit(`contact:${clientIp(request)}`, 5, 15 * 60_000)
+  if (!limit.allowed) return rateLimitResponse(limit.retryAfter)
+  let body: unknown
+  try { body = await request.json() } catch { body = null }
+  const parsed = contactSchema.safeParse(body)
+  if (!parsed.success) return Response.json({ error: validationMessage(parsed.error) }, { status: 400 })
+  if (parsed.data.website) return Response.json({ ok: true })
 
   try {
-    const safeNaam = escapeHtml(naam)
-    const safeEmail = escapeHtml(email)
-    const safeBericht = escapeHtml(bericht)
-
     await getResend().emails.send({
-      from: 'Landingsite.nl <noreply@landingsite.nl>',
-      to: 'info@landingsite.nl',
-      replyTo: email,
-      subject: `Nieuw contactbericht van ${naam}`,
-      html: `
-<!DOCTYPE html>
-<html lang="nl">
-<head><meta charset="UTF-8"></head>
-<body style="font-family: 'Courier New', monospace; background: #f5f2eb; color: #0d0d0d; padding: 2rem; max-width: 600px; margin: 0 auto;">
-  <h2 style="font-size: 1.4rem; margin-bottom: 1.5rem; border-bottom: 1px solid #d4cec3; padding-bottom: 1rem;">
-    Nieuw contactbericht via Landingsite.nl
-  </h2>
-  <div style="background: #ece8df; border: 1px solid #d4cec3; padding: 1.5rem; margin-bottom: 1.5rem;">
-    <p style="margin-bottom: 0.5rem;"><strong>Naam:</strong> ${safeNaam}</p>
-    <p style="margin-bottom: 0.5rem;"><strong>E-mail:</strong> <a href="mailto:${safeEmail}" style="color: #c8440a;">${safeEmail}</a></p>
-  </div>
-  <div style="background: #fff; border: 1px solid #d4cec3; padding: 1.5rem;">
-    <p style="margin-bottom: 0.5rem;"><strong>Bericht:</strong></p>
-    <p style="white-space: pre-wrap; color: #4a4540;">${safeBericht}</p>
-  </div>
-  <hr style="border: none; border-top: 1px solid #d4cec3; margin: 2rem 0;">
-  <p style="color: #6b6458; font-size: 0.75rem;">© 2026 Landingsite.nl — Dit bericht is verzonden via het contactformulier.</p>
-</body>
-</html>
-      `,
-    })
-
+      from: process.env.RESEND_FROM ?? 'Landingsite.nl <noreply@landingsite.nl>',
+      to: process.env.CONTACT_EMAIL ?? 'info@landingsite.nl',
+      replyTo: parsed.data.email,
+      subject: `Nieuwe aanvraag van ${parsed.data.naam}`,
+      html: `<div style="font-family:Arial,sans-serif;line-height:1.6;color:#0b2019;max-width:620px;margin:auto;padding:32px"><p style="color:#16845c;font-weight:800">Nieuwe website-aanvraag</p><h1 style="font-size:26px">${escapeHtml(parsed.data.naam)}</h1><p><strong>E-mail:</strong> ${escapeHtml(parsed.data.email)}${parsed.data.bedrijf ? `<br><strong>Bedrijf:</strong> ${escapeHtml(parsed.data.bedrijf)}` : ''}</p><p style="white-space:pre-wrap">${escapeHtml(parsed.data.bericht)}</p></div>`,
+    }, { idempotencyKey: `contact-${randomUUID()}` })
     return Response.json({ ok: true })
-  } catch {
-    return Response.json({ error: 'Verzenden mislukt. Probeer het later opnieuw.' }, { status: 500 })
+  } catch (error) {
+    console.error('Contactbericht verzenden mislukt', error)
+    return Response.json({ error: 'Verzenden mislukt. Mail eventueel direct naar info@landingsite.nl.' }, { status: 500 })
   }
 }

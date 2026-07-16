@@ -1,85 +1,21 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
+import { BUSINESS, BUSINESS_ADDRESS } from '@/lib/business'
 
-export const metadata: Metadata = {
-  title: 'Algemene voorwaarden',
-  description: 'Algemene voorwaarden van Landingsite.nl.',
-  robots: {
-    index: true,
-    follow: true,
-  },
-}
+export const metadata:Metadata={title:'Algemene voorwaarden',description:'Voorwaarden voor de zakelijke dienstverlening van Landingsite.nl.',alternates:{canonical:'/algemene-voorwaarden'}}
 
-export default function AlgemeneVoorwaardenPage() {
-  return (
-    <main className="legal-page">
-      <div className="container legal-shell">
-        <Link href="/" className="legal-back">
-          Terug naar Landingsite.nl
-        </Link>
-        <h1>Algemene voorwaarden</h1>
-        <p className="updated">Laatst bijgewerkt: 11 mei 2026</p>
-
-        <div className="legal-content">
-          <section>
-            <h2>1. Dienstverlening</h2>
-            <p>
-              Landingsite.nl levert landingspagina’s voor ondernemers en bedrijven op basis van
-              het gekozen pakket en de informatie die de klant via de intake aanlevert.
-            </p>
-          </section>
-
-          <section>
-            <h2>2. Oplevering</h2>
-            <p>
-              De genoemde oplevertijd start zodra betaling en intake compleet zijn. Wanneer
-              aangeleverde informatie ontbreekt of onduidelijk is, kan de oplevering later plaatsvinden.
-            </p>
-          </section>
-
-          <section>
-            <h2>3. Correcties</h2>
-            <p>
-              Correctierondes zijn afhankelijk van het gekozen pakket. Correcties gaan over het
-              aanpassen van de geleverde pagina binnen de afgesproken scope, niet over een volledig
-              nieuw concept of andere dienst.
-            </p>
-          </section>
-
-          <section>
-            <h2>4. Betaling</h2>
-            <p>
-              Betaling vindt vooraf plaats via de aangeboden betaalmethoden. Na succesvolle betaling
-              ontvangt de klant toegang tot de intake.
-            </p>
-          </section>
-
-          <section>
-            <h2>5. Hosting en domein</h2>
-            <p>
-              Hosting kost €15 per maand, tenzij anders schriftelijk afgesproken. Landingsite.nl
-              levert een live pagina en instructies voor domeinkoppeling. De klant is
-              verantwoordelijk voor toegang tot de eigen domeinbeheerder en correcte DNS-instellingen.
-            </p>
-          </section>
-
-          <section>
-            <h2>6. Aansprakelijkheid</h2>
-            <p>
-              Landingsite.nl spant zich in voor een professionele oplevering, maar geeft geen garantie
-              op specifieke omzet, leads of advertentieresultaten.
-            </p>
-          </section>
-
-          <section>
-            <h2>7. Contact</h2>
-            <p>
-              Vragen over deze voorwaarden kun je sturen naar{' '}
-              <a href="mailto:info@landingsite.nl">info@landingsite.nl</a>.
-            </p>
-          </section>
-        </div>
-      </div>
-    </main>
-  )
-}
+export default function TermsPage(){return <main className="legal-page"><div className="container legal-shell"><Link href="/" className="legal-back">← Terug naar Landingsite.nl</Link><h1>Algemene voorwaarden</h1><p className="updated">Laatst bijgewerkt: 16 juli 2026 · uitsluitend zakelijke dienstverlening</p><div className="legal-content">
+  <section><h2>1. Onderneming en toepassing</h2><p>{BUSINESS.brandName} wordt aangeboden door {BUSINESS.legalName}, gevestigd aan {BUSINESS_ADDRESS}, {BUSINESS.address.country}. KvK-nummer: {BUSINESS.chamberOfCommerceNumber}. Btw-identificatienummer: {BUSINESS.vatId}. Contact: <a href={`mailto:${BUSINESS.email}`}>{BUSINESS.email}</a>. Deze voorwaarden gelden voor onze aanbiedingen en overeenkomsten voor het ontwerpen, genereren, publiceren, hosten en ondersteunen van landingspagina’s. De dienst is uitsluitend bestemd voor ondernemers die handelen in de uitoefening van beroep of bedrijf.</p></section>
+  <section><h2>2. Aanbod en overeenkomst</h2><p>De pakketpagina beschrijft de actuele scope en eenmalige bouwprijs, exclusief btw. De overeenkomst komt tot stand wanneer de zakelijke klant de checkout afrondt en de betaling wordt bevestigd. Kennelijke fouten in prijzen of omschrijvingen binden ons niet.</p></section>
+  <section><h2>3. Oplevertermijn</h2><p>De termijn van 48 uur betreft de eerste live preview en start pas wanneer betaling én intake volledig zijn ontvangen. Vertraging door ontbrekende informatie, onbereikbaarheid van de klant, overmacht of storing bij een externe dienst verlengt de termijn redelijkerwijs. Onze workflow kan stappen automatisch hervatten zonder dubbele betaling of publicatie.</p></section>
+  <section><h2>4. Verantwoordelijkheid voor input</h2><p>De klant staat in voor de juistheid en rechtmatigheid van teksten, logo’s, foto’s, reviews, persoonsgegevens en andere input. De klant bevestigt daarvoor de nodige rechten en toestemmingen te hebben. Deel geen bijzondere persoonsgegevens of vertrouwelijke informatie die niet nodig is voor de opdracht.</p></section>
+  <section><h2>5. AI-ondersteuning</h2><p>We mogen AI gebruiken als hulpmiddel bij conceptcopy en structuur. AI-output wordt niet als uitvoerbare code gepubliceerd maar verwerkt in een gecontroleerde template. De klant blijft verantwoordelijk voor de feitelijke controle van aangeleverde en gegenereerde inhoud vóór actieve campagne-inzet.</p></section>
+  <section><h2>6. Correctierondes</h2><p>Starter bevat geen correctieronde, Pro één gebundelde correctieronde en Premium drie gebundelde correctierondes. Een ronde omvat één verzamelde lijst met wijzigingen binnen de afgesproken pagina. Een nieuwe positionering, extra campagne, nieuwe functionaliteit of volledig nieuw ontwerp valt buiten de ronde en kan apart worden aangeboden.</p></section>
+  <section><h2>7. Betaling en btw</h2><p>De bouwprijs wordt vooraf via Stripe betaald. Vermelde pakketprijzen zijn exclusief btw. Bij een terugboeking of mislukte betaling mogen we levering opschorten. Een abonnement voor hosting maakt geen onderdeel uit van de eenmalige checkout.</p></section>
+  <section><h2>8. Hosting en domein</h2><p>Managed hosting kost €15 per maand exclusief btw, wordt uitsluitend na afzonderlijk akkoord geactiveerd en is maandelijks opzegbaar. Voor een eigen domein heeft de klant toegang tot de domeinprovider nodig. We helpen met de juiste configuratie, maar zijn niet verantwoordelijk voor vertraging of fouten bij de registrar, DNS-provider of door de klant beheerde instellingen.</p></section>
+  <section><h2>9. Intellectuele eigendom</h2><p>Na volledige betaling mag de klant de specifiek opgeleverde pagina en copy voor het eigen bedrijf gebruiken. Rechten op onze generieke templates, systemen, workflows, bibliotheken en herbruikbare onderdelen blijven bij Landingsite.nl of de betreffende licentiegever. Open-source onderdelen blijven onder hun eigen licentie vallen.</p></section>
+  <section><h2>10. Beschikbaarheid en externe diensten</h2><p>We spannen ons in voor een professionele en bereikbare oplevering. De dienst is mede afhankelijk van Vercel, Stripe, Supabase, Anthropic, Netlify, Resend, internet- en DNS-providers. Tijdelijke storing of onderhoud bij deze partijen is geen tekortkoming als we redelijk handelen om de dienstverlening te herstellen.</p></section>
+  <section><h2>11. Resultaten en aansprakelijkheid</h2><p>We garanderen geen specifieke omzet, positie in zoekmachines, advertentieresultaten, leads of conversieratio. Voor zover wettelijk toegestaan is onze totale aansprakelijkheid beperkt tot het bedrag dat voor de betreffende opdracht is betaald. We zijn niet aansprakelijk voor indirecte schade, gemiste winst, gevolgschade of schade door onjuiste input, behalve bij opzet of bewuste roekeloosheid.</p></section>
+  <section><h2>12. Opschorting en beëindiging</h2><p>We mogen werkzaamheden opschorten bij misbruik, onrechtmatige inhoud, veiligheidsrisico’s of niet-betaling. Bij hostingopzegging eindigt de managed publicatie aan het einde van de betaalde maand. De klant blijft zelf verantwoordelijk voor tijdige migratie of archivering indien dat is afgesproken.</p></section>
+  <section><h2>13. Klachten en recht</h2><p>Meld een klacht zo snel mogelijk via <a href="mailto:info@landingsite.nl">info@landingsite.nl</a>, met orderreferentie en een concrete omschrijving. We proberen binnen tien werkdagen inhoudelijk te reageren. Nederlands recht is van toepassing; geschillen worden voorgelegd aan de bevoegde Nederlandse rechter, voor zover de wet dit toestaat.</p></section>
+</div></div></main>}
