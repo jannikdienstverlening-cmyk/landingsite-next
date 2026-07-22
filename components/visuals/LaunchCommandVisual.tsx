@@ -63,8 +63,8 @@ export function LaunchCommandVisual() {
               <i />
             </div>
             <div className="visual-card visual-metric-card">
-              <span>Focus score</span>
-              <strong>+38%</strong>
+              <span>Focusroute</span>
+              <strong>1 doel</strong>
             </div>
             <div className="visual-card visual-price-card">
               <span>Pricing</span>
