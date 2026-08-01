@@ -30,16 +30,21 @@ export function MobileMenu() {
 
 export function PricingButton({ pakket, label }: { pakket: 'starter' | 'pro' | 'premium'; label: string }) {
   const [loading, setLoading] = useState(false)
+  const [accepted, setAccepted] = useState(false)
   const [error, setError] = useState('')
 
   async function order() {
+    if (!accepted) {
+      setError('Accepteer eerst de zakelijke voorwaarden.')
+      return
+    }
     setLoading(true)
     setError('')
     try {
       const response = await fetch('/api/stripe/checkout', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ pakket }),
+        body: JSON.stringify({ pakket, requestId: crypto.randomUUID(), termsAccepted: true }),
       })
       const data = await response.json()
       if (!response.ok || !data.url) throw new Error(data.error || 'Checkout openen lukt nu niet.')
@@ -51,8 +56,12 @@ export function PricingButton({ pakket, label }: { pakket: 'starter' | 'pro' | '
   }
 
   return (
-    <div>
-      <button className="price-button" onClick={order} disabled={loading} type="button">
+    <div className="checkout-action">
+      <label className="terms-check">
+        <input type="checkbox" checked={accepted} onChange={(event) => setAccepted(event.target.checked)} />
+        <span>Ik bestel zakelijk, ga akkoord met de <a href="/algemene-voorwaarden" target="_blank">voorwaarden</a> en heb het <a href="/privacybeleid" target="_blank">privacybeleid</a> gelezen.</span>
+      </label>
+      <button className="price-button" onClick={order} disabled={loading || !accepted} type="button">
         {loading ? 'Veilige checkout openen...' : label}
         <span aria-hidden="true">↗</span>
       </button>

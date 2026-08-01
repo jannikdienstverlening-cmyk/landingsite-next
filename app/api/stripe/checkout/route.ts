@@ -1,14 +1,18 @@
 import { NextRequest } from 'next/server'
 import { clientIp, checkRateLimit, rateLimitResponse } from '@/lib/rate-limit'
-import { getStripe, PAKKETTEN } from '@/lib/stripe'
+import { invalidJsonResponse, readJsonBody } from '@/lib/request'
+import { rejectCrossOriginMutation } from '@/lib/security'
+import { getStripe, PAKKETTEN, SUBSCRIPTION_INTERVAL, TERMS_VERSION } from '@/lib/stripe'
 import { getSupabase } from '@/lib/supabase'
 import { checkoutSchema, validationMessage } from '@/lib/validation'
 
 export async function POST(request: NextRequest) {
+  const crossOrigin = rejectCrossOriginMutation(request)
+  if (crossOrigin) return crossOrigin
   const limit = checkRateLimit(`checkout:${clientIp(request)}`, 8, 15 * 60_000)
   if (!limit.allowed) return rateLimitResponse(limit.retryAfter)
   let body: unknown
-  try { body = await request.json() } catch { body = null }
+  try { body = await readJsonBody(request, 4_000) } catch (error) { return invalidJsonResponse(error) }
   const parsed = checkoutSchema.safeParse(body)
   if (!parsed.success) return Response.json({ error: validationMessage(parsed.error) }, { status: 400 })
 
@@ -18,24 +22,38 @@ export async function POST(request: NextRequest) {
 
   try {
     const session = await getStripe().checkout.sessions.create({
-      payment_method_types: ['card', 'ideal'],
       line_items: [{
         price_data: {
           currency: 'eur',
           product_data: {
             name: `Landingsite.nl ${info.naam}`,
-            description: 'Eenmalige bouwprijs voor een professionele landingspagina. Managed hosting is optioneel en wordt alleen na apart akkoord geactiveerd.',
+            description: 'Maandelijks websiteabonnement inclusief hosting, SSL, onderhoud, updates, backups en support volgens het gekozen pakket.',
           },
           unit_amount: info.prijs,
+          tax_behavior: 'exclusive',
+          recurring: { interval: SUBSCRIPTION_INTERVAL },
         },
         quantity: 1,
       }],
-      mode: 'payment',
+      mode: 'subscription',
       success_url: `${baseUrl}/intake/{CHECKOUT_SESSION_ID}`,
       cancel_url: `${baseUrl}/#prijzen`,
-      metadata: { pakket: parsed.data.pakket },
+      client_reference_id: parsed.data.requestId,
+      metadata: {
+        pakket: parsed.data.pakket,
+        terms_accepted: 'true',
+        terms_version: TERMS_VERSION,
+      },
+      subscription_data: {
+        metadata: {
+          pakket: parsed.data.pakket,
+          terms_accepted: 'true',
+          terms_version: TERMS_VERSION,
+        },
+      },
+      automatic_tax: { enabled: true },
+      tax_id_collection: { enabled: true },
       billing_address_collection: 'required',
-      customer_creation: 'always',
       phone_number_collection: { enabled: true },
       name_collection: { business: { enabled: true, optional: false }, individual: { enabled: true, optional: false } },
       custom_fields: [{
@@ -46,13 +64,13 @@ export async function POST(request: NextRequest) {
         numeric: { minimum_length: 8, maximum_length: 8 },
       }],
       custom_text: {
-        submit: { message: 'Je bestelt als ondernemer. Na betaling ontvang je de intake. Managed hosting is optioneel voor €15 p/m excl. btw en wordt alleen na apart akkoord geactiveerd.' },
+        submit: { message: `Je sluit zakelijk een maandelijks abonnement af voor ${info.prijs_label} excl. btw. Het abonnement loopt voor onbepaalde tijd en is per maand opzegbaar tegen het einde van de lopende betaalperiode.` },
       },
       ...(process.env.STRIPE_TERMS_CONFIGURED === 'true'
         ? { consent_collection: { terms_of_service: 'required' as const } }
         : {}),
       locale: 'nl',
-    })
+    }, { idempotencyKey: `checkout-${parsed.data.requestId}` })
     if (!session.url) return Response.json({ error: 'Checkout kon niet worden geopend.' }, { status: 500 })
 
     const { error } = await getSupabase().from('orders').upsert({

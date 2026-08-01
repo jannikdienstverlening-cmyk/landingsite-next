@@ -2,17 +2,20 @@ import { randomBytes } from 'node:crypto'
 import { start } from 'workflow/api'
 import { NextRequest } from 'next/server'
 import { clientIp, checkRateLimit, rateLimitResponse } from '@/lib/rate-limit'
-import { createOrderToken } from '@/lib/security'
+import { invalidJsonResponse, readJsonBody } from '@/lib/request'
+import { createOrderToken, rejectCrossOriginMutation } from '@/lib/security'
 import { getSupabase } from '@/lib/supabase'
 import { generateSchema, validationMessage } from '@/lib/validation'
 import { generateLandingWorkflow } from '@/workflows/generate-landing'
 
 export async function POST(request: NextRequest) {
+  const crossOrigin = rejectCrossOriginMutation(request)
+  if (crossOrigin) return crossOrigin
   const limit = checkRateLimit(`generate:${clientIp(request)}`, 5, 15 * 60_000)
   if (!limit.allowed) return rateLimitResponse(limit.retryAfter)
 
   let body: unknown
-  try { body = await request.json() } catch { body = null }
+  try { body = await readJsonBody(request, 4_000) } catch (error) { return invalidJsonResponse(error) }
   const parsed = generateSchema.safeParse(body)
   if (!parsed.success) return Response.json({ error: validationMessage(parsed.error) }, { status: 400 })
 

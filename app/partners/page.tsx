@@ -15,7 +15,7 @@ export default function PartnersPage() {
       <div className="container legal-shell">
         <Link href="/" className="legal-back">← Terug naar Landingsite.nl</Link>
         <h1>Partnerprogramma</h1>
-        <p className="updated">Voor introducties naar ondernemers die een professionele landingspagina nodig hebben.</p>
+        <p className="updated">Voor introducties naar ondernemers die een professioneel websiteabonnement nodig hebben.</p>
         <div className="legal-content">
           <section>
             <h2>Wie mag iemand aandragen?</h2>
@@ -27,7 +27,7 @@ export default function PartnersPage() {
           </section>
           <section>
             <h2>Wanneer ontstaat recht op vergoeding?</h2>
-            <p>Een eventuele vergoeding ontstaat pas nadat de aangebrachte opdracht succesvol is betaald en de wachttijd van {partnerProgramConfig.waitingPeriodDays} dagen is verstreken. Definitieve voorwaarden worden vooraf bevestigd.</p>
+            <p>Een eventuele vergoeding ontstaat pas nadat het aangebrachte abonnement succesvol is gestart, de eerste betaling niet is teruggedraaid en de wachttijd van {partnerProgramConfig.waitingPeriodDays} dagen is verstreken. Definitieve voorwaarden worden vooraf bevestigd.</p>
           </section>
           <section>
             <h2>Welke bedragen gelden?</h2>

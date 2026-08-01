@@ -25,7 +25,7 @@ export async function sendDeliveryEmail(opts: {
         <p style="font-size:13px;color:#61716b;word-break:break-all">${url}</p>
         <h2 style="font-size:19px;margin-top:30px">Eigen domein</h2>
         <p>Een eigen domein vereist eerst dat het domein in Netlify wordt toegevoegd. Daarna verschillen de juiste DNS-records per provider en tussen een hoofddomein en <em>www</em>. Stuur ons je domeinnaam; we helpen je met de exacte koppeling naar <strong>${host}</strong>.</p>
-        <p>Hosting van €15 per maand wordt pas na jouw akkoord geactiveerd en is maandelijks opzegbaar.</p>
+        <p>Hosting, SSL, onderhoud en support zijn inbegrepen in je actieve websiteabonnement. Je abonnement is per maand opzegbaar tegen het einde van de lopende betaalperiode.</p>
         <hr style="border:0;border-top:1px solid #dce7e2;margin:30px 0"><p style="font-size:13px;color:#61716b">Vragen of wijzigingen? Mail naar <a href="mailto:info@landingsite.nl">info@landingsite.nl</a>.</p>
       </div>
     </div>`,

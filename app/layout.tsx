@@ -6,8 +6,8 @@ const syne = Syne({ subsets: ['latin'], weight: ['400', '700', '800'], variable:
 const dmMono = DM_Mono({ subsets: ['latin'], weight: ['400', '500'], variable: '--font-dm-mono', display: 'swap' })
 
 export const metadata: Metadata = {
-  title: { default: 'Landingspagina laten maken vanaf €299 | Landingsite.nl', template: '%s | Landingsite.nl' },
-  description: 'Laat een professionele landingspagina maken voor je campagne, dienst of product. Eerste versie binnen 48 uur na betaling en complete intake, vanaf €299 excl. btw.',
+  title: { default: 'Website laten maken vanaf €79 p/m | Landingsite.nl', template: '%s | Landingsite.nl' },
+  description: 'Een professionele website vanaf €79 per maand, inclusief hosting, SSL, onderhoud, backups en support. Eerste versie binnen 48 uur na betaling en complete intake.',
   metadataBase: new URL('https://landingsite.nl'),
   alternates: { canonical: '/' },
   robots: { index: true, follow: true, googleBot: { index: true, follow: true } },
@@ -16,13 +16,13 @@ export const metadata: Metadata = {
     locale: 'nl_NL',
     url: 'https://landingsite.nl',
     siteName: 'Landingsite.nl',
-    title: 'Een scherpe landingspagina, zonder weken wachten',
-    description: 'Professionele landingspagina vanaf €299. Eerste versie binnen 48 uur na betaling en complete intake.',
+    title: 'Binnen 48 uur jouw eerste websiteversie',
+    description: 'Professionele website vanaf €79 per maand, inclusief hosting, onderhoud en support.',
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Landingspagina laten maken vanaf €299',
-    description: 'Eerste versie binnen 48 uur na betaling en complete intake.',
+    title: 'Website laten maken vanaf €79 p/m',
+    description: 'Inclusief hosting, onderhoud, backups en support.',
   },
   verification: { google: 'iN4lNqCMdhok5XwzhIlYx3uX-XSAuYl08Iju7wdV76M' },
   keywords: [

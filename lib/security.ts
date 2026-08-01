@@ -73,6 +73,34 @@ export function hashIp(ip: string) {
   return createHash('sha256').update(`${salt}:${ip}`).digest('hex')
 }
 
+function originOf(value: string) {
+  try {
+    return new URL(value).origin
+  } catch {
+    return null
+  }
+}
+
+export function isSameOriginMutation(request: Request) {
+  const fetchSite = request.headers.get('sec-fetch-site')
+  if (fetchSite && fetchSite !== 'same-origin' && fetchSite !== 'none') return false
+
+  const origin = originOf(request.headers.get('origin') ?? '')
+  if (!origin) return false
+
+  const allowed = new Set([originOf(request.url)])
+  const configuredBaseUrl = process.env.NEXT_PUBLIC_BASE_URL
+  if (configuredBaseUrl) allowed.add(originOf(configuredBaseUrl))
+  allowed.delete(null)
+  return allowed.has(origin)
+}
+
+export function rejectCrossOriginMutation(request: Request) {
+  return isSameOriginMutation(request)
+    ? null
+    : Response.json({ error: 'Ongeldige aanvraagbron.' }, { status: 403 })
+}
+
 export const adminCookie = {
   name: ADMIN_COOKIE,
   options: {

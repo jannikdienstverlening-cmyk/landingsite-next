@@ -2,14 +2,18 @@ import { randomUUID } from 'node:crypto'
 import { NextRequest } from 'next/server'
 import { escapeHtml } from '@/lib/html'
 import { clientIp, checkRateLimit, rateLimitResponse } from '@/lib/rate-limit'
+import { invalidJsonResponse, readJsonBody } from '@/lib/request'
 import { getResend } from '@/lib/resend'
+import { rejectCrossOriginMutation } from '@/lib/security'
 import { contactSchema, validationMessage } from '@/lib/validation'
 
 export async function POST(request: NextRequest) {
+  const crossOrigin = rejectCrossOriginMutation(request)
+  if (crossOrigin) return crossOrigin
   const limit = checkRateLimit(`contact:${clientIp(request)}`, 5, 15 * 60_000)
   if (!limit.allowed) return rateLimitResponse(limit.retryAfter)
   let body: unknown
-  try { body = await request.json() } catch { body = null }
+  try { body = await readJsonBody(request, 8_000) } catch (error) { return invalidJsonResponse(error) }
   const parsed = contactSchema.safeParse(body)
   if (!parsed.success) return Response.json({ error: validationMessage(parsed.error) }, { status: 400 })
   if (parsed.data.website) return Response.json({ ok: true })

@@ -1,6 +1,7 @@
 import { NextRequest } from 'next/server'
 import { escapeHtml } from '@/lib/html'
 import { clientIp, checkRateLimit } from '@/lib/rate-limit'
+import { readJsonBody } from '@/lib/request'
 import { getResend } from '@/lib/resend'
 import { hashIp } from '@/lib/security'
 import { getSupabase } from '@/lib/supabase'
@@ -25,9 +26,10 @@ export async function POST(request: NextRequest) {
 
   let raw: unknown
   try {
-    raw = await request.json()
-  } catch {
-    return Response.json({ error: 'Ongeldig verzoek.' }, { status: 400, headers: corsHeaders })
+    raw = await readJsonBody(request, 8_000)
+  } catch (error) {
+    const tooLarge = error instanceof Error && error.message === 'REQUEST_TOO_LARGE'
+    return Response.json({ error: tooLarge ? 'Het verzoek is te groot.' : 'Ongeldig verzoek.' }, { status: tooLarge ? 413 : 400, headers: corsHeaders })
   }
 
   const result = leadSchema.safeParse(raw)

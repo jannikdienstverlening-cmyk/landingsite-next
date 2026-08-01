@@ -1,17 +1,20 @@
 import { randomBytes } from 'node:crypto'
 import { start } from 'workflow/api'
 import { NextRequest } from 'next/server'
-import { adminCookie, verifyAdminSession } from '@/lib/security'
+import { adminCookie, rejectCrossOriginMutation, verifyAdminSession } from '@/lib/security'
+import { invalidJsonResponse, readJsonBody } from '@/lib/request'
 import { getSupabase } from '@/lib/supabase'
 import { adminRegenerateSchema, validationMessage } from '@/lib/validation'
 import { generateLandingWorkflow } from '@/workflows/generate-landing'
 
 export async function POST(request: NextRequest) {
+  const crossOrigin = rejectCrossOriginMutation(request)
+  if (crossOrigin) return crossOrigin
   if (!verifyAdminSession(request.cookies.get(adminCookie.name)?.value)) {
     return Response.json({ error: 'Niet ingelogd.' }, { status: 401 })
   }
   let body: unknown
-  try { body = await request.json() } catch { body = null }
+  try { body = await readJsonBody(request, 2_000) } catch (error) { return invalidJsonResponse(error) }
   const parsed = adminRegenerateSchema.safeParse(body)
   if (!parsed.success) return Response.json({ error: validationMessage(parsed.error) }, { status: 400 })
 

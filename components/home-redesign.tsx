@@ -34,7 +34,7 @@ export function Header() {
           <a href="#faq">FAQ</a>
         </nav>
         <a className="header-cta" href="#prijzen">
-          Start mijn landingspagina
+          Kies je abonnement
         </a>
         <MobileMenu />
       </div>
@@ -47,17 +47,16 @@ export function Hero() {
     <section className="hero" id="top">
       <div className="shell hero-grid">
         <div className="hero-copy">
-          <p className="eyebrow"><span />Voor ondernemers die snel willen lanceren</p>
-          <h1>Een scherpe landingspagina, zonder weken wachten.</h1>
+          <p className="eyebrow"><span />Websiteabonnement voor zzp en mkb</p>
+          <h1>Klaar met dure websites? Binnen 48 uur jouw eerste versie.</h1>
           <p className="hero-lead">
-            Voor je campagne, dienst of product. Je ontvangt de eerste versie binnen 48 uur na betaling en een complete intake.
-            Vaste bouwprijs vanaf €299.
+            Een professionele website vanaf €79 per maand, inclusief hosting, SSL, onderhoud, backups en support. Eén vast bedrag, zonder losse bouwprijs.
           </p>
           <div className="hero-actions">
-            <a className="primary-button" href="#prijzen">Start mijn landingspagina</a>
+            <a className="primary-button" href="#prijzen">Bekijk abonnementen</a>
             <a className="secondary-button" href="#voorbeelden">Bekijk recent werk</a>
           </div>
-          <p className="hero-microcopy">Mobiel geoptimaliseerd · Werkend leadformulier · Hosting optioneel voor €15 p/m</p>
+          <p className="hero-microcopy">Maandelijks opzegbaar · Geen losse bouwprijs · Eerste versie na betaling en complete intake</p>
         </div>
         <HeroProjectPreview />
       </div>
@@ -116,32 +115,34 @@ export function PortfolioSection() {
 
 export function EssentialsSection() {
   const included = [
-    'Heldere structuur en duidelijke call-to-action',
+    'Hosting en SSL-beveiliging',
+    'Onderhoud en technische updates',
+    'Dagelijkse platformbackups',
     'Mobiel geoptimaliseerd ontwerp',
-    'Werkend en beveiligd contactformulier',
-    'Technische basis, metadata en HTTPS',
-    'Preview en hulp bij de domeinkoppeling',
-    'Correctierondes volgens het gekozen pakket',
+    'Werkend en beveiligd leadformulier',
+    'Support en AI-ondersteunde optimalisatie',
   ]
   const steps = [
-    ['1', 'Kies je pakket', 'Je kiest het pakket dat bij je campagne of aanbod past.'],
-    ['2', 'Vul de intake in', 'Je levert je aanbod, doelgroep, sterke punten, contactgegevens en beschikbare beelden aan.'],
-    ['3', 'Ontvang je preview', 'Na betaling en een complete intake ontvang je binnen 48 uur de eerste versie.'],
+    ['01', 'Kies je pakket', 'Selecteer het abonnement dat bij je bedrijf past.'],
+    ['02', 'Vul de intake in', 'Deel je aanbod, doelgroep en beschikbare beelden.'],
+    ['03', 'Wij bouwen', 'We zetten structuur, ontwerp en techniek voor je klaar.'],
+    ['04', 'Eerste versie', 'Binnen 48 uur na betaling en complete intake.'],
+    ['05', 'Live en onderhouden', 'Na akkoord beheren we hosting en techniek.'],
   ]
 
   return (
     <section className="section essentials" id="werkwijze">
-      <div className="shell essentials-grid">
-        <div>
+      <div className="shell">
+        <div className="essentials-heading">
           <p className="section-kicker">Wat je krijgt</p>
-          <h2>Alles wat nodig is om professioneel te lanceren</h2>
-          <ul className="checklist">
-            {included.map((item) => <li key={item}><span aria-hidden="true">✓</span>{item}</li>)}
-          </ul>
+          <h2>De website én het technische beheer in één abonnement.</h2>
+          <p>Geen losse leveranciers of onderhoudsrekening. Wij zorgen dat de basis blijft werken en veilig wordt bijgehouden.</p>
         </div>
-        <div className="steps-panel">
-          <p className="section-kicker">Zo werkt het</p>
-          <h2>Van aanvraag naar eerste versie</h2>
+        <ul className="checklist service-grid">
+          {included.map((item) => <li key={item}><span aria-hidden="true">✓</span>{item}</li>)}
+        </ul>
+        <div className="process-panel">
+          <div className="process-heading"><p className="section-kicker">Zo werkt het</p><h2>Van keuze naar een website die wordt onderhouden.</h2></div>
           <ol className="steps-list">
             {steps.map(([number, title, text]) => (
               <li key={title}>
@@ -165,8 +166,8 @@ export function PricingSection({ packages }: { packages: Package[] }) {
       <div className="shell">
         <div className="pricing-head">
           <p className="section-kicker">Pakketten</p>
-          <h2>Kies het pakket dat past bij je landingspagina.</h2>
-          <p>Vaste bouwprijs, duidelijke scope en één checkout per pakket. Alle bedragen zijn exclusief btw.</p>
+          <h2>Eén vast maandbedrag. Geen losse bouwprijs.</h2>
+          <p>Alle abonnementen zijn voor onbepaalde tijd, worden maandelijks vooraf geïncasseerd en zijn per maand opzegbaar. Bedragen zijn exclusief btw.</p>
         </div>
         <div className="price-grid">
           {packages.map((item) => (
@@ -175,15 +176,13 @@ export function PricingSection({ packages }: { packages: Package[] }) {
               <h3>{item.name}</h3>
               <small>{item.fit}</small>
               <p>{item.tagline}</p>
-              <strong>{item.price}<i>excl. btw</i></strong>
+              <strong>{item.price}<i>p/m excl. btw</i></strong>
               <ul>{item.features.map((feature) => <li key={feature}><span aria-hidden="true">✓</span>{feature}</li>)}</ul>
               <div className="price-action"><PricingButton pakket={item.id} label="Kies dit pakket" /></div>
             </article>
           ))}
         </div>
-        <p className="hosting-note">
-          Managed hosting is optioneel en kost €15 per maand exclusief btw. Hosting wordt alleen na apart akkoord geactiveerd en is maandelijks opzegbaar.
-        </p>
+        <p className="hosting-note">De eerste abonnementsbetaling start de opdracht. De termijn van 48 uur begint zodra ook de intake compleet is. Opzeggen kan per e-mail tegen het einde van de lopende betaalperiode.</p>
       </div>
     </section>
   )
@@ -199,12 +198,12 @@ export function PartnerProgramSection() {
           <p className="section-kicker">Partnerprogramma</p>
           <h2>Tevreden? Breng een ondernemer aan.</h2>
           <p>
-            Ken je iemand die snel een professionele landingspagina nodig heeft? Draag diegene aan. Na een succesvolle en betaalde opdracht ontvang je een vergoeding volgens de voorwaarden van het partnerprogramma.
+            Ken je iemand die een professionele website zonder technisch gedoe nodig heeft? Draag diegene aan. Na een succesvol gestart abonnement ontvang je een vergoeding volgens de voorwaarden van het partnerprogramma.
           </p>
         </div>
         <div className="partner-details">
           <span>Introductie geregistreerd</span>
-          <span>Opdracht eerst betaald</span>
+          <span>Abonnement eerst actief</span>
           <span>Vergoeding na wachttijd</span>
           <Link className="secondary-button dark" href="/partners">Bekijk het partnerprogramma</Link>
         </div>
@@ -245,7 +244,7 @@ export function Footer() {
       <div className="shell footer-top">
         <div>
           <Link href="#top" className="logo inverse">landing<span>site</span><i>.nl</i></Link>
-          <p>Landingspagina’s voor ondernemers die snel en professioneel willen lanceren.</p>
+          <p>Professionele websites met hosting en onderhoud in één helder abonnement.</p>
         </div>
         <div>
           <strong>Navigatie</strong>

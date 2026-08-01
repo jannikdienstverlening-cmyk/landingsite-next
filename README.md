@@ -16,7 +16,7 @@ npm run check
 
 ## Betaal- en generatieflow
 
-1. Stripe Checkout maakt een eenmalige zakelijke betaling aan.
+1. Stripe Checkout start een zakelijk maandabonnement voor Starter, Groei of Premium.
 2. De ondertekende webhook upsert de order en verwerkt events idempotent.
 3. De klant vult de intake in en kan logo en hoofdbeeld uploaden.
 4. De API claimt de order atomair en start `generateLandingWorkflow`.
@@ -28,7 +28,7 @@ npm run check
 
 - De Stripe webhook wijst naar `/api/stripe/webhook`.
 - De publieke voorwaarden- en privacy-URL zijn in het gekoppelde Stripe-account ingesteld; `STRIPE_TERMS_CONFIGURED=true` houdt de checkout-guard open.
-- Hosting van €15 per maand zit bewust niet in de eenmalige checkout; die wordt pas na afzonderlijk klantakkoord geactiveerd.
+- Hosting, SSL, onderhoud, backups en support zijn onderdeel van het maandabonnement.
 - Het adminwachtwoord wordt alleen naar `/api/admin/login` gestuurd. Daarna gebruikt het dashboard een getekende HttpOnly-cookie.
 - `ADMIN_SESSION_SECRET`, `ORDER_TOKEN_SECRET` en `IP_HASH_SALT` moeten in productie unieke lange waarden zijn.
 - Landingsite.nl wordt aangeboden door Jannik Dienstverlening, Gortstraat 31, 3905 BB Veenendaal (KvK 65549430, btw NL001557133B48).

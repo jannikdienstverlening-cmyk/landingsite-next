@@ -8,6 +8,8 @@ const optionalText = z.string().trim().max(2_000).default('')
 
 export const checkoutSchema = z.object({
   pakket: packageSchema,
+  requestId: z.uuid(),
+  termsAccepted: z.literal(true),
 }).strict()
 
 export const intakeFormSchema = z.object({

@@ -14,23 +14,27 @@ import { BUSINESS } from '@/lib/business'
 const faqs = [
   {
     q: 'Wanneer begint de termijn van 48 uur?',
-    a: 'De termijn start na betaling en zodra de intake compleet is. Als er belangrijke input ontbreekt, schuift de planning op totdat alles binnen is.',
+    a: 'De termijn voor de eerste versie start na de eerste succesvolle abonnementsbetaling en zodra de intake compleet is. Ontbreekt belangrijke input, dan start de termijn zodra die is aangevuld.',
   },
   {
     q: 'Wat moet ik zelf aanleveren?',
     a: 'Je levert je aanbod, doelgroep, contactgegevens, sterke punten en beschikbare beelden aan. Heb je nog geen teksten? Dan helpen we met een heldere eerste opzet.',
   },
   {
-    q: 'Kan ik wijzigingen laten doen?',
-    a: 'Ja. Correctierondes hangen af van het gekozen pakket. Kleine aanpassingen bespreken we praktisch, grotere uitbreidingen kunnen apart worden ingepland.',
+    q: 'Wat zit er in het maandbedrag?',
+    a: 'Hosting, SSL, technische updates, backups, onderhoud, support en de afgesproken websiteomvang. De precieze inhoud en correctieruimte staan per pakket vermeld.',
   },
   {
-    q: 'Hoe werkt de hosting?',
-    a: 'Managed hosting is optioneel en kost €15 per maand exclusief btw. Hosting wordt alleen na apart akkoord geactiveerd en is maandelijks opzegbaar.',
+    q: 'Kan ik later uitbreiden?',
+    a: 'Ja. Je kunt overstappen naar een ruimer pakket of extra werk laten inplannen. We spreken vooraf duidelijk af wat binnen je abonnement valt en wat aanvullend werk is.',
   },
   {
-    q: 'Garandeert een landingspagina meer aanvragen?',
-    a: 'Nee. We bouwen een duidelijke, professionele pagina met focus op één doel. Resultaten blijven afhankelijk van je aanbod, verkeer, markt en opvolging.',
+    q: 'Kan ik maandelijks opzeggen?',
+    a: 'Ja. Het abonnement loopt voor onbepaalde tijd en is per maand opzegbaar tegen het einde van de lopende betaalperiode. Na opzegging stoppen hosting, onderhoud en support aan het einde van die periode; een overdracht spreken we praktisch af.',
+  },
+  {
+    q: 'Garandeert de website meer aanvragen?',
+    a: 'Nee. We bouwen en onderhouden een professionele website met een duidelijke route naar contact. Resultaten blijven afhankelijk van je aanbod, verkeer, markt en opvolging.',
   },
 ]
 
@@ -38,27 +42,27 @@ const packages = [
   {
     id: 'starter' as const,
     name: 'Starter',
-    price: '€299',
-    fit: 'Voor een compacte eerste campagne',
-    tagline: 'Een professionele landingspagina met de belangrijkste secties en een werkend formulier.',
-    features: ['Eén landingspagina', 'Mobiel geoptimaliseerd', 'Contactformulier', 'Basis SEO-inrichting', 'Eén correctieronde'],
+    price: '€79',
+    fit: 'Voor een compacte professionele basis',
+    tagline: 'Een scherpe website met de belangrijkste secties, beheer en een werkend formulier.',
+    features: ['Eén landingspagina', 'Hosting en SSL', 'Updates en backups', 'Contactformulier', 'Basis SEO', 'Support'],
   },
   {
     id: 'pro' as const,
-    name: 'Pro',
-    price: '€499',
-    fit: 'Voor meer inhoud en vertrouwen',
-    tagline: 'Meer ruimte voor bewijs, FAQ, extra secties en een sterkere aanvraagroute.',
+    name: 'Groei',
+    price: '€129',
+    fit: 'Voor bedrijven die zichtbaar willen groeien',
+    tagline: 'Meer ruimte voor bewijs, inhoud, optimalisatie en een sterkere aanvraagroute.',
     highlighted: true,
-    features: ['Alles uit Starter', 'Uitgebreidere structuur', 'Reviews of bewijssectie', 'Twee correctierondes', 'Hulp bij domeinkoppeling'],
+    features: ['Alles uit Starter', 'Uitgebreidere structuur', 'Bewijs- en FAQ-secties', 'Doorlopende kleine optimalisaties', 'Hulp bij domein en e-mail', 'Snellere support'],
   },
   {
     id: 'premium' as const,
     name: 'Premium',
-    price: '€899',
+    price: '€199',
     fit: 'Voor meer maatwerk en begeleiding',
-    tagline: 'Een uitgebreidere pagina met meer designaandacht, inhoudelijke hulp en premium afwerking.',
-    features: ['Alles uit Pro', 'Meer designmaatwerk', 'Extra contentblokken', 'Drie correctierondes', 'Strategische sparring'],
+    tagline: 'Een uitgebreidere website met meer maatwerk, begeleiding en ruimte om door te ontwikkelen.',
+    features: ['Alles uit Groei', 'Meer designmaatwerk', 'Extra pagina of campagneflow', 'Inhoudelijke begeleiding', 'Maandelijkse optimalisatieruimte', 'Prioriteitssupport'],
   },
 ]
 
@@ -81,12 +85,12 @@ const jsonLd = {
         addressLocality: BUSINESS.address.city,
         addressCountry: BUSINESS.address.countryCode,
       },
-      description: 'Professionele landingspagina’s voor zzp en mkb, met eerste versie binnen 48 uur na betaling en complete intake.',
+      description: 'Professionele websites voor zzp en mkb in een maandelijks abonnement, met eerste versie binnen 48 uur na betaling en complete intake.',
       areaServed: 'NL',
     },
     {
       '@type': 'Service',
-      name: 'Landingspagina laten maken',
+      name: 'Websiteabonnement met hosting en onderhoud',
       provider: { '@id': 'https://landingsite.nl/#organization' },
       areaServed: 'NL',
       offers: packages.map((item) => ({
@@ -94,6 +98,12 @@ const jsonLd = {
         name: item.name,
         price: item.price.replace('€', ''),
         priceCurrency: 'EUR',
+        priceSpecification: {
+          '@type': 'UnitPriceSpecification',
+          price: item.price.replace('€', ''),
+          priceCurrency: 'EUR',
+          unitCode: 'MON',
+        },
         availability: 'https://schema.org/InStock',
       })),
     },

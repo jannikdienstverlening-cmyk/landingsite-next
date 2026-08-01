@@ -1,13 +1,17 @@
 import { NextRequest } from 'next/server'
 import { clientIp, checkRateLimit, rateLimitResponse } from '@/lib/rate-limit'
+import { invalidJsonResponse, readJsonBody } from '@/lib/request'
+import { rejectCrossOriginMutation } from '@/lib/security'
 import { getSupabase, type Pakket } from '@/lib/supabase'
 import { intakeSchema, validationMessage } from '@/lib/validation'
 
 export async function POST(request: NextRequest) {
+  const crossOrigin = rejectCrossOriginMutation(request)
+  if (crossOrigin) return crossOrigin
   const limit = checkRateLimit(`intake:${clientIp(request)}`, 12, 30 * 60_000)
   if (!limit.allowed) return rateLimitResponse(limit.retryAfter)
   let body: unknown
-  try { body = await request.json() } catch { body = null }
+  try { body = await readJsonBody(request, 32_000) } catch (error) { return invalidJsonResponse(error) }
   const parsed = intakeSchema.safeParse(body)
   if (!parsed.success) return Response.json({ error: validationMessage(parsed.error) }, { status: 400 })
 
