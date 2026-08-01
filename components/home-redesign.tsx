@@ -32,6 +32,7 @@ export function Header() {
           <a href="#voorbeelden">Voorbeelden</a>
           <a href="#werkwijze">Werkwijze</a>
           <a href="#prijzen">Prijzen</a>
+          <a href="#websitebeheer">Websitebeheer €{pricingConfig.websiteManagement.monthlyPrice}</a>
           <a href="#partner">Partner</a>
           <a href="#faq">FAQ</a>
         </nav>
@@ -58,7 +59,7 @@ export function Hero() {
             <a className="primary-button" href="#prijzen">Bekijk de pakketten</a>
             <a className="secondary-button" href="#voorbeelden">Bekijk recent werk</a>
           </div>
-          <p className="hero-microcopy">Eerste versie binnen 48 uur · Bouw vanaf €{pricingConfig.buildPackages.starter.oneTimePrice} · Websitebeheer €{pricingConfig.websiteManagement.monthlyPrice} p/m</p>
+          <p className="hero-microcopy"><strong>Websitebeheer €{pricingConfig.websiteManagement.monthlyPrice} p/m</strong> · Hosting, onderhoud en beveiliging inbegrepen · Bouw vanaf €{pricingConfig.buildPackages.starter.oneTimePrice}</p>
         </div>
         <HeroProjectPreview />
       </div>
@@ -315,7 +316,7 @@ export function Footer() {
       <div className="shell footer-top">
         <div>
           <Link href="#top" className="logo inverse">landing<span>site</span><i>.nl</i></Link>
-          <p>Professionele websites met hosting en onderhoud in één helder abonnement.</p>
+          <p>Landingspagina&apos;s met volledig Websitebeheer voor €{pricingConfig.websiteManagement.monthlyPrice} per maand.</p>
         </div>
         <div>
           <strong>Navigatie</strong>

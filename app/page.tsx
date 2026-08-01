@@ -24,7 +24,7 @@ const faqs = [
     a: 'Je levert je aanbod, doelgroep, contactgegevens, sterke punten en beschikbare beelden aan. Heb je nog geen teksten? Dan helpen we met een heldere eerste opzet.',
   },
   {
-    q: 'Wat zit er in Websitebeheer van €79 per maand?',
+    q: `Wat zit er in Websitebeheer van €${pricingConfig.websiteManagement.monthlyPrice} per maand?`,
     a: 'Websitebeheer bevat managed hosting, beveiliging, back-ups, technische updates, monitoring, hulp bij problemen en een beperkte hoeveelheid kleine wijzigingen binnen de bestaande website.',
   },
   {

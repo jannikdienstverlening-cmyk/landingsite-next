@@ -1,4 +1,5 @@
 import { NextRequest } from 'next/server'
+import { pricingConfig } from '@/config/pricing'
 import { clientIp, checkRateLimit, rateLimitResponse } from '@/lib/rate-limit'
 import { invalidJsonResponse, readJsonBody } from '@/lib/request'
 import { referralAttributionId, referralCookie, rejectCrossOriginMutation } from '@/lib/security'
@@ -43,7 +44,7 @@ export async function POST(request: NextRequest) {
                 currency: 'eur',
                 product_data: {
                   name: `Landingsite.nl ${info.naam}`,
-                  description: 'Eenmalige bouwprijs voor de gekozen landingspagina. Websitebeheer van €79 per maand wordt pas na livegang apart geactiveerd.',
+                  description: `Eenmalige bouwprijs voor de gekozen landingspagina. Websitebeheer van €${pricingConfig.websiteManagement.monthlyPrice} per maand wordt pas na livegang apart geactiveerd.`,
                 },
                 unit_amount: info.prijs,
                 tax_behavior: 'exclusive' as const,
@@ -83,7 +84,7 @@ export async function POST(request: NextRequest) {
         numeric: { minimum_length: 8, maximum_length: 8 },
       }],
       custom_text: {
-        submit: { message: `Je betaalt zakelijk eenmalig ${info.prijs_label} excl. btw voor de bouw. Websitebeheer van €79 per maand start niet nu; daarvoor ontvang je pas bij livegang een aparte beveiligde abonnementslink.` },
+        submit: { message: `Je betaalt zakelijk eenmalig ${info.prijs_label} excl. btw voor de bouw. Websitebeheer van €${pricingConfig.websiteManagement.monthlyPrice} per maand start niet nu; daarvoor ontvang je pas bij livegang een aparte beveiligde abonnementslink.` },
       },
       ...(process.env.STRIPE_TERMS_CONFIGURED === 'true'
         ? { consent_collection: { terms_of_service: 'required' as const } }

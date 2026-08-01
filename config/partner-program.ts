@@ -1,7 +1,9 @@
+import { pricingConfig } from './pricing'
+
 export const partnerProgramConfig = {
   enabled: true,
   participationIsFree: true,
-  subscriptionPrice: 79,
+  subscriptionPrice: pricingConfig.websiteManagement.monthlyPrice,
   minimumPayout: 25,
   waitingPeriodDays: 30,
   attributionWindowDays: 30,

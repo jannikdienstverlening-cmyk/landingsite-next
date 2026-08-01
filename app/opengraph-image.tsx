@@ -1,4 +1,5 @@
 import { ImageResponse } from 'next/og'
+import { pricingConfig } from '@/config/pricing'
 
 export const alt = 'Landingsite.nl - professionele website in een helder abonnement'
 export const size = { width: 1200, height: 630 }
@@ -23,7 +24,7 @@ export default function Image() {
         </div>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: 22, color: '#b3c7be' }}>
           <span>Inclusief hosting, onderhoud, backups en support</span>
-          <span style={{ display: 'flex', padding: '13px 22px', borderRadius: 999, background: '#47dda3', color: '#071c16', fontWeight: 800 }}>Vanaf €79 p/m</span>
+          <span style={{ display: 'flex', padding: '13px 22px', borderRadius: 999, background: '#47dda3', color: '#071c16', fontWeight: 800 }}>Websitebeheer €{pricingConfig.websiteManagement.monthlyPrice} p/m</span>
         </div>
       </div>
     </div>,

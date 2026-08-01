@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
+import { pricingConfig } from '@/config/pricing'
 import { BUSINESS, BUSINESS_ADDRESS } from '@/lib/business'
 
 export const metadata: Metadata = {
@@ -9,6 +10,8 @@ export const metadata: Metadata = {
 }
 
 export default function TermsPage() {
+  const { buildPackages, websiteManagement } = pricingConfig
+
   return (
     <main className="legal-page">
       <div className="container legal-shell">
@@ -18,8 +21,8 @@ export default function TermsPage() {
         <div className="legal-content">
           <section><h2>1. Wie wij zijn</h2><p>{BUSINESS.brandName} is een handelsnaam van {BUSINESS.legalName}, gevestigd aan {BUSINESS_ADDRESS}, {BUSINESS.address.country}. KvK: {BUSINESS.chamberOfCommerceNumber}. Btw-id: {BUSINESS.vatId}. Je bereikt ons via <a href={`mailto:${BUSINESS.email}`}>{BUSINESS.email}</a>. Deze voorwaarden gelden voor de eenmalige bouwopdracht, Websitebeheer en aanvullend overeengekomen werk.</p></section>
           <section><h2>2. Zakelijke overeenkomst</h2><p>Onze diensten zijn bedoeld voor ondernemers en organisaties die handelen in beroep of bedrijf. Bij de bouwcheckout bevestigt de klant dit en accepteert de klant deze voorwaarden. De bouwopdracht ontstaat na succesvolle betaling van de eenmalige bouwprijs via Stripe. Websitebeheer ontstaat pas later, nadat de website is goedgekeurd en live gaat en de klant de afzonderlijke abonnementscheckout uitdrukkelijk afrondt.</p></section>
-          <section><h2>3. Bouwprijzen en btw</h2><p>Starter kost €299, Pro €499 en Premium €899 eenmalig, telkens exclusief btw. De pakketpagina bepaalt de actuele omvang. De bouwcheckout bevat geen automatische maandincasso. Aanvullend maatwerk, betaalde externe licenties, advertentiebudget, domeinregistratie en werk buiten de pakketomvang kunnen vooraf apart worden aangeboden.</p></section>
-          <section><h2>4. Websitebeheer vanaf livegang</h2><p>Websitebeheer kost €79 per maand exclusief btw en start niet vóór de livegang. Bij livegang ontvangt de klant een beveiligde Stripe-link voor expliciete toestemming. Na afronding factureert Stripe maandelijks vooraf. Websitebeheer omvat managed hosting, SSL, back-ups, beveiligings- en technische updates, monitoring, controle van essentiële functies, ondersteuning en maximaal 30 minuten kleine wijzigingen per kalendermaand. Niet-gebruikte tijd vervalt.</p></section>
+          <section><h2>3. Bouwprijzen en btw</h2><p>{buildPackages.starter.name} kost €{buildPackages.starter.oneTimePrice}, {buildPackages.pro.name} €{buildPackages.pro.oneTimePrice} en {buildPackages.premium.name} €{buildPackages.premium.oneTimePrice} eenmalig, telkens exclusief btw. De pakketpagina bepaalt de actuele omvang. De bouwcheckout bevat geen automatische maandincasso. Aanvullend maatwerk, betaalde externe licenties, advertentiebudget, domeinregistratie en werk buiten de pakketomvang kunnen vooraf apart worden aangeboden.</p></section>
+          <section><h2>4. Websitebeheer vanaf livegang</h2><p>Websitebeheer kost €{websiteManagement.monthlyPrice} per maand exclusief btw en start niet vóór de livegang. Bij livegang ontvangt de klant een beveiligde Stripe-link voor expliciete toestemming. Na afronding factureert Stripe maandelijks vooraf. Websitebeheer omvat managed hosting, SSL, back-ups, beveiligings- en technische updates, monitoring, controle van essentiële functies, ondersteuning en maximaal {websiteManagement.includedChangeMinutes} minuten kleine wijzigingen per kalendermaand. Niet-gebruikte tijd vervalt.</p></section>
           <section><h2>5. Afbakening kleine wijzigingen</h2><p>Kleine wijzigingen zijn aanpassingen binnen de bestaande website, zoals tekst wijzigen, een foto vervangen, openingstijden aanpassen of een knop veranderen. Nieuwe pagina’s, volledige nieuwe ontwerpen, uitgebreide functionaliteiten, koppelingen en grote tekstprojecten vallen niet binnen Websitebeheer en worden vooraf apart geoffreerd.</p></section>
           <section><h2>6. Looptijd, opzegging en overdracht</h2><p>Websitebeheer loopt voor onbepaalde tijd met perioden van één maand. De klant kan via de beveiligde klantlink of per e-mail opzeggen tegen het einde van de lopende betaalperiode. Na beëindiging stoppen hosting, technisch beheer, wijzigingen en ondersteuning aan het einde van de betaalde periode. We spreken een redelijke overdracht van domeininstellingen en klantspecifieke content af; extra migratiewerk kan apart worden berekend. Partnercommissie die aan dit abonnement is gekoppeld stopt eveneens.</p></section>
           <section><h2>7. Betaling en mislukte incasso</h2><p>De klant zorgt voor een geldige betaalmethode en juiste factuurgegevens. Bij een mislukte Websitebeheer-incasso mag Stripe opnieuw proberen. Wij mogen beheer, wijzigingen, ondersteuning of publicatie na waarschuwing opschorten. Openstaande bedragen blijven verschuldigd. Redelijke buitengerechtelijke incassokosten en wettelijke handelsrente kunnen worden doorberekend voor zover de wet dit toestaat.</p></section>
