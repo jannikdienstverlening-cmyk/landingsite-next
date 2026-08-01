@@ -4,9 +4,15 @@ const ADMIN_COOKIE = 'landingsite_admin'
 const TOKEN_VERSION = 'v1'
 
 function secretFor(purpose: 'admin' | 'order') {
-  const secret = purpose === 'admin'
-    ? process.env.ADMIN_SESSION_SECRET ?? process.env.ADMIN_PASSWORD
-    : process.env.ORDER_TOKEN_SECRET ?? process.env.STRIPE_WEBHOOK_SECRET ?? process.env.ADMIN_PASSWORD
+  const dedicatedSecret = purpose === 'admin'
+    ? process.env.ADMIN_SESSION_SECRET
+    : process.env.ORDER_TOKEN_SECRET
+  if (process.env.NODE_ENV === 'production' && !dedicatedSecret) {
+    throw new Error(`${purpose.toUpperCase()} dedicated token secret ontbreekt.`)
+  }
+  const secret = dedicatedSecret ?? (purpose === 'admin'
+    ? process.env.ADMIN_PASSWORD
+    : process.env.STRIPE_WEBHOOK_SECRET ?? process.env.ADMIN_PASSWORD)
 
   if (!secret) throw new Error(`${purpose.toUpperCase()} token secret ontbreekt.`)
   return secret
@@ -69,7 +75,11 @@ export function verifyOrderToken(token: string | undefined, orderId: string) {
 }
 
 export function hashIp(ip: string) {
-  const salt = process.env.IP_HASH_SALT ?? secretFor('order')
+  const configuredSalt = process.env.IP_HASH_SALT
+  if (process.env.NODE_ENV === 'production' && !configuredSalt) {
+    throw new Error('IP_HASH_SALT ontbreekt.')
+  }
+  const salt = configuredSalt ?? secretFor('order')
   return createHash('sha256').update(`${salt}:${ip}`).digest('hex')
 }
 

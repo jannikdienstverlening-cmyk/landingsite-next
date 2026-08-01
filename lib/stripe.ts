@@ -34,5 +34,22 @@ export const PAKKETTEN = {
   },
 } as const
 
+export type PakketId = keyof typeof PAKKETTEN
+
+export const STRIPE_PRICE_ENV = {
+  starter: 'STRIPE_PRICE_STARTER',
+  pro: 'STRIPE_PRICE_GROEI',
+  premium: 'STRIPE_PRICE_PREMIUM',
+} as const satisfies Record<PakketId, string>
+
+export function configuredStripePriceId(pakket: PakketId) {
+  const value = process.env[STRIPE_PRICE_ENV[pakket]]?.trim()
+  if (!value) return null
+  if (!/^price_[A-Za-z0-9]+$/.test(value)) {
+    throw new Error(`${STRIPE_PRICE_ENV[pakket]} bevat geen geldige Stripe Price ID.`)
+  }
+  return value
+}
+
 export const SUBSCRIPTION_INTERVAL = 'month' as const
 export const TERMS_VERSION = '2026-08-01'

@@ -15,9 +15,13 @@ export async function GET(req: NextRequest) {
     .from('orders')
     .select('id, pakket, status')
     .eq('stripe_session_id', sessionId)
-    .single()
+    .maybeSingle()
 
-  if (error || !data) {
+  if (error) {
+    console.error('Orderstatus ophalen mislukt', { sessionId, error })
+    return Response.json({ error: 'Ordercontrole is tijdelijk niet beschikbaar.' }, { status: 503 })
+  }
+  if (!data) {
     return Response.json({ error: 'Order niet gevonden.' }, { status: 404 })
   }
 

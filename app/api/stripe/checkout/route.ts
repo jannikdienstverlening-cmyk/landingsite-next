@@ -2,7 +2,7 @@ import { NextRequest } from 'next/server'
 import { clientIp, checkRateLimit, rateLimitResponse } from '@/lib/rate-limit'
 import { invalidJsonResponse, readJsonBody } from '@/lib/request'
 import { rejectCrossOriginMutation } from '@/lib/security'
-import { getStripe, PAKKETTEN, SUBSCRIPTION_INTERVAL, TERMS_VERSION } from '@/lib/stripe'
+import { configuredStripePriceId, getStripe, PAKKETTEN, SUBSCRIPTION_INTERVAL, TERMS_VERSION } from '@/lib/stripe'
 import { getSupabase } from '@/lib/supabase'
 import { checkoutSchema, validationMessage } from '@/lib/validation'
 
@@ -19,20 +19,25 @@ export async function POST(request: NextRequest) {
   const baseUrl = process.env.NEXT_PUBLIC_BASE_URL?.replace(/\/$/, '')
   if (!baseUrl) return Response.json({ error: 'Basis-URL ontbreekt.' }, { status: 500 })
   const info = PAKKETTEN[parsed.data.pakket]
+  const priceId = configuredStripePriceId(parsed.data.pakket)
 
   try {
     const session = await getStripe().checkout.sessions.create({
       line_items: [{
-        price_data: {
-          currency: 'eur',
-          product_data: {
-            name: `Landingsite.nl ${info.naam}`,
-            description: 'Maandelijks websiteabonnement inclusief hosting, SSL, onderhoud, updates, backups en support volgens het gekozen pakket.',
-          },
-          unit_amount: info.prijs,
-          tax_behavior: 'exclusive',
-          recurring: { interval: SUBSCRIPTION_INTERVAL },
-        },
+        ...(priceId
+          ? { price: priceId }
+          : {
+              price_data: {
+                currency: 'eur',
+                product_data: {
+                  name: `Landingsite.nl ${info.naam}`,
+                  description: 'Maandelijks websiteabonnement inclusief hosting, SSL, onderhoud, updates, backups en support volgens het gekozen pakket.',
+                },
+                unit_amount: info.prijs,
+                tax_behavior: 'exclusive' as const,
+                recurring: { interval: SUBSCRIPTION_INTERVAL },
+              },
+            }),
         quantity: 1,
       }],
       mode: 'subscription',
@@ -80,7 +85,15 @@ export async function POST(request: NextRequest) {
       status: 'pending',
       updated_at: new Date().toISOString(),
     }, { onConflict: 'stripe_session_id', ignoreDuplicates: true })
-    if (error) console.error('Pending order opslaan mislukt', { sessionId: session.id, error })
+    if (error) {
+      console.error('Pending order opslaan mislukt', { sessionId: session.id, error })
+      try {
+        await getStripe().checkout.sessions.expire(session.id)
+      } catch (expireError) {
+        console.error('Niet-opgeslagen Stripe-sessie kon niet worden gesloten', { sessionId: session.id, expireError })
+      }
+      return Response.json({ error: 'Bestellen is tijdelijk niet beschikbaar. Er is niets afgeschreven.' }, { status: 503 })
+    }
     return Response.json({ url: session.url })
   } catch (error) {
     console.error('Checkout voorbereiden mislukt', error)

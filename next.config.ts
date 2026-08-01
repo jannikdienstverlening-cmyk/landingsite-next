@@ -2,11 +2,18 @@ import type { NextConfig } from "next";
 import { withWorkflow } from "workflow/next";
 
 const isDev = process.env.NODE_ENV === 'development'
+const supabaseOrigin = (() => {
+  try {
+    return process.env.NEXT_PUBLIC_SUPABASE_URL ? new URL(process.env.NEXT_PUBLIC_SUPABASE_URL).origin : null
+  } catch {
+    return null
+  }
+})()
 const csp = [
   "default-src 'self'",
   `script-src 'self' 'unsafe-inline'${isDev ? " 'unsafe-eval'" : ''}`,
   "style-src 'self' 'unsafe-inline'",
-  "img-src 'self' data: blob:",
+  `img-src 'self' data: blob:${supabaseOrigin ? ` ${supabaseOrigin}` : ''}`,
   "font-src 'self' data:",
   "connect-src 'self'",
   "object-src 'none'",
@@ -17,6 +24,7 @@ const csp = [
 ].join('; ')
 
 const nextConfig: NextConfig = {
+  allowedDevOrigins: isDev ? ['127.0.0.1'] : undefined,
   turbopack: {
     root: __dirname,
   },

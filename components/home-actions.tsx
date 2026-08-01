@@ -59,7 +59,7 @@ export function PricingButton({ pakket, label }: { pakket: 'starter' | 'pro' | '
     <div className="checkout-action">
       <label className="terms-check">
         <input type="checkbox" checked={accepted} onChange={(event) => setAccepted(event.target.checked)} />
-        <span>Ik bestel zakelijk, ga akkoord met de <a href="/algemene-voorwaarden" target="_blank">voorwaarden</a> en heb het <a href="/privacybeleid" target="_blank">privacybeleid</a> gelezen.</span>
+        <span>Ik bestel zakelijk, ga akkoord met de <a href="/algemene-voorwaarden" target="_blank" rel="noopener noreferrer">voorwaarden</a> en heb het <a href="/privacybeleid" target="_blank" rel="noopener noreferrer">privacybeleid</a> gelezen.</span>
       </label>
       <button className="price-button" onClick={order} disabled={loading || !accepted} type="button">
         {loading ? 'Veilige checkout openen...' : label}
