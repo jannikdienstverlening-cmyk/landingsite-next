@@ -67,8 +67,8 @@ export function LaunchCommandVisual() {
               <strong>1 doel</strong>
             </div>
             <div className="visual-card visual-price-card">
-              <span>Pricing</span>
-              <strong>Vanaf €299</strong>
+              <span>Abonnement</span>
+              <strong>Vanaf €79 p/m</strong>
             </div>
             <div className="visual-card visual-route-card">
               <span>Route</span>
@@ -79,7 +79,7 @@ export function LaunchCommandVisual() {
       </div>
 
       <div className="command-float command-float-time">Live in 48 uur</div>
-      <div className="command-float command-float-price">Vanaf €299</div>
+      <div className="command-float command-float-price">Vanaf €79 p/m</div>
       <div className="command-float command-float-leads">Leads direct in je inbox</div>
       <div className="command-float command-float-offer">Geen offerte nodig</div>
     </figure>

@@ -22,7 +22,7 @@ export async function POST(request: NextRequest) {
       line_items: [{
         price_data: {
           currency: 'eur',
-          product_data: { name: `Landingsite.nl ${info.naam}`, description: 'Eenmalige realisatie van een professionele landingspagina.' },
+          product_data: { name: `Landingsite.nl ${info.naam}`, description: 'Websitepakket inclusief hosting, onderhoud en AI-ondersteuning.' },
           unit_amount: info.prijs,
         },
         quantity: 1,
@@ -43,7 +43,7 @@ export async function POST(request: NextRequest) {
         numeric: { minimum_length: 8, maximum_length: 8 },
       }],
       custom_text: {
-        submit: { message: 'Je bestelt als ondernemer. De bouwprijs is eenmalig; hosting wordt alleen na apart akkoord geactiveerd.' },
+        submit: { message: 'Je bestelt als ondernemer. We nemen na betaling contact op voor intake, planning en publicatie.' },
       },
       ...(process.env.STRIPE_TERMS_CONFIGURED === 'true'
         ? { consent_collection: { terms_of_service: 'required' as const } }

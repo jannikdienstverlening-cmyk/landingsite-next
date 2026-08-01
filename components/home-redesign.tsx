@@ -1,33 +1,411 @@
 import Image from 'next/image'
 import Link from 'next/link'
 import { BUSINESS } from '@/lib/business'
-import { ContactForm, FAQAccordion, MobileMenu, PricingButton } from './home-actions'
+import { ContactForm, FAQAccordion, MobileMenu } from './home-actions'
 
-type Package={id:'starter'|'pro'|'premium';name:string;price:string;tagline:string;label:string;highlighted?:boolean;features:string[];fit:string}
-type FAQ={q:string;a:string}
+type Package = {
+  id: 'starter' | 'pro' | 'premium'
+  name: string
+  price: string
+  fit: string
+  tagline: string
+  label: string
+  highlighted?: boolean
+  features: string[]
+}
 
-export function Header(){return <header className="site-header"><div className="header-inner"><Link href="#top" className="logo" aria-label="Landingsite.nl home">landing<span>site</span><i>.nl</i></Link><nav className="desktop-nav" aria-label="Hoofdnavigatie"><a href="#aanpak">Aanpak</a><a href="#portfolio">Werk</a><a href="#prijzen">Pakketten</a><a href="#faq">FAQ</a></nav><a className="header-cta" href="#contact">Plan een start <span>↗</span></a><MobileMenu/></div></header>}
+type FAQ = { q: string; a: string }
 
-export function Hero(){return <section className="hero" id="top"><div className="hero-glow glow-one"/><div className="hero-glow glow-two"/><div className="shell hero-grid"><div className="hero-copy"><p className="eyebrow"><span/>Voor campagnes die niet kunnen wachten</p><h1>Van idee naar <em>landingspagina</em> in 48 uur.</h1><p className="hero-lead">Een messcherpe pagina voor je campagne, dienst of product. Strategisch opgebouwd, mobiel sterk en klaar om echte aanvragen te ontvangen.</p><div className="hero-actions"><a className="primary-button" href="#prijzen">Bekijk pakketten <span>→</span></a><a className="text-link" href="#portfolio">Zie wat we maken <span>↘</span></a></div><div className="hero-proof"><div><strong>48u</strong><span>eerste versie na complete intake</span></div><div><strong>€299</strong><span>vaste startprijs, vooraf helder</span></div><div><strong>1 doel</strong><span>iedere sectie stuurt naar actie</span></div></div></div><HeroVisual/></div></section>}
+const examples = [
+  {
+    name: 'WIA Management',
+    domain: 'wiamanagement.nl',
+    url: 'https://www.wiamanagement.nl/',
+    industry: 'B2B leadgeneratie',
+    description: 'Een zakelijke website voor werkgevers die snel een passende WIA-specialist zoeken.',
+    result: 'Heldere aanvraagroute met focus op vertrouwen en snelle opvolging.',
+    image: '/images/portfolio/wiamanagement-screenshot.webp',
+    tags: ['B2B', 'Aanvraagflow', 'Responsive'],
+  },
+  {
+    name: 'Ontwikkelbegeleiding.nl',
+    domain: 'ontwikkelbegeleiding.nl',
+    url: 'https://www.ontwikkelbegeleiding.nl/',
+    industry: 'Coaching & begeleiding',
+    description: 'Een warme website voor persoonlijke ontwikkeling, begeleiding en aanvragen.',
+    result: 'Rustige structuur die ouders en professionals snel naar contact leidt.',
+    image: '/images/portfolio/ontwikkelbegeleiding-screenshot.webp',
+    tags: ['Coaching', 'Intake', 'Persoonlijk'],
+  },
+  {
+    name: 'AIbouwers.nl',
+    domain: 'aibouwers.nl',
+    url: 'https://www.aibouwers.nl/',
+    industry: 'AI & automatisering',
+    description: 'Een scherpe productsite voor ondernemers die AI praktisch willen inzetten.',
+    result: 'Eenvoudige propositie met duidelijke proces-CTA en voorbeeldworkflow.',
+    image: '/images/portfolio/aibouwers-screenshot.png',
+    tags: ['AI', 'Proces', 'Leadpagina'],
+  },
+]
 
-function HeroVisual(){return <div className="hero-visual" aria-label="Voorbeeld van een conversiegerichte landingspagina"><div className="browser-top"><div><i/><i/><i/></div><span>jouwcampagne.nl</span><b>Live</b></div><div className="browser-body"><div className="preview-nav"><span className="preview-logo"/><span/><span/><button>Plan gesprek</button></div><div className="preview-hero"><small>Slimmer groeien</small><strong>Maak van aandacht<br/><em>echte aanvragen.</em></strong><p>Een duidelijke propositie. Eén sterke actie. Geen afleiding.</p><button>Start vandaag →</button></div><div className="preview-metrics"><span><b>1 doel</b> per pagina</span><span><b>Snel</b> gebouwd</span><span><b>Mobiel</b> klaar</span></div></div><div className="floating-card card-lead"><span>Nieuwe aanvraag</span><strong>Formulier actief</strong><small>Direct naar je inbox</small></div><div className="floating-card card-score"><span>Checklist</span><strong>Klaar</strong><small>Mobiele flow</small></div></div>}
+const trustBadges = ['Binnen 48 uur eerste versie', 'Hosting inbegrepen', 'Onderhoud geregeld', 'AI + menselijke controle']
 
-export function ProblemSection(){return <section className="section dark-section" id="aanpak"><div className="shell"><div className="section-label"><span>01</span><p>De kern</p></div><div className="statement-grid"><h2>Je advertentie verdient beter dan een algemene homepage.</h2><div><p className="large-copy">Bezoekers beslissen in seconden. Daarom halen we navigatieruis weg en bouwen we één overtuigende route van eerste indruk naar aanvraag.</p><div className="principles">{[['Scherpe propositie','In één oogopslag duidelijk wat je aanbiedt en voor wie.'],['Bewijs op het juiste moment','Sterke punten, echte reviews en antwoorden waar twijfel ontstaat.'],['Actie zonder frictie','Een werkend formulier dat aanvragen rechtstreeks in je inbox brengt.']].map(([title,text],index)=><article key={title}><span>0{index+1}</span><div><h3>{title}</h3><p>{text}</p></div></article>)}</div></div></div></div></section>}
+export function Header() {
+  return (
+    <header className="site-header">
+      <div className="header-inner">
+        <Link href="#top" className="logo" aria-label="Landingsite.nl home">
+          landing<span>site</span><i>.nl</i>
+        </Link>
+        <nav className="desktop-nav" aria-label="Hoofdnavigatie">
+          <a href="#portfolio">Portfolio</a>
+          <a href="#waarom">Waarom</a>
+          <a href="#werkwijze">Zo werkt het</a>
+          <a href="#prijzen">Pakketten</a>
+          <a href="#partner">Partner</a>
+          <a href="#faq">FAQ</a>
+        </nav>
+        <a className="header-cta" href="#contact">
+          Plan gratis gesprek <span aria-hidden="true">↗</span>
+        </a>
+        <MobileMenu />
+      </div>
+    </header>
+  )
+}
 
-export function ProcessTimeline(){const steps=[['Kies je route','Je kiest een pakket en rekent veilig af via iDEAL of kaart.'],['Brief ons scherp','De slimme intake vraagt precies wat nodig is, inclusief logo en beeld.'],['Wij bouwen door','Copy, structuur, vormgeving en techniek komen samen in één herstartbare workflow.'],['Controle & live','Je ontvangt de preview, we verwerken je pakketcorrecties en koppelen desgewenst je domein.']];return <section className="section process" id="proces"><div className="shell"><div className="section-label"><span>02</span><p>De 48-uurs sprint</p></div><div className="process-head"><h2>Snel betekent hier: een strak proces.</h2><p>De eerste versie volgt binnen 48 uur nadat betaling en intake compleet zijn. Geen magische belofte; wel een workflow waarin elke stap zichtbaar en herstelbaar is.</p></div><ol className="timeline">{steps.map(([title,text],index)=><li key={title}><span>{String(index+1).padStart(2,'0')}</span><div><small>{index===0?'Minuut 0':index===1?'Dag 0':index===2?'Dag 1': 'Uiterlijk dag 2'}</small><h3>{title}</h3><p>{text}</p></div></li>)}</ol></div></section>}
+export function Hero() {
+  return (
+    <section className="hero" id="top">
+      <div className="hero-glow glow-one" />
+      <div className="hero-glow glow-two" />
+      <div className="shell hero-grid">
+        <div className="hero-copy">
+          <p className="eyebrow"><span />Premium AI-webbureau voor zzp en mkb</p>
+          <h1>Klaar met dure websites? <em>Binnen 48 uur jouw nieuwe website live.</em></h1>
+          <p className="hero-lead">
+            Professionele websites vanaf €79 per maand. Inclusief hosting, onderhoud,
+            beveiliging en onbeperkte AI-ondersteuning.
+          </p>
+          <div className="hero-actions">
+            <a className="primary-button" href="#contact">Plan gratis gesprek <span aria-hidden="true">→</span></a>
+            <a className="secondary-button" href="#portfolio">Bekijk voorbeelden</a>
+          </div>
+          <div className="social-proof-line" aria-label="Steeds meer ondernemers kiezen voor Landingsite">
+            <span aria-hidden="true">★★★★★</span>
+            <strong>Steeds meer ondernemers kiezen voor Landingsite.</strong>
+          </div>
+          <div className="hero-proof">
+            {trustBadges.map((badge) => <span key={badge}>✓ {badge}</span>)}
+          </div>
+        </div>
+        <HeroScreenshotCarousel />
+      </div>
+    </section>
+  )
+}
 
-export function ShowcaseSection(){return <section className="section showcase"><div className="shell showcase-grid"><div className="showcase-copy"><div className="section-label light"><span>03</span><p>Conversieflow</p></div><h2>Geen verzameling blokken. Een verhaal dat verkoopt.</h2><p>Iedere sectie beantwoordt de volgende vraag van je bezoeker. Zo voelt de pagina logisch, blijft de boodschap hangen en wordt contact opnemen de natuurlijke volgende stap.</p><a href="#prijzen" className="text-link light-link">Kies je pakket <span>→</span></a></div><div className="flow-board">{[['01','Aandacht','Headline die direct landt'],['02','Herkenning','Probleem en doelgroep scherp'],['03','Vertrouwen','Voordelen en echt bewijs'],['04','Zekerheid','Werkwijze en FAQ'],['05','Actie','Formulier zonder omweg']].map(([n,title,text])=><div key={n}><span>{n}</span><strong>{title}</strong><small>{text}</small><i/></div>)}</div></div></section>}
+function HeroScreenshotCarousel() {
+  return (
+    <div className="hero-carousel" aria-label="Screenshots van live websites die Landingsite heeft gebouwd">
+      <div className="hero-carousel-top">
+        <span>Live referenties</span>
+        <strong>3 websites</strong>
+      </div>
+      <div className="hero-carousel-track">
+        {examples.map((item, index) => (
+          <a href={item.url} target="_blank" rel="noopener noreferrer" className="hero-shot" key={item.name}>
+            <div className="browser-bar" aria-hidden="true"><i /><i /><i /><span>{item.domain}</span></div>
+            <Image src={item.image} alt={`Screenshot van ${item.name}`} fill priority={index === 0} sizes="(max-width: 900px) 88vw, 420px" />
+            <div className="hero-shot-caption">
+              <strong>{item.name}</strong>
+              <span>{item.industry}</span>
+            </div>
+          </a>
+        ))}
+      </div>
+    </div>
+  )
+}
 
-export function BenefitsGrid(){const items=[['Mobiel als uitgangspunt','Ontworpen voor de plek waar advertentieverkeer meestal binnenkomt.'],['Echte leadopvolging','Geen mailto-truc: aanvragen worden opgeslagen en direct doorgestuurd.'],['Veilige AI-assistentie','AI helpt met copy; gecontroleerde code bepaalt de pagina en beveiliging.'],['Techniek inbegrepen','Snelle hosting, metadata, formulier, HTTPS en nette oplevering.'],['Eerlijk schaalbaar','Vaste bouwprijs. Hosting pas na akkoord voor €15 per maand.'],['Jij houdt overzicht','Een previewlink, heldere correctierondes en hulp bij je domein.']];return <section className="section benefits"><div className="shell"><div className="benefits-head"><div><div className="section-label"><span>04</span><p>Wat standaard goed zit</p></div><h2>Mooi aan de voorkant. Serieus aan de achterkant.</h2></div><p>De pagina moet niet alleen indruk maken. Hij moet snel laden, veilig omgaan met gegevens en bereikbaar blijven wanneer een externe dienst hapert.</p></div><div className="feature-grid">{items.map(([title,text],index)=><article key={title}><span className="feature-icon">{['↗','◎','◇','⌁','€','✓'][index]}</span><h3>{title}</h3><p>{text}</p></article>)}</div></div></section>}
+export function PortfolioSection() {
+  return (
+    <section className="section portfolio" id="portfolio">
+      <div className="shell">
+        <div className="section-head portfolio-head">
+          <p className="section-kicker">Portfolio</p>
+          <h2>Bekijk websites die we al gebouwd hebben</h2>
+          <p>Van B2B leadgeneratie tot coaching en AI: elke website krijgt een duidelijk doel, echte screenshots en een live voorbeeld.</p>
+        </div>
+        <div className="case-grid">
+          {examples.map((item) => (
+            <article className="case-card" key={item.name}>
+              <a className="case-image" href={item.url} target="_blank" rel="noopener noreferrer">
+                <div className="browser-bar" aria-hidden="true"><i /><i /><i /><span>{item.domain}</span></div>
+                <Image src={item.image} alt={`Screenshot van de actuele homepage van ${item.name}`} fill sizes="(max-width: 900px) 100vw, 33vw" />
+              </a>
+              <div className="case-info">
+                <span className="case-label">{item.industry}</span>
+                <h3>{item.name}</h3>
+                <p>{item.description}</p>
+                <div className="case-result"><strong>Resultaat</strong><span>{item.result}</span></div>
+                <div className="case-tags">{item.tags.map((tag) => <span key={tag}>{tag}</span>)}</div>
+                <a className="case-link" href={item.url} target="_blank" rel="noopener noreferrer">Bekijk live website <span aria-hidden="true">↗</span></a>
+              </div>
+            </article>
+          ))}
+        </div>
+        <div className="section-cta"><a className="primary-button" href="#contact">Ook zo&apos;n website? Plan gratis gesprek <span aria-hidden="true">→</span></a></div>
+      </div>
+    </section>
+  )
+}
 
-export function PortfolioSection(){const cases=[{name:'WIA Management',domain:'wiamanagement.nl',url:'https://www.wiamanagement.nl/',type:'B2B leadgeneratie',description:'Een complete aanvraagflow met dossiertriage, WIA-risicotool en een landelijk specialistennetwerk.',image:'/images/portfolio/wiamanagement-screenshot.webp',tone:'green'},{name:'Ontwikkelbegeleiding.nl',domain:'ontwikkelbegeleiding.nl',url:'https://www.ontwikkelbegeleiding.nl/',type:'Kinder- & ouderbegeleiding',description:'Een warme, toegankelijke site met heldere routes voor begeleiding thuis, op school en voor ouders.',image:'/images/portfolio/ontwikkelbegeleiding-screenshot.webp',tone:'blue'}];return <section className="section portfolio" id="portfolio"><div className="shell"><div className="portfolio-head"><div><div className="section-label"><span>05</span><p>Selectie</p></div><h2>Werk dat al live staat.</h2></div><p>Geen generieke template-look. De strategie, toon en visuele taal volgen altijd het aanbod en de doelgroep.</p></div><div className="case-grid">{cases.map(item=><a className={`case-card ${item.tone}`} href={item.url} target="_blank" rel="noopener noreferrer" key={item.name}><div className="case-image"><Image src={item.image} alt={`Screenshot van de actuele homepage van ${item.name}`} fill sizes="(max-width: 800px) 100vw, 50vw"/><span>Open live site ↗</span></div><div className="case-info"><small>{item.type}</small><h3>{item.name}</h3><p>{item.description}</p><span>{item.domain}</span></div></a>)}</div></div></section>}
+export function BenefitsGrid() {
+  const items = [
+    ['48u', 'Binnen 48 uur eerste versie', 'Je ziet snel een echte website in plaats van wekenlang wachten op concepten.'],
+    ['✓', 'Geen technisch gedoe', 'Hosting, beveiliging, onderhoud en updates worden voor je geregeld.'],
+    ['AI', 'AI én menselijke controle', 'AI versnelt tekst en optimalisatie; wij houden de kwaliteit en inhoud scherp.'],
+    ['∞', 'Altijd uitbreidbaar', 'Start compact en breid later uit met extra pagina’s, funnels of optimalisaties.'],
+    ['€', 'Vast maandbedrag', 'Duidelijke pakketten vanaf €79 per maand zonder vage offertes.'],
+    ['↗', 'Gemaakt voor groei', 'Duidelijke CTA’s, bewijs en structuur die bezoekers helpen kiezen.'],
+  ]
 
-export function PricingSection({packages}:{packages:Package[]}){return <section className="section pricing" id="prijzen"><div className="shell"><div className="pricing-head"><div className="section-label light"><span>06</span><p>Pakketten</p></div><h2>Kies hoeveel we van je overnemen.</h2><p>Alle bedragen zijn eenmalige bouwprijzen en exclusief btw. Hosting van €15 per maand start alleen na jouw aparte akkoord.</p></div><div className="price-grid">{packages.map((item,index)=><article className={item.highlighted?'featured':''} key={item.id}>{item.highlighted&&<span className="popular">Meest gekozen</span>}<div className="price-number">0{index+1}</div><small>{item.fit}</small><h3>{item.name}</h3><p>{item.tagline}</p><strong>{item.price}<i>excl. btw</i></strong><ul>{item.features.map(feature=><li key={feature}><span>✓</span>{feature}</li>)}</ul><PricingButton pakket={item.id} label={item.label}/></article>)}</div><div className="hosting-note"><div><span>H</span><strong>Hosting & domein</strong></div><p>Na oplevering kun als je dit wilt: managed hosting voor €15 per maand, maandelijks opzegbaar. We helpen met de juiste domeinkoppeling; DNS verschilt per provider.</p></div></div></section>}
+  return (
+    <section className="section benefits" id="waarom">
+      <div className="shell">
+        <div className="section-head">
+          <p className="section-kicker">Waarom ondernemers voor Landingsite kiezen</p>
+          <h2>Minder zorgen. Meer vertrouwen. Sneller online.</h2>
+        </div>
+        <div className="feature-grid">
+          {items.map(([icon, title, text]) => (
+            <article key={title}>
+              <span className="feature-icon" aria-hidden="true">{icon}</span>
+              <h3>{title}</h3>
+              <p>{text}</p>
+            </article>
+          ))}
+        </div>
+        <div className="section-cta"><a className="primary-button" href="#prijzen">Bekijk pakketten <span aria-hidden="true">→</span></a></div>
+      </div>
+    </section>
+  )
+}
 
-export function ComparisonSection(){return <section className="section comparison"><div className="shell comparison-grid"><div><div className="section-label"><span>07</span><p>Het verschil</p></div><h2>Niet méér website. Méér richting.</h2></div><div className="compare-table"><div className="compare-row head"><span/></div>{[['Doorlooptijd','Binnen 48 uur eerste versie','Vaak meerdere weken'],['Prijs','Vast vanaf €299','Offerte en uren'],['Focus','Eén campagne, één actie','Veel pagina’s en doelen'],['Input','Gerichte slimme intake','Meerdere meetings'],['Techniek','Formulier en hosting klaar','Losse leveranciers']].map(([label,ours,other])=><div className="compare-row" key={label}><strong>{label}</strong><span><i>✓</i>{ours}</span><span>{other}</span></div>)}<div className="compare-legend"><span><b/>Landingsite.nl</span><span><b/>Traditioneel traject</span></div></div></div></section>}
+export function TestimonialsSection() {
+  const reviews = [
+    {
+      logo: 'WIA',
+      name: 'WIA Management',
+      company: 'B2B leadgeneratie',
+      review: 'Zakelijke positionering, duidelijke aanvraagroute en een professionele eerste indruk voor werkgevers.',
+    },
+    {
+      logo: 'OB',
+      name: 'Ontwikkelbegeleiding.nl',
+      company: 'Coaching & begeleiding',
+      review: 'Een warme, toegankelijke website waarin bezoekers snel begrijpen waar begeleiding bij helpt.',
+    },
+    {
+      logo: 'AI',
+      name: 'AIbouwers.nl',
+      company: 'AI & automatisering',
+      review: 'Een heldere productsite met focus op uitleg, vertrouwen en een laagdrempelige procesaanvraag.',
+    },
+  ]
 
-export function FAQSection({faqs}:{faqs:FAQ[]}){return <section className="section faq" id="faq"><div className="shell faq-grid"><div><div className="section-label"><span>08</span><p>Veelgestelde vragen</p></div><h2>Alles wat je wilt weten voor je start.</h2><p>Staat je vraag er niet tussen? Mail <a href="mailto:info@landingsite.nl">info@landingsite.nl</a> of gebruik het formulier hieronder.</p></div><FAQAccordion items={faqs}/></div></section>}
+  return (
+    <section className="section testimonials" id="referenties">
+      <div className="shell">
+        <div className="section-head compact">
+          <p className="section-kicker">Referenties</p>
+          <h2>Bewijs boven beloftes.</h2>
+          <p>Geen verzonnen conversiecijfers. Wel echte websites, zichtbare voorbeelden en een proces dat ondernemers snel vooruit helpt.</p>
+        </div>
+        <div className="review-grid">
+          {reviews.map((item) => (
+            <article className="review-card" key={item.name}>
+              <div className="review-top">
+                <span className="review-logo" aria-hidden="true">{item.logo}</span>
+                <div><strong>{item.name}</strong><small>{item.company}</small></div>
+              </div>
+              <div className="stars" aria-label="5 sterren">★★★★★</div>
+              <p>{item.review}</p>
+            </article>
+          ))}
+        </div>
+        <div className="section-cta"><a className="secondary-button dark" href="#portfolio">Bekijk live voorbeelden</a></div>
+      </div>
+    </section>
+  )
+}
 
-export function FinalCTA(){return <section className="section contact-section" id="contact"><div className="shell contact-grid"><div><p className="eyebrow"><span/>Klaar voor focus?</p><h2>Vertel ons wat je wilt lanceren.</h2><p className="contact-lead">We denken eerlijk met je mee over aanbod, pakket en timing. Is een landingspagina niet de juiste route, dan zeggen we dat ook.</p><div className="contact-meta"><a href="mailto:info@landingsite.nl">info@landingsite.nl</a><span>Reactie binnen 1 werkdag</span></div></div><ContactForm/></div></section>}
+export function PricingSection({ packages }: { packages: Package[] }) {
+  return (
+    <section className="section pricing" id="prijzen">
+      <div className="shell">
+        <div className="pricing-head">
+          <p className="section-kicker light">Pakketten</p>
+          <h2>Een professionele website voor een vast maandbedrag.</h2>
+          <p>Geen technische termen. Geen losse onderhoudsfacturen. Jij kiest hoeveel hulp je wilt, wij houden je website gezond.</p>
+        </div>
+        <div className="price-grid">
+          {packages.map((item) => (
+            <article className={item.highlighted ? 'featured' : ''} key={item.id}>
+              {item.highlighted && <span className="popular">Meest gekozen</span>}
+              <small>{item.fit}</small>
+              <h3>{item.name}</h3>
+              <p>{item.tagline}</p>
+              <strong>{item.price}<i>p/m excl. btw</i></strong>
+              <ul>{item.features.map((feature) => <li key={feature}><span aria-hidden="true">✓</span>{feature}</li>)}</ul>
+              <a className="price-button" href="#contact">{item.label}<span aria-hidden="true">→</span></a>
+            </article>
+          ))}
+        </div>
+        <div className="included-strip">
+          {['Hosting', 'SSL', 'Updates', 'Backups', 'Onderhoud', 'Support', 'AI optimalisatie'].map((item) => <span key={item}>✓ {item}</span>)}
+        </div>
+      </div>
+    </section>
+  )
+}
 
-export function Footer(){return <footer className="site-footer"><div className="shell footer-top"><div><Link href="#top" className="logo inverse">landing<span>site</span><i>.nl</i></Link><p>Snelle, gefocuste landingspagina’s voor Nederlandse ondernemers.</p></div><div><strong>Navigatie</strong><a href="#aanpak">Aanpak</a><a href="#portfolio">Werk</a><a href="#prijzen">Pakketten</a></div><div><strong>Contact</strong><a href={`mailto:${BUSINESS.email}`}>{BUSINESS.email}</a><a href="#contact">Plan een start</a></div><div><strong>Juridisch</strong><Link href="/algemene-voorwaarden">Algemene voorwaarden</Link><Link href="/privacybeleid">Privacybeleid</Link></div></div><div className="shell footer-bottom"><span>© {new Date().getFullYear()} {BUSINESS.brandName}</span><span>Website ontwikkeld door <a href="https://landingsite.nl">Landingsite.nl</a></span></div></footer>}
+export function ProcessTimeline() {
+  const steps = [
+    ['01', 'Plan gesprek', 'We bespreken je doel, aanbod en beste pakket.'],
+    ['02', 'Wij bouwen jouw website', 'Structuur, tekst, design en techniek komen samen.'],
+    ['03', 'Binnen 48 uur eerste versie', 'Je krijgt een echte preview om te bekijken.'],
+    ['04', 'Live', 'Na akkoord zetten we je website online.'],
+    ['05', 'Wij onderhouden alles', 'Updates, backups, support en AI-optimalisatie blijven geregeld.'],
+  ]
+
+  return (
+    <section className="section process" id="werkwijze">
+      <div className="shell">
+        <div className="section-head">
+          <p className="section-kicker">Zo werkt het</p>
+          <h2>Van gesprek naar live website zonder technisch gedoe.</h2>
+        </div>
+        <ol className="timeline">
+          {steps.map(([number, title, text]) => (
+            <li key={title}>
+              <span>{number}</span>
+              <div className="timeline-illustration" aria-hidden="true"><i /></div>
+              <h3>{title}</h3>
+              <p>{text}</p>
+            </li>
+          ))}
+        </ol>
+        <div className="section-cta"><a className="primary-button" href="#contact">Start met een gratis gesprek <span aria-hidden="true">→</span></a></div>
+      </div>
+    </section>
+  )
+}
+
+export function PartnerProgramSection() {
+  const rewards = [
+    ['Directe klant', '€20 per maand'],
+    ['Tweede niveau', '€5 per maand'],
+    ['Derde niveau', '€2 per maand'],
+  ]
+
+  return (
+    <section className="section partner" id="partner">
+      <div className="shell partner-grid">
+        <div>
+          <p className="section-kicker light">Klanten brengen klanten</p>
+          <h2>Verdien iedere maand met jouw netwerk</h2>
+          <p>Ben je tevreden over jouw website? Breng ondernemers aan en ontvang iedere maand een terugkerende vergoeding zolang jouw aangebrachte klant klant blijft.</p>
+          <div className="partner-actions">
+            <a className="primary-button" href="#contact">Word Partner <span aria-hidden="true">→</span></a>
+            <a className="secondary-button on-dark" href="#faq">Lees meer</a>
+          </div>
+        </div>
+        <div className="partner-visual" aria-label="Partnerprogramma met drie niveaus">
+          {['Jij', 'Nieuwe klant', 'Nieuwe klant', 'Nieuwe klant'].map((label, index) => (
+            <div className="partner-node" key={`${label}-${index}`}>
+              <span>{label}</span>
+              {index > 0 && <strong>{rewards[index - 1][1]}</strong>}
+            </div>
+          ))}
+          <div className="reward-list">
+            {rewards.map(([label, amount]) => <p key={label}><span>{label}</span><strong>{amount}</strong></p>)}
+          </div>
+        </div>
+      </div>
+    </section>
+  )
+}
+
+export function FAQSection({ faqs }: { faqs: FAQ[] }) {
+  return (
+    <section className="section faq" id="faq">
+      <div className="shell faq-grid">
+        <div>
+          <p className="section-kicker">Veelgestelde vragen</p>
+          <h2>Alles wat je wilt weten voor je start.</h2>
+          <p>Staat je vraag er niet tussen? Mail <a href={`mailto:${BUSINESS.email}`}>{BUSINESS.email}</a> of plan direct een gratis gesprek.</p>
+          <a className="secondary-button dark" href="#contact">Plan gratis gesprek</a>
+        </div>
+        <FAQAccordion items={faqs} />
+      </div>
+    </section>
+  )
+}
+
+export function FinalCTA() {
+  return (
+    <section className="section contact-section" id="contact">
+      <div className="shell contact-grid">
+        <div>
+          <p className="eyebrow"><span />Klaar voor een website die vertrouwen wekt?</p>
+          <h2>Plan gratis een gesprek van 15 minuten.</h2>
+          <p className="contact-lead">We kijken eerlijk mee naar je aanbod, doelgroep en timing. Past Landingsite niet, dan zeggen we dat ook.</p>
+          <div className="contact-meta">
+            <a href={`mailto:${BUSINESS.email}`}>{BUSINESS.email}</a>
+            <span>Reactie binnen 1 werkdag</span>
+            <span>Vanaf €79 per maand</span>
+          </div>
+        </div>
+        <ContactForm />
+      </div>
+    </section>
+  )
+}
+
+export function Footer() {
+  return (
+    <footer className="site-footer">
+      <div className="shell footer-top">
+        <div>
+          <Link href="#top" className="logo inverse">landing<span>site</span><i>.nl</i></Link>
+          <p>Premium websites voor Nederlandse ondernemers. Live in 48 uur, onderhouden door Landingsite.</p>
+        </div>
+        <div>
+          <strong>Navigatie</strong>
+          <a href="#portfolio">Portfolio</a>
+          <a href="#partner">Partnerprogramma</a>
+          <a href="#referenties">Referenties</a>
+          <a href="#faq">Veelgestelde vragen</a>
+        </div>
+        <div>
+          <strong>Contact</strong>
+          <a href={`mailto:${BUSINESS.email}`}>{BUSINESS.email}</a>
+          <a href="#contact">Plan gratis gesprek</a>
+          <a href="#prijzen">Pakketten</a>
+        </div>
+        <div>
+          <strong>Juridisch</strong>
+          <Link href="/privacybeleid">Privacy</Link>
+          <Link href="/algemene-voorwaarden">Algemene voorwaarden</Link>
+        </div>
+      </div>
+      <div className="shell footer-bottom">
+        <span>© {new Date().getFullYear()} {BUSINESS.brandName}</span>
+        <span>Website ontwikkeld door <a href="https://landingsite.nl">Landingsite.nl</a></span>
+      </div>
+    </footer>
+  )
+}

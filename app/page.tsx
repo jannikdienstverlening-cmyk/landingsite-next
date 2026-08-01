@@ -1,22 +1,157 @@
-import { BenefitsGrid, ComparisonSection, FAQSection, FinalCTA, Footer, Header, Hero, PortfolioSection, PricingSection, ProblemSection, ProcessTimeline, ShowcaseSection } from '@/components/home-redesign'
+import {
+  BenefitsGrid,
+  FAQSection,
+  FinalCTA,
+  Footer,
+  Header,
+  Hero,
+  PartnerProgramSection,
+  PortfolioSection,
+  PricingSection,
+  ProcessTimeline,
+  TestimonialsSection,
+} from '@/components/home-redesign'
+import { ExitIntentPrompt, StickyMobileCTA } from '@/components/home-actions'
 import { BUSINESS } from '@/lib/business'
 
-const faqs=[
-  {q:'Wanneer start de termijn van 48 uur?',a:'Zodra je betaling is bevestigd én je intake compleet is. Binnen 48 uur ontvang je de eerste live preview. Correcties en een eventuele domeinkoppeling kunnen daarna nog extra tijd vragen.'},
-  {q:'Wat moet ik zelf aanleveren?',a:'Minimaal je aanbod, doelgroep, drie sterke punten en contactgegevens. Je kunt in de intake ook je logo, hoofdbeeld, echte reviews, FAQ en social links uploaden. Hoe concreter je input, hoe sterker het resultaat.'},
-  {q:'Is het contactformulier echt werkend?',a:'Ja. Aanvragen worden veilig opgeslagen en naar het door jou gekozen e-mailadres gestuurd. Het formulier gebruikt spambeperking en geen mailto-link.'},
-  {q:'Kan ik wijzigingen laten doen?',a:'Starter is een snelle eerste versie zonder correctieronde. Pro bevat één correctieronde; Premium bevat drie correctierondes. Een ronde bundelt wijzigingen binnen de afgesproken pagina en is geen volledig nieuw concept.'},
-  {q:'Hoe werkt hosting van €15 per maand?',a:'De bouwprijs in de checkout is eenmalig. Managed hosting wordt pas na oplevering en jouw aparte akkoord geactiveerd, kost €15 per maand exclusief btw en is maandelijks opzegbaar.'},
-  {q:'Kunnen jullie mijn eigen domein koppelen?',a:'Ja. We voegen het domein eerst aan de hosting toe en geven daarna de juiste DNS-instellingen voor jouw provider. Een hoofddomein en www-adres vragen vaak verschillende records; daarom sturen we geen generiek record dat mogelijk niet klopt.'},
-  {q:'Garandeert een landingspagina meer leads?',a:'Nee. We optimaliseren structuur, duidelijkheid, techniek en formulieren, maar resultaten hangen ook af van je aanbod, verkeer, markt en opvolging. We beloven daarom geen specifieke omzet of conversieratio.'},
+const faqs = [
+  {
+    q: 'Wanneer staat mijn website live?',
+    a: 'Binnen 48 uur na een compleet startgesprek en aangeleverde basisinput ontvang je de eerste versie. Na jouw akkoord zetten we de website live.',
+  },
+  {
+    q: 'Kan ik overstappen met mijn bestaande website?',
+    a: 'Ja. We kijken welke inhoud, domeinnaam en pagina’s mee moeten. Daarna maken we een frisse versie in Landingsite-stijl en helpen we met de overstap.',
+  },
+  {
+    q: 'Wie beheert mijn domein?',
+    a: 'Jij blijft eigenaar van je domein. Wij helpen met de juiste koppeling en leggen duidelijk uit welke instelling nodig is bij jouw domeinprovider.',
+  },
+  {
+    q: 'Kan ik later uitbreiden?',
+    a: 'Ja. Je kunt starten met één duidelijke website en later uitbreiden met extra pagina’s, funnels, formulieren, AI-optimalisatie of campagnes.',
+  },
+  {
+    q: 'Kan ik zelf teksten aanpassen?',
+    a: 'Kleine tekstwijzigingen kun je via ons laten doen binnen je pakket. Wil je zelf volledig beheren, dan bespreken we welke setup daar het beste bij past.',
+  },
+  {
+    q: 'Kan ik opzeggen?',
+    a: 'Ja. De maandpakketten zijn bedoeld als doorlopende ontzorging. De exacte opzegtermijn en overdracht spreken we vooraf helder af.',
+  },
+  {
+    q: 'Wat zit er in het maandbedrag?',
+    a: 'Hosting, SSL, updates, backups, onderhoud, support en AI-ondersteuning zitten standaard in de pakketten. Je hoeft geen losse technische leveranciers te regelen.',
+  },
+  {
+    q: 'Garanderen jullie meer leads?',
+    a: 'Nee. We maken je website duidelijker, sneller en professioneler, maar resultaten hangen ook af van aanbod, markt, verkeer en opvolging.',
+  },
 ]
 
-const packages=[
-  {id:'starter' as const,name:'Starter',price:'€299',fit:'Voor een snelle validatie',tagline:'Een compacte, professionele pagina op basis van jouw aangeleverde copy.',label:'Kies Starter',features:['Eén gefocuste landingspagina','Hero, voordelen, werkwijze en CTA','Werkend leadformulier','Mobiel en technisch geoptimaliseerd','Live preview binnen 48 uur']},
-  {id:'pro' as const,name:'Pro',price:'€499',fit:'Voor campagnes en leadgroei',tagline:'Meer inhoud, bewijs en doelgroepfocus voor een volwassen campagne.',label:'Kies Pro',highlighted:true,features:['Alles uit Starter','Doelgroep- en werkgebiedfocus','Echte reviews en FAQ-sectie','Social links geïntegreerd','1 gebundelde correctieronde']},
-  {id:'premium' as const,name:'Premium',price:'€899',fit:'Voor volledige ontzorging',tagline:'Strategische positionering en complete copy op basis van je briefing.',label:'Kies Premium',features:['Alles uit Pro','Volledige conversiecopy geschreven','Eigen visuele sfeer en positionering','Uitgebreide inhoudelijke uitwerking','3 gebundelde correctierondes']},
+const packages = [
+  {
+    id: 'starter' as const,
+    name: 'Starter',
+    price: '€79',
+    fit: 'Voor rustig en professioneel online staan',
+    tagline: 'Een compacte website met alles wat nodig is om betrouwbaar gevonden te worden.',
+    label: 'Plan Starter gesprek',
+    features: ['Website live binnen 48 uur', 'Hosting inbegrepen', 'SSL en beveiliging', 'Updates en backups', 'Support per mail', 'AI-ondersteuning'],
+  },
+  {
+    id: 'pro' as const,
+    name: 'Groei',
+    price: '€129',
+    fit: 'Voor ondernemers die aanvragen willen stimuleren',
+    tagline: 'Meer bewijs, betere CTA’s en doorlopende optimalisatie voor groei.',
+    label: 'Plan Groei gesprek',
+    highlighted: true,
+    features: ['Alles uit Starter', 'Extra conversiesecties', 'Reviews en portfolio sterker verwerkt', 'AI optimalisatie', 'Maandelijkse verbetercheck', 'Prioriteit bij support'],
+  },
+  {
+    id: 'premium' as const,
+    name: 'Premium',
+    price: '€199',
+    fit: 'Voor volledige ontzorging en uitbreiding',
+    tagline: 'Voor ondernemers die een premium website willen met meer begeleiding.',
+    label: 'Plan Premium gesprek',
+    features: ['Alles uit Groei', 'Uitbreidbare paginastructuur', 'Meer designmaatwerk', 'Partnerprogramma setup', 'Strategische sparring', 'Snellere doorontwikkeling'],
+  },
 ]
 
-const jsonLd={'@context':'https://schema.org','@graph':[{'@type':'ProfessionalService','@id':'https://landingsite.nl/#organization',name:BUSINESS.brandName,legalName:BUSINESS.legalName,url:BUSINESS.website,email:BUSINESS.email,taxID:BUSINESS.chamberOfCommerceNumber,vatID:BUSINESS.vatId,address:{'@type':'PostalAddress',streetAddress:BUSINESS.address.street,postalCode:BUSINESS.address.postalCode,addressLocality:BUSINESS.address.city,addressCountry:BUSINESS.address.countryCode},description:'Professionele landingspagina’s voor Nederlandse ondernemers.',areaServed:'NL'},{'@type':'Service',name:'Landingspagina laten maken',provider:{'@id':'https://landingsite.nl/#organization'},areaServed:'NL',offers:packages.map(item=>({'@type':'Offer',name:item.name,price:item.price.replace('€',''),priceCurrency:'EUR',availability:'https://schema.org/InStock'}))},{'@type':'FAQPage',mainEntity:faqs.map(item=>({'@type':'Question',name:item.q,acceptedAnswer:{'@type':'Answer',text:item.a}}))}]}
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@graph': [
+    {
+      '@type': 'ProfessionalService',
+      '@id': 'https://landingsite.nl/#organization',
+      name: BUSINESS.brandName,
+      legalName: BUSINESS.legalName,
+      url: BUSINESS.website,
+      email: BUSINESS.email,
+      taxID: BUSINESS.chamberOfCommerceNumber,
+      vatID: BUSINESS.vatId,
+      address: {
+        '@type': 'PostalAddress',
+        streetAddress: BUSINESS.address.street,
+        postalCode: BUSINESS.address.postalCode,
+        addressLocality: BUSINESS.address.city,
+        addressCountry: BUSINESS.address.countryCode,
+      },
+      description: 'Professionele websites en landingspagina’s voor zzp en mkb, inclusief hosting, onderhoud en AI-ondersteuning.',
+      areaServed: 'NL',
+    },
+    {
+      '@type': 'Service',
+      name: 'Website laten maken met abonnement',
+      provider: { '@id': 'https://landingsite.nl/#organization' },
+      areaServed: 'NL',
+      offers: packages.map((item) => ({
+        '@type': 'Offer',
+        name: item.name,
+        price: item.price.replace('€', ''),
+        priceCurrency: 'EUR',
+        availability: 'https://schema.org/InStock',
+        priceSpecification: {
+          '@type': 'UnitPriceSpecification',
+          price: item.price.replace('€', ''),
+          priceCurrency: 'EUR',
+          billingIncrement: 1,
+          unitText: 'MONTH',
+        },
+      })),
+    },
+    {
+      '@type': 'FAQPage',
+      mainEntity: faqs.map((item) => ({
+        '@type': 'Question',
+        name: item.q,
+        acceptedAnswer: { '@type': 'Answer', text: item.a },
+      })),
+    },
+  ],
+}
 
-export default function Home(){return <><script type="application/ld+json" dangerouslySetInnerHTML={{__html:JSON.stringify(jsonLd).replace(/</g,'\\u003c')}}/><Header/><main><Hero/><ProblemSection/><ProcessTimeline/><ShowcaseSection/><BenefitsGrid/><PortfolioSection/><PricingSection packages={packages}/><ComparisonSection/><FAQSection faqs={faqs}/><FinalCTA/></main><Footer/></>}
+export default function Home() {
+  return (
+    <>
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd).replace(/</g, '\\u003c') }} />
+      <Header />
+      <main>
+        <Hero />
+        <PortfolioSection />
+        <BenefitsGrid />
+        <TestimonialsSection />
+        <PricingSection packages={packages} />
+        <ProcessTimeline />
+        <PartnerProgramSection />
+        <FAQSection faqs={faqs} />
+        <FinalCTA />
+      </main>
+      <Footer />
+      <StickyMobileCTA />
+      <ExitIntentPrompt />
+    </>
+  )
+}
