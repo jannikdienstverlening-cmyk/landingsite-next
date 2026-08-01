@@ -22,7 +22,10 @@ export async function POST(request: NextRequest) {
       line_items: [{
         price_data: {
           currency: 'eur',
-          product_data: { name: `Landingsite.nl ${info.naam}`, description: 'Websitepakket inclusief hosting, onderhoud en AI-ondersteuning.' },
+          product_data: {
+            name: `Landingsite.nl ${info.naam}`,
+            description: 'Eenmalige bouwprijs voor een professionele landingspagina. Managed hosting is optioneel en wordt alleen na apart akkoord geactiveerd.',
+          },
           unit_amount: info.prijs,
         },
         quantity: 1,
@@ -43,7 +46,7 @@ export async function POST(request: NextRequest) {
         numeric: { minimum_length: 8, maximum_length: 8 },
       }],
       custom_text: {
-        submit: { message: 'Je bestelt als ondernemer. We nemen na betaling contact op voor intake, planning en publicatie.' },
+        submit: { message: 'Je bestelt als ondernemer. Na betaling ontvang je de intake. Managed hosting is optioneel voor €15 p/m excl. btw en wordt alleen na apart akkoord geactiveerd.' },
       },
       ...(process.env.STRIPE_TERMS_CONFIGURED === 'true'
         ? { consent_collection: { terms_of_service: 'required' as const } }

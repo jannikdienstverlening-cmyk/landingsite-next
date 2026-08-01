@@ -6,8 +6,8 @@ const syne = Syne({ subsets: ['latin'], weight: ['400', '700', '800'], variable:
 const dmMono = DM_Mono({ subsets: ['latin'], weight: ['400', '500'], variable: '--font-dm-mono', display: 'swap' })
 
 export const metadata: Metadata = {
-  title: { default: 'Website laten maken vanaf €79 p/m | Landingsite.nl', template: '%s | Landingsite.nl' },
-  description: 'Laat een professionele website of landingspagina maken voor zzp of mkb. Eerste versie binnen 48 uur, vanaf €79 per maand inclusief hosting, onderhoud en AI-ondersteuning.',
+  title: { default: 'Landingspagina laten maken vanaf €299 | Landingsite.nl', template: '%s | Landingsite.nl' },
+  description: 'Laat een professionele landingspagina maken voor je campagne, dienst of product. Eerste versie binnen 48 uur na betaling en complete intake, vanaf €299 excl. btw.',
   metadataBase: new URL('https://landingsite.nl'),
   alternates: { canonical: '/' },
   robots: { index: true, follow: true, googleBot: { index: true, follow: true } },
@@ -16,13 +16,13 @@ export const metadata: Metadata = {
     locale: 'nl_NL',
     url: 'https://landingsite.nl',
     siteName: 'Landingsite.nl',
-    title: 'Binnen 48 uur jouw nieuwe website live',
-    description: 'Professionele websites vanaf €79 per maand. Inclusief hosting, onderhoud, beveiliging en AI-ondersteuning.',
+    title: 'Een scherpe landingspagina, zonder weken wachten',
+    description: 'Professionele landingspagina vanaf €299. Eerste versie binnen 48 uur na betaling en complete intake.',
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Binnen 48 uur jouw nieuwe website live',
-    description: 'Professionele website voor zzp en mkb vanaf €79 per maand.',
+    title: 'Landingspagina laten maken vanaf €299',
+    description: 'Eerste versie binnen 48 uur na betaling en complete intake.',
   },
   verification: { google: 'iN4lNqCMdhok5XwzhIlYx3uX-XSAuYl08Iju7wdV76M' },
   keywords: [

@@ -19,17 +19,17 @@ export function getStripe() {
 export const PAKKETTEN = {
   starter: {
     naam: 'Starter',
-    prijs: 7900,
-    prijs_label: '€79 p/m',
+    prijs: 29900,
+    prijs_label: '€299',
   },
   pro: {
-    naam: 'Groei',
-    prijs: 12900,
-    prijs_label: '€129 p/m',
+    naam: 'Pro',
+    prijs: 49900,
+    prijs_label: '€499',
   },
   premium: {
     naam: 'Premium',
-    prijs: 19900,
-    prijs_label: '€199 p/m',
+    prijs: 89900,
+    prijs_label: '€899',
   },
 }

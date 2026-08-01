@@ -1,51 +1,36 @@
 import {
-  BenefitsGrid,
-  FAQSection,
-  FinalCTA,
+  EssentialsSection,
+  FAQContactSection,
   Footer,
   Header,
   Hero,
   PartnerProgramSection,
   PortfolioSection,
   PricingSection,
-  ProcessTimeline,
-  TestimonialsSection,
 } from '@/components/home-redesign'
-import { ExitIntentPrompt, StickyMobileCTA } from '@/components/home-actions'
+import { StickyMobileCTA } from '@/components/home-actions'
 import { BUSINESS } from '@/lib/business'
 
 const faqs = [
   {
-    q: 'Wanneer staat mijn website live?',
-    a: 'Binnen 48 uur na een compleet startgesprek en aangeleverde basisinput ontvang je de eerste versie. Na jouw akkoord zetten we de website live.',
+    q: 'Wanneer begint de termijn van 48 uur?',
+    a: 'De termijn start na betaling en zodra de intake compleet is. Als er belangrijke input ontbreekt, schuift de planning op totdat alles binnen is.',
   },
   {
-    q: 'Kan ik overstappen met mijn bestaande website?',
-    a: 'Ja. We kijken welke inhoud, domeinnaam en pagina’s mee moeten. Daarna maken we een frisse versie in Landingsite-stijl en helpen we met de overstap.',
+    q: 'Wat moet ik zelf aanleveren?',
+    a: 'Je levert je aanbod, doelgroep, contactgegevens, sterke punten en beschikbare beelden aan. Heb je nog geen teksten? Dan helpen we met een heldere eerste opzet.',
   },
   {
-    q: 'Wie beheert mijn domein?',
-    a: 'Jij blijft eigenaar van je domein. Wij helpen met de juiste koppeling en leggen duidelijk uit welke instelling nodig is bij jouw domeinprovider.',
+    q: 'Kan ik wijzigingen laten doen?',
+    a: 'Ja. Correctierondes hangen af van het gekozen pakket. Kleine aanpassingen bespreken we praktisch, grotere uitbreidingen kunnen apart worden ingepland.',
   },
   {
-    q: 'Kan ik later uitbreiden?',
-    a: 'Ja. Je kunt starten met één duidelijke website en later uitbreiden met extra pagina’s, funnels, formulieren, AI-optimalisatie of campagnes.',
+    q: 'Hoe werkt de hosting?',
+    a: 'Managed hosting is optioneel en kost €15 per maand exclusief btw. Hosting wordt alleen na apart akkoord geactiveerd en is maandelijks opzegbaar.',
   },
   {
-    q: 'Kan ik zelf teksten aanpassen?',
-    a: 'Kleine tekstwijzigingen kun je via ons laten doen binnen je pakket. Wil je zelf volledig beheren, dan bespreken we welke setup daar het beste bij past.',
-  },
-  {
-    q: 'Kan ik opzeggen?',
-    a: 'Ja. De maandpakketten zijn bedoeld als doorlopende ontzorging. De exacte opzegtermijn en overdracht spreken we vooraf helder af.',
-  },
-  {
-    q: 'Wat zit er in het maandbedrag?',
-    a: 'Hosting, SSL, updates, backups, onderhoud, support en AI-ondersteuning zitten standaard in de pakketten. Je hoeft geen losse technische leveranciers te regelen.',
-  },
-  {
-    q: 'Garanderen jullie meer leads?',
-    a: 'Nee. We maken je website duidelijker, sneller en professioneler, maar resultaten hangen ook af van aanbod, markt, verkeer en opvolging.',
+    q: 'Garandeert een landingspagina meer aanvragen?',
+    a: 'Nee. We bouwen een duidelijke, professionele pagina met focus op één doel. Resultaten blijven afhankelijk van je aanbod, verkeer, markt en opvolging.',
   },
 ]
 
@@ -53,30 +38,27 @@ const packages = [
   {
     id: 'starter' as const,
     name: 'Starter',
-    price: '€79',
-    fit: 'Voor rustig en professioneel online staan',
-    tagline: 'Een compacte website met alles wat nodig is om betrouwbaar gevonden te worden.',
-    label: 'Plan Starter gesprek',
-    features: ['Website live binnen 48 uur', 'Hosting inbegrepen', 'SSL en beveiliging', 'Updates en backups', 'Support per mail', 'AI-ondersteuning'],
+    price: '€299',
+    fit: 'Voor een compacte eerste campagne',
+    tagline: 'Een professionele landingspagina met de belangrijkste secties en een werkend formulier.',
+    features: ['Eén landingspagina', 'Mobiel geoptimaliseerd', 'Contactformulier', 'Basis SEO-inrichting', 'Eén correctieronde'],
   },
   {
     id: 'pro' as const,
-    name: 'Groei',
-    price: '€129',
-    fit: 'Voor ondernemers die aanvragen willen stimuleren',
-    tagline: 'Meer bewijs, betere CTA’s en doorlopende optimalisatie voor groei.',
-    label: 'Plan Groei gesprek',
+    name: 'Pro',
+    price: '€499',
+    fit: 'Voor meer inhoud en vertrouwen',
+    tagline: 'Meer ruimte voor bewijs, FAQ, extra secties en een sterkere aanvraagroute.',
     highlighted: true,
-    features: ['Alles uit Starter', 'Extra conversiesecties', 'Reviews en portfolio sterker verwerkt', 'AI optimalisatie', 'Maandelijkse verbetercheck', 'Prioriteit bij support'],
+    features: ['Alles uit Starter', 'Uitgebreidere structuur', 'Reviews of bewijssectie', 'Twee correctierondes', 'Hulp bij domeinkoppeling'],
   },
   {
     id: 'premium' as const,
     name: 'Premium',
-    price: '€199',
-    fit: 'Voor volledige ontzorging en uitbreiding',
-    tagline: 'Voor ondernemers die een premium website willen met meer begeleiding.',
-    label: 'Plan Premium gesprek',
-    features: ['Alles uit Groei', 'Uitbreidbare paginastructuur', 'Meer designmaatwerk', 'Partnerprogramma setup', 'Strategische sparring', 'Snellere doorontwikkeling'],
+    price: '€899',
+    fit: 'Voor meer maatwerk en begeleiding',
+    tagline: 'Een uitgebreidere pagina met meer designaandacht, inhoudelijke hulp en premium afwerking.',
+    features: ['Alles uit Pro', 'Meer designmaatwerk', 'Extra contentblokken', 'Drie correctierondes', 'Strategische sparring'],
   },
 ]
 
@@ -99,12 +81,12 @@ const jsonLd = {
         addressLocality: BUSINESS.address.city,
         addressCountry: BUSINESS.address.countryCode,
       },
-      description: 'Professionele websites en landingspagina’s voor zzp en mkb, inclusief hosting, onderhoud en AI-ondersteuning.',
+      description: 'Professionele landingspagina’s voor zzp en mkb, met eerste versie binnen 48 uur na betaling en complete intake.',
       areaServed: 'NL',
     },
     {
       '@type': 'Service',
-      name: 'Website laten maken met abonnement',
+      name: 'Landingspagina laten maken',
       provider: { '@id': 'https://landingsite.nl/#organization' },
       areaServed: 'NL',
       offers: packages.map((item) => ({
@@ -113,13 +95,6 @@ const jsonLd = {
         price: item.price.replace('€', ''),
         priceCurrency: 'EUR',
         availability: 'https://schema.org/InStock',
-        priceSpecification: {
-          '@type': 'UnitPriceSpecification',
-          price: item.price.replace('€', ''),
-          priceCurrency: 'EUR',
-          billingIncrement: 1,
-          unitText: 'MONTH',
-        },
       })),
     },
     {
@@ -141,17 +116,13 @@ export default function Home() {
       <main>
         <Hero />
         <PortfolioSection />
-        <BenefitsGrid />
-        <TestimonialsSection />
+        <EssentialsSection />
         <PricingSection packages={packages} />
-        <ProcessTimeline />
         <PartnerProgramSection />
-        <FAQSection faqs={faqs} />
-        <FinalCTA />
+        <FAQContactSection faqs={faqs} />
       </main>
       <Footer />
       <StickyMobileCTA />
-      <ExitIntentPrompt />
     </>
   )
 }

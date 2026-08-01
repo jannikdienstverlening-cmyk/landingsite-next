@@ -8,11 +8,11 @@ const outputDir = path.resolve('public/images/portfolio')
 const targets = [
   {
     url: 'https://www.wiamanagement.nl/',
-    fileName: 'wiamanagement-screenshot.webp',
+    fileName: 'wiamanagement-home-20260801.webp',
   },
   {
     url: 'https://www.ontwikkelbegeleiding.nl/',
-    fileName: 'ontwikkelbegeleiding-screenshot.webp',
+    fileName: 'ontwikkelbegeleiding-home-20260801.webp',
   },
 ]
 

@@ -1,14 +1,12 @@
 'use client'
 
 import type { FormEvent } from 'react'
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 
 const navItems = [
-  ['Portfolio', '#portfolio'],
-  ['Waarom', '#waarom'],
-  ['Zo werkt het', '#werkwijze'],
-  ['Pakketten', '#prijzen'],
-  ['Partner', '#partner'],
+  ['Voorbeelden', '#voorbeelden'],
+  ['Werkwijze', '#werkwijze'],
+  ['Prijzen', '#prijzen'],
   ['FAQ', '#faq'],
   ['Contact', '#contact'],
 ]
@@ -113,15 +111,15 @@ export function ContactForm() {
       </div>
       <label><span>E-mailadres</span><input required type="email" autoComplete="email" value={form.email} onChange={(event) => update('email', event.target.value)} /></label>
       <label>
-        <span>Waar wil je mee live?</span>
-        <textarea required minLength={10} value={form.bericht} onChange={(event) => update('bericht', event.target.value)} placeholder="Vertel kort wat je aanbiedt, voor wie de website is en wanneer je wilt starten." />
+        <span>Wat wil je lanceren?</span>
+        <textarea required minLength={10} value={form.bericht} onChange={(event) => update('bericht', event.target.value)} placeholder="Beschrijf kort je aanbod, doel en wanneer je wilt starten." />
       </label>
       <label className="honeypot" aria-hidden="true">Website<input tabIndex={-1} autoComplete="off" value={form.website} onChange={(event) => update('website', event.target.value)} /></label>
       <button className="contact-submit" disabled={status === 'sending'} type="submit">
-        {status === 'sending' ? 'Bericht versturen...' : 'Plan gratis gesprek'}
+        {status === 'sending' ? 'Bericht versturen...' : 'Bespreek mijn landingspagina'}
         <span aria-hidden="true">→</span>
       </button>
-      <p className="form-note">Je hoort binnen één werkdag van ons. Geen verkooppraatje, wel een eerlijk advies.</p>
+      <p className="form-note">Reactie binnen één werkdag. Geen verplichtingen.</p>
       {status === 'ok' && <p className="form-status success" role="status">Gelukt. Je bericht is veilig verzonden.</p>}
       {status === 'error' && <p className="form-status error" role="alert">{error}</p>}
     </form>
@@ -129,40 +127,5 @@ export function ContactForm() {
 }
 
 export function StickyMobileCTA() {
-  return <a className="mobile-sticky-cta" href="#contact">Plan gratis gesprek</a>
-}
-
-export function ExitIntentPrompt() {
-  const [visible, setVisible] = useState(false)
-
-  useEffect(() => {
-    if (sessionStorage.getItem('landingsite-exit-intent') === 'seen') return
-
-    const timer = window.setTimeout(() => {
-      const onMouseOut = (event: MouseEvent) => {
-        if (event.clientY > 12 || event.relatedTarget) return
-        sessionStorage.setItem('landingsite-exit-intent', 'seen')
-        setVisible(true)
-        document.removeEventListener('mouseout', onMouseOut)
-      }
-
-      document.addEventListener('mouseout', onMouseOut)
-    }, 1400)
-
-    return () => window.clearTimeout(timer)
-  }, [])
-
-  if (!visible) return null
-
-  return (
-    <div className="exit-overlay" role="dialog" aria-modal="true" aria-labelledby="exit-title">
-      <div className="exit-card">
-        <button className="exit-close" type="button" onClick={() => setVisible(false)} aria-label="Popup sluiten">×</button>
-        <span className="stars" aria-hidden="true">★★★★★</span>
-        <h2 id="exit-title">Twijfel je nog?</h2>
-        <p>Plan gratis een gesprek van 15 minuten. Dan weet je snel welk pakket past en wat we binnen 48 uur kunnen opleveren.</p>
-        <a className="primary-button" href="#contact" onClick={() => setVisible(false)}>Plan gratis gesprek <span aria-hidden="true">→</span></a>
-      </div>
-    </div>
-  )
+  return <a className="mobile-sticky-cta" href="#prijzen">Start mijn landingspagina</a>
 }

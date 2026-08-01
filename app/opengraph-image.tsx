@@ -1,6 +1,6 @@
 import { ImageResponse } from 'next/og'
 
-export const alt = 'Landingsite.nl - binnen 48 uur jouw nieuwe website live'
+export const alt = 'Landingsite.nl - landingspagina live zonder weken wachten'
 export const size = { width: 1200, height: 630 }
 export const contentType = 'image/png'
 
@@ -15,15 +15,15 @@ export default function Image() {
         </div>
         <div style={{ display: 'flex', flexDirection: 'column' }}>
           <div style={{ display: 'flex', fontSize: 20, textTransform: 'uppercase', letterSpacing: 4, color: '#47dda3', marginBottom: 20 }}>
-            Websites voor zzp en mkb
+            Landingspagina voor zzp en mkb
           </div>
           <div style={{ display: 'flex', flexDirection: 'column', fontSize: 72, fontWeight: 800, lineHeight: .98, maxWidth: 930 }}>
-            Binnen 48 uur jouw nieuwe website live.
+            Een scherpe landingspagina, zonder weken wachten.
           </div>
         </div>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: 22, color: '#b3c7be' }}>
-          <span>Hosting · onderhoud · beveiliging · AI-ondersteuning</span>
-          <span style={{ display: 'flex', padding: '13px 22px', borderRadius: 999, background: '#47dda3', color: '#071c16', fontWeight: 800 }}>Vanaf €79 p/m</span>
+          <span>Eerste versie binnen 48 uur na betaling en complete intake</span>
+          <span style={{ display: 'flex', padding: '13px 22px', borderRadius: 999, background: '#47dda3', color: '#071c16', fontWeight: 800 }}>Vanaf €299</span>
         </div>
       </div>
     </div>,
