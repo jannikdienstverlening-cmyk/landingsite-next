@@ -1,24 +1,30 @@
 import { createHash, createHmac, randomBytes, timingSafeEqual } from 'node:crypto'
 
 const ADMIN_COOKIE = 'landingsite_admin'
+const REFERRAL_COOKIE = '__Host-landingsite_referral'
 const TOKEN_VERSION = 'v1'
+type TokenPurpose = 'admin' | 'order' | 'referral' | 'customer'
 
-function secretFor(purpose: 'admin' | 'order') {
+function secretFor(purpose: TokenPurpose) {
   const dedicatedSecret = purpose === 'admin'
     ? process.env.ADMIN_SESSION_SECRET
-    : process.env.ORDER_TOKEN_SECRET
+    : purpose === 'order'
+      ? process.env.ORDER_TOKEN_SECRET
+      : purpose === 'referral'
+        ? process.env.REFERRAL_TOKEN_SECRET
+        : process.env.CUSTOMER_PORTAL_SECRET
   if (process.env.NODE_ENV === 'production' && !dedicatedSecret) {
     throw new Error(`${purpose.toUpperCase()} dedicated token secret ontbreekt.`)
   }
   const secret = dedicatedSecret ?? (purpose === 'admin'
     ? process.env.ADMIN_PASSWORD
-    : process.env.STRIPE_WEBHOOK_SECRET ?? process.env.ADMIN_PASSWORD)
+    : process.env.ORDER_TOKEN_SECRET ?? process.env.STRIPE_WEBHOOK_SECRET ?? process.env.ADMIN_PASSWORD)
 
   if (!secret) throw new Error(`${purpose.toUpperCase()} token secret ontbreekt.`)
   return secret
 }
 
-function sign(value: string, purpose: 'admin' | 'order') {
+function sign(value: string, purpose: TokenPurpose) {
   return createHmac('sha256', secretFor(purpose)).update(value).digest('base64url')
 }
 
@@ -28,7 +34,7 @@ function safeEqual(left: string, right: string) {
   return a.length === b.length && timingSafeEqual(a, b)
 }
 
-function issueToken(subject: string, purpose: 'admin' | 'order', ttlSeconds: number) {
+function issueToken(subject: string, purpose: TokenPurpose, ttlSeconds: number) {
   const payload = Buffer.from(JSON.stringify({
     sub: subject,
     exp: Math.floor(Date.now() / 1000) + ttlSeconds,
@@ -38,7 +44,7 @@ function issueToken(subject: string, purpose: 'admin' | 'order', ttlSeconds: num
   return `${signed}.${sign(signed, purpose)}`
 }
 
-function verifyToken(token: string | undefined, subject: string | null, purpose: 'admin' | 'order') {
+function verifyToken(token: string | undefined, subject: string | null, purpose: TokenPurpose) {
   if (!token) return false
   const [version, tokenPurpose, payload, signature, ...rest] = token.split('.')
   if (rest.length || version !== TOKEN_VERSION || tokenPurpose !== purpose || !payload || !signature) return false
@@ -72,6 +78,31 @@ export function createOrderToken(orderId: string) {
 
 export function verifyOrderToken(token: string | undefined, orderId: string) {
   return verifyToken(token, orderId, 'order')
+}
+
+export function createCustomerToken(orderId: string) {
+  return issueToken(orderId, 'customer', 60 * 60 * 24 * 365)
+}
+
+export function verifyCustomerToken(token: string | undefined, orderId: string) {
+  return verifyToken(token, orderId, 'customer')
+}
+
+export function createReferralToken(attributionId: string, ttlSeconds: number) {
+  return issueToken(attributionId, 'referral', ttlSeconds)
+}
+
+export function referralAttributionId(token: string | undefined) {
+  if (!token) return null
+  const parts = token.split('.')
+  const payload = parts[2]
+  if (!payload || !verifyToken(token, null, 'referral')) return null
+  try {
+    const decoded = JSON.parse(Buffer.from(payload, 'base64url').toString('utf8')) as { sub?: string }
+    return decoded.sub ?? null
+  } catch {
+    return null
+  }
 }
 
 export function hashIp(ip: string) {
@@ -119,5 +150,15 @@ export const adminCookie = {
     secure: process.env.NODE_ENV === 'production',
     path: '/',
     maxAge: 60 * 60 * 12,
+  },
+}
+
+export const referralCookie = {
+  name: REFERRAL_COOKIE,
+  options: {
+    httpOnly: true,
+    sameSite: 'lax' as const,
+    secure: process.env.NODE_ENV === 'production',
+    path: '/',
   },
 }

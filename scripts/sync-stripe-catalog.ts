@@ -1,8 +1,9 @@
 import { readFile } from 'node:fs/promises'
 import Stripe from 'stripe'
-import { PAKKETTEN, STRIPE_PRICE_ENV, SUBSCRIPTION_INTERVAL, type PakketId } from '../lib/stripe'
+import { cents, pricingConfig, type BuildPackageId } from '../config/pricing'
+import { STRIPE_BUILD_PRICE_ENV, STRIPE_MANAGEMENT_PRICE_ENV, SUBSCRIPTION_INTERVAL } from '../lib/stripe'
 
-const PACKAGE_IDS = Object.keys(PAKKETTEN) as PakketId[]
+const PACKAGE_IDS = Object.keys(pricingConfig.buildPackages) as BuildPackageId[]
 const ALLOW_LIVE = process.argv.includes('--allow-live')
 
 async function loadLocalEnvironment() {
@@ -22,59 +23,46 @@ async function loadLocalEnvironment() {
   }
 }
 
-async function findProduct(stripe: Stripe, pakket: PakketId) {
-  const expectedNames = new Set([
-    `Landingsite.nl ${PAKKETTEN[pakket].naam}`,
-    `Landingsite ${PAKKETTEN[pakket].naam}`,
-    pakket === 'pro' ? 'Landingsite Pro' : '',
-  ])
+async function productFor(stripe: Stripe, catalogKey: string, name: string, description: string) {
   const products = await stripe.products.list({ active: true, limit: 100 })
-  return products.data.find((product) => product.metadata.landingsite_package === pakket)
-    ?? products.data.find((product) => expectedNames.has(product.name))
-    ?? null
+  const existing = products.data.find((product) => product.metadata.landingsite_catalog_key === catalogKey)
+    ?? products.data.find((product) => product.name === name)
+  const data = { name, description, metadata: { landingsite_catalog_key: catalogKey } }
+  return existing ? stripe.products.update(existing.id, data) : stripe.products.create(data)
 }
 
-async function syncPackage(stripe: Stripe, pakket: PakketId) {
-  const details = PAKKETTEN[pakket]
-  const product = await findProduct(stripe, pakket)
-  const productData = {
-    name: `Landingsite.nl ${details.naam}`,
-    description: 'Websiteabonnement inclusief hosting, SSL, onderhoud, updates, backups en support volgens het gekozen pakket.',
-    metadata: { landingsite_package: pakket, billing_model: 'monthly_subscription' },
-  }
-  const syncedProduct = product
-    ? await stripe.products.update(product.id, productData)
-    : await stripe.products.create(productData)
-
-  const prices = await stripe.prices.list({ product: syncedProduct.id, active: true, limit: 100 })
-  let price = prices.data.find((candidate) => (
-    candidate.currency === 'eur'
-    && candidate.unit_amount === details.prijs
-    && candidate.recurring?.interval === SUBSCRIPTION_INTERVAL
-    && candidate.recurring.interval_count === 1
+async function syncPrice(stripe: Stripe, options: {
+  catalogKey: string
+  productName: string
+  description: string
+  amount: number
+  recurring: boolean
+  nickname: string
+}) {
+  const product = await productFor(stripe, options.catalogKey, options.productName, options.description)
+  const prices = await stripe.prices.list({ product: product.id, active: true, limit: 100 })
+  let price = prices.data.find((candidate) => candidate.currency === 'eur'
+    && candidate.unit_amount === cents(options.amount)
     && candidate.tax_behavior === 'exclusive'
-  ))
+    && (options.recurring ? candidate.recurring?.interval === SUBSCRIPTION_INTERVAL : candidate.type === 'one_time'))
 
   if (!price) {
     price = await stripe.prices.create({
-      product: syncedProduct.id,
+      product: product.id,
       currency: 'eur',
-      unit_amount: details.prijs,
-      recurring: { interval: SUBSCRIPTION_INTERVAL },
+      unit_amount: cents(options.amount),
       tax_behavior: 'exclusive',
-      nickname: `${details.naam} maandelijks`,
-      lookup_key: `landingsite_${pakket}_monthly`,
+      ...(options.recurring ? { recurring: { interval: SUBSCRIPTION_INTERVAL } } : {}),
+      nickname: options.nickname,
+      lookup_key: options.catalogKey,
       transfer_lookup_key: true,
-      metadata: { landingsite_package: pakket, billing_model: 'monthly_subscription' },
+      metadata: { landingsite_catalog_key: options.catalogKey },
     })
   }
 
-  await stripe.products.update(syncedProduct.id, { default_price: price.id })
-  for (const oldPrice of prices.data) {
-    if (oldPrice.id !== price.id) await stripe.prices.update(oldPrice.id, { active: false })
-  }
-
-  return { pakket, productId: syncedProduct.id, priceId: price.id, amount: details.prijs }
+  await stripe.products.update(product.id, { default_price: price.id })
+  for (const oldPrice of prices.data) if (oldPrice.id !== price.id) await stripe.prices.update(oldPrice.id, { active: false })
+  return price.id
 }
 
 async function main() {
@@ -82,20 +70,57 @@ async function main() {
   const secretKey = process.env.STRIPE_SECRET_KEY
   if (!secretKey) throw new Error('STRIPE_SECRET_KEY ontbreekt.')
   const liveMode = secretKey.startsWith('sk_live_')
-  if (liveMode && !ALLOW_LIVE) {
-    throw new Error('Live Stripe-catalogus niet gewijzigd. Herhaal bewust met --allow-live.')
-  }
+  if (liveMode && !ALLOW_LIVE) throw new Error('Live Stripe-catalogus niet gewijzigd. Herhaal bewust met --allow-live.')
 
   const stripe = new Stripe(secretKey)
   const account = await stripe.accounts.retrieve(null)
-  const results = []
-  for (const pakket of PACKAGE_IDS) results.push(await syncPackage(stripe, pakket))
+  const prices: Record<string, string> = {}
 
-  console.log(JSON.stringify({
-    mode: liveMode ? 'live' : 'test',
-    accountId: account.id,
-    prices: Object.fromEntries(results.map((result) => [STRIPE_PRICE_ENV[result.pakket], result.priceId])),
-  }, null, 2))
+  for (const packageId of PACKAGE_IDS) {
+    const details = pricingConfig.buildPackages[packageId]
+    prices[STRIPE_BUILD_PRICE_ENV[packageId]] = await syncPrice(stripe, {
+      catalogKey: `landingsite_build_${packageId}`,
+      productName: `Landingsite.nl ${details.name}`,
+      description: 'Eenmalige bouwprijs voor een professionele landingspagina. Websitebeheer wordt pas bij livegang apart geactiveerd.',
+      amount: details.oneTimePrice,
+      recurring: false,
+      nickname: `${details.name} eenmalige bouwprijs`,
+    })
+  }
+
+  prices[STRIPE_MANAGEMENT_PRICE_ENV] = await syncPrice(stripe, {
+    catalogKey: 'landingsite_website_management_monthly',
+    productName: pricingConfig.websiteManagement.name,
+    description: 'Managed hosting, SSL, back-ups, beveiligingsupdates, monitoring, ondersteuning en kleine wijzigingen.',
+    amount: pricingConfig.websiteManagement.monthlyPrice,
+    recurring: true,
+    nickname: 'Websitebeheer maandelijks',
+  })
+
+  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL?.replace(/\/$/, '')
+  let webhookEndpoint: string | null = null
+  if (baseUrl) {
+    const expectedUrl = `${baseUrl}/api/stripe/webhook`
+    const endpoints = await stripe.webhookEndpoints.list({ limit: 100 })
+    const endpoint = endpoints.data.find((candidate) => candidate.url === expectedUrl)
+    if (endpoint) {
+      await stripe.webhookEndpoints.update(endpoint.id, { enabled_events: [
+        'checkout.session.completed',
+        'checkout.session.async_payment_succeeded',
+        'checkout.session.expired',
+        'invoice.paid',
+        'invoice.payment_failed',
+        'invoice.voided',
+        'charge.refunded',
+        'customer.subscription.created',
+        'customer.subscription.updated',
+        'customer.subscription.deleted',
+      ] })
+      webhookEndpoint = endpoint.id
+    }
+  }
+
+  console.log(JSON.stringify({ mode: liveMode ? 'live' : 'test', accountId: account.id, prices, webhookEndpoint }, null, 2))
 }
 
 main().catch((error) => {

@@ -67,6 +67,51 @@ export const contactSchema = z.object({
   website: z.string().max(0).optional(),
 }).strict()
 
+export const partnerApplicationSchema = z.object({
+  requestId: z.uuid(),
+  voornaam: z.string().trim().min(2).max(80),
+  achternaam: z.string().trim().min(2).max(100),
+  email: z.email().max(254),
+  telefoon: z.string().trim().max(40).default(''),
+  type: z.enum(['particulier', 'ondernemer']),
+  bedrijfsnaam: z.string().trim().max(120).default(''),
+  kvkNummer: z.string().trim().max(20).default(''),
+  btwNummer: z.string().trim().max(32).default(''),
+  termsAccepted: z.literal(true),
+  privacyAccepted: z.literal(true),
+  website: z.string().max(0).optional(),
+}).strict().superRefine((value, context) => {
+  if (value.type === 'ondernemer' && value.bedrijfsnaam.length < 2) {
+    context.addIssue({ code: 'custom', path: ['bedrijfsnaam'], message: 'Bedrijfsnaam ontbreekt.' })
+  }
+  if (value.type === 'ondernemer' && !/^\d{8}$/.test(value.kvkNummer.replace(/\s/g, ''))) {
+    context.addIssue({ code: 'custom', path: ['kvkNummer'], message: 'KvK-nummer moet uit 8 cijfers bestaan.' })
+  }
+})
+
+export const referralCaptureSchema = z.object({
+  code: z.string().trim().toUpperCase().regex(/^[A-Z0-9-]{6,32}$/),
+  landingPath: z.string().trim().min(1).max(500),
+  utmSource: z.string().trim().max(120).default(''),
+  utmMedium: z.string().trim().max(120).default(''),
+  utmCampaign: z.string().trim().max(160).default(''),
+}).strict()
+
+export const managementActivationSchema = z.object({
+  order_id: z.uuid(),
+  requestId: z.uuid(),
+}).strict()
+
+export const customerManagementSchema = z.object({
+  order_id: z.uuid(),
+  token: z.string().min(40).max(600),
+}).strict()
+
+export const partnerDecisionSchema = z.object({
+  partner_id: z.uuid(),
+  decision: z.enum(['approve', 'reject']),
+}).strict()
+
 export const leadSchema = z.object({
   token: z.string().min(20).max(200),
   naam: z.string().trim().min(2).max(100),

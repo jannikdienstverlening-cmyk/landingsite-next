@@ -1,10 +1,20 @@
 export const partnerProgramConfig = {
-  programEnabled: true,
-  showPayoutAmounts: false,
-  directReward: null,
-  levelTwoReward: null,
-  levelThreeReward: null,
-  payoutType: 'nader overeen te komen',
-  minimumPayout: null,
+  enabled: true,
+  participationIsFree: true,
+  subscriptionPrice: 79,
+  minimumPayout: 25,
   waitingPeriodDays: 30,
-}
+  attributionWindowDays: 30,
+  maximumPaidLevels: 3,
+  commissions: {
+    level1: 20,
+    level2: 5,
+    level3: 2,
+  },
+  example: {
+    referralsPerPartner: 5,
+    level1Customers: 5,
+    level2Customers: 25,
+    level3Customers: 125,
+  },
+} as const

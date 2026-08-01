@@ -16,21 +16,22 @@ npm run check
 
 ## Betaal- en generatieflow
 
-1. Stripe Checkout start een zakelijk maandabonnement voor Starter, Groei of Premium.
-2. De ondertekende webhook upsert de order en verwerkt events idempotent.
+1. Stripe Checkout int eenmalig de bouwprijs voor Starter, Pro of Premium.
+2. De ondertekende webhook upsert de order en verwerkt events idempotent met een auditstatus.
 3. De klant vult de intake in en kan logo en hoofdbeeld uploaden.
 4. De API claimt de order atomair en start `generateLandingWorkflow`.
 5. Claude retourneert gevalideerde, gestructureerde copy; `landing-renderer.ts` bouwt veilige HTML.
 6. De workflow maakt of hergebruikt een Netlify-site, publiceert de pagina, slaat de status op en verstuurt de oplevermail.
-7. Het formulier op de opgeleverde pagina schrijft leads weg en mailt ze naar het gekozen klantadres.
+7. Na goedkeuring maakt een beheerder een aparte Stripe-link voor Websitebeheer; de eerste €79-incasso ontstaat pas wanneer de klant die link bij livegang expliciet afrondt.
+8. Betaalde Websitebeheer-facturen kunnen maximaal drie commissieposten aanmaken. Die blijven op handmatige controle staan en voeren geen automatische bankbetaling uit.
 
 ## Belangrijke beheerpunten
 
 - De Stripe webhook wijst naar `/api/stripe/webhook`.
 - De publieke voorwaarden- en privacy-URL zijn in het gekoppelde Stripe-account ingesteld; `STRIPE_TERMS_CONFIGURED=true` houdt de checkout-guard open.
-- Hosting, SSL, onderhoud, backups en support zijn onderdeel van het maandabonnement.
+- Websitebeheer kost €79 per maand exclusief btw en omvat hosting, SSL, onderhoud, back-ups, monitoring en maximaal 30 minuten kleine wijzigingen per kalendermaand.
 - Het adminwachtwoord wordt alleen naar `/api/admin/login` gestuurd. Daarna gebruikt het dashboard een getekende HttpOnly-cookie.
-- `ADMIN_SESSION_SECRET`, `ORDER_TOKEN_SECRET` en `IP_HASH_SALT` moeten in productie unieke lange waarden zijn.
+- `ADMIN_SESSION_SECRET`, `ORDER_TOKEN_SECRET`, `REFERRAL_TOKEN_SECRET`, `CUSTOMER_PORTAL_SECRET` en `IP_HASH_SALT` moeten in productie unieke lange waarden zijn.
 - Landingsite.nl wordt aangeboden door Jannik Dienstverlening, Gortstraat 31, 3905 BB Veenendaal (KvK 65549430, btw NL001557133B48).
 
 ## Stack

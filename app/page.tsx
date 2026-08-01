@@ -7,62 +7,73 @@ import {
   PartnerProgramSection,
   PortfolioSection,
   PricingSection,
+  WebsiteManagementSection,
 } from '@/components/home-redesign'
 import { StickyMobileCTA } from '@/components/home-actions'
+import { ReferralCapture } from '@/components/referral-capture'
+import { pricingConfig } from '@/config/pricing'
 import { BUSINESS } from '@/lib/business'
 
 const faqs = [
   {
     q: 'Wanneer begint de termijn van 48 uur?',
-    a: 'De termijn voor de eerste versie start na de eerste succesvolle abonnementsbetaling en zodra de intake compleet is. Ontbreekt belangrijke input, dan start de termijn zodra die is aangevuld.',
+    a: 'De termijn voor de eerste versie start na de succesvolle betaling van de eenmalige bouwprijs en zodra de intake compleet is. Ontbreekt belangrijke input, dan start de termijn zodra die is aangevuld.',
   },
   {
     q: 'Wat moet ik zelf aanleveren?',
     a: 'Je levert je aanbod, doelgroep, contactgegevens, sterke punten en beschikbare beelden aan. Heb je nog geen teksten? Dan helpen we met een heldere eerste opzet.',
   },
   {
-    q: 'Wat zit er in het maandbedrag?',
-    a: 'Hosting, SSL, technische updates, backups, onderhoud, support en de afgesproken websiteomvang. De precieze inhoud en correctieruimte staan per pakket vermeld.',
+    q: 'Wat zit er in Websitebeheer van €79 per maand?',
+    a: 'Websitebeheer bevat managed hosting, beveiliging, back-ups, technische updates, monitoring, hulp bij problemen en een beperkte hoeveelheid kleine wijzigingen binnen de bestaande website.',
   },
   {
-    q: 'Kan ik later uitbreiden?',
-    a: 'Ja. Je kunt overstappen naar een ruimer pakket of extra werk laten inplannen. We spreken vooraf duidelijk af wat binnen je abonnement valt en wat aanvullend werk is.',
+    q: 'Wanneer start het maandelijkse abonnement?',
+    a: 'Het abonnement start wanneer de website na jouw goedkeuring live gaat. De eenmalige bouwprijs betaal je bij de start van het project. Voor Websitebeheer ontvang je bij livegang een aparte beveiligde abonnementslink.',
   },
   {
-    q: 'Kan ik maandelijks opzeggen?',
-    a: 'Ja. Het abonnement loopt voor onbepaalde tijd en is per maand opzegbaar tegen het einde van de lopende betaalperiode. Na opzegging stoppen hosting, onderhoud en support aan het einde van die periode; een overdracht spreken we praktisch af.',
+    q: 'Kan ik Websitebeheer opzeggen?',
+    a: 'Ja, volgens de afgesproken opzegvoorwaarden. Na beëindiging stoppen hosting, technisch beheer, wijzigingen en toekomstige partnercommissies die aan dat abonnement zijn gekoppeld.',
   },
   {
-    q: 'Garandeert de website meer aanvragen?',
-    a: 'Nee. We bouwen en onderhouden een professionele website met een duidelijke route naar contact. Resultaten blijven afhankelijk van je aanbod, verkeer, markt en opvolging.',
+    q: 'Hoe verdien ik €475 per maand?',
+    a: '€475 is een rekenvoorbeeld met vijf directe klanten, 25 klanten op niveau 2 en 125 klanten op niveau 3. Het is geen gegarandeerd resultaat. Alleen actieve en betaalde abonnementen tellen mee.',
+  },
+  {
+    q: 'Moet ik betalen om partner te worden?',
+    a: 'Nee. Deelname aan het partnerprogramma is gratis. Je ontvangt alleen een vergoeding wanneer een daadwerkelijk aangebrachte klant een actief en betaald Websitebeheer-abonnement heeft.',
+  },
+  {
+    q: 'Krijg ik betaald voor het aanmelden van nieuwe partners?',
+    a: 'Nee. Alleen omzet uit echte, actieve en betaalde Websitebeheer-abonnementen kan commissie opleveren.',
   },
 ]
 
 const packages = [
   {
     id: 'starter' as const,
-    name: 'Starter',
-    price: '€79',
-    fit: 'Voor een compacte professionele basis',
-    tagline: 'Een scherpe website met de belangrijkste secties, beheer en een werkend formulier.',
-    features: ['Eén landingspagina', 'Hosting en SSL', 'Updates en backups', 'Contactformulier', 'Basis SEO', 'Support'],
+    name: pricingConfig.buildPackages.starter.name,
+    price: `€${pricingConfig.buildPackages.starter.oneTimePrice}`,
+    fit: 'Voor een compacte campagne of dienst',
+    tagline: 'Een scherpe landingspagina met de belangrijkste secties en een werkend formulier.',
+    features: ['Eén landingspagina', 'Responsive ontwerp', 'Contactformulier', 'Basis SEO', 'Domeinkoppeling bij livegang'],
   },
   {
     id: 'pro' as const,
-    name: 'Groei',
-    price: '€129',
-    fit: 'Voor bedrijven die zichtbaar willen groeien',
-    tagline: 'Meer ruimte voor bewijs, inhoud, optimalisatie en een sterkere aanvraagroute.',
+    name: pricingConfig.buildPackages.pro.name,
+    price: `€${pricingConfig.buildPackages.pro.oneTimePrice}`,
+    fit: 'Voor een uitgebreidere conversieflow',
+    tagline: 'Meer ruimte voor bewijs, inhoud en een sterkere aanvraagroute.',
     highlighted: true,
-    features: ['Alles uit Starter', 'Uitgebreidere structuur', 'Bewijs- en FAQ-secties', 'Doorlopende kleine optimalisaties', 'Hulp bij domein en e-mail', 'Snellere support'],
+    features: ['Alles uit Starter', 'Uitgebreidere structuur', 'Bewijs- en FAQ-secties', 'Extra formulierlogica', 'Uitgebreide SEO-basis'],
   },
   {
     id: 'premium' as const,
     name: 'Premium',
-    price: '€199',
+    price: `€${pricingConfig.buildPackages.premium.oneTimePrice}`,
     fit: 'Voor meer maatwerk en begeleiding',
-    tagline: 'Een uitgebreidere website met meer maatwerk, begeleiding en ruimte om door te ontwikkelen.',
-    features: ['Alles uit Groei', 'Meer designmaatwerk', 'Extra pagina of campagneflow', 'Inhoudelijke begeleiding', 'Maandelijkse optimalisatieruimte', 'Prioriteitssupport'],
+    tagline: 'Een uitgebreidere website met meer maatwerk, begeleiding en een rijkere campagneflow.',
+    features: ['Alles uit Pro', 'Meer designmaatwerk', 'Extra pagina of campagneflow', 'Inhoudelijke begeleiding', 'Uitgebreide oplevercheck'],
   },
 ]
 
@@ -85,12 +96,12 @@ const jsonLd = {
         addressLocality: BUSINESS.address.city,
         addressCountry: BUSINESS.address.countryCode,
       },
-      description: 'Professionele websites voor zzp en mkb in een maandelijks abonnement, met eerste versie binnen 48 uur na betaling en complete intake.',
+      description: `Professionele landingspagina's voor zzp en mkb vanaf €${pricingConfig.buildPackages.starter.oneTimePrice}, met Websitebeheer voor €${pricingConfig.websiteManagement.monthlyPrice} per maand vanaf livegang.`,
       areaServed: 'NL',
     },
     {
       '@type': 'Service',
-      name: 'Websiteabonnement met hosting en onderhoud',
+      name: 'Landingspagina laten maken en Websitebeheer',
       provider: { '@id': 'https://landingsite.nl/#organization' },
       areaServed: 'NL',
       offers: packages.map((item) => ({
@@ -98,14 +109,25 @@ const jsonLd = {
         name: item.name,
         price: item.price.replace('€', ''),
         priceCurrency: 'EUR',
+        priceSpecification: { '@type': 'PriceSpecification', price: item.price.replace('€', ''), priceCurrency: 'EUR' },
+        availability: 'https://schema.org/InStock',
+      })),
+    },
+    {
+      '@type': 'Service',
+      name: pricingConfig.websiteManagement.name,
+      provider: { '@id': 'https://landingsite.nl/#organization' },
+      offers: {
+        '@type': 'Offer',
+        price: pricingConfig.websiteManagement.monthlyPrice,
+        priceCurrency: 'EUR',
         priceSpecification: {
           '@type': 'UnitPriceSpecification',
-          price: item.price.replace('€', ''),
+          price: pricingConfig.websiteManagement.monthlyPrice,
           priceCurrency: 'EUR',
           unitCode: 'MON',
         },
-        availability: 'https://schema.org/InStock',
-      })),
+      },
     },
     {
       '@type': 'FAQPage',
@@ -121,6 +143,7 @@ const jsonLd = {
 export default function Home() {
   return (
     <>
+      <ReferralCapture />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd).replace(/</g, '\\u003c') }} />
       <Header />
       <main>
@@ -128,6 +151,7 @@ export default function Home() {
         <PortfolioSection />
         <EssentialsSection />
         <PricingSection packages={packages} />
+        <WebsiteManagementSection />
         <PartnerProgramSection />
         <FAQContactSection faqs={faqs} />
       </main>

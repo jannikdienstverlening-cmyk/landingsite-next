@@ -1,8 +1,8 @@
 import { NextRequest } from 'next/server'
 import { clientIp, checkRateLimit, rateLimitResponse } from '@/lib/rate-limit'
 import { invalidJsonResponse, readJsonBody } from '@/lib/request'
-import { rejectCrossOriginMutation } from '@/lib/security'
-import { configuredStripePriceId, getStripe, PAKKETTEN, SUBSCRIPTION_INTERVAL, TERMS_VERSION } from '@/lib/stripe'
+import { referralAttributionId, referralCookie, rejectCrossOriginMutation } from '@/lib/security'
+import { configuredBuildPriceId, getStripe, PAKKETTEN, TERMS_VERSION } from '@/lib/stripe'
 import { getSupabase } from '@/lib/supabase'
 import { checkoutSchema, validationMessage } from '@/lib/validation'
 
@@ -19,7 +19,19 @@ export async function POST(request: NextRequest) {
   const baseUrl = process.env.NEXT_PUBLIC_BASE_URL?.replace(/\/$/, '')
   if (!baseUrl) return Response.json({ error: 'Basis-URL ontbreekt.' }, { status: 500 })
   const info = PAKKETTEN[parsed.data.pakket]
-  const priceId = configuredStripePriceId(parsed.data.pakket)
+  const priceId = configuredBuildPriceId(parsed.data.pakket)
+  const supabase = getSupabase()
+  const attributionId = referralAttributionId(request.cookies.get(referralCookie.name)?.value)
+  let validAttributionId: string | null = null
+  if (attributionId) {
+    const { data: attribution, error } = await supabase.from('referral_attributions')
+      .select('id, expires_at')
+      .eq('id', attributionId)
+      .eq('status', 'visited')
+      .maybeSingle()
+    if (error) return Response.json({ error: 'Bestellen is tijdelijk niet beschikbaar. Er is niets afgeschreven.' }, { status: 503 })
+    if (attribution && new Date(attribution.expires_at).getTime() > Date.now()) validAttributionId = attribution.id
+  }
 
   try {
     const session = await getStripe().checkout.sessions.create({
@@ -31,29 +43,31 @@ export async function POST(request: NextRequest) {
                 currency: 'eur',
                 product_data: {
                   name: `Landingsite.nl ${info.naam}`,
-                  description: 'Maandelijks websiteabonnement inclusief hosting, SSL, onderhoud, updates, backups en support volgens het gekozen pakket.',
+                  description: 'Eenmalige bouwprijs voor de gekozen landingspagina. Websitebeheer van €79 per maand wordt pas na livegang apart geactiveerd.',
                 },
                 unit_amount: info.prijs,
                 tax_behavior: 'exclusive' as const,
-                recurring: { interval: SUBSCRIPTION_INTERVAL },
               },
             }),
         quantity: 1,
       }],
-      mode: 'subscription',
+      mode: 'payment',
       success_url: `${baseUrl}/intake/{CHECKOUT_SESSION_ID}`,
       cancel_url: `${baseUrl}/#prijzen`,
       client_reference_id: parsed.data.requestId,
+      customer_creation: 'always',
       metadata: {
+        checkout_type: 'build',
         pakket: parsed.data.pakket,
+        referral_attribution_id: validAttributionId ?? '',
         terms_accepted: 'true',
         terms_version: TERMS_VERSION,
       },
-      subscription_data: {
+      payment_intent_data: {
         metadata: {
+          checkout_type: 'build',
           pakket: parsed.data.pakket,
-          terms_accepted: 'true',
-          terms_version: TERMS_VERSION,
+          request_id: parsed.data.requestId,
         },
       },
       automatic_tax: { enabled: true },
@@ -69,7 +83,7 @@ export async function POST(request: NextRequest) {
         numeric: { minimum_length: 8, maximum_length: 8 },
       }],
       custom_text: {
-        submit: { message: `Je sluit zakelijk een maandelijks abonnement af voor ${info.prijs_label} excl. btw. Het abonnement loopt voor onbepaalde tijd en is per maand opzegbaar tegen het einde van de lopende betaalperiode.` },
+        submit: { message: `Je betaalt zakelijk eenmalig ${info.prijs_label} excl. btw voor de bouw. Websitebeheer van €79 per maand start niet nu; daarvoor ontvang je pas bij livegang een aparte beveiligde abonnementslink.` },
       },
       ...(process.env.STRIPE_TERMS_CONFIGURED === 'true'
         ? { consent_collection: { terms_of_service: 'required' as const } }
@@ -78,11 +92,13 @@ export async function POST(request: NextRequest) {
     }, { idempotencyKey: `checkout-${parsed.data.requestId}` })
     if (!session.url) return Response.json({ error: 'Checkout kon niet worden geopend.' }, { status: 500 })
 
-    const { error } = await getSupabase().from('orders').upsert({
+    const { error } = await supabase.from('orders').upsert({
       stripe_session_id: session.id,
       email: '',
       pakket: parsed.data.pakket,
       status: 'pending',
+      management_status: 'pending',
+      referral_attribution_id: validAttributionId,
       updated_at: new Date().toISOString(),
     }, { onConflict: 'stripe_session_id', ignoreDuplicates: true })
     if (error) {

@@ -2,11 +2,14 @@
 
 import type { FormEvent } from 'react'
 import { useState } from 'react'
+import { pricingConfig } from '@/config/pricing'
 
 const navItems = [
   ['Voorbeelden', '#voorbeelden'],
   ['Werkwijze', '#werkwijze'],
   ['Prijzen', '#prijzen'],
+  ['Websitebeheer', '#websitebeheer'],
+  ['Partner', '#partner'],
   ['FAQ', '#faq'],
   ['Contact', '#contact'],
 ]
@@ -57,9 +60,13 @@ export function PricingButton({ pakket, label }: { pakket: 'starter' | 'pro' | '
 
   return (
     <div className="checkout-action">
+      <div className="checkout-summary" aria-label="Prijsopbouw">
+        <span>{pricingConfig.buildPackages[pakket].name} landingspagina <strong>€{pricingConfig.buildPackages[pakket].oneTimePrice} eenmalig</strong></span>
+        <span>Websitebeheer <strong>€{pricingConfig.websiteManagement.monthlyPrice} per maand vanaf livegang</strong></span>
+      </div>
       <label className="terms-check">
         <input type="checkbox" checked={accepted} onChange={(event) => setAccepted(event.target.checked)} />
-        <span>Ik bestel zakelijk, ga akkoord met de <a href="/algemene-voorwaarden" target="_blank" rel="noopener noreferrer">voorwaarden</a> en heb het <a href="/privacybeleid" target="_blank" rel="noopener noreferrer">privacybeleid</a> gelezen.</span>
+        <span>Ik bestel zakelijk, betaal nu alleen de eenmalige bouwprijs, ga akkoord met de <a href="/algemene-voorwaarden" target="_blank" rel="noopener noreferrer">voorwaarden</a> en heb het <a href="/privacybeleid" target="_blank" rel="noopener noreferrer">privacybeleid</a> gelezen. Websitebeheer wordt pas na livegang via een aparte abonnementslink geactiveerd.</span>
       </label>
       <button className="price-button" onClick={order} disabled={loading || !accepted} type="button">
         {loading ? 'Veilige checkout openen...' : label}

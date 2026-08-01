@@ -24,12 +24,22 @@ export function getSupabase(): SupabaseClient {
 
 export type Pakket = 'starter' | 'pro' | 'premium'
 export type OrderStatus = 'pending' | 'paid' | 'generating' | 'completed' | 'failed'
+export type ManagementStatus = 'pending' | 'awaiting_go_live' | 'active' | 'payment_failed' | 'past_due' | 'cancelled' | 'transferred'
 export type PageStatus = 'pending' | 'generating' | 'completed' | 'failed'
 
 export interface Order {
   id: string
   stripe_session_id: string
   stripe_payment_intent: string | null
+  stripe_customer_id: string | null
+  build_payment_intent_id: string | null
+  management_checkout_session_id: string | null
+  management_subscription_id: string | null
+  management_status: ManagementStatus
+  went_live_at: string | null
+  management_started_at: string | null
+  management_cancel_at_period_end: boolean
+  referral_attribution_id: string | null
   email: string
   pakket: Pakket
   status: OrderStatus
