@@ -108,18 +108,29 @@ export function PortfolioSection() {
         <div className="case-grid">
           {portfolioProjects.map((item, index) => (
             <article className="case-card" key={item.slug}>
-              <a className="case-image" href={item.url} target="_blank" rel="noopener noreferrer" aria-label={`Bekijk ${item.name} live`}>
-                <Image src={item.image} alt={item.imageAlt} fill sizes="(max-width: 900px) 100vw, 560px" />
-              </a>
-              <div className="case-info">
-                <div className="case-meta">
-                  <span className="case-label">{item.type}</span>
-                  <span>{String(index + 1).padStart(2, '0')} / {item.domain}</span>
+              <div className="case-preview">
+                <div className="case-browserbar" aria-hidden="true">
+                  <span className="case-browserdots"><i /><i /><i /></span>
+                  <span className="case-domain">{item.domain}</span>
+                  <span className="case-live-status"><i /> Live</span>
                 </div>
-                <h3>{item.name}</h3>
-                <p>{item.description}</p>
-                <div className="case-tags">{item.features.map((feature) => <span key={feature}>{feature}</span>)}</div>
-                <a className="case-link" href={item.url} target="_blank" rel="noopener noreferrer">Bekijk live website</a>
+                <a className="case-image" href={item.url} target="_blank" rel="noopener noreferrer" aria-label={`Bekijk ${item.name} live`}>
+                  <Image src={item.image} alt={item.imageAlt} fill sizes="(max-width: 900px) 100vw, 1200px" />
+                </a>
+              </div>
+              <div className="case-info">
+                <div className="case-copy">
+                  <div className="case-meta">
+                    <span className="case-label">{item.type}</span>
+                    <span>Project {String(index + 1).padStart(2, '0')}</span>
+                  </div>
+                  <h3>{item.name}</h3>
+                  <p>{item.description}</p>
+                </div>
+                <div className="case-details">
+                  <div className="case-tags">{item.features.map((feature) => <span key={feature}>{feature}</span>)}</div>
+                  <a className="case-link" href={item.url} target="_blank" rel="noopener noreferrer">Bekijk live website</a>
+                </div>
               </div>
             </article>
           ))}
