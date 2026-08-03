@@ -1167,7 +1167,7 @@ button, input, textarea, select { font: inherit; }
 .management-scope {
   display: grid;
   gap: 10px;
-  margin-top: 26px;
+  margin-top: 0;
   padding: 18px;
   border-left: 3px solid var(--green-dark);
   background: var(--ice);
@@ -1176,9 +1176,14 @@ button, input, textarea, select { font: inherit; }
 .management-scope p { margin: 0; color: var(--muted); font-size: .86rem; }
 .management-scope strong { font-size: .82rem; }
 
+.management-aside {
+  display: grid;
+  gap: 24px;
+  align-content: start;
+  min-width: 0;
+}
+
 .management-steps {
-  position: sticky;
-  top: 100px;
   padding: clamp(24px, 4vw, 36px);
   border: 1px solid var(--line);
   border-radius: var(--radius-lg);
@@ -1224,6 +1229,22 @@ button, input, textarea, select { font: inherit; }
 .partner-intro {
   display: grid;
   gap: 28px;
+}
+
+.partner-heading {
+  display: grid;
+  grid-template-columns: minmax(0, 1.2fr) minmax(300px, .8fr);
+  gap: clamp(32px, 6vw, 76px);
+  align-items: end;
+}
+
+.partner-heading > div {
+  min-width: 0;
+}
+
+.partner-heading > p {
+  margin: 0 0 6px;
+  line-height: 1.65;
 }
 
 .commission-levels {
@@ -1409,7 +1430,7 @@ button, input, textarea, select { font: inherit; }
   .management-layout,
   .partner-rules-grid,
   .partner-apply-grid { grid-template-columns: 1fr; }
-  .management-steps { position: static; }
+  .partner-heading { grid-template-columns: 1fr; }
 }
 
 @media (max-width: 700px) {

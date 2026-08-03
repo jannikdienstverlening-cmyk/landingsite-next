@@ -257,15 +257,17 @@ export function WebsiteManagementSection() {
           <p>Na de bouw kun je de website door Landingsite.nl laten hosten en beheren. Voor €{management.monthlyPrice} per maand hoef je niet zelf achter updates, beveiliging, back-ups of kleine wijzigingen aan.</p>
           <div className="management-price"><strong>€{management.monthlyPrice}</strong><span>per maand<br />exclusief btw</span></div>
           <ul className="management-checklist">{included.map((item) => <li key={item}><span aria-hidden="true">✓</span>{item}</li>)}</ul>
+        </div>
+        <div className="management-aside">
+          <div className="management-steps">
+            <p className="section-kicker">Hoe het werkt</p>
+            <ol>{steps.map(([number, title, text]) => <li key={number}><span>{number}</span><div><h3>{title}</h3><p>{text}</p></div></li>)}</ol>
+            <p className="management-summary">Eenmalige bouwprijs + €{management.monthlyPrice} per maand Websitebeheer vanaf de livegang.</p>
+          </div>
           <div className="management-scope">
             <p>Kleine wijzigingen zijn aanpassingen binnen de bestaande website, zoals een tekst wijzigen, een foto vervangen, openingstijden aanpassen of een knop veranderen. Nieuwe pagina’s, volledige nieuwe ontwerpen, uitgebreide functionaliteiten en grote tekstprojecten vallen hier niet onder en worden vooraf apart geoffreerd.</p>
             <strong>Maximaal {management.includedChangeMinutes} minuten kleine wijzigingen per kalendermaand. Niet-gebruikte tijd wordt niet meegenomen.</strong>
           </div>
-        </div>
-        <div className="management-steps">
-          <p className="section-kicker">Hoe het werkt</p>
-          <ol>{steps.map(([number, title, text]) => <li key={number}><span>{number}</span><div><h3>{title}</h3><p>{text}</p></div></li>)}</ol>
-          <p className="management-summary">Eenmalige bouwprijs + €{management.monthlyPrice} per maand Websitebeheer vanaf de livegang.</p>
         </div>
       </div>
     </section>
@@ -279,9 +281,11 @@ export function PartnerProgramSection() {
     <section className="section partner" id="partner">
       <div className="shell partner-home">
         <div className="partner-intro">
-          <div>
-            <p className="section-kicker">Landingsite Partnerprogramma</p>
-            <h2>Tevreden over je website? Verdien mee met je netwerk.</h2>
+          <div className="partner-heading">
+            <div>
+              <p className="section-kicker">Landingsite Partnerprogramma</p>
+              <h2>Tevreden over je website? Verdien mee met je netwerk.</h2>
+            </div>
             <p>Breng een ondernemer aan die een website en actief Websitebeheer bij Landingsite.nl afneemt. Zolang het abonnement actief en betaald blijft, ontvang je iedere maand een vergoeding.</p>
           </div>
           <div className="commission-levels">
