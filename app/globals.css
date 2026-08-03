@@ -940,6 +940,69 @@ button, input, textarea, select { font: inherit; }
 
 .legal-content a { color: var(--green-dark); }
 
+.management-success {
+  margin: 0 0 28px;
+  padding: 14px 16px;
+  border: 1px solid #b9dfcf;
+  border-radius: 12px;
+  background: #ecf8f2;
+  color: #116643;
+  font-weight: 650;
+}
+
+.management-customer-page .legal-shell > h1 {
+  max-width: 100%;
+  font-size: clamp(2.15rem, 9.6vw, 4.5rem);
+}
+
+.management-eyebrow {
+  margin: 0 0 8px;
+  color: var(--green-dark) !important;
+  font-size: .72rem !important;
+  font-weight: 800;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+
+.management-activation-price {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+  margin: 20px 0;
+}
+
+.management-activation-price strong {
+  font-family: var(--font-syne), ui-sans-serif, system-ui, sans-serif;
+  font-size: clamp(2.8rem, 8vw, 4.5rem);
+  line-height: .95;
+  color: var(--forest);
+}
+
+.management-activation-price span {
+  color: var(--muted);
+  font-size: .86rem;
+}
+
+.management-activation .primary-button {
+  margin-top: 10px;
+}
+
+.management-consent {
+  margin: 18px 0 0;
+  font-size: .76rem !important;
+}
+
+@media (max-width: 520px) {
+  .management-activation-price {
+    display: grid;
+    gap: 6px;
+  }
+
+  .management-activation .primary-button {
+    width: 100%;
+  }
+}
+
 .error-shell {
   min-height: 100vh;
   display: grid;

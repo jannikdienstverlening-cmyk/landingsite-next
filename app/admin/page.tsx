@@ -22,6 +22,8 @@ export default function AdminPage() {
   const [password, setPassword] = useState('')
   const [error, setError] = useState('')
   const [busy, setBusy] = useState('')
+  const [notice, setNotice] = useState('')
+  const [managementLinks, setManagementLinks] = useState<Record<string, string>>({})
 
   async function load() {
     const response = await fetch('/api/admin/orders', { cache: 'no-store' })
@@ -37,10 +39,31 @@ export default function AdminPage() {
   async function logout() { await fetch('/api/admin/logout', { method: 'POST' }); setAuth(false) }
 
   async function action(key: string, url: string, body: Record<string, unknown>) {
-    setBusy(key); setError('')
-    try { const response = await fetch(url, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) }); const data = await response.json(); if (!response.ok) throw new Error(data.error || 'Actie mislukt.'); await load() }
+    setBusy(key); setError(''); setNotice('')
+    try {
+      const response = await fetch(url, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) })
+      const data = await response.json()
+      if (!response.ok) throw new Error(data.error || 'Actie mislukt.')
+      if (typeof body.order_id === 'string' && data.customer_page) {
+        setManagementLinks((current) => ({ ...current, [body.order_id as string]: data.customer_page }))
+        setNotice('De beveiligde €79-abonnementslink is naar de klant gemaild en staat klaar om te kopiëren.')
+      }
+      await load()
+    }
     catch (caught) { setError(caught instanceof Error ? caught.message : 'Actie mislukt.') }
     finally { setBusy('') }
+  }
+
+  async function copyManagementLink(orderId: string) {
+    const link = managementLinks[orderId]
+    if (!link) return
+    try {
+      await navigator.clipboard.writeText(link)
+      setNotice('Klantlink gekopieerd.')
+    } catch {
+      setError('Kopiëren lukt niet automatisch. Open de link en kopieer hem vanuit de adresbalk.')
+      window.open(link, '_blank', 'noopener,noreferrer')
+    }
   }
 
   if (auth === null) return <><style>{css}</style><div className="login-page"><p style={{ color: '#fff' }}>Beveiligde sessie controleren...</p></div></>
@@ -51,9 +74,10 @@ export default function AdminPage() {
   return <><style>{css}</style><nav className="admin-nav"><Link href="/" className="admin-logo">landing<span>site</span>.nl · admin</Link><button onClick={logout}>Uitloggen</button></nav><main className="admin-page"><div className="admin-wrap">
     <header className="admin-head"><div><h1>Beheer en controle</h1><p>Bouworders, Websitebeheer, partners en commissies. Uitbetalingen blijven handmatig.</p></div><button className="admin-button" onClick={() => load().catch((caught) => setError(String(caught)))}>Vernieuwen</button></header>
     {error && <p className="admin-error" role="alert">{error}</p>}
+    {notice && <p className="admin-note" role="status">{notice}</p>}
     <div className="stats"><div className="stat"><strong>{orders.length}</strong><span>Bouworders</span></div><div className="stat"><strong>{activeManagement}</strong><span>Actief beheer</span></div><div className="stat"><strong>{partners.filter((partner) => partner.status === 'pending').length}</strong><span>Partnerchecks</span></div><div className="stat"><strong>€{pendingCommission}</strong><span>Handmatige commissiecheck</span></div></div>
 
-    <section className="admin-section"><h2>Orders en Websitebeheer</h2><p className="admin-note">Activeer de abonnementslink alleen nadat de klant de website heeft goedgekeurd en de livegang is bevestigd.</p><div className="table-wrap"><table><thead><tr><th>Datum</th><th>Bedrijf</th><th>Pakket</th><th>Bouw</th><th>Websitebeheer</th><th>Preview</th><th>Melding</th><th>Acties</th></tr></thead><tbody>{orders.map((order) => { const page = latestPage(order); return <tr key={order.id}><td>{new Date(order.created_at).toLocaleDateString('nl-NL')}</td><td>{intakeName(order)}<br /><small>{order.email}</small></td><td>{order.pakket}<br /><small>€{pricingConfig.buildPackages[order.pakket].oneTimePrice}</small></td><td><span className={`status status-${order.status}`}>{order.status}</span></td><td><span className={`status status-${order.management_status}`}>{order.management_status}</span></td><td>{page?.netlify_url ? <a href={page.netlify_url} target="_blank" rel="noopener noreferrer">Open ↗</a> : '—'}</td><td className="row-error">{order.last_error || '—'}</td><td><div className="actions">{order.status === 'completed' && !order.management_subscription_id && <button className="admin-button primary" disabled={busy === `manage-${order.id}`} onClick={() => action(`manage-${order.id}`, '/api/admin/activate-management', { order_id: order.id, requestId: crypto.randomUUID() })}>Beheerlink maken</button>}{['paid', 'failed', 'completed'].includes(order.status) && <button className="admin-button" disabled={busy === `regen-${order.id}`} onClick={() => action(`regen-${order.id}`, '/api/admin/regenerate', { order_id: order.id })}>Genereer opnieuw</button>}</div></td></tr> })}{!orders.length && <tr><td colSpan={8}>Nog geen orders.</td></tr>}</tbody></table></div></section>
+    <section className="admin-section"><h2>Orders en Websitebeheer</h2><p className="admin-note">Stuur de abonnementslink alleen nadat de klant de website heeft goedgekeurd en de livegang is bevestigd. De klant sluit daarna zelf het abonnement van €{pricingConfig.websiteManagement.monthlyPrice} per maand af in Stripe.</p><div className="table-wrap"><table><thead><tr><th>Datum</th><th>Bedrijf</th><th>Pakket</th><th>Bouw</th><th>Websitebeheer</th><th>Preview</th><th>Melding</th><th>Acties</th></tr></thead><tbody>{orders.map((order) => { const page = latestPage(order); return <tr key={order.id}><td>{new Date(order.created_at).toLocaleDateString('nl-NL')}</td><td>{intakeName(order)}<br /><small>{order.email}</small></td><td>{order.pakket}<br /><small>€{pricingConfig.buildPackages[order.pakket].oneTimePrice}</small></td><td><span className={`status status-${order.status}`}>{order.status}</span></td><td><span className={`status status-${order.management_status}`}>{order.management_status}</span></td><td>{page?.netlify_url ? <a href={page.netlify_url} target="_blank" rel="noopener noreferrer">Open ↗</a> : '—'}</td><td className="row-error">{order.last_error || '—'}</td><td><div className="actions">{order.status === 'completed' && !order.management_subscription_id && <button className="admin-button primary" disabled={busy === `manage-${order.id}`} onClick={() => action(`manage-${order.id}`, '/api/admin/activate-management', { order_id: order.id, requestId: crypto.randomUUID() })}>{busy === `manage-${order.id}` ? 'Versturen...' : 'Stuur €79-link'}</button>}{managementLinks[order.id] && <button className="admin-button" type="button" onClick={() => copyManagementLink(order.id)}>Kopieer klantlink</button>}{['paid', 'failed', 'completed'].includes(order.status) && <button className="admin-button" disabled={busy === `regen-${order.id}`} onClick={() => action(`regen-${order.id}`, '/api/admin/regenerate', { order_id: order.id })}>Genereer opnieuw</button>}</div></td></tr> })}{!orders.length && <tr><td colSpan={8}>Nog geen orders.</td></tr>}</tbody></table></div></section>
 
     <section className="admin-section"><h2>Partneraanvragen</h2><div className="table-wrap"><table><thead><tr><th>Datum</th><th>Naam</th><th>Type</th><th>Bedrijf</th><th>Status</th><th>Code</th><th>Acties</th></tr></thead><tbody>{partners.map((partner) => <tr key={partner.id}><td>{new Date(partner.created_at).toLocaleDateString('nl-NL')}</td><td>{partner.first_name} {partner.last_name}<br /><small>{partner.email}</small></td><td>{partner.partner_type}</td><td>{partner.company_name || '—'}<br /><small>{partner.kvk_number || ''}</small></td><td><span className={`status status-${partner.status}`}>{partner.status}</span></td><td>{partner.referral_code || '—'}</td><td><div className="actions">{partner.status === 'pending' && <><button className="admin-button primary" disabled={busy === `approve-${partner.id}`} onClick={() => action(`approve-${partner.id}`, '/api/admin/partners/decision', { partner_id: partner.id, decision: 'approve' })}>Goedkeuren</button><button className="admin-button danger" disabled={busy === `reject-${partner.id}`} onClick={() => action(`reject-${partner.id}`, '/api/admin/partners/decision', { partner_id: partner.id, decision: 'reject' })}>Afwijzen</button></>}</div></td></tr>)}{!partners.length && <tr><td colSpan={7}>Nog geen partneraanvragen.</td></tr>}</tbody></table></div></section>
 

@@ -107,6 +107,10 @@ export const customerManagementSchema = z.object({
   token: z.string().min(40).max(600),
 }).strict()
 
+export const customerManagementCheckoutSchema = customerManagementSchema.extend({
+  requestId: z.uuid(),
+}).strict()
+
 export const partnerDecisionSchema = z.object({
   partner_id: z.uuid(),
   decision: z.enum(['approve', 'reject']),
