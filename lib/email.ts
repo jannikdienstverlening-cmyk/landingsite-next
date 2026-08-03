@@ -1,3 +1,4 @@
+import { BUSINESS } from './business'
 import { escapeHtml } from './html'
 import { getResend } from './resend'
 
@@ -11,6 +12,7 @@ export async function sendDeliveryEmail(opts: {
   const company = escapeHtml(opts.bedrijfsnaam)
   const url = escapeHtml(opts.netlifyUrl)
   const host = escapeHtml(new URL(opts.netlifyUrl).hostname)
+  const supportEmail = escapeHtml(BUSINESS.email)
 
   await getResend().emails.send({
     from: process.env.RESEND_FROM ?? 'Landingsite.nl <noreply@landingsite.nl>',
@@ -26,7 +28,7 @@ export async function sendDeliveryEmail(opts: {
         <h2 style="font-size:19px;margin-top:30px">Eigen domein</h2>
         <p>Een eigen domein vereist eerst dat het domein in Netlify wordt toegevoegd. Daarna verschillen de juiste DNS-records per provider en tussen een hoofddomein en <em>www</em>. Stuur ons je domeinnaam; we helpen je met de exacte koppeling naar <strong>${host}</strong>.</p>
         <p>Hosting, SSL, onderhoud en support zijn inbegrepen in je actieve websiteabonnement. Je abonnement is per maand opzegbaar tegen het einde van de lopende betaalperiode.</p>
-        <hr style="border:0;border-top:1px solid #dce7e2;margin:30px 0"><p style="font-size:13px;color:#61716b">Vragen of wijzigingen? Mail naar <a href="mailto:info@landingsite.nl">info@landingsite.nl</a>.</p>
+        <hr style="border:0;border-top:1px solid #dce7e2;margin:30px 0"><p style="font-size:13px;color:#61716b">Vragen of wijzigingen? Mail naar <a href="mailto:${supportEmail}">${supportEmail}</a>.</p>
       </div>
     </div>`,
   }, { idempotencyKey: opts.idempotencyKey })
