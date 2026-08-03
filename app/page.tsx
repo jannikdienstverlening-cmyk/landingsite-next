@@ -62,7 +62,7 @@ const packages = [
     id: 'pro' as const,
     name: pricingConfig.buildPackages.pro.name,
     price: `€${pricingConfig.buildPackages.pro.oneTimePrice}`,
-    fit: 'Voor een uitgebreidere conversieflow',
+    fit: 'Voor een uitgebreidere conversiepagina',
     tagline: 'Meer ruimte voor bewijs, inhoud en een sterkere aanvraagroute.',
     highlighted: true,
     features: ['Alles uit Starter', 'Uitgebreidere structuur', 'Bewijs- en FAQ-secties', 'Extra formulierlogica', 'Uitgebreide SEO-basis'],

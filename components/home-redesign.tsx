@@ -4,6 +4,7 @@ import { partnerProgramConfig } from '@/config/partner-program'
 import { pricingConfig } from '@/config/pricing'
 import { portfolioProjects } from '@/data/portfolio'
 import { BUSINESS } from '@/lib/business'
+import { Logo } from './logo'
 import { PartnerExample } from './partner-program'
 import { ContactForm, FAQAccordion, MobileMenu, PricingButton } from './home-actions'
 
@@ -25,9 +26,7 @@ export function Header() {
   return (
     <header className="site-header">
       <div className="header-inner">
-        <Link href="#top" className="logo" aria-label="Landingsite.nl home">
-          landing<span>site</span><i>.nl</i>
-        </Link>
+        <Logo />
         <nav className="desktop-nav" aria-label="Hoofdnavigatie">
           <a href="#voorbeelden">Voorbeelden</a>
           <a href="#werkwijze">Werkwijze</a>
@@ -189,11 +188,22 @@ export function PricingSection({ packages }: { packages: Package[] }) {
           {packages.map((item) => (
             <article className={item.highlighted ? 'featured' : ''} key={item.id}>
               {item.highlighted && <span className="popular">Meest gekozen</span>}
-              <h3>{item.name}</h3>
-              <small>{item.fit}</small>
-              <p>{item.tagline}</p>
-              <strong>{item.price}<i>eenmalig excl. btw</i></strong>
-              <p className="management-price-line">+ €{pricingConfig.websiteManagement.monthlyPrice} per maand Websitebeheer vanaf livegang</p>
+              <div className="package-heading">
+                <h3>{item.name}</h3>
+                <p className="package-fit">{item.fit}</p>
+                <p className="package-description">{item.tagline}</p>
+              </div>
+              <p className="sr-only">
+                {item.name}. Eenmalige bouwprijs {item.price.replace('€', '')} euro exclusief btw. Websitebeheer {pricingConfig.websiteManagement.monthlyPrice} euro per maand vanaf livegang.
+              </p>
+              <div className="package-build-price" aria-hidden="true">
+                <strong>{item.price}</strong>
+                <span>Eenmalige bouwprijs · excl. btw</span>
+              </div>
+              <div className="package-management-price" aria-hidden="true">
+                <strong><span>+</span> €{pricingConfig.websiteManagement.monthlyPrice} per maand</strong>
+                <span>Websitebeheer vanaf livegang</span>
+              </div>
               <ul>{item.features.map((feature) => <li key={feature}><span aria-hidden="true">✓</span>{feature}</li>)}</ul>
               <div className="price-action"><PricingButton pakket={item.id} label="Kies dit pakket" /></div>
             </article>
@@ -315,7 +325,7 @@ export function Footer() {
     <footer className="site-footer">
       <div className="shell footer-top">
         <div>
-          <Link href="#top" className="logo inverse">landing<span>site</span><i>.nl</i></Link>
+          <Logo variant="light" />
           <p>Landingspagina&apos;s met volledig Websitebeheer voor €{pricingConfig.websiteManagement.monthlyPrice} per maand.</p>
         </div>
         <div>

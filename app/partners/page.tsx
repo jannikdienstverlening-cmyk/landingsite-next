@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
+import { Logo } from '@/components/logo'
 import { PartnerApplicationForm } from '@/components/partner-application-form'
 import { PartnerConditionsSummary, PartnerExample, RollingCommissionExample } from '@/components/partner-program'
 import { partnerProgramConfig } from '@/config/partner-program'
@@ -22,7 +23,7 @@ const faqs = [
 export default function PartnersPage() {
   return (
     <>
-      <header className="partner-page-nav"><div className="shell"><Link href="/" className="logo">landing<span>site</span><i>.nl</i></Link><Link href="#aanmelden" className="header-cta">Partner worden</Link></div></header>
+      <header className="partner-page-nav"><div className="shell"><Logo variant="light" /><Link href="#aanmelden" className="header-cta">Partner worden</Link></div></header>
       <main className="partner-page">
         <section className="partner-page-hero">
           <div className="shell">
