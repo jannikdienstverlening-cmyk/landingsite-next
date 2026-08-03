@@ -1,6 +1,7 @@
 import assert from 'node:assert/strict'
 import test from 'node:test'
 import { createOrderToken, isSameOriginMutation, passwordMatches, verifyOrderToken } from '../lib/security'
+import { contactSchema } from '../lib/validation'
 
 process.env.ORDER_TOKEN_SECRET = 'test-order-secret-that-is-long-enough'
 process.env.ADMIN_PASSWORD = 'correct horse battery staple'
@@ -28,4 +29,17 @@ test('muterende browserroutes accepteren alleen dezelfde origin', () => {
     headers: { origin: 'https://aanvaller.example', 'sec-fetch-site': 'cross-site' },
   })), false)
   assert.equal(isSameOriginMutation(new Request('https://landingsite.nl/api/contact', { method: 'POST' })), false)
+})
+
+test('contacthoneypot kan ingevulde spam veilig afvangen', () => {
+  const parsed = contactSchema.safeParse({
+    naam: 'Spam Bot',
+    email: 'spam@example.com',
+    bedrijf: '',
+    bericht: 'Geautomatiseerd spambericht.',
+    website: 'https://spam.example',
+  })
+
+  assert.equal(parsed.success, true)
+  if (parsed.success) assert.equal(Boolean(parsed.data.website), true)
 })

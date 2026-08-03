@@ -64,7 +64,7 @@ export const contactSchema = z.object({
   email: z.email().max(254),
   bedrijf: z.string().trim().max(100).default(''),
   bericht: z.string().trim().min(10).max(3_000),
-  website: z.string().max(0).optional(),
+  website: z.string().max(200).optional(),
 }).strict()
 
 export const partnerApplicationSchema = z.object({
