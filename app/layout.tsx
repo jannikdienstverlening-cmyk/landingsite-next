@@ -25,7 +25,7 @@ export const metadata: Metadata = {
     title: `Landingspagina laten maken vanaf €${pricingConfig.buildPackages.starter.oneTimePrice}`,
     description: `Met Websitebeheer, beveiliging en kleine wijzigingen voor €${pricingConfig.websiteManagement.monthlyPrice} per maand vanaf livegang.`,
   },
-  verification: { google: 'iN4lNqCMdhok5XwzhIlYx3uX-XSAuYl08Iju7wdV76M' },
+  verification: { google: 'b1zb9KbeJjn0en587SxszRJ09cnt0CzRAANU47-3y-Q' },
   keywords: [
     'landingspagina laten maken',
     'website laten maken',
