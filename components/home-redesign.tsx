@@ -160,8 +160,10 @@ export function EssentialsSection() {
     <section className="section essentials" id="werkwijze">
       <div className="shell">
         <div className="essentials-heading">
-          <p className="section-kicker">Wat je krijgt</p>
-          <h2>Een gerichte landingspagina, professioneel gebouwd.</h2>
+          <div>
+            <p className="section-kicker">Wat je krijgt</p>
+            <h2>Een gerichte landingspagina, professioneel gebouwd.</h2>
+          </div>
           <p>Je betaalt één duidelijke bouwprijs. Na oplevering kan Landingsite.nl het technische beheer volledig overnemen.</p>
         </div>
         <ul className="checklist service-grid">

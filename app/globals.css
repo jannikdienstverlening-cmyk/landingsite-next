@@ -1870,9 +1870,19 @@ button, input, textarea, select { font: inherit; }
 
 .essentials-heading {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(280px, .7fr);
+  grid-template-columns: minmax(0, 1.35fr) minmax(280px, .65fr);
   gap: clamp(28px, 6vw, 72px);
   align-items: end;
+}
+
+.essentials-heading > div {
+  display: grid;
+  gap: 16px;
+  min-width: 0;
+}
+
+.essentials-heading h2 {
+  max-width: 820px;
 }
 
 .essentials-heading p:last-child {
