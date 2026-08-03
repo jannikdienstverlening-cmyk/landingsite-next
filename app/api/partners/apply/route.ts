@@ -4,6 +4,7 @@ import { clientIp, checkRateLimit, rateLimitResponse } from '@/lib/rate-limit'
 import { invalidJsonResponse, readJsonBody } from '@/lib/request'
 import { getResend } from '@/lib/resend'
 import { referralAttributionId, referralCookie, rejectCrossOriginMutation } from '@/lib/security'
+import { adminRecipient } from '@/lib/server-email'
 import { getSupabase } from '@/lib/supabase'
 import { partnerApplicationSchema, validationMessage } from '@/lib/validation'
 
@@ -61,7 +62,7 @@ export async function POST(request: NextRequest) {
     }, { idempotencyKey: `partner-confirm-${input.requestId}` }),
     resend.emails.send({
       from: process.env.RESEND_FROM ?? 'Landingsite.nl <noreply@landingsite.nl>',
-      to: process.env.ADMIN_EMAIL ?? 'jannikklumpenaar@gmail.com',
+      to: adminRecipient(),
       replyTo: normalizedEmail,
       subject: `Nieuwe partneraanvraag: ${fullName}`,
       html: `<div style="font-family:Arial,sans-serif;line-height:1.6;color:#10231b;max-width:620px;margin:auto;padding:32px"><h1 style="font-size:25px">Nieuwe partneraanvraag</h1><p><strong>Naam:</strong> ${escapeHtml(fullName)}<br><strong>E-mail:</strong> ${escapeHtml(normalizedEmail)}<br><strong>Type:</strong> ${escapeHtml(input.type)}<br><strong>Bedrijf:</strong> ${escapeHtml(input.bedrijfsnaam || 'Niet van toepassing')}<br><strong>KvK:</strong> ${escapeHtml(input.kvkNummer || 'Niet van toepassing')}</p><p>Controleer en keur de aanvraag handmatig goed in het beheer.</p></div>`,

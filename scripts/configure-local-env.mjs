@@ -38,8 +38,6 @@ setValue('RESEND_FROM', 'Landingsite.nl <noreply@landingsite.nl>', { onlyWhenMis
 setValue('ADMIN_SESSION_SECRET', secureRandom(), { onlyWhenMissing: true })
 setValue('ORDER_TOKEN_SECRET', secureRandom(), { onlyWhenMissing: true })
 setValue('IP_HASH_SALT', secureRandom(), { onlyWhenMissing: true })
-setValue('ADMIN_EMAIL', 'jannikklumpenaar@gmail.com', { onlyWhenMissing: true })
-setValue('CONTACT_EMAIL', 'jannikklumpenaar@gmail.com', { onlyWhenMissing: true })
 setValue('STRIPE_TERMS_CONFIGURED', process.argv.includes('--terms-configured') ? 'true' : valueFor('STRIPE_TERMS_CONFIGURED') || 'false')
 
 writeFileSync(envPath, `${lines.join('\n').replace(/\n+$/, '')}\n`, { encoding: 'utf8', mode: 0o600 })

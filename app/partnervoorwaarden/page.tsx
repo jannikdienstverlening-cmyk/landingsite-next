@@ -27,7 +27,7 @@ export default function PartnerTermsPage() {
       <section><h2>9. Rekenvoorbeelden</h2><p>Het 5×5-voorbeeld met €475 per maand is hypothetisch. Het veronderstelt 155 actieve en volledig betaalde Websitebeheer-abonnementen in drie lagen. Het is geen voorspelling, gemiddelde of inkomensgarantie.</p></section>
       <section><h2>10. Privacy en administratie</h2><p>We verwerken partner-, verwijzings-, klant-, factuur- en controlegegevens zoals beschreven in het <Link href="/privacybeleid">privacybeleid</Link>. We gebruiken geen fingerprinting. Administratieve gegevens kunnen worden bewaard zolang dat nodig is voor controle, belasting en geschillen.</p></section>
       <section><h2>11. Wijziging, opschorting en einde</h2><p>We mogen deelname opschorten of beëindigen bij fraude, misleiding, misbruik, reputatieschade of overtreding. We mogen bedragen of voorwaarden voor toekomstige commissies wijzigen met een redelijke aankondiging. Reeds definitief verdiende bedragen blijven verschuldigd, behoudens correcties.</p></section>
-      <section><h2>12. Vragen en recht</h2><p>Vragen kunnen naar <a href={`mailto:${BUSINESS.email}`}>{BUSINESS.email}</a>. Nederlands recht is van toepassing. Geschillen worden voorgelegd aan de bevoegde Nederlandse rechter, voor zover dwingend recht niet anders bepaalt.</p></section>
+      <section><h2>12. Vragen en recht</h2><p>Vragen kunnen via <Link href={BUSINESS.contactPath}>het contactformulier</Link> worden ingediend. Nederlands recht is van toepassing. Geschillen worden voorgelegd aan de bevoegde Nederlandse rechter, voor zover dwingend recht niet anders bepaalt.</p></section>
     </div>
   </div></main>
 }

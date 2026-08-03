@@ -6,6 +6,7 @@ import { escapeHtml } from '@/lib/html'
 import { commissionForLevel } from '@/lib/partner'
 import { getResend } from '@/lib/resend'
 import { createCustomerToken } from '@/lib/security'
+import { adminRecipient } from '@/lib/server-email'
 import { getStripe, PAKKETTEN, TERMS_VERSION } from '@/lib/stripe'
 import { getSupabase, type ManagementStatus, type Pakket } from '@/lib/supabase'
 
@@ -95,7 +96,7 @@ async function markBuildPaid(session: Stripe.Checkout.Session, eventId: string) 
   const amount = `${PAKKETTEN[pakket].prijs_label} eenmalig excl. btw`
   await getResend().emails.send({
     from: process.env.RESEND_FROM ?? 'Landingsite.nl <noreply@landingsite.nl>',
-    to: process.env.ADMIN_EMAIL ?? 'jannikklumpenaar@gmail.com',
+    to: adminRecipient(),
     replyTo: email || undefined,
     subject: `Nieuwe bouwopdracht - ${PAKKETTEN[pakket].naam} (${amount})`,
     html: `<div style="font-family:Arial,sans-serif;line-height:1.6;color:#10231b;max-width:620px;margin:auto;padding:32px"><p style="color:#147a55;font-weight:800">Eenmalige bouwbetaling ontvangen</p><h1 style="font-size:26px">Nieuwe landingspagina</h1><p><strong>Pakket:</strong> ${escapeHtml(PAKKETTEN[pakket].naam)}<br><strong>Bedrag:</strong> ${escapeHtml(amount)}<br><strong>Bedrijf:</strong> ${escapeHtml(businessName || 'Onbekend')}<br><strong>KvK:</strong> ${escapeHtml(kvkNumber || 'Niet beschikbaar')}<br><strong>E-mail:</strong> ${escapeHtml(email || 'Niet beschikbaar')}</p><p>Websitebeheer is nog niet geactiveerd en mag pas bij livegang via de aparte beheeractie worden aangeboden.</p></div>`,

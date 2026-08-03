@@ -3,8 +3,8 @@ export const BUSINESS = {
   legalName: 'Jannik Dienstverlening',
   chamberOfCommerceNumber: '65549430',
   vatId: 'NL001557133B48',
-  email: 'jannikklumpenaar@gmail.com',
   website: 'https://landingsite.nl',
+  contactPath: '/#contact',
   termsUrl: 'https://landingsite.nl/algemene-voorwaarden',
   privacyUrl: 'https://landingsite.nl/privacybeleid',
   address: {

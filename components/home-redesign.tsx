@@ -327,7 +327,7 @@ export function FAQContactSection({ faqs }: { faqs: FAQ[] }) {
             Beschrijf kort je aanbod en doel. Je ontvangt binnen één werkdag een eerlijk advies over het passende pakket en de haalbare planning.
           </p>
           <div className="contact-meta">
-            <a href={`mailto:${BUSINESS.email}`}>{BUSINESS.email}</a>
+            <span>Veilig contactformulier</span>
             <span>Reactie binnen één werkdag</span>
           </div>
           <ContactForm />
@@ -355,7 +355,6 @@ export function Footer() {
         </div>
         <div>
           <strong>Contact</strong>
-          <a href={`mailto:${BUSINESS.email}`}>{BUSINESS.email}</a>
           <a href="#contact">Contactformulier</a>
           <Link href="/partners">Partnerprogramma</Link>
         </div>

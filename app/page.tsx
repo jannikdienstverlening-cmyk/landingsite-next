@@ -86,7 +86,6 @@ const jsonLd = {
       name: BUSINESS.brandName,
       legalName: BUSINESS.legalName,
       url: BUSINESS.website,
-      email: BUSINESS.email,
       taxID: BUSINESS.chamberOfCommerceNumber,
       vatID: BUSINESS.vatId,
       address: {

@@ -4,7 +4,6 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { useParams, useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
-import { BUSINESS } from '@/lib/business'
 import type { Pakket } from '@/lib/supabase'
 
 const css = `
@@ -50,14 +49,14 @@ export default function IntakePage() {
         if (cancelled) return
         if (!response.ok || !data.order) throw new Error('Order niet gevonden. Controleer de link in je betaalbevestiging.')
         if (data.order.status === 'pending' && attempts++ < 15) return window.setTimeout(loadOrder, 2_000)
-        if (data.order.status === 'pending') throw new Error(`Je betaling wordt nog verwerkt. Ververs over een minuut of mail ${BUSINESS.email}.`)
+        if (data.order.status === 'pending') throw new Error('Je betaling wordt nog verwerkt. Ververs de pagina over een minuut of gebruik het contactformulier.')
         if (data.order.status === 'generating' || data.order.status === 'completed') {
           const statusResponse = await fetch('/api/generate', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ session_id }) })
           const statusData = await statusResponse.json()
           if (statusData.status_token) router.replace(`/genereren/${data.order.id}?token=${encodeURIComponent(statusData.status_token)}`)
           return
         }
-        if (data.order.status !== 'paid') throw new Error(`Deze order vraagt aandacht. Mail ${BUSINESS.email} met je betaalreferentie.`)
+        if (data.order.status !== 'paid') throw new Error('Deze order vraagt aandacht. Gebruik het contactformulier en vermeld je betaalreferentie.')
         setPakket(data.order.pakket as Pakket)
         setLoading(false)
       } catch (caught) {
