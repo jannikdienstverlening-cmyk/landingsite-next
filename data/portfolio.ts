@@ -35,4 +35,16 @@ export const portfolioProjects: PortfolioProject[] = [
     url: 'https://www.wiamanagement.nl/',
     domain: 'wiamanagement.nl',
   },
+  {
+    slug: 'aibouwers',
+    name: 'AIbouwers.nl',
+    type: 'AI-integraties en procesautomatisering',
+    description:
+      'Een heldere productwebsite voor praktische AI-integraties, met een gratis scan, concrete toepassingen en een uitlegbare workflow rond menselijke controle.',
+    features: ['Gratis AI-scan', 'Procesautomatisering', 'Productvoorbeeld', 'Menselijke controle'],
+    image: '/images/portfolio/aibouwers-home-20260803.webp',
+    imageAlt: 'Screenshot van de actuele homepage van AIbouwers.nl',
+    url: 'https://aibouwers.nl/',
+    domain: 'aibouwers.nl',
+  },
 ]
