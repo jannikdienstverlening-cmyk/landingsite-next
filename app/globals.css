@@ -2084,7 +2084,8 @@ button, input, textarea, select { font: inherit; }
   grid-template-rows: auto auto 1fr;
   align-content: start;
   min-width: 0;
-  min-height: 164px;
+  height: 188px;
+  min-height: 188px;
 }
 
 .featured .package-heading {
@@ -2432,6 +2433,11 @@ button, input, textarea, select { font: inherit; }
     grid-template-columns: 1fr;
   }
 
+  .package-heading {
+    height: auto;
+    min-height: 0;
+  }
+
   .case-card {
     min-height: 0;
   }
@@ -2519,6 +2525,7 @@ button, input, textarea, select { font: inherit; }
   }
 
   .package-heading {
+    height: auto;
     min-height: 0;
   }
 
