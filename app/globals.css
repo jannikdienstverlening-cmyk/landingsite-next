@@ -1948,6 +1948,164 @@ button, input, textarea, select { font: inherit; }
   color: #fff;
 }
 
+.featured-reference {
+  overflow: hidden;
+  border: 1px solid rgba(11, 33, 25, .12);
+  border-radius: 22px;
+  background: #fff;
+  box-shadow: 0 22px 60px rgba(7, 28, 22, .08);
+}
+
+.featured-reference .case-image {
+  aspect-ratio: 2 / 1;
+}
+
+.featured-reference-info {
+  display: grid;
+  grid-template-columns: minmax(0, 1.35fr) minmax(280px, .65fr);
+  gap: clamp(32px, 6vw, 80px);
+  align-items: end;
+  padding: clamp(28px, 4vw, 48px);
+}
+
+.featured-reference-info h3 {
+  font-size: clamp(2rem, 3.5vw, 3.35rem);
+}
+
+.featured-reference-info p {
+  max-width: 680px;
+  font-size: clamp(.96rem, 1.25vw, 1.08rem);
+  line-height: 1.65;
+}
+
+.reference-more {
+  margin-top: clamp(54px, 8vw, 92px);
+}
+
+.reference-more-head {
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  gap: 24px;
+  margin-bottom: 24px;
+}
+
+.reference-more-head h3 {
+  margin: 0;
+  font-size: clamp(1.75rem, 3vw, 2.7rem);
+  line-height: 1.05;
+}
+
+.reference-controls {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.reference-controls > span {
+  min-width: 50px;
+  color: var(--muted);
+  font-family: var(--font-dm-mono), ui-monospace, monospace;
+  font-size: .76rem;
+  text-align: center;
+}
+
+.reference-controls button {
+  display: inline-grid;
+  width: 44px;
+  height: 44px;
+  place-items: center;
+  border: 1px solid var(--line);
+  border-radius: 50%;
+  background: #fff;
+  color: var(--ink);
+  font: inherit;
+  font-size: 1.15rem;
+  cursor: pointer;
+  transition: border-color 180ms ease, background 180ms ease, color 180ms ease, transform 180ms ease;
+}
+
+.reference-controls button:hover:not(:disabled) {
+  border-color: var(--ink);
+  background: var(--ink);
+  color: #fff;
+  transform: translateY(-2px);
+}
+
+.reference-controls button:disabled {
+  opacity: .35;
+  cursor: default;
+}
+
+.reference-rail {
+  display: grid;
+  grid-auto-columns: min(680px, 74vw);
+  grid-auto-flow: column;
+  gap: 22px;
+  overflow-x: auto;
+  overscroll-behavior-inline: contain;
+  padding: 2px max(1px, calc((100% - min(680px, 74vw)) * .08)) 22px 1px;
+  scroll-behavior: smooth;
+  scroll-snap-type: inline mandatory;
+  scrollbar-color: rgba(11, 33, 25, .24) transparent;
+  scrollbar-width: thin;
+}
+
+.reference-rail:focus-visible {
+  outline: 3px solid rgba(20, 124, 89, .25);
+  outline-offset: 6px;
+}
+
+.reference-card {
+  display: flex;
+  min-width: 0;
+  scroll-snap-align: start;
+  scroll-snap-stop: always;
+  flex-direction: column;
+  overflow: hidden;
+  border: 1px solid rgba(11, 33, 25, .12);
+  border-radius: 20px;
+  background: #fff;
+  box-shadow: 0 16px 44px rgba(7, 28, 22, .07);
+}
+
+.reference-card .case-image {
+  aspect-ratio: 16 / 9;
+}
+
+.reference-card-info {
+  display: grid;
+  flex: 1;
+  gap: 13px;
+  padding: 26px;
+}
+
+.reference-card-info h4 {
+  margin: 0;
+  font-family: var(--font-syne), ui-sans-serif, system-ui, sans-serif;
+  font-size: clamp(1.55rem, 2.4vw, 2.15rem);
+  line-height: 1.05;
+}
+
+.reference-card-info p {
+  max-width: 610px;
+  margin: 0;
+  color: var(--muted);
+  line-height: 1.6;
+}
+
+.reference-card-info .case-link {
+  align-self: end;
+  margin-top: 6px;
+}
+
+.reference-swipe-hint {
+  margin: 10px 0 0;
+  color: var(--muted);
+  font-size: .78rem;
+}
+
 .essentials {
   background: #fff;
 }
@@ -2623,6 +2781,88 @@ button, input, textarea, select { font: inherit; }
 
   .package-management-price strong {
     font-size: 1.08rem;
+  }
+}
+
+@media (max-width: 900px) {
+  .featured-reference-info {
+    grid-template-columns: 1fr;
+    gap: 24px;
+  }
+
+  .featured-reference .case-image {
+    aspect-ratio: 16 / 10;
+  }
+
+  .reference-rail {
+    grid-auto-columns: min(680px, 84vw);
+  }
+}
+
+@media (max-width: 560px) {
+  .portfolio-head h2 {
+    max-width: 100%;
+    font-size: clamp(1.8rem, 8.3vw, 2.2rem);
+  }
+
+  .featured-reference,
+  .reference-card {
+    border-radius: 16px;
+  }
+
+  .featured-reference-info,
+  .reference-card-info {
+    padding: 24px 20px;
+  }
+
+  .reference-more-head {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .reference-controls {
+    align-self: stretch;
+    justify-content: flex-end;
+  }
+
+  .reference-controls > span {
+    margin-right: auto;
+    text-align: left;
+  }
+
+  .reference-rail {
+    grid-auto-columns: calc(100% - 24px);
+    gap: 14px;
+    padding-right: 24px;
+  }
+
+  .reference-card .case-image {
+    aspect-ratio: 16 / 10;
+  }
+
+  .reference-card-info .case-meta {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 7px;
+  }
+
+  .reference-card-info .case-meta > span:last-child {
+    padding-left: 0;
+    border-left: 0;
+  }
+
+  .reference-swipe-hint {
+    max-width: 250px;
+  }
+
+  .process-heading h2 {
+    min-width: 0;
+    font-size: clamp(1.9rem, 8.3vw, 2.2rem);
+  }
+
+  .faq-list summary span:first-child {
+    min-width: 0;
+    overflow-wrap: anywhere;
   }
 }
 

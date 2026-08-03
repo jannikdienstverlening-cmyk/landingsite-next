@@ -6,6 +6,7 @@ import { portfolioProjects } from '@/data/portfolio'
 import { BUSINESS } from '@/lib/business'
 import { Logo } from './logo'
 import { PartnerExample } from './partner-program'
+import { PortfolioShowcase } from './portfolio-showcase'
 import { ContactForm, FAQAccordion, MobileMenu, PricingButton } from './home-actions'
 
 type Package = {
@@ -97,47 +98,7 @@ function HeroProjectPreview() {
 }
 
 export function PortfolioSection() {
-  return (
-    <section className="section portfolio" id="voorbeelden">
-      <div className="shell">
-        <div className="section-head portfolio-head">
-          <p className="section-kicker">Recent werk</p>
-          <h2>Geen standaardtemplate, maar een website die past bij het doel.</h2>
-          <p>Bekijk echte websites die al live zijn. Geen mockups, geen verzonnen resultaten.</p>
-        </div>
-        <div className="case-grid">
-          {portfolioProjects.map((item, index) => (
-            <article className="case-card" key={item.slug}>
-              <div className="case-preview">
-                <div className="case-browserbar" aria-hidden="true">
-                  <span className="case-browserdots"><i /><i /><i /></span>
-                  <span className="case-domain">{item.domain}</span>
-                  <span className="case-live-status"><i /> Live</span>
-                </div>
-                <a className="case-image" href={item.url} target="_blank" rel="noopener noreferrer" aria-label={`Bekijk ${item.name} live`}>
-                  <Image src={item.image} alt={item.imageAlt} fill sizes="(max-width: 900px) 100vw, 1200px" />
-                </a>
-              </div>
-              <div className="case-info">
-                <div className="case-copy">
-                  <div className="case-meta">
-                    <span className="case-label">{item.type}</span>
-                    <span>Project {String(index + 1).padStart(2, '0')}</span>
-                  </div>
-                  <h3>{item.name}</h3>
-                  <p>{item.description}</p>
-                </div>
-                <div className="case-details">
-                  <div className="case-tags">{item.features.map((feature) => <span key={feature}>{feature}</span>)}</div>
-                  <a className="case-link" href={item.url} target="_blank" rel="noopener noreferrer">Bekijk live website</a>
-                </div>
-              </div>
-            </article>
-          ))}
-        </div>
-      </div>
-    </section>
-  )
+  return <PortfolioShowcase />
 }
 
 export function EssentialsSection() {
