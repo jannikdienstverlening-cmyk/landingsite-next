@@ -3,7 +3,7 @@ import { pricingConfig } from '@/config/pricing'
 import { clientIp, checkRateLimit, rateLimitResponse } from '@/lib/rate-limit'
 import { invalidJsonResponse, readJsonBody } from '@/lib/request'
 import { referralAttributionId, referralCookie, rejectCrossOriginMutation } from '@/lib/security'
-import { configuredBuildPriceId, getStripe, PAKKETTEN, TERMS_VERSION } from '@/lib/stripe'
+import { configuredBuildPriceId, getStripe, PAKKETTEN, stripeCheckoutBranding, TERMS_VERSION } from '@/lib/stripe'
 import { getSupabase } from '@/lib/supabase'
 import { checkoutSchema, validationMessage } from '@/lib/validation'
 
@@ -53,6 +53,7 @@ export async function POST(request: NextRequest) {
         quantity: 1,
       }],
       mode: 'payment',
+      branding_settings: stripeCheckoutBranding(baseUrl),
       success_url: `${baseUrl}/intake/{CHECKOUT_SESSION_ID}`,
       cancel_url: `${baseUrl}/#prijzen`,
       client_reference_id: parsed.data.requestId,
@@ -84,7 +85,8 @@ export async function POST(request: NextRequest) {
         numeric: { minimum_length: 8, maximum_length: 8 },
       }],
       custom_text: {
-        submit: { message: `Je betaalt zakelijk eenmalig ${info.prijs_label} excl. btw voor de bouw. Websitebeheer van €${pricingConfig.websiteManagement.monthlyPrice} per maand start niet nu; daarvoor ontvang je pas bij livegang een aparte beveiligde abonnementslink.` },
+        submit: { message: `Eenmalige bouwprijs: ${info.prijs_label} excl. btw. Websitebeheer van €${pricingConfig.websiteManagement.monthlyPrice} per maand start alleen na livegang en een aparte abonnementsbevestiging.` },
+        after_submit: { message: 'Na de betaling ga je direct door naar de beveiligde intake voor je nieuwe landingspagina.' },
       },
       ...(process.env.STRIPE_TERMS_CONFIGURED === 'true'
         ? { consent_collection: { terms_of_service: 'required' as const } }

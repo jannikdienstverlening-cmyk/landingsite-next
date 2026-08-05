@@ -1,5 +1,5 @@
 import { cents, pricingConfig } from '@/config/pricing'
-import { configuredManagementPriceId, getStripe, SUBSCRIPTION_INTERVAL, TERMS_VERSION } from '@/lib/stripe'
+import { configuredManagementPriceId, getStripe, stripeCheckoutBranding, SUBSCRIPTION_INTERVAL, TERMS_VERSION } from '@/lib/stripe'
 import { getSupabase } from '@/lib/supabase'
 
 export type ManagementCheckoutOrder = {
@@ -61,6 +61,7 @@ export async function createOrReuseManagementCheckout(
   const managementPriceId = configuredManagementPriceId()
   const session = await getStripe().checkout.sessions.create({
     mode: 'subscription',
+    branding_settings: stripeCheckoutBranding(baseUrl),
     line_items: [{
       ...(managementPriceId
         ? { price: managementPriceId }
@@ -88,7 +89,10 @@ export async function createOrReuseManagementCheckout(
     consent_collection: { terms_of_service: 'required' },
     custom_text: {
       submit: {
-        message: `Websitebeheer kost €${pricingConfig.websiteManagement.monthlyPrice} per maand exclusief btw en start direct na afronding van deze checkout. Opzeggen kan tegen het einde van de lopende maand via je beveiligde beheerlink.`,
+        message: `Je start Websitebeheer voor €${pricingConfig.websiteManagement.monthlyPrice} per maand excl. btw. De eerste afschrijving vindt plaats na je bevestiging. Daarna wordt het bedrag maandelijks afgeschreven.`,
+      },
+      after_submit: {
+        message: 'Je ontvangt een bevestiging en kunt facturen, betaalgegevens en opzegging daarna beheren via je beveiligde klantpagina.',
       },
     },
     locale: 'nl',

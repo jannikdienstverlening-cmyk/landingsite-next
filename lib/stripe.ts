@@ -17,6 +17,27 @@ export function getStripe() {
   return stripe
 }
 
+export const STRIPE_CHECKOUT_BRAND = {
+  backgroundColor: '#f4f8f6',
+  buttonColor: '#0b4936',
+  displayName: 'Landingsite.nl',
+  fontFamily: 'inter',
+  borderStyle: 'rounded',
+} as const
+
+export function stripeCheckoutBranding(baseUrl: string): Stripe.Checkout.SessionCreateParams.BrandingSettings {
+  const iconUrl = `${baseUrl.replace(/\/$/, '')}/images/stripe-icon.png`
+
+  return {
+    background_color: STRIPE_CHECKOUT_BRAND.backgroundColor,
+    button_color: STRIPE_CHECKOUT_BRAND.buttonColor,
+    display_name: STRIPE_CHECKOUT_BRAND.displayName,
+    font_family: STRIPE_CHECKOUT_BRAND.fontFamily,
+    border_style: STRIPE_CHECKOUT_BRAND.borderStyle,
+    ...(iconUrl.startsWith('https://') ? { icon: { type: 'url' as const, url: iconUrl } } : {}),
+  }
+}
+
 export const PAKKETTEN = {
   starter: {
     naam: pricingConfig.buildPackages.starter.name,

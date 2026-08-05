@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict'
 import test from 'node:test'
-import { configuredBuildPriceId, configuredManagementPriceId, PAKKETTEN } from '../lib/stripe'
+import { configuredBuildPriceId, configuredManagementPriceId, PAKKETTEN, stripeCheckoutBranding, STRIPE_CHECKOUT_BRAND } from '../lib/stripe'
 
 test('Stripe checkout gebruikt de eenmalige bouwprijzen', () => {
   assert.equal(PAKKETTEN.starter.naam, 'Starter')
@@ -29,4 +29,18 @@ test('Stripe Price ID wordt alleen uit de serverconfiguratie gelezen', () => {
   else process.env.STRIPE_BUILD_PRICE_STARTER = previousBuild
   if (previousManagement === undefined) delete process.env.STRIPE_PRICE_WEBSITE_MANAGEMENT
   else process.env.STRIPE_PRICE_WEBSITE_MANAGEMENT = previousManagement
+})
+
+test('Stripe Checkout gebruikt de Landingsite-huisstijl en alleen een publiek merkicoon', () => {
+  const liveBranding = stripeCheckoutBranding('https://www.landingsite.nl/')
+  assert.equal(liveBranding.background_color, STRIPE_CHECKOUT_BRAND.backgroundColor)
+  assert.equal(liveBranding.button_color, STRIPE_CHECKOUT_BRAND.buttonColor)
+  assert.equal(liveBranding.display_name, 'Landingsite.nl')
+  assert.equal(liveBranding.font_family, 'inter')
+  assert.deepEqual(liveBranding.icon, {
+    type: 'url',
+    url: 'https://www.landingsite.nl/images/stripe-icon.png',
+  })
+
+  assert.equal(stripeCheckoutBranding('http://localhost:3000').icon, undefined)
 })
