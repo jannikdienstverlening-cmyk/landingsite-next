@@ -67,6 +67,26 @@ export const contactSchema = z.object({
   website: z.string().max(200).optional(),
 }).strict()
 
+export const chatMessageSchema = z.object({
+  role: z.enum(['user', 'assistant']),
+  content: z.string().trim().min(1).max(800),
+}).strict()
+
+export const chatSchema = z.object({
+  messages: z.array(chatMessageSchema).min(1).max(10),
+}).strict().superRefine((value, context) => {
+  if (value.messages.at(-1)?.role !== 'user') {
+    context.addIssue({ code: 'custom', path: ['messages'], message: 'Het laatste bericht moet van de bezoeker zijn.' })
+  }
+
+  for (let index = 1; index < value.messages.length; index += 1) {
+    if (value.messages[index]?.role === value.messages[index - 1]?.role) {
+      context.addIssue({ code: 'custom', path: ['messages', index], message: 'Berichten moeten elkaar afwisselen.' })
+      break
+    }
+  }
+})
+
 export const partnerApplicationSchema = z.object({
   requestId: z.uuid(),
   voornaam: z.string().trim().min(2).max(80),

@@ -11,6 +11,7 @@ import {
 } from '@/components/home-redesign'
 import { StickyMobileCTA } from '@/components/home-actions'
 import { ReferralCapture } from '@/components/referral-capture'
+import { SiteChatbot } from '@/components/site-chatbot'
 import { pricingConfig } from '@/config/pricing'
 import { BUSINESS } from '@/lib/business'
 
@@ -156,6 +157,7 @@ export default function Home() {
       </main>
       <Footer />
       <StickyMobileCTA />
+      <SiteChatbot />
     </>
   )
 }
