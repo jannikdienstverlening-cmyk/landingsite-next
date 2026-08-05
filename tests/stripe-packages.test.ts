@@ -1,6 +1,15 @@
 import assert from 'node:assert/strict'
 import test from 'node:test'
-import { configuredBuildPriceId, configuredManagementPriceId, PAKKETTEN, stripeCheckoutBranding, STRIPE_CHECKOUT_BRAND } from '../lib/stripe'
+import {
+  configuredBuildPriceId,
+  configuredManagementPriceId,
+  PAKKETTEN,
+  STRIPE_BUILD_PAYMENT_METHODS,
+  STRIPE_CHECKOUT_BRAND,
+  STRIPE_MANAGEMENT_PAYMENT_METHODS,
+  stripeCheckoutBranding,
+  stripePaymentMethods,
+} from '../lib/stripe'
 
 test('Stripe checkout gebruikt de eenmalige bouwprijzen', () => {
   assert.equal(PAKKETTEN.starter.naam, 'Starter')
@@ -43,4 +52,12 @@ test('Stripe Checkout gebruikt de Landingsite-huisstijl en alleen een publiek me
   })
 
   assert.equal(stripeCheckoutBranding('http://localhost:3000').icon, undefined)
+})
+
+test('Stripe Checkout geeft iDEAL voorrang en beperkt afleidende betaalmethoden', () => {
+  assert.deepEqual(stripePaymentMethods(STRIPE_BUILD_PAYMENT_METHODS), ['ideal', 'card'])
+  assert.deepEqual(stripePaymentMethods(STRIPE_MANAGEMENT_PAYMENT_METHODS), ['ideal', 'card', 'sepa_debit'])
+  assert.equal(STRIPE_BUILD_PAYMENT_METHODS.includes('ideal'), true)
+  assert.equal(STRIPE_BUILD_PAYMENT_METHODS.includes('eps' as never), false)
+  assert.equal(STRIPE_BUILD_PAYMENT_METHODS.includes('amazon_pay' as never), false)
 })

@@ -1,5 +1,13 @@
 import { cents, pricingConfig } from '@/config/pricing'
-import { configuredManagementPriceId, getStripe, stripeCheckoutBranding, SUBSCRIPTION_INTERVAL, TERMS_VERSION } from '@/lib/stripe'
+import {
+  configuredManagementPriceId,
+  getStripe,
+  STRIPE_MANAGEMENT_PAYMENT_METHODS,
+  stripeCheckoutBranding,
+  stripePaymentMethods,
+  SUBSCRIPTION_INTERVAL,
+  TERMS_VERSION,
+} from '@/lib/stripe'
 import { getSupabase } from '@/lib/supabase'
 
 export type ManagementCheckoutOrder = {
@@ -61,6 +69,9 @@ export async function createOrReuseManagementCheckout(
   const managementPriceId = configuredManagementPriceId()
   const session = await getStripe().checkout.sessions.create({
     mode: 'subscription',
+    payment_method_types: stripePaymentMethods(STRIPE_MANAGEMENT_PAYMENT_METHODS),
+    wallet_options: { link: { display: 'never' } },
+    submit_type: 'subscribe',
     branding_settings: stripeCheckoutBranding(baseUrl),
     line_items: [{
       ...(managementPriceId

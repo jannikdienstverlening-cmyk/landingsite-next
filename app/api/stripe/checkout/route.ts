@@ -3,7 +3,15 @@ import { pricingConfig } from '@/config/pricing'
 import { clientIp, checkRateLimit, rateLimitResponse } from '@/lib/rate-limit'
 import { invalidJsonResponse, readJsonBody } from '@/lib/request'
 import { referralAttributionId, referralCookie, rejectCrossOriginMutation } from '@/lib/security'
-import { configuredBuildPriceId, getStripe, PAKKETTEN, stripeCheckoutBranding, TERMS_VERSION } from '@/lib/stripe'
+import {
+  configuredBuildPriceId,
+  getStripe,
+  PAKKETTEN,
+  STRIPE_BUILD_PAYMENT_METHODS,
+  stripeCheckoutBranding,
+  stripePaymentMethods,
+  TERMS_VERSION,
+} from '@/lib/stripe'
 import { getSupabase } from '@/lib/supabase'
 import { checkoutSchema, validationMessage } from '@/lib/validation'
 
@@ -53,6 +61,9 @@ export async function POST(request: NextRequest) {
         quantity: 1,
       }],
       mode: 'payment',
+      payment_method_types: stripePaymentMethods(STRIPE_BUILD_PAYMENT_METHODS),
+      wallet_options: { link: { display: 'never' } },
+      submit_type: 'pay',
       branding_settings: stripeCheckoutBranding(baseUrl),
       success_url: `${baseUrl}/intake/{CHECKOUT_SESSION_ID}`,
       cancel_url: `${baseUrl}/#prijzen`,
@@ -75,7 +86,6 @@ export async function POST(request: NextRequest) {
       automatic_tax: { enabled: true },
       tax_id_collection: { enabled: true },
       billing_address_collection: 'required',
-      phone_number_collection: { enabled: true },
       name_collection: { business: { enabled: true, optional: false }, individual: { enabled: true, optional: false } },
       custom_fields: [{
         key: 'kvk',

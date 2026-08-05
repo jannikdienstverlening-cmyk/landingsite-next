@@ -38,6 +38,15 @@ export function stripeCheckoutBranding(baseUrl: string): Stripe.Checkout.Session
   }
 }
 
+export const STRIPE_BUILD_PAYMENT_METHODS = ['ideal', 'card'] as const satisfies readonly Stripe.Checkout.SessionCreateParams.PaymentMethodType[]
+export const STRIPE_MANAGEMENT_PAYMENT_METHODS = ['ideal', 'card', 'sepa_debit'] as const satisfies readonly Stripe.Checkout.SessionCreateParams.PaymentMethodType[]
+
+export function stripePaymentMethods(
+  methods: readonly Stripe.Checkout.SessionCreateParams.PaymentMethodType[],
+): Stripe.Checkout.SessionCreateParams.PaymentMethodType[] {
+  return [...methods]
+}
+
 export const PAKKETTEN = {
   starter: {
     naam: pricingConfig.buildPackages.starter.name,

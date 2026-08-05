@@ -45,6 +45,25 @@ async function audit(orderId: string | null, eventId: string | null, action: str
   if (error) throw new Error(`Auditlog opslaan mislukt: ${error.message}`)
 }
 
+async function notificationWasSent(orderId: string, action: string) {
+  const { data, error } = await getSupabase().from('subscription_audit_log')
+    .select('id')
+    .eq('order_id', orderId)
+    .eq('action', action)
+    .limit(1)
+    .maybeSingle()
+  if (error) throw new Error(`Meldingsstatus controleren mislukt: ${error.message}`)
+  return Boolean(data)
+}
+
+async function sendCheckedEmail(
+  message: Parameters<ReturnType<typeof getResend>['emails']['send']>[0],
+  idempotencyKey: string,
+) {
+  const result = await getResend().emails.send(message, { idempotencyKey })
+  if (result.error) throw new Error(`E-mail versturen mislukt: ${result.error.message}`)
+}
+
 async function markBuildPaid(session: Stripe.Checkout.Session, eventId: string) {
   const pakket = session.metadata?.pakket
   if (!isPackage(pakket)) throw new Error(`Ongeldig pakket in bouwcheckout ${session.id}.`)
@@ -93,14 +112,18 @@ async function markBuildPaid(session: Stripe.Checkout.Session, eventId: string) 
 
   await audit(order.id, eventId, 'build_payment_received', existing?.status ?? 'pending', orderStatus, { payment_intent_id: paymentIntentId, pakket })
 
-  const amount = `${PAKKETTEN[pakket].prijs_label} eenmalig excl. btw`
-  await getResend().emails.send({
-    from: process.env.RESEND_FROM ?? 'Landingsite.nl <noreply@landingsite.nl>',
-    to: adminRecipient(),
-    replyTo: email || undefined,
-    subject: `Nieuwe bouwopdracht - ${PAKKETTEN[pakket].naam} (${amount})`,
-    html: `<div style="font-family:Arial,sans-serif;line-height:1.6;color:#10231b;max-width:620px;margin:auto;padding:32px"><p style="color:#147a55;font-weight:800">Eenmalige bouwbetaling ontvangen</p><h1 style="font-size:26px">Nieuwe landingspagina</h1><p><strong>Pakket:</strong> ${escapeHtml(PAKKETTEN[pakket].naam)}<br><strong>Bedrag:</strong> ${escapeHtml(amount)}<br><strong>Bedrijf:</strong> ${escapeHtml(businessName || 'Onbekend')}<br><strong>KvK:</strong> ${escapeHtml(kvkNumber || 'Niet beschikbaar')}<br><strong>E-mail:</strong> ${escapeHtml(email || 'Niet beschikbaar')}</p><p>Websitebeheer is nog niet geactiveerd en mag pas bij livegang via de aparte beheeractie worden aangeboden.</p></div>`,
-  }, { idempotencyKey: `build-${eventId}` })
+  const notificationAction = 'build_purchase_notification_sent'
+  if (!(await notificationWasSent(order.id, notificationAction))) {
+    const amount = `${PAKKETTEN[pakket].prijs_label} eenmalig excl. btw`
+    await sendCheckedEmail({
+      from: process.env.RESEND_FROM ?? 'Landingsite.nl <noreply@landingsite.nl>',
+      to: adminRecipient(),
+      replyTo: email || undefined,
+      subject: `Nieuwe aankoop - ${PAKKETTEN[pakket].naam} (${amount})`,
+      html: `<div style="font-family:Arial,sans-serif;line-height:1.6;color:#10231b;max-width:620px;margin:auto;padding:32px"><p style="color:#147a55;font-weight:800">Betaling bevestigd door Stripe</p><h1 style="font-size:26px">Nieuwe landingspagina verkocht</h1><p><strong>Pakket:</strong> ${escapeHtml(PAKKETTEN[pakket].naam)}<br><strong>Bedrag:</strong> ${escapeHtml(amount)}<br><strong>Bedrijf:</strong> ${escapeHtml(businessName || 'Onbekend')}<br><strong>KvK:</strong> ${escapeHtml(kvkNumber || 'Niet beschikbaar')}<br><strong>E-mail:</strong> ${escapeHtml(email || 'Niet beschikbaar')}</p><p>Websitebeheer is nog niet geactiveerd. Dat gebeurt pas via de aparte abonnementslink bij livegang.</p></div>`,
+    }, `build-purchase-${session.id}`)
+    await audit(order.id, eventId, notificationAction, null, 'sent', { checkout_session_id: session.id })
+  }
 }
 
 async function markManagementActive(session: Stripe.Checkout.Session, eventId: string) {
@@ -137,12 +160,24 @@ async function markManagementActive(session: Stripe.Checkout.Session, eventId: s
 
   const baseUrl = process.env.NEXT_PUBLIC_BASE_URL ?? 'https://landingsite.nl'
   const customerUrl = `${baseUrl}/beheer/${orderId}?token=${encodeURIComponent(createCustomerToken(orderId))}`
-  await getResend().emails.send({
+  await sendCheckedEmail({
     from: process.env.RESEND_FROM ?? 'Landingsite.nl <noreply@landingsite.nl>',
     to: order.email,
     subject: 'Websitebeheer is actief',
     html: `<div style="font-family:Arial,sans-serif;line-height:1.6;color:#10231b;max-width:620px;margin:auto;padding:32px"><h1 style="font-size:25px">Websitebeheer is actief</h1><p>Je abonnement van €${pricingConfig.websiteManagement.monthlyPrice} per maand exclusief btw is na jouw toestemming gestart. Via de beveiligde beheerpagina kun je betaalgegevens, facturen en opzegging beheren.</p><p><a href="${escapeHtml(customerUrl)}" style="display:inline-block;background:#147a55;color:#fff;padding:13px 19px;border-radius:999px;text-decoration:none;font-weight:700">Open Websitebeheer</a></p></div>`,
-  }, { idempotencyKey: `management-active-${eventId}` })
+  }, `management-active-${session.id}`)
+
+  const notificationAction = 'management_purchase_notification_sent'
+  if (!(await notificationWasSent(orderId, notificationAction))) {
+    await sendCheckedEmail({
+      from: process.env.RESEND_FROM ?? 'Landingsite.nl <noreply@landingsite.nl>',
+      to: adminRecipient(),
+      replyTo: order.email,
+      subject: `Nieuw Websitebeheer-abonnement - €${pricingConfig.websiteManagement.monthlyPrice} p/m`,
+      html: `<div style="font-family:Arial,sans-serif;line-height:1.6;color:#10231b;max-width:620px;margin:auto;padding:32px"><p style="color:#147a55;font-weight:800">Abonnement bevestigd door Stripe</p><h1 style="font-size:26px">Websitebeheer is verkocht</h1><p><strong>Bedrag:</strong> €${pricingConfig.websiteManagement.monthlyPrice} per maand excl. btw<br><strong>Klant:</strong> ${escapeHtml(order.email)}<br><strong>Start:</strong> ${escapeHtml(new Date(now).toLocaleDateString('nl-NL'))}</p><p>Het abonnement is actief en gekoppeld aan order ${escapeHtml(orderId)}.</p></div>`,
+    }, `management-purchase-${session.id}`)
+    await audit(orderId, eventId, notificationAction, null, 'sent', { checkout_session_id: session.id, subscription_id: subscriptionId })
+  }
 }
 
 async function orderForSubscription(subscriptionId: string) {
