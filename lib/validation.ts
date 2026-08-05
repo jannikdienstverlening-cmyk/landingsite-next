@@ -129,6 +129,7 @@ export const customerManagementSchema = z.object({
 
 export const customerManagementCheckoutSchema = customerManagementSchema.extend({
   requestId: z.uuid(),
+  termsAccepted: z.literal(true),
 }).strict()
 
 export const partnerDecisionSchema = z.object({

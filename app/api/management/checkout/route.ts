@@ -29,7 +29,10 @@ export async function POST(request: NextRequest) {
   if (!order) return Response.json({ error: 'Order niet gevonden.' }, { status: 404 })
 
   try {
-    const checkout = await createOrReuseManagementCheckout(order, parsed.data.token, parsed.data.requestId, { markGoLive: false })
+    const checkout = await createOrReuseManagementCheckout(order, parsed.data.token, parsed.data.requestId, {
+      markGoLive: false,
+      termsAccepted: parsed.data.termsAccepted,
+    })
     return Response.json({ url: checkout.url, reused: checkout.reused }, { status: checkout.reused ? 200 : 201 })
   } catch (checkoutError) {
     if (checkoutError instanceof ManagementCheckoutError) {

@@ -32,6 +32,7 @@ export default function ManagementPage() {
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(true)
   const [activating, setActivating] = useState(false)
+  const [termsAccepted, setTermsAccepted] = useState(false)
 
   const loadStatus = useCallback(async () => {
     const response = await fetch(`/api/management/status?order_id=${encodeURIComponent(order_id)}&token=${encodeURIComponent(token)}`, { cache: 'no-store' })
@@ -55,7 +56,7 @@ export default function ManagementPage() {
       const response = await fetch('/api/management/checkout', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ order_id, token, requestId: crypto.randomUUID() }),
+        body: JSON.stringify({ order_id, token, requestId: crypto.randomUUID(), termsAccepted }),
       })
       const data = await response.json()
       if (!response.ok || !data.url) throw new Error(data.error || 'Abonnementscheckout openen lukt nu niet.')
@@ -121,10 +122,14 @@ export default function ManagementPage() {
                 <span>per maand · exclusief btw</span>
               </div>
               <p>Je bouwprijs is al apart betaald. Via de knop hieronder sluit je het maandelijkse abonnement af voor hosting, SSL, back-ups, beveiligingsupdates, monitoring, ondersteuning en kleine wijzigingen.</p>
-              <button className="primary-button" type="button" disabled={activating} onClick={startManagement}>
+              <label className="management-consent-check">
+                <input type="checkbox" checked={termsAccepted} onChange={(event) => setTermsAccepted(event.target.checked)} />
+                <span>Ik ga akkoord met de <Link href="/algemene-voorwaarden" target="_blank" rel="noopener noreferrer">algemene voorwaarden</Link> en heb het <Link href="/privacybeleid" target="_blank" rel="noopener noreferrer">privacybeleid</Link> gelezen.</span>
+              </label>
+              <button className="primary-button" type="button" disabled={activating || !termsAccepted} onClick={startManagement}>
                 {activating ? 'Stripe-checkout openen...' : 'Websitebeheer activeren'}
               </button>
-              <p className="management-consent">Het abonnement start na jouw bevestiging in Stripe en wordt daarna maandelijks afgeschreven. Opzeggen kan tegen het einde van de lopende maand. De <Link href="/algemene-voorwaarden">algemene voorwaarden</Link> en het <Link href="/privacybeleid">privacybeleid</Link> zijn van toepassing.</p>
+              <p className="management-consent">Het abonnement start na jouw bevestiging in Stripe en wordt daarna maandelijks afgeschreven. Opzeggen kan tegen het einde van de lopende maand.</p>
             </section>
           )}
 

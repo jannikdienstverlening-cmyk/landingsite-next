@@ -31,7 +31,7 @@ export async function createOrReuseManagementCheckout(
   order: ManagementCheckoutOrder,
   customerToken: string,
   requestId: string,
-  options: { markGoLive: boolean },
+  options: { markGoLive: boolean; termsAccepted: boolean },
 ) {
   if (order.status !== 'completed') {
     throw new ManagementCheckoutError('De eerste versie moet eerst zijn afgerond.', 409)
@@ -44,6 +44,11 @@ export async function createOrReuseManagementCheckout(
     try {
       const existing = await getStripe().checkout.sessions.retrieve(order.management_checkout_session_id)
       if (existing.status === 'open' && existing.url) {
+        if (options.termsAccepted && existing.metadata?.terms_accepted !== 'true') {
+          await getStripe().checkout.sessions.update(existing.id, {
+            metadata: { terms_accepted: 'true', terms_version: TERMS_VERSION },
+          })
+        }
         return { url: existing.url, reused: true, goLiveAt: order.went_live_at }
       }
       if (existing.status === 'complete') {
@@ -57,9 +62,6 @@ export async function createOrReuseManagementCheckout(
 
   const baseUrl = process.env.NEXT_PUBLIC_BASE_URL?.replace(/\/$/, '')
   if (!baseUrl) throw new ManagementCheckoutError('Basis-URL ontbreekt.', 500)
-  if (process.env.STRIPE_TERMS_CONFIGURED !== 'true') {
-    throw new ManagementCheckoutError('Stripe-voorwaarden moeten eerst in het gekoppelde account worden ingesteld.', 503)
-  }
 
   const goLiveAt = order.went_live_at ?? (options.markGoLive ? new Date().toISOString() : null)
   if (!goLiveAt) {
@@ -92,12 +94,17 @@ export async function createOrReuseManagementCheckout(
     success_url: `${baseUrl}/beheer/${order.id}?token=${encodeURIComponent(customerToken)}&activated=1`,
     cancel_url: `${baseUrl}/beheer/${order.id}?token=${encodeURIComponent(customerToken)}`,
     client_reference_id: order.id,
-    metadata: { checkout_type: 'management', order_id: order.id, terms_version: TERMS_VERSION, go_live_at: goLiveAt },
+    metadata: {
+      checkout_type: 'management',
+      order_id: order.id,
+      terms_accepted: options.termsAccepted ? 'true' : 'false',
+      terms_version: TERMS_VERSION,
+      go_live_at: goLiveAt,
+    },
     subscription_data: { metadata: { checkout_type: 'management', order_id: order.id, go_live_at: goLiveAt } },
     automatic_tax: { enabled: true },
     tax_id_collection: { enabled: true },
     billing_address_collection: 'required',
-    consent_collection: { terms_of_service: 'required' },
     custom_text: {
       submit: {
         message: `Je start Websitebeheer voor €${pricingConfig.websiteManagement.monthlyPrice} per maand excl. btw. De eerste afschrijving vindt plaats na je bevestiging. Daarna wordt het bedrag maandelijks afgeschreven.`,

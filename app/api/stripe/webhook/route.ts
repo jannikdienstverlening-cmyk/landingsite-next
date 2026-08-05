@@ -131,6 +131,7 @@ async function markManagementActive(session: Stripe.Checkout.Session, eventId: s
   const subscriptionId = objectId(session.subscription)
   const customerId = objectId(session.customer)
   if (!orderId || !subscriptionId || !customerId) throw new Error(`Websitebeheer-checkout ${session.id} mist order, klant of abonnement.`)
+  if (session.metadata?.terms_accepted !== 'true') throw new Error(`Voorwaardenacceptatie ontbreekt in Websitebeheer-checkout ${session.id}.`)
 
   const supabase = getSupabase()
   const { data: order, error: orderError } = await supabase.from('orders').select('id, email, management_status, management_subscription_id, referral_attribution_id')
@@ -152,7 +153,9 @@ async function markManagementActive(session: Stripe.Checkout.Session, eventId: s
   }).eq('id', orderId)
   if (error) throw new Error(`Websitebeheer activeren mislukt: ${error.message}`)
 
-  await getStripe().subscriptions.update(subscriptionId, { metadata: { checkout_type: 'management', order_id: orderId, terms_version: TERMS_VERSION } })
+  await getStripe().subscriptions.update(subscriptionId, {
+    metadata: { checkout_type: 'management', order_id: orderId, terms_accepted: 'true', terms_version: TERMS_VERSION },
+  })
   if (order.referral_attribution_id) {
     await supabase.from('referral_attributions').update({ subscription_status: 'active', updated_at: now }).eq('id', order.referral_attribution_id)
   }

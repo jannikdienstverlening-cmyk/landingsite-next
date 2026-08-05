@@ -31,7 +31,10 @@ export async function POST(request: NextRequest) {
   const customerToken = createCustomerToken(order.id)
   let checkout: Awaited<ReturnType<typeof createOrReuseManagementCheckout>>
   try {
-    checkout = await createOrReuseManagementCheckout(order, customerToken, parsed.data.requestId, { markGoLive: true })
+    checkout = await createOrReuseManagementCheckout(order, customerToken, parsed.data.requestId, {
+      markGoLive: true,
+      termsAccepted: false,
+    })
   } catch (checkoutError) {
     if (checkoutError instanceof ManagementCheckoutError) {
       return Response.json({ error: checkoutError.message }, { status: checkoutError.status })

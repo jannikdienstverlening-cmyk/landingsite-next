@@ -17,15 +17,23 @@ test('checkout vereist pakket, idempotency-id en expliciete voorwaardenacceptati
   }).success, false)
 })
 
-test('Websitebeheer-checkout vereist een beveiligde klanttoken en idempotency-id', () => {
+test('Websitebeheer-checkout vereist klanttoken, idempotency-id en voorwaardenacceptatie', () => {
   const valid = customerManagementCheckoutSchema.safeParse({
     order_id: '9c8cf9f6-dbf0-4ffc-a09c-5553a95b38ae',
     token: 'v1.customer.' + 'a'.repeat(80),
     requestId: '2417e5fc-5b40-4aa8-8472-f7f6d41ac47d',
+    termsAccepted: true,
   })
   assert.equal(valid.success, true)
   assert.equal(customerManagementCheckoutSchema.safeParse({
     order_id: '9c8cf9f6-dbf0-4ffc-a09c-5553a95b38ae',
     requestId: '2417e5fc-5b40-4aa8-8472-f7f6d41ac47d',
+    termsAccepted: true,
+  }).success, false)
+  assert.equal(customerManagementCheckoutSchema.safeParse({
+    order_id: '9c8cf9f6-dbf0-4ffc-a09c-5553a95b38ae',
+    token: 'v1.customer.' + 'a'.repeat(80),
+    requestId: '2417e5fc-5b40-4aa8-8472-f7f6d41ac47d',
+    termsAccepted: false,
   }).success, false)
 })
