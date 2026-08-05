@@ -273,7 +273,7 @@ async function handleEvent(event: Stripe.Event) {
       const checkoutType = session.metadata?.checkout_type as CheckoutType | undefined
       if (checkoutType === 'build') await markBuildPaid(session, event.id)
       else if (checkoutType === 'management') await markManagementActive(session, event.id)
-      else throw new Error(`Checkouttype ontbreekt voor sessie ${session.id}.`)
+      // Het Stripe-account kan meerdere projecten bedienen; onbekende sessies horen niet bij Landingsite.nl.
       return
     }
     case 'checkout.session.expired': {
