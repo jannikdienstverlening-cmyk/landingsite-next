@@ -216,7 +216,8 @@ button, input, textarea, select { font: inherit; }
 
 .brand-logo--default .brand-logo__main { color: var(--ink); }
 .brand-logo--light .brand-logo__main { color: #f4faf7; }
-.brand-logo__accent { color: var(--green); }
+.brand-logo--default .brand-logo__accent { color: var(--green-dark); }
+.brand-logo--light .brand-logo__accent { color: var(--green); }
 
 .brand-logo:focus-visible {
   border-radius: 4px;

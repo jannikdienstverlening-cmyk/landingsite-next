@@ -12,7 +12,7 @@ export const metadata: Metadata = {
 
 export default function PartnerTermsPage() {
   return <main className="legal-page"><div className="container legal-shell">
-    <Link href="/partners" className="legal-back">← Terug naar het partnerprogramma</Link>
+    <Link href="/partner" className="legal-back">← Terug naar het partnerprogramma</Link>
     <h1>Partnervoorwaarden</h1>
     <p className="updated">Versie 1 augustus 2026 · rekenvoorbeelden zijn geen inkomensgarantie</p>
     <div className="legal-content">

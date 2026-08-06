@@ -1,20 +1,16 @@
 import Image from 'next/image'
 import Link from 'next/link'
-import { partnerProgramConfig } from '@/config/partner-program'
 import { pricingConfig } from '@/config/pricing'
 import { portfolioProjects } from '@/data/portfolio'
 import { BUSINESS } from '@/lib/business'
-import { Logo } from './logo'
-import { PartnerExample } from './partner-program'
-import { PortfolioShowcase } from './portfolio-showcase'
 import { ContactForm, FAQAccordion, MobileMenu, PricingButton } from './home-actions'
+import { Logo } from './logo'
 
 type Package = {
   id: 'starter' | 'pro' | 'premium'
   name: string
-  price: string
+  price: number
   fit: string
-  tagline: string
   highlighted?: boolean
   features: string[]
 }
@@ -31,13 +27,12 @@ export function Header() {
         <nav className="desktop-nav" aria-label="Hoofdnavigatie">
           <a href="#voorbeelden">Voorbeelden</a>
           <a href="#werkwijze">Werkwijze</a>
-          <a href="#prijzen">Prijzen</a>
-          <a href="#websitebeheer">Websitebeheer €{pricingConfig.websiteManagement.monthlyPrice}</a>
-          <a href="#partner">Partner</a>
-          <a href="#faq">FAQ</a>
+          <a href="#prijzen">Pakketten</a>
+          <a href="#websitebeheer">Beheer</a>
+          <a href="#faq">Veelgestelde vragen</a>
         </nav>
-        <a className="header-cta" href="#prijzen">
-          Bekijk pakketten
+        <a className="header-cta" href="#contact" data-analytics-event="start_website" data-analytics-location="header">
+          Start mijn website
         </a>
         <MobileMenu />
       </div>
@@ -50,16 +45,18 @@ export function Hero() {
     <section className="hero" id="top">
       <div className="shell hero-grid">
         <div className="hero-copy">
-          <p className="eyebrow"><span />Landingspagina voor zzp en mkb</p>
-          <h1>Van idee naar landingspagina in 48 uur.</h1>
-          <p className="hero-lead">
-            Een professionele landingspagina voor je campagne, dienst of product. Vaste bouwprijs vanaf €{pricingConfig.buildPackages.starter.oneTimePrice} en volledig Websitebeheer voor €{pricingConfig.websiteManagement.monthlyPrice} per maand.
-          </p>
+          <p className="eyebrow">Webdesign voor zzp en mkb</p>
+          <h1>Jouw professionele landingspagina. Eerste versie binnen 48 uur.</h1>
+          <p className="hero-lead">Voor ondernemers die snel een dienst, campagne of nieuw idee professioneel willen lanceren.</p>
+          <ul className="hero-proof" aria-label="Prijs en persoonlijke service">
+            <li>Landingspagina vanaf €{pricingConfig.buildPackages.starter.oneTimePrice} eenmalig</li>
+            <li>{pricingConfig.websiteManagement.name} €{pricingConfig.websiteManagement.monthlyPrice} per maand</li>
+            <li>Direct contact met degene die jouw website bouwt</li>
+          </ul>
           <div className="hero-actions">
-            <a className="primary-button" href="#prijzen">Bekijk de pakketten</a>
-            <a className="secondary-button" href="#voorbeelden">Bekijk recent werk</a>
+            <a className="primary-button" href="#contact" data-analytics-event="start_website" data-analytics-location="hero">Start mijn website</a>
+            <a className="secondary-button" href="#voorbeelden" data-analytics-event="view_examples" data-analytics-location="hero">Bekijk voorbeelden</a>
           </div>
-          <p className="hero-microcopy"><strong>Websitebeheer €{pricingConfig.websiteManagement.monthlyPrice} p/m</strong> · Hosting, onderhoud en beveiliging inbegrepen · Bouw vanaf €{pricingConfig.buildPackages.starter.oneTimePrice}</p>
         </div>
         <HeroProjectPreview />
       </div>
@@ -69,124 +66,107 @@ export function Hero() {
 
 function HeroProjectPreview() {
   return (
-    <figure className="hero-preview-frame">
-      <div className="hero-preview-topline">
-        <span>Recent project</span>
-        <span>{heroProject.domain}</span>
+    <figure className="hero-project" aria-label={`Voorbeeld van ${heroProject.name}`}>
+      <div className="hero-project-browser">
+        <div className="browser-toolbar" aria-hidden="true">
+          <span><i /><i /><i /></span>
+          <strong>{heroProject.domain}</strong>
+        </div>
+        <a
+          className="hero-project-image"
+          href={heroProject.url}
+          target="_blank"
+          rel="noopener noreferrer"
+          aria-label={`Bekijk de website van ${heroProject.name}`}
+          data-analytics-event="project_click"
+          data-analytics-project={heroProject.slug}
+        >
+          <Image src={heroProject.image} alt={heroProject.imageAlt} fill preload sizes="(max-width: 900px) 94vw, 540px" />
+        </a>
       </div>
-      <a
-        className="hero-preview-image"
-        href={heroProject.url}
-        target="_blank"
-        rel="noopener noreferrer"
-        aria-label={`Bekijk ${heroProject.name} live`}
-      >
-        <Image src={heroProject.image} alt={heroProject.imageAlt} fill preload sizes="(max-width: 900px) 92vw, 560px" />
-      </a>
-      <figcaption className="hero-preview-caption">
-        <div>
-          <span>Live website</span>
-          <strong>{heroProject.name}</strong>
-        </div>
-        <div>
-          <span>{heroProject.type}</span>
-          <a href={heroProject.url} target="_blank" rel="noopener noreferrer">Bekijk project <span aria-hidden="true">↗</span></a>
-        </div>
+      <div className="hero-project-mobile" aria-hidden="true">
+        <Image src={heroProject.image} alt="" fill sizes="150px" />
+      </div>
+      <figcaption>
+        <span>Recent opgeleverd</span>
+        <strong>{heroProject.name}</strong>
       </figcaption>
     </figure>
   )
 }
 
-export function PortfolioSection() {
-  return <PortfolioShowcase />
-}
-
-export function EssentialsSection() {
-  const included = [
-    'Een duidelijke pagina met één conversiedoel',
-    'Responsive ontwerp voor mobiel en desktop',
-    'Beveiligd contact- of aanvraagformulier',
-    'Basis zoekmachine-optimalisatie',
-    'Persoonlijke afstemming en oplevering',
-  ]
-  const steps = [
-    ['01', 'Kies je pakket', 'Selecteer Starter, Pro of Premium.'],
-    ['02', 'Vul de intake in', 'Deel je aanbod, doelgroep en beschikbare beelden.'],
-    ['03', 'Wij bouwen', 'We zetten structuur, ontwerp en techniek voor je klaar.'],
-    ['04', 'Eerste versie', 'Binnen 48 uur na bouwbetaling en complete intake.'],
-    ['05', 'Goedkeuring en livegang', 'Na akkoord koppelen we je domein en start eventueel Websitebeheer.'],
+export function TrustBar() {
+  const items = [
+    'Eerste versie binnen 48 uur',
+    'Transparante vaste prijzen',
+    'Mobielvriendelijk gebouwd',
+    'Direct persoonlijk contact',
   ]
 
   return (
-    <section className="section essentials" id="werkwijze">
+    <aside className="trust-bar" aria-label="Waarom kiezen voor Landingsite.nl">
       <div className="shell">
-        <div className="essentials-heading">
-          <div>
-            <p className="section-kicker">Wat je krijgt</p>
-            <h2>Een gerichte landingspagina, professioneel gebouwd.</h2>
-          </div>
-          <p>Je betaalt één duidelijke bouwprijs. Na oplevering kan Landingsite.nl het technische beheer volledig overnemen.</p>
+        {items.map((item) => <span key={item}><i aria-hidden="true">✓</i>{item}</span>)}
+      </div>
+    </aside>
+  )
+}
+
+export function BenefitsSection() {
+  const benefits = [
+    ['01', 'Ontwerp dat bij je bedrijf past', 'Geen generieke invulpagina, maar een visuele stijl die aansluit op je aanbod en doelgroep.'],
+    ['02', 'Goed op ieder scherm', 'De pagina wordt gecontroleerd voor mobiel, tablet en desktop.'],
+    ['03', 'Gericht op contact of verkoop', 'Een duidelijke volgorde zonder onnodige afleiding voor je bezoeker.'],
+    ['04', 'Een werkend aanvraagformulier', 'Bezoekers kunnen direct contact opnemen of een aanvraag versturen.'],
+    ['05', 'Een solide SEO-basis', 'Duidelijke paginatitel, beschrijving, headingstructuur en technische indexeerbaarheid.'],
+    ['06', 'Begeleiding bij livegang', 'We helpen met de domeinkoppeling en controleren de belangrijkste functies voor publicatie.'],
+  ]
+
+  return (
+    <section className="section benefits" id="wat-je-krijgt">
+      <div className="shell">
+        <div className="section-head compact">
+          <p className="section-kicker">Wat je krijgt</p>
+          <h2>Alles wat nodig is om professioneel te lanceren.</h2>
+          <p>Concreet gebouwd rond één doel: zorgen dat de juiste bezoeker begrijpt wat je aanbiedt en de volgende stap zet.</p>
         </div>
-        <ul className="checklist service-grid">
-          {included.map((item) => <li key={item}><span aria-hidden="true">✓</span>{item}</li>)}
-        </ul>
-        <div className="process-panel">
-          <div className="process-heading"><p className="section-kicker">Zo werkt het</p><h2>Van keuze naar een landingspagina die klaar is voor livegang.</h2></div>
-          <ol className="steps-list">
-            {steps.map(([number, title, text]) => (
-              <li key={title}>
-                <span>{number}</span>
-                <div>
-                  <h3>{title}</h3>
-                  <p>{text}</p>
-                </div>
-              </li>
-            ))}
-          </ol>
+        <div className="benefits-grid">
+          {benefits.map(([number, title, text]) => (
+            <article key={number}>
+              <span>{number}</span>
+              <h3>{title}</h3>
+              <p>{text}</p>
+            </article>
+          ))}
         </div>
       </div>
     </section>
   )
 }
 
-export function AboutJannikSection() {
-  const disciplines = [
-    ['01', 'AI & techniek', 'Slimmer bouwen, sneller schakelen en alleen automatiseren waar het echt waarde toevoegt.'],
-    ['02', 'Design & conversie', 'Een heldere pagina waarin iedere keuze bijdraagt aan vertrouwen en actie.'],
-    ['03', 'Coaching & focus', 'Persoonlijke begeleiding, duidelijke afspraken en aandacht tot de website live staat.'],
+export function ProcessSection() {
+  const steps = [
+    ['01', 'Vertel wat je nodig hebt', 'Vul de korte intake in of stel eerst je vraag. We bepalen samen het doel en passende pakket.'],
+    ['02', 'Wij bouwen de eerste versie', 'We werken de structuur, inhoud en uitstraling uit op basis van je aanbod en doelgroep.'],
+    ['03', 'Feedback en livegang', 'Na de inbegrepen correctieronde(s) koppelen we je domein en zetten we de website live.'],
   ]
 
   return (
-    <section className="section about-jannik" id="over-jannik">
-      <div className="shell about-jannik-layout">
-        <div className="about-jannik-visual">
-          <Image
-            className="about-jannik-portrait"
-            src="/images/jannik-cartoon.webp"
-            alt="Cartoonportret van Jannik, AI-specialist, webbouwer en personal trainer"
-            width={960}
-            height={1442}
-            sizes="(max-width: 700px) 150px, 240px"
-          />
+    <section className="section process" id="werkwijze">
+      <div className="shell process-layout">
+        <div className="process-intro">
+          <p className="section-kicker">Werkwijze</p>
+          <h2>Van intake naar live in drie overzichtelijke stappen.</h2>
+          <a className="text-link" href="#contact" data-analytics-event="start_website" data-analytics-location="process">Start mijn website <span aria-hidden="true">→</span></a>
         </div>
-        <div className="about-jannik-copy">
-          <p className="section-kicker">Achter Landingsite.nl</p>
-          <h2>Eén aanspreekpunt. Twee werelden die elkaar versterken.</h2>
-          <p className="about-jannik-lead">Ik ben Jannik: AI-specialist, webbouwer en personal trainer. Een ongebruikelijke combinatie, maar juist daardoor werk ik praktisch, doelgericht en persoonlijk.</p>
-          <p>Als AI-specialist gebruik ik technologie om sneller tot een sterk resultaat te komen. Als personal trainer weet ik hoe belangrijk focus, duidelijke stappen en goede begeleiding zijn. Die aanpak neem ik mee in ieder websiteproject.</p>
-          <ol className="about-jannik-disciplines">
-            {disciplines.map(([number, title, text]) => (
-              <li key={number}>
-                <span>{number}</span>
-                <div><h3>{title}</h3><p>{text}</p></div>
-              </li>
-            ))}
-          </ol>
-          <div className="about-jannik-action">
-            <p>Geen projectmanager ertussen. Je spreekt rechtstreeks met degene die ontwerpt en bouwt.</p>
-            <a className="primary-button" href="#contact">Bespreek je idee</a>
-          </div>
-        </div>
+        <ol className="process-list">
+          {steps.map(([number, title, text]) => (
+            <li key={number}>
+              <span>{number}</span>
+              <div><h3>{title}</h3><p>{text}</p></div>
+            </li>
+          ))}
+        </ol>
       </div>
     </section>
   )
@@ -196,10 +176,10 @@ export function PricingSection({ packages }: { packages: Package[] }) {
   return (
     <section className="section pricing" id="prijzen">
       <div className="shell">
-        <div className="pricing-head">
+        <div className="section-head pricing-head">
           <p className="section-kicker">Pakketten</p>
-          <h2>Een vaste bouwprijs. Websitebeheer start pas na livegang.</h2>
-          <p>Je betaalt de bouw eenmalig. Websitebeheer kost daarna €{pricingConfig.websiteManagement.monthlyPrice} per maand exclusief btw en wordt pas geactiveerd nadat je website is goedgekeurd en live gaat.</p>
+          <h2>Een duidelijke omvang en een vaste bouwprijs.</h2>
+          <p>Alle bouwprijzen zijn eenmalig en exclusief btw. Websitebeheer wordt pas na je akkoord en de livegang afzonderlijk geactiveerd.</p>
         </div>
         <div className="price-grid">
           {packages.map((item) => (
@@ -207,26 +187,31 @@ export function PricingSection({ packages }: { packages: Package[] }) {
               {item.highlighted && <span className="popular">Meest gekozen</span>}
               <div className="package-heading">
                 <h3>{item.name}</h3>
-                <p className="package-fit">{item.fit}</p>
-                <p className="package-description">{item.tagline}</p>
+                <p>{item.fit}</p>
               </div>
-              <p className="sr-only">
-                {item.name}. Eenmalige bouwprijs {item.price.replace('€', '')} euro exclusief btw. Websitebeheer {pricingConfig.websiteManagement.monthlyPrice} euro per maand vanaf livegang.
-              </p>
-              <div className="package-build-price" aria-hidden="true">
-                <strong>{item.price}</strong>
-                <span>Eenmalige bouwprijs · excl. btw</span>
+              <div className="package-price">
+                <strong>€{item.price}</strong>
+                <span>eenmalig · excl. btw</span>
               </div>
-              <div className="package-management-price" aria-hidden="true">
-                <strong><span>+</span> €{pricingConfig.websiteManagement.monthlyPrice} per maand</strong>
-                <span>Websitebeheer vanaf livegang</span>
+              <div className="package-management">
+                <strong>+ €{pricingConfig.websiteManagement.monthlyPrice} per maand</strong>
+                <span>{pricingConfig.websiteManagement.name} vanaf livegang</span>
               </div>
               <ul>{item.features.map((feature) => <li key={feature}><span aria-hidden="true">✓</span>{feature}</li>)}</ul>
-              <div className="price-action"><PricingButton pakket={item.id} label="Kies dit pakket" /></div>
+              <div className="package-actions">
+                <a className="primary-button" href="#contact" data-analytics-event="start_website" data-analytics-location={`package_${item.id}`}>Start mijn website</a>
+                <details className="direct-order">
+                  <summary data-analytics-event="direct_order_open" data-analytics-package={item.id}>Direct bestellen</summary>
+                  <PricingButton pakket={item.id} label="Naar veilige betaling" />
+                </details>
+              </div>
             </article>
           ))}
         </div>
-        <p className="hosting-note">Eenmalige bouwprijs + €{pricingConfig.websiteManagement.monthlyPrice} per maand Websitebeheer vanaf de livegang. De checkout voor de bouw schrijft nog geen maandbedrag af.</p>
+        <div className="pricing-help">
+          <p><strong>Twijfel je welk pakket past?</strong> Start de intake. Je zit nog nergens aan vast.</p>
+          <a href="#contact" data-analytics-event="consultation_click" data-analytics-location="pricing">Eerst kort overleggen <span aria-hidden="true">→</span></a>
+        </div>
       </div>
     </section>
   )
@@ -235,107 +220,114 @@ export function PricingSection({ packages }: { packages: Package[] }) {
 export function WebsiteManagementSection() {
   const management = pricingConfig.websiteManagement
   const included = [
-    'Managed hosting',
-    'SSL-certificaat',
-    'Back-ups',
-    'Beveiligings- en technische updates',
-    'Controle van formulieren en essentiële functies',
-    'Monitoring van bereikbaarheid',
-    'Kleine tekst- en beeldwijzigingen',
-    'Persoonlijke ondersteuning bij problemen',
-    'Hulp bij de domeinkoppeling',
-    'Maandelijkse technische controle',
-  ]
-  const steps = [
-    ['01', 'Website wordt gebouwd', 'Je kiest Starter, Pro of Premium en betaalt de eenmalige bouwprijs.'],
-    ['02', 'Website gaat live', 'Na goedkeuring koppelen we je domein en activeren we de website.'],
-    ['03', 'Beheer start', `Vanaf de livegang start Websitebeheer voor €${management.monthlyPrice} per maand exclusief btw.`],
+    'Professionele hosting en SSL',
+    'Automatische back-ups',
+    'Beveiligings- en software-updates',
+    'Technische monitoring',
+    'Ondersteuning bij storingen',
+    `${management.includedChangeMinutes} minuten kleine wijzigingen per maand`,
   ]
 
   return (
     <section className="section website-management" id="websitebeheer">
       <div className="shell management-layout">
         <div className="management-copy">
-          <p className="section-kicker">Na de oplevering</p>
-          <h2>Wij houden je website online, veilig en actueel.</h2>
-          <p>Na de bouw kun je de website door Landingsite.nl laten hosten en beheren. Voor €{management.monthlyPrice} per maand hoef je niet zelf achter updates, beveiliging, back-ups of kleine wijzigingen aan.</p>
-          <div className="management-price"><strong>€{management.monthlyPrice}</strong><span>per maand<br />exclusief btw</span></div>
-          <ul className="management-checklist">{included.map((item) => <li key={item}><span aria-hidden="true">✓</span>{item}</li>)}</ul>
+          <p className="section-kicker">Na de livegang</p>
+          <h2>{management.name}</h2>
+          <p className="management-lead">Geen losse technische zorgen nadat jouw website live staat. Dit is meer dan alleen hosting: wij houden je website veilig, werkend en actueel.</p>
+          <ul>{included.map((item) => <li key={item}><span aria-hidden="true">✓</span>{item}</li>)}</ul>
+          <a className="text-link" href="#contact" data-analytics-event="start_website" data-analytics-location="management">Start mijn website <span aria-hidden="true">→</span></a>
         </div>
-        <div className="management-aside">
-          <div className="management-steps">
-            <p className="section-kicker">Hoe het werkt</p>
-            <ol>{steps.map(([number, title, text]) => <li key={number}><span>{number}</span><div><h3>{title}</h3><p>{text}</p></div></li>)}</ol>
-            <p className="management-summary">Eenmalige bouwprijs + €{management.monthlyPrice} per maand Websitebeheer vanaf de livegang.</p>
+        <aside className="management-card" aria-label={`${management.name}, €${management.monthlyPrice} per maand`}>
+          <span>Websitebeheer Compleet</span>
+          <strong>€{management.monthlyPrice}</strong>
+          <p>per maand · excl. btw<br />vanaf livegang</p>
+          <div className="management-limit">
+            <strong>{management.includedChangeMinutes} minuten inbegrepen</strong>
+            <p>Voor kleine aanpassingen binnen de bestaande website, zoals tekst, een foto, openingstijden of een knop.</p>
           </div>
-          <div className="management-scope">
-            <p>Kleine wijzigingen zijn aanpassingen binnen de bestaande website, zoals een tekst wijzigen, een foto vervangen, openingstijden aanpassen of een knop veranderen. Nieuwe pagina’s, volledige nieuwe ontwerpen, uitgebreide functionaliteiten en grote tekstprojecten vallen hier niet onder en worden vooraf apart geoffreerd.</p>
-            <strong>Maximaal {management.includedChangeMinutes} minuten kleine wijzigingen per kalendermaand. Niet-gebruikte tijd wordt niet meegenomen.</strong>
-          </div>
+          <dl>
+            <div><dt>Ongebruikte minuten</dt><dd>Vervallen na de kalendermaand</dd></div>
+            <div><dt>Grotere aanpassingen</dt><dd>Altijd vooraf apart geoffreerd</dd></div>
+            <div><dt>Opzeggen</dt><dd>Tegen het einde van de lopende betaalperiode</dd></div>
+          </dl>
+        </aside>
+      </div>
+    </section>
+  )
+}
+
+export function AboutJannikSection() {
+  return (
+    <section className="section about-jannik" id="over-jannik">
+      <div className="shell about-jannik-layout">
+        <div className="about-jannik-visual">
+          {/* TODO: vervang deze illustratie door een professionele portretfoto zodra die beschikbaar is. */}
+          <Image
+            className="about-jannik-portrait"
+            src="/images/jannik-cartoon.webp"
+            alt="Illustratie van Jannik, oprichter en webdesigner van Landingsite.nl"
+            width={960}
+            height={1442}
+            sizes="(max-width: 700px) 140px, 210px"
+          />
+        </div>
+        <div className="about-jannik-copy">
+          <p className="section-kicker">Persoonlijk contact</p>
+          <h2>Rechtstreeks contact met degene die jouw website bouwt.</h2>
+          <p>Ik ben Jannik, oprichter van Landingsite.nl. Ik combineer webdesign, conversie en slimme AI-tools om professionele websites sneller en betaalbaarder te bouwen.</p>
+          <p>Geen accountmanager of lange overdrachten. Je hebt rechtstreeks contact met mij, van intake tot livegang.</p>
         </div>
       </div>
     </section>
   )
 }
 
-export function PartnerProgramSection() {
-  if (!partnerProgramConfig.enabled) return null
-
+export function SocialProofSection() {
   return (
-    <section className="section partner" id="partner">
-      <div className="shell partner-home">
-        <div className="partner-intro">
-          <div className="partner-heading">
-            <div>
-              <p className="section-kicker">Landingsite Partnerprogramma</p>
-              <h2>Tevreden over je website? Verdien mee met je netwerk.</h2>
-            </div>
-            <p>Breng een ondernemer aan die een website en actief Websitebeheer bij Landingsite.nl afneemt. Zolang het abonnement actief en betaald blijft, ontvang je iedere maand een vergoeding.</p>
-          </div>
-          <div className="commission-levels">
-            {[
-              ['Niveau 1', 'Direct door jou aangebracht', partnerProgramConfig.commissions.level1],
-              ['Niveau 2', 'Aangebracht door jouw directe klant', partnerProgramConfig.commissions.level2],
-              ['Niveau 3', 'Aangebracht door de klant daaronder', partnerProgramConfig.commissions.level3],
-            ].map(([level, description, amount]) => <article key={level}><span>{level}</span><p>{description}</p><strong>€{amount}<small>per maand</small></strong></article>)}
-          </div>
-          <div className="commission-notes">
-            <p>Per Websitebeheer-abonnement wordt maximaal over drie niveaus commissie uitgekeerd. Het netwerk kan verder doorgroeien, maar voor iedere partner tellen alleen de eerste drie niveaus onder die partner.</p>
-            <p>Er wordt geen vergoeding betaald voor het alleen aanmelden of werven van partners. De vergoeding ontstaat uitsluitend uit echte, actieve en betaalde Websitebeheer-abonnementen.</p>
-          </div>
-        </div>
-        <PartnerExample compact />
-        <div className="partner-home-cta">
-          <p>Deelname is gratis. Commissie ontstaat pas na een betaalde maandfactuur en de wachttijd; refunds, storneringen en opzeggingen worden gecorrigeerd.</p>
-          <Link className="primary-button" href="/partners">Bekijk het partnerprogramma</Link>
-          <Link className="secondary-button" href="/partnervoorwaarden">Bekijk alle partnervoorwaarden</Link>
-        </div>
-      </div>
-    </section>
-  )
-}
-
-export function FAQContactSection({ faqs }: { faqs: FAQ[] }) {
-  return (
-    <section className="section faq-contact" id="faq">
-      <div className="shell faq-contact-grid">
+    <section className="social-proof" aria-labelledby="social-proof-title">
+      <div className="shell social-proof-inner">
         <div>
-          <p className="section-kicker">FAQ</p>
-          <h2>Veelgestelde vragen</h2>
-          <FAQAccordion items={faqs} />
+          <p className="section-kicker">Ervaringen</p>
+          <h2 id="social-proof-title">Echte klantreacties volgen binnenkort.</h2>
         </div>
-        <div className="contact-section" id="contact">
-          <p className="section-kicker">Contact</p>
-          <h2>Vertel ons wat je wilt lanceren.</h2>
-          <p className="contact-lead">
-            Beschrijf kort je aanbod en doel. Je ontvangt binnen één werkdag een eerlijk advies over het passende pakket en de haalbare planning.
-          </p>
-          <div className="contact-meta">
-            <span>Veilig contactformulier</span>
-            <span>Reactie binnen één werkdag</span>
-          </div>
-          <ContactForm />
+        {/* TODO: voeg uitsluitend geverifieerde klantreviews toe, met expliciete toestemming voor naam en bedrijfsvermelding. */}
+        <p>Hier komen binnenkort ervaringen van klanten. Tot die tijd laten de live projecten hierboven precies zien wat er daadwerkelijk is gebouwd.</p>
+      </div>
+    </section>
+  )
+}
+
+export function FAQSection({ faqs }: { faqs: FAQ[] }) {
+  return (
+    <section className="section faq" id="faq">
+      <div className="shell faq-layout">
+        <div className="faq-intro">
+          <p className="section-kicker">Veelgestelde vragen</p>
+          <h2>Duidelijkheid voordat je begint.</h2>
+          <p>Staat je vraag er niet tussen? Gebruik het formulier; je zit nog nergens aan vast.</p>
         </div>
+        <FAQAccordion items={faqs} />
+      </div>
+    </section>
+  )
+}
+
+export function ContactSection() {
+  return (
+    <section className="section contact-section" id="contact">
+      <div className="shell contact-layout">
+        <div className="contact-copy">
+          <p className="section-kicker">Start je aanvraag</p>
+          <h2>Vertel kort wat je wilt laten bouwen.</h2>
+          <p>Vul de intake in. Je ontvangt daarna een duidelijk voorstel of advies over het passende pakket.</p>
+          <ul>
+            <li><span aria-hidden="true">✓</span>Persoonlijk antwoord</li>
+            <li><span aria-hidden="true">✓</span>Duidelijke vervolgstap</li>
+            <li><span aria-hidden="true">✓</span>Je zit nog nergens aan vast</li>
+          </ul>
+        </div>
+        <ContactForm />
       </div>
     </section>
   )
@@ -345,30 +337,28 @@ export function Footer() {
   return (
     <footer className="site-footer">
       <div className="shell footer-top">
-        <div>
+        <div className="footer-brand">
           <Logo variant="light" />
-          <p>Landingspagina&apos;s met volledig Websitebeheer voor €{pricingConfig.websiteManagement.monthlyPrice} per maand.</p>
+          <p>Professionele landingspagina’s en kleine bedrijfswebsites voor zzp en mkb.</p>
         </div>
-        <div>
+        <nav aria-label="Footer navigatie">
           <strong>Navigatie</strong>
           <a href="#voorbeelden">Voorbeelden</a>
           <a href="#werkwijze">Werkwijze</a>
-          <a href="#over-jannik">Over Jannik</a>
-          <a href="#prijzen">Prijzen</a>
-          <a href="#websitebeheer">Websitebeheer</a>
+          <a href="#prijzen">Pakketten</a>
+          <a href="#websitebeheer">Beheer</a>
           <a href="#faq">Veelgestelde vragen</a>
-        </div>
+        </nav>
         <div>
-          <strong>Contact</strong>
-          <a href="#contact">Contactformulier</a>
-          <Link href="/partners">Partnerprogramma</Link>
-        </div>
-        <div>
-          <strong>Juridisch</strong>
-          <Link href="/privacybeleid">Privacy</Link>
+          <strong>Contact en voorwaarden</strong>
+          <a href="#contact">Start mijn website</a>
+          <Link href="/privacybeleid">Privacybeleid</Link>
           <Link href="/algemene-voorwaarden">Algemene voorwaarden</Link>
-          <Link href="/partnervoorwaarden">Partnervoorwaarden</Link>
         </div>
+      </div>
+      <div className="shell partner-reference">
+        <span>Tevreden klanten kunnen deelnemen aan ons partnerprogramma.</span>
+        <Link href="/partner" data-analytics-event="partner_click">Bekijk het partnerprogramma</Link>
       </div>
       <div className="shell footer-bottom">
         <span>© {new Date().getFullYear()} {BUSINESS.brandName}</span>

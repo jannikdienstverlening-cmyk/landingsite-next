@@ -36,10 +36,36 @@ test('contacthoneypot kan ingevulde spam veilig afvangen', () => {
     naam: 'Spam Bot',
     email: 'spam@example.com',
     bedrijf: '',
+    telefoon: '',
     bericht: 'Geautomatiseerd spambericht.',
+    materiaal: 'onbekend',
+    startdatum: '',
+    voorkeur: '',
     website: 'https://spam.example',
   })
 
   assert.equal(parsed.success, true)
   if (parsed.success) assert.equal(Boolean(parsed.data.website), true)
+})
+
+test('websiteaanvraag valideert materiaal en optionele projectvoorkeuren', () => {
+  const parsed = contactSchema.safeParse({
+    naam: 'Test Ondernemer',
+    email: 'test@example.com',
+    bedrijf: 'Testbedrijf',
+    telefoon: '06 12345678',
+    bericht: 'Ik wil een professionele landingspagina laten bouwen.',
+    materiaal: 'deels',
+    startdatum: '2026-09-01',
+    voorkeur: 'pro',
+    website: '',
+  })
+
+  assert.equal(parsed.success, true)
+  assert.equal(contactSchema.safeParse({
+    naam: 'Test Ondernemer',
+    email: 'test@example.com',
+    bericht: 'Ik wil een professionele landingspagina laten bouwen.',
+    materiaal: 'misschien',
+  }).success, false)
 })

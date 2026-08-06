@@ -63,7 +63,11 @@ export const contactSchema = z.object({
   naam: z.string().trim().min(2).max(100),
   email: z.email().max(254),
   bedrijf: z.string().trim().max(100).default(''),
+  telefoon: z.string().trim().max(40).default(''),
   bericht: z.string().trim().min(10).max(3_000),
+  materiaal: z.enum(['ja', 'deels', 'nee', 'onbekend']),
+  startdatum: z.string().trim().regex(/^$|^\d{4}-\d{2}-\d{2}$/).default(''),
+  voorkeur: z.enum(['', 'starter', 'pro', 'premium', 'advies']).default(''),
   website: z.string().max(200).optional(),
 }).strict()
 

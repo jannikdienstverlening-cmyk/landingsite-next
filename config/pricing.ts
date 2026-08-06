@@ -2,7 +2,7 @@ export const pricingConfig = {
   vatIncluded: false,
   currency: 'EUR',
   websiteManagement: {
-    name: 'Websitebeheer',
+    name: 'Websitebeheer Compleet',
     monthlyPrice: 79,
     billingInterval: 'month',
     includedChangeMinutes: 30,

@@ -21,7 +21,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
       priority: 0.3,
     },
     {
-      url: 'https://landingsite.nl/partners',
+      url: 'https://landingsite.nl/partner',
       lastModified: new Date(),
       changeFrequency: 'monthly',
       priority: 0.4,

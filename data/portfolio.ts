@@ -1,8 +1,11 @@
 export type PortfolioProject = {
   slug: string
   name: string
+  industry: string
   type: string
   description: string
+  problem: string
+  result: string
   features: string[]
   image: string
   imageAlt: string
@@ -13,11 +16,14 @@ export type PortfolioProject = {
 export const portfolioProjects: PortfolioProject[] = [
   {
     slug: 'ontwikkelbegeleiding-rh',
-    name: 'Ontwikkelbegeleiding RH',
+    name: 'Ontwikkelbegeleiding.nl',
+    industry: 'Coaching en begeleiding',
     type: 'Website voor lokale dienstverlening',
     description:
-      'Een warme en overzichtelijke website voor kinder- en ouderbegeleiding in Veenendaal, met duidelijke informatie en een laagdrempelige route naar een kennismaking.',
-    features: ['Lokale dienstverlening', 'Duidelijke navigatie', 'Persoonlijke positionering', 'Kennismakingsflow'],
+      'Van een onduidelijk en tekstzwaar aanbod naar een warme, professionele website met een duidelijke route naar een kennismaking.',
+    problem: 'Bezoekers moesten snel begrijpen welke begeleiding beschikbaar is en voor wie de trajecten bedoeld zijn.',
+    result: 'Een rustige presentatie met duidelijke contactmomenten, een verbeterde mobiele ervaring en regionale positionering rond Veenendaal.',
+    features: ['Rustige uitstraling', 'Duidelijke trajecten', 'Mobiele ervaring', 'Kennismakingsroute', 'Regio Veenendaal'],
     image: '/images/portfolio/ontwikkelbegeleiding-home-20260801.webp',
     imageAlt: 'Screenshot van de actuele homepage van Ontwikkelbegeleiding RH',
     url: 'https://www.ontwikkelbegeleiding.nl/',
@@ -26,9 +32,12 @@ export const portfolioProjects: PortfolioProject[] = [
   {
     slug: 'wia-management',
     name: 'WIA Management',
+    industry: 'B2B en HR-dienstverlening',
     type: 'Leadgeneratie- en specialistmatching',
     description:
       'Een uitgebreide website voor werkgevers, HR en eigenrisicodragers, met een gerichte intakeflow, WIA-risicorekentool, kennisbank en koppeling aan een passende specialist.',
+    problem: 'Een complex WIA-aanbod moest begrijpelijk worden voor werkgevers die snel de juiste vervolgstap zoeken.',
+    result: 'De website bundelt uitleg, een rekentool en een gerichte aanvraagroute naar specialistmatching.',
     features: ['Intakeflow', 'WIA-risicorekentool', 'Kennisbank', 'Specialistmatching'],
     image: '/images/portfolio/wiamanagement-home-20260801.webp',
     imageAlt: 'Screenshot van de actuele homepage van WIA Management',
@@ -38,9 +47,12 @@ export const portfolioProjects: PortfolioProject[] = [
   {
     slug: 'aibouwers',
     name: 'AIbouwers.nl',
+    industry: 'AI en procesautomatisering',
     type: 'AI-integraties en procesautomatisering',
     description:
       'Een heldere productwebsite voor praktische AI-integraties, met een gratis scan, concrete toepassingen en een uitlegbare workflow rond menselijke controle.',
+    problem: 'Technische AI-diensten moesten concreet en begrijpelijk worden voor ondernemers zonder technisch jargon.',
+    result: 'Een overzichtelijke productwebsite met praktische toepassingen, een gratis scan en een duidelijke werkwijze.',
     features: ['Gratis AI-scan', 'Procesautomatisering', 'Productvoorbeeld', 'Menselijke controle'],
     image: '/images/portfolio/aibouwers-home-20260803.webp',
     imageAlt: 'Screenshot van de actuele homepage van AIbouwers.nl',
