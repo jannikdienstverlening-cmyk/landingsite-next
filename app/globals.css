@@ -1015,6 +1015,174 @@ button, input, textarea, select { font: inherit; }
   font-weight: 750;
 }
 
+.about-jannik {
+  overflow: hidden;
+  background: var(--ink);
+  color: #fff;
+}
+
+.about-jannik-layout {
+  display: grid;
+  grid-template-columns: minmax(190px, 240px) minmax(0, 1fr);
+  gap: clamp(42px, 7vw, 94px);
+  align-items: center;
+}
+
+.about-jannik-visual {
+  position: relative;
+  width: 100%;
+  min-height: 0;
+  aspect-ratio: 4 / 5;
+  overflow: hidden;
+  border: 1px solid rgba(255,255,255,.15);
+  border-radius: var(--radius-md);
+  background: #0d2a21;
+}
+
+.about-jannik-visual::after {
+  position: absolute;
+  z-index: 1;
+  content: '';
+  pointer-events: none;
+  inset: 0;
+  box-shadow: inset 0 0 0 1px rgba(71,221,163,.06);
+}
+
+.about-jannik-portrait {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 18%;
+}
+
+.about-jannik-copy {
+  min-width: 0;
+}
+
+.about-jannik-copy .section-kicker {
+  color: var(--green);
+}
+
+.about-jannik-copy h2 {
+  max-width: 780px;
+  margin: 0;
+  font-size: clamp(2.6rem, 5vw, 5rem);
+  line-height: .98;
+}
+
+.about-jannik-copy > p {
+  max-width: 720px;
+  color: rgba(255,255,255,.68);
+}
+
+.about-jannik-copy .about-jannik-lead {
+  margin-top: 28px;
+  color: #fff;
+  font-size: clamp(1.05rem, 1.7vw, 1.3rem);
+  line-height: 1.6;
+}
+
+.about-jannik-disciplines {
+  display: grid;
+  margin: 34px 0 0;
+  padding: 0;
+  list-style: none;
+  border-top: 1px solid rgba(255,255,255,.17);
+}
+
+.about-jannik-disciplines li {
+  display: grid;
+  grid-template-columns: 42px minmax(0, 1fr);
+  gap: 14px;
+  padding: 18px 0;
+  border-bottom: 1px solid rgba(255,255,255,.17);
+}
+
+.about-jannik-disciplines li > span {
+  color: var(--green);
+  font: 750 .72rem/1.6 var(--font-mono), ui-monospace, monospace;
+}
+
+.about-jannik-disciplines h3,
+.about-jannik-disciplines p {
+  margin: 0;
+}
+
+.about-jannik-disciplines h3 {
+  font-family: var(--font-syne), ui-sans-serif, system-ui, sans-serif;
+  font-size: 1rem;
+}
+
+.about-jannik-disciplines p {
+  margin-top: 5px;
+  color: rgba(255,255,255,.62);
+  font-size: .86rem;
+}
+
+.about-jannik-action {
+  display: flex;
+  gap: 22px;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 30px;
+}
+
+.about-jannik-action p {
+  max-width: 430px;
+  margin: 0;
+  color: rgba(255,255,255,.76);
+  font-size: .87rem;
+}
+
+.about-jannik-action .primary-button {
+  flex: 0 0 auto;
+  background: var(--green);
+  color: var(--ink);
+}
+
+.about-jannik-action .primary-button:hover {
+  background: #fff;
+}
+
+@media (max-width: 900px) {
+  .about-jannik-layout {
+    grid-template-columns: minmax(150px, 190px) minmax(0, 1fr);
+    gap: 36px;
+  }
+
+  .about-jannik-visual {
+    align-self: start;
+  }
+}
+
+@media (max-width: 700px) {
+  .about-jannik-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .about-jannik-visual {
+    width: 150px;
+    justify-self: start;
+  }
+}
+
+@media (max-width: 560px) {
+  .about-jannik-visual {
+    border-radius: var(--radius-md);
+  }
+
+  .about-jannik-action {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .about-jannik-action .primary-button {
+    width: 100%;
+  }
+}
+
 @media (max-width: 520px) {
   .management-activation-price {
     display: grid;

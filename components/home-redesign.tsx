@@ -149,6 +149,49 @@ export function EssentialsSection() {
   )
 }
 
+export function AboutJannikSection() {
+  const disciplines = [
+    ['01', 'AI & techniek', 'Slimmer bouwen, sneller schakelen en alleen automatiseren waar het echt waarde toevoegt.'],
+    ['02', 'Design & conversie', 'Een heldere pagina waarin iedere keuze bijdraagt aan vertrouwen en actie.'],
+    ['03', 'Coaching & focus', 'Persoonlijke begeleiding, duidelijke afspraken en aandacht tot de website live staat.'],
+  ]
+
+  return (
+    <section className="section about-jannik" id="over-jannik">
+      <div className="shell about-jannik-layout">
+        <div className="about-jannik-visual">
+          <Image
+            className="about-jannik-portrait"
+            src="/images/jannik-cartoon.webp"
+            alt="Cartoonportret van Jannik, AI-specialist, webbouwer en personal trainer"
+            width={960}
+            height={1442}
+            sizes="(max-width: 700px) 150px, 240px"
+          />
+        </div>
+        <div className="about-jannik-copy">
+          <p className="section-kicker">Achter Landingsite.nl</p>
+          <h2>Eén aanspreekpunt. Twee werelden die elkaar versterken.</h2>
+          <p className="about-jannik-lead">Ik ben Jannik: AI-specialist, webbouwer en personal trainer. Een ongebruikelijke combinatie, maar juist daardoor werk ik praktisch, doelgericht en persoonlijk.</p>
+          <p>Als AI-specialist gebruik ik technologie om sneller tot een sterk resultaat te komen. Als personal trainer weet ik hoe belangrijk focus, duidelijke stappen en goede begeleiding zijn. Die aanpak neem ik mee in ieder websiteproject.</p>
+          <ol className="about-jannik-disciplines">
+            {disciplines.map(([number, title, text]) => (
+              <li key={number}>
+                <span>{number}</span>
+                <div><h3>{title}</h3><p>{text}</p></div>
+              </li>
+            ))}
+          </ol>
+          <div className="about-jannik-action">
+            <p>Geen projectmanager ertussen. Je spreekt rechtstreeks met degene die ontwerpt en bouwt.</p>
+            <a className="primary-button" href="#contact">Bespreek je idee</a>
+          </div>
+        </div>
+      </div>
+    </section>
+  )
+}
+
 export function PricingSection({ packages }: { packages: Package[] }) {
   return (
     <section className="section pricing" id="prijzen">
@@ -310,6 +353,7 @@ export function Footer() {
           <strong>Navigatie</strong>
           <a href="#voorbeelden">Voorbeelden</a>
           <a href="#werkwijze">Werkwijze</a>
+          <a href="#over-jannik">Over Jannik</a>
           <a href="#prijzen">Prijzen</a>
           <a href="#websitebeheer">Websitebeheer</a>
           <a href="#faq">Veelgestelde vragen</a>

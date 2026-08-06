@@ -1,4 +1,5 @@
 import {
+  AboutJannikSection,
   EssentialsSection,
   FAQContactSection,
   Footer,
@@ -150,6 +151,7 @@ export default function Home() {
         <Hero />
         <PortfolioSection />
         <EssentialsSection />
+        <AboutJannikSection />
         <PricingSection packages={packages} />
         <WebsiteManagementSection />
         <PartnerProgramSection />
