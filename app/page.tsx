@@ -9,6 +9,7 @@ import {
   Hero,
   PricingSection,
   ProcessSection,
+  ReviewSection,
   WebsiteManagementSection,
 } from '@/components/home-redesign'
 import { HomepageAnalytics } from '@/components/homepage-analytics'
@@ -172,7 +173,7 @@ export default function Home() {
         <PricingSection packages={packages} />
         <WebsiteManagementSection />
         <AboutJannikSection />
-        {/* TODO: voeg pas een reviewsectie toe zodra geverifieerde klantreviews en publicatietoestemming beschikbaar zijn. */}
+        <ReviewSection />
         <FAQSection faqs={faqs} />
         <ContactSection />
       </main>

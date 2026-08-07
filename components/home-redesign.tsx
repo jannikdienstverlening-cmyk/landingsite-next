@@ -1,7 +1,6 @@
 import Image from 'next/image'
 import Link from 'next/link'
 import { pricingConfig } from '@/config/pricing'
-import { portfolioProjects } from '@/data/portfolio'
 import { BUSINESS } from '@/lib/business'
 import { ContactForm, FAQAccordion, MobileMenu, PricingButton } from './home-actions'
 import { Logo } from './logo'
@@ -16,8 +15,6 @@ type Package = {
 }
 
 type FAQ = { q: string; a: string }
-
-const heroProject = portfolioProjects[1]
 
 export function Header() {
   return (
@@ -51,27 +48,17 @@ export function Hero() {
             <a className="primary-button" href="#contact" data-analytics-event="start_website" data-analytics-location="hero">Vertel wat je nodig hebt</a>
             <a className="secondary-button" href="#voorbeelden" data-analytics-event="view_examples" data-analytics-location="hero">Bekijk projecten</a>
           </div>
-          <p className="hero-proofline">
-            <span>Vanaf €{pricingConfig.buildPackages.starter.oneTimePrice}</span>
-            <span>Eerste versie binnen 48 uur na complete intake</span>
-            <span>{pricingConfig.websiteManagement.name} €{pricingConfig.websiteManagement.monthlyPrice} p/m</span>
-          </p>
         </div>
-
-        <figure className="hero-project">
-          <a
-            className="hero-project-image"
-            href={heroProject.url}
-            target="_blank"
-            rel="noopener noreferrer"
-            aria-label={`Bekijk de website van ${heroProject.name}`}
-            data-analytics-event="project_click"
-            data-analytics-project={heroProject.slug}
-          >
-            <Image src={heroProject.image} alt={heroProject.imageAlt} fill preload sizes="(max-width: 900px) 94vw, 570px" />
-          </a>
-          <figcaption><strong>{heroProject.name}</strong><span>{heroProject.type}</span></figcaption>
-        </figure>
+        <aside className="hero-summary" aria-label="Samenvatting van het aanbod">
+          <p className="section-kicker">Van intake naar eerste versie</p>
+          <strong>48 uur</strong>
+          <span>na een complete intake en betaling</span>
+          <dl>
+            <div><dt>Bouwprijs</dt><dd>Vanaf €{pricingConfig.buildPackages.starter.oneTimePrice}</dd></div>
+            <div><dt>Na livegang</dt><dd>{pricingConfig.websiteManagement.name} €{pricingConfig.websiteManagement.monthlyPrice} p/m</dd></div>
+            <div><dt>Contact</dt><dd>Rechtstreeks met de bouwer</dd></div>
+          </dl>
+        </aside>
       </div>
     </section>
   )
@@ -215,6 +202,44 @@ export function AboutJannikSection() {
           <h2>Je hebt rechtstreeks contact met mij.</h2>
           <p>Ik ben Jannik. Je bespreekt je website met dezelfde persoon die hem ontwerpt en bouwt. Geen accountmanager, geen overdracht en geen weken wachten op een kleine beslissing.</p>
           <p>AI gebruik ik achter de schermen om sneller te werken. De strategie, teksten, ontwerpkeuzes en afwerking blijven mensenwerk.</p>
+        </div>
+      </div>
+    </section>
+  )
+}
+
+export function ReviewSection() {
+  return (
+    <section className="section client-review" aria-labelledby="client-review-title">
+      <div className="shell client-review-layout">
+        <div className="client-review-portrait">
+          <Image
+            src="/images/portfolio/rianne-hakkert.jpg"
+            alt="Rianne Hakkert van Ontwikkelbegeleiding RH"
+            fill
+            sizes="(max-width: 700px) 120px, 220px"
+          />
+        </div>
+        <div className="client-review-copy">
+          <p className="section-kicker">Klantreview</p>
+          <blockquote id="client-review-title">
+            “Jannik luisterde goed naar wat ik met Ontwikkelbegeleiding wilde uitstralen en vertaalde dat naar een rustige, professionele website. Het contact was persoonlijk en duidelijk, en ik ben blij met hoe de website bij mijn praktijk past.”
+          </blockquote>
+          <footer>
+            <div>
+              <strong>Rianne Hakkert</strong>
+              <span>Ontwikkelbegeleiding RH</span>
+            </div>
+            <a
+              href="https://www.ontwikkelbegeleiding.nl/"
+              target="_blank"
+              rel="noopener noreferrer"
+              data-analytics-event="project_click"
+              data-analytics-project="ontwikkelbegeleiding"
+            >
+              Bekijk de website <span aria-hidden="true">↗</span>
+            </a>
+          </footer>
         </div>
       </div>
     </section>
