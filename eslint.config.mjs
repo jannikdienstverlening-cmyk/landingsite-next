@@ -12,6 +12,7 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     ".vercel/**",
+    "remotion-social/**",
     "next-env.d.ts",
     "app/.well-known/workflow/**",
   ]),

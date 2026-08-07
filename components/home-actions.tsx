@@ -2,14 +2,15 @@
 
 import type { FormEvent } from 'react'
 import { useRef, useState } from 'react'
+import { pricingConfig } from '@/config/pricing'
 import { trackMarketingEvent } from '@/lib/analytics'
 
 const navItems = [
-  ['Voorbeelden', '#voorbeelden'],
+  ['Projecten', '#voorbeelden'],
   ['Werkwijze', '#werkwijze'],
   ['Pakketten', '#prijzen'],
   ['Beheer', '#websitebeheer'],
-  ['Veelgestelde vragen', '#faq'],
+  ['Vragen', '#faq'],
 ]
 
 export function MobileMenu() {
@@ -24,7 +25,7 @@ export function MobileMenu() {
       </button>
       <nav id="mobile-nav" className={`mobile-nav${open ? ' is-open' : ''}`} aria-label="Mobiele navigatie">
         {navItems.map(([label, href]) => <a href={href} onClick={() => setOpen(false)} key={href}>{label}</a>)}
-        <a className="mobile-nav-cta" href="#contact" onClick={() => setOpen(false)} data-analytics-event="start_website" data-analytics-location="mobile_menu">Start mijn website</a>
+        <a className="mobile-nav-cta" href="#contact" onClick={() => setOpen(false)} data-analytics-event="start_website" data-analytics-location="mobile_menu">Vertel wat je nodig hebt</a>
       </nav>
     </>
   )
@@ -62,7 +63,7 @@ export function PricingButton({ pakket, label }: { pakket: 'starter' | 'pro' | '
     <div className="checkout-action">
       <label className="terms-check">
         <input type="checkbox" checked={accepted} onChange={(event) => setAccepted(event.target.checked)} />
-        <span>Ik bestel zakelijk, betaal nu alleen de eenmalige bouwprijs, ga akkoord met de <a href="/algemene-voorwaarden" target="_blank" rel="noopener noreferrer">voorwaarden</a> en heb het <a href="/privacybeleid" target="_blank" rel="noopener noreferrer">privacybeleid</a> gelezen. Websitebeheer wordt pas na livegang apart geactiveerd.</span>
+        <span>Ik bestel zakelijk, betaal nu alleen de eenmalige bouwprijs, ga akkoord met de <a href="/algemene-voorwaarden" target="_blank" rel="noopener noreferrer">voorwaarden</a> en heb het <a href="/privacybeleid" target="_blank" rel="noopener noreferrer">privacybeleid</a> gelezen. {pricingConfig.websiteManagement.name} wordt pas na livegang apart geactiveerd.</span>
       </label>
       <button className="price-button" onClick={order} disabled={loading || !accepted} type="button">
         {loading ? 'Veilige checkout openen...' : label}
@@ -163,18 +164,18 @@ export function ContactForm() {
         <label><span>Gewenste startdatum <small>optioneel</small></span><input type="date" value={form.startdatum} onChange={(event) => update('startdatum', event.target.value)} /></label>
       </div>
       <label>
-        <span>Budget of pakketvoorkeur <small>optioneel</small></span>
+        <span>Pakketvoorkeur <small>optioneel</small></span>
         <select value={form.voorkeur} onChange={(event) => update('voorkeur', event.target.value)}>
           <option value="">Nog niet zeker</option>
-          <option value="starter">Starter · €299</option>
-          <option value="pro">Pro · €499</option>
-          <option value="premium">Premium · €899</option>
+          <option value="starter">Starter · €{pricingConfig.buildPackages.starter.oneTimePrice}</option>
+          <option value="pro">Pro · €{pricingConfig.buildPackages.pro.oneTimePrice}</option>
+          <option value="premium">Premium · €{pricingConfig.buildPackages.premium.oneTimePrice}</option>
           <option value="advies">Graag eerst advies</option>
         </select>
       </label>
       <label className="honeypot" aria-hidden="true">Website<input tabIndex={-1} autoComplete="off" value={form.website} onChange={(event) => update('website', event.target.value)} /></label>
       <button className="contact-submit" disabled={status === 'sending'} type="submit">
-        {status === 'sending' ? 'Aanvraag versturen...' : 'Start mijn aanvraag'}
+        {status === 'sending' ? 'Aanvraag versturen...' : 'Verstuur mijn aanvraag'}
         <span aria-hidden="true">→</span>
       </button>
       <p className="form-note">Je zit nog nergens aan vast.</p>

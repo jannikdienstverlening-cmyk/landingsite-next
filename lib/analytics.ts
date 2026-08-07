@@ -8,6 +8,7 @@ export type MarketingEvent =
   | 'direct_order_checkout'
   | 'consultation_click'
   | 'partner_click'
+  | 'social_click'
 
 declare global {
   interface Window {

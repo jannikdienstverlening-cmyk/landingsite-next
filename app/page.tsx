@@ -9,8 +9,6 @@ import {
   Hero,
   PricingSection,
   ProcessSection,
-  SocialProofSection,
-  TrustBar,
   WebsiteManagementSection,
 } from '@/components/home-redesign'
 import { HomepageAnalytics } from '@/components/homepage-analytics'
@@ -38,16 +36,12 @@ const faqs = [
     a: 'Je deelt je aanbod, doelgroep, contactgegevens, sterke punten en beschikbare beelden via een korte intake. Bij Pro scherpen we je teksten inhoudelijk aan; bij Premium kunnen we ze uitgebreider uitwerken of herschrijven.',
   },
   {
-    q: 'Wanneer staat de eerste versie klaar?',
+    q: 'Wanneer ontvang ik de eerste versie?',
     a: 'De termijn van 48 uur start zodra de eenmalige bouwprijs is betaald en de intake compleet is. Ontbreekt belangrijke informatie, dan start de termijn zodra die is aangevuld.',
   },
   {
-    q: 'Hoeveel correctierondes zijn inbegrepen?',
-    a: 'Starter bevat één correctieronde, Pro twee en Premium drie. Aanvullende of grotere wijzigingen stemmen we vooraf apart af.',
-  },
-  {
     q: 'Kan ik later extra pagina’s toevoegen?',
-    a: 'Ja. Nieuwe pagina’s of functionaliteiten vallen buiten het maandelijkse Websitebeheer en worden vooraf apart geoffreerd.',
+    a: `Ja. Nieuwe pagina’s of functionaliteiten vallen buiten het maandelijkse ${pricingConfig.websiteManagement.name} en worden vooraf apart geoffreerd.`,
   },
   {
     q: 'Is de website van mij?',
@@ -59,11 +53,7 @@ const faqs = [
   },
   {
     q: 'Kan ik eerst overleggen voordat ik bestel?',
-    a: 'Ja. Start via het contactformulier en beschrijf kort wat je nodig hebt. Je ontvangt eerst advies over het passende pakket en zit nog nergens aan vast.',
-  },
-  {
-    q: 'Wat gebeurt er na oplevering?',
-    a: `Na je akkoord koppelen we het domein en gaat de website live. Wil je hosting en technisch beheer uitbesteden, dan activeer je ${pricingConfig.websiteManagement.name} afzonderlijk via een beveiligde abonnementslink.`,
+    a: 'Ja. Beschrijf je idee in het formulier. Ik laat weten welk pakket logisch is voordat je iets bestelt.',
   },
 ]
 
@@ -75,11 +65,9 @@ const packages = [
     fit: 'Voor een eenvoudige campagne, dienst of tijdelijke actie.',
     features: [
       '1 landingspagina',
-      'Maximaal 4 inhoudssecties',
-      'Mobielvriendelijk ontwerp',
+      'Maximaal 5 inhoudssecties',
       'Standaard contactformulier',
-      'Basis zoekmachine-optimalisatie',
-      'Je levert de basisteksten aan',
+      'Basis-SEO',
       '1 correctieronde',
     ],
   },
@@ -92,11 +80,9 @@ const packages = [
     features: [
       '1 uitgebreide landingspagina',
       'Maximaal 8 inhoudssecties',
-      'Conversiegerichte structuur',
       'Teksten inhoudelijk aangescherpt',
       'Uitgebreid aanvraagformulier',
-      'Reviews, FAQ en bewijsblokken',
-      'Basis zoekmachine-optimalisatie',
+      'FAQ- en bewijssecties',
       '2 correctierondes',
     ],
   },
@@ -104,14 +90,12 @@ const packages = [
     id: 'premium' as const,
     name: pricingConfig.buildPackages.premium.name,
     price: pricingConfig.buildPackages.premium.oneTimePrice,
-    fit: 'Voor bedrijven die meer pagina’s, maatwerk of een uitgebreidere klantreis nodig hebben.',
+    fit: 'Voor bedrijven die meer pagina’s of maatwerk nodig hebben.',
     features: [
       'Maximaal 3 pagina’s',
       'Maatwerkstructuur',
-      'Teksten uitgewerkt of herschreven',
+      'Teksten volledig uitgewerkt',
       'Meerdere formulieren of aanvraagflow',
-      'Extra maatwerkcomponenten',
-      'Uitgebreidere SEO-basis',
       '3 correctierondes',
     ],
   },
@@ -126,6 +110,7 @@ const jsonLd = {
       name: BUSINESS.brandName,
       legalName: BUSINESS.legalName,
       url: BUSINESS.website,
+      sameAs: [BUSINESS.social.instagram, BUSINESS.social.linkedin],
       taxID: BUSINESS.chamberOfCommerceNumber,
       vatID: BUSINESS.vatId,
       address: {
@@ -181,14 +166,13 @@ export default function Home() {
       <Header />
       <main>
         <Hero />
-        <TrustBar />
         <PortfolioShowcase />
         <BenefitsSection />
         <ProcessSection />
         <PricingSection packages={packages} />
         <WebsiteManagementSection />
         <AboutJannikSection />
-        <SocialProofSection />
+        {/* TODO: voeg pas een reviewsectie toe zodra geverifieerde klantreviews en publicatietoestemming beschikbaar zijn. */}
         <FAQSection faqs={faqs} />
         <ContactSection />
       </main>

@@ -7,6 +7,10 @@ export const BUSINESS = {
   contactPath: '/#contact',
   termsUrl: 'https://landingsite.nl/algemene-voorwaarden',
   privacyUrl: 'https://landingsite.nl/privacybeleid',
+  social: {
+    instagram: 'https://www.instagram.com/landingsite.nl/',
+    linkedin: 'https://www.linkedin.com/company/137164667/',
+  },
   address: {
     street: 'Gortstraat 31',
     postalCode: '3905 BB',
