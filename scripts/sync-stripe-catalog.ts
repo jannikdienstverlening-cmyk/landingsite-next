@@ -81,7 +81,7 @@ async function main() {
     prices[STRIPE_BUILD_PRICE_ENV[packageId]] = await syncPrice(stripe, {
       catalogKey: `landingsite_build_${packageId}`,
       productName: `Landingsite.nl ${details.name}`,
-      description: 'Eenmalige bouwprijs voor een professionele landingspagina. Websitebeheer wordt pas bij livegang apart geactiveerd.',
+      description: 'Eenmalige bouwprijs voor het gekozen websitepakket. De eerste maand Hosting & Websitebeheer wordt in dezelfde checkout afgerekend.',
       amount: details.oneTimePrice,
       recurring: false,
       nickname: `${details.name} eenmalige bouwprijs`,
@@ -112,6 +112,8 @@ async function main() {
         'invoice.payment_failed',
         'invoice.voided',
         'charge.refunded',
+        'charge.dispute.created',
+        'charge.dispute.closed',
         'customer.subscription.created',
         'customer.subscription.updated',
         'customer.subscription.deleted',

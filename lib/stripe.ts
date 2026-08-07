@@ -1,5 +1,5 @@
 import Stripe from 'stripe'
-import { cents, pricingConfig, type BuildPackageId } from '@/config/pricing'
+import { cents, commercialConfig, type CommercialPackageId } from '@/config/commercial'
 
 let stripe: Stripe | null = null
 
@@ -18,8 +18,8 @@ export function getStripe() {
 }
 
 export const STRIPE_CHECKOUT_BRAND = {
-  backgroundColor: '#f4f8f6',
-  buttonColor: '#0b4936',
+  backgroundColor: '#f4f0e8',
+  buttonColor: '#245cff',
   displayName: 'Landingsite.nl',
   fontFamily: 'inter',
   borderStyle: 'rounded',
@@ -40,6 +40,7 @@ export function stripeCheckoutBranding(baseUrl: string): Stripe.Checkout.Session
 
 export const STRIPE_BUILD_PAYMENT_METHODS = ['ideal', 'card'] as const satisfies readonly Stripe.Checkout.SessionCreateParams.PaymentMethodType[]
 export const STRIPE_MANAGEMENT_PAYMENT_METHODS = ['ideal', 'card', 'sepa_debit'] as const satisfies readonly Stripe.Checkout.SessionCreateParams.PaymentMethodType[]
+export const STRIPE_COMBINED_PAYMENT_METHODS = STRIPE_MANAGEMENT_PAYMENT_METHODS
 
 export function stripePaymentMethods(
   methods: readonly Stripe.Checkout.SessionCreateParams.PaymentMethodType[],
@@ -49,23 +50,23 @@ export function stripePaymentMethods(
 
 export const PAKKETTEN = {
   starter: {
-    naam: pricingConfig.buildPackages.starter.name,
-    prijs: cents(pricingConfig.buildPackages.starter.oneTimePrice),
-    prijs_label: `€${pricingConfig.buildPackages.starter.oneTimePrice}`,
+    naam: commercialConfig.packages.starter.name,
+    prijs: cents(commercialConfig.packages.starter.oneTimePrice),
+    prijs_label: `€${commercialConfig.packages.starter.oneTimePrice}`,
   },
   pro: {
-    naam: pricingConfig.buildPackages.pro.name,
-    prijs: cents(pricingConfig.buildPackages.pro.oneTimePrice),
-    prijs_label: `€${pricingConfig.buildPackages.pro.oneTimePrice}`,
+    naam: commercialConfig.packages.pro.name,
+    prijs: cents(commercialConfig.packages.pro.oneTimePrice),
+    prijs_label: `€${commercialConfig.packages.pro.oneTimePrice}`,
   },
   premium: {
-    naam: pricingConfig.buildPackages.premium.name,
-    prijs: cents(pricingConfig.buildPackages.premium.oneTimePrice),
-    prijs_label: `€${pricingConfig.buildPackages.premium.oneTimePrice}`,
+    naam: commercialConfig.packages.premium.name,
+    prijs: cents(commercialConfig.packages.premium.oneTimePrice),
+    prijs_label: `€${commercialConfig.packages.premium.oneTimePrice}`,
   },
 } as const
 
-export type PakketId = BuildPackageId
+export type PakketId = CommercialPackageId
 
 export const STRIPE_BUILD_PRICE_ENV = {
   starter: 'STRIPE_BUILD_PRICE_STARTER',
@@ -93,4 +94,4 @@ export function configuredManagementPriceId() {
 }
 
 export const SUBSCRIPTION_INTERVAL = 'month' as const
-export const TERMS_VERSION = '2026-08-01'
+export const TERMS_VERSION = '2026-08-07'

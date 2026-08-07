@@ -1,14 +1,18 @@
 export type MarketingEvent =
-  | 'start_website'
-  | 'view_examples'
-  | 'project_click'
-  | 'form_start'
-  | 'form_submit_success'
-  | 'direct_order_open'
-  | 'direct_order_checkout'
-  | 'consultation_click'
-  | 'partner_click'
-  | 'social_click'
+  | 'hero_start_click'
+  | 'hero_work_click'
+  | 'portfolio_case_open'
+  | 'package_view'
+  | 'package_select'
+  | 'checkout_start'
+  | 'checkout_cancel'
+  | 'checkout_complete'
+  | 'contact_form_start'
+  | 'contact_form_submit'
+  | 'intake_start'
+  | 'intake_complete'
+  | 'partner_page_view'
+  | 'customer_portal_open'
 
 declare global {
   interface Window {

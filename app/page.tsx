@@ -1,108 +1,60 @@
 import type { Metadata } from 'next'
+import { AnalyticsLayer } from '@/components/site-interactions'
 import {
-  AboutJannikSection,
-  BenefitsSection,
-  ContactSection,
-  FAQSection,
-  Footer,
-  Header,
-  Hero,
-  PricingSection,
-  ProcessSection,
-  ReviewSection,
-  WebsiteManagementSection,
-} from '@/components/home-redesign'
-import { HomepageAnalytics } from '@/components/homepage-analytics'
-import { PortfolioShowcase } from '@/components/portfolio-showcase'
+  DeliveryAndProcess,
+  FAQAndClose,
+  ManagementAndComparison,
+  Pricing,
+  ProblemAndFlow,
+  StudioFooter,
+  StudioHeader,
+  StudioHero,
+  WorkProof,
+  type StudioFaq,
+} from '@/components/studio-site'
+import { commercialConfig } from '@/config/commercial'
 import { ReferralCapture } from '@/components/referral-capture'
-import { SiteChatbot } from '@/components/site-chatbot'
-import { pricingConfig } from '@/config/pricing'
 import { BUSINESS } from '@/lib/business'
-import './homepage.css'
 
 export const metadata: Metadata = {
-  title: { absolute: 'Professionele landingspagina laten maken | Landingsite.nl' },
-  description: `De eerste versie van jouw professionele landingspagina binnen 48 uur. Voor zzp en mkb, vanaf €${pricingConfig.buildPackages.starter.oneTimePrice} met persoonlijk contact en optioneel Websitebeheer Compleet.`,
+  title: { absolute: 'Website laten maken vanaf €299 | Landingsite.nl' },
+  description: 'Websites en landingspagina’s voor zzp en mkb. Bouw vanaf €299 en managed hosting en websitebeheer voor €79 per maand.',
   alternates: { canonical: '/' },
   openGraph: {
-    title: 'Professionele landingspagina laten maken | Landingsite.nl',
-    description: `Een duidelijke, mobielvriendelijke landingspagina vanaf €${pricingConfig.buildPackages.starter.oneTimePrice}. Eerste versie binnen 48 uur na complete intake.`,
+    title: 'Website laten maken vanaf €299 | Landingsite.nl',
+    description: 'Een scherpe website, een werkend formulier en technisch beheer bij één partij. Eerste versie binnen 48 uur na betaling en complete intake.',
     url: 'https://landingsite.nl',
   },
 }
 
-const faqs = [
-  {
-    q: 'Wat moet ik zelf aanleveren?',
-    a: 'Je deelt je aanbod, doelgroep, contactgegevens, sterke punten en beschikbare beelden via een korte intake. Bij Pro scherpen we je teksten inhoudelijk aan; bij Premium kunnen we ze uitgebreider uitwerken of herschrijven.',
-  },
-  {
-    q: 'Wanneer ontvang ik de eerste versie?',
-    a: 'De termijn van 48 uur start zodra de eenmalige bouwprijs is betaald en de intake compleet is. Ontbreekt belangrijke informatie, dan start de termijn zodra die is aangevuld.',
-  },
-  {
-    q: 'Kan ik later extra pagina’s toevoegen?',
-    a: `Ja. Nieuwe pagina’s of functionaliteiten vallen buiten het maandelijkse ${pricingConfig.websiteManagement.name} en worden vooraf apart geoffreerd.`,
-  },
-  {
-    q: 'Is de website van mij?',
-    a: 'Je domeinnaam blijft van jou. Na betaling mag je de klantspecifieke oplevering voor je eigen onderneming gebruiken. Generieke systemen, componenten en externe licenties blijven onder hun bestaande voorwaarden vallen.',
-  },
-  {
-    q: `Wat zit er in ${pricingConfig.websiteManagement.name}?`,
-    a: `Hosting, SSL, back-ups, beveiligings- en technische updates, monitoring, ondersteuning en maximaal ${pricingConfig.websiteManagement.includedChangeMinutes} minuten kleine tekst- of beeldwijzigingen per kalendermaand.`,
-  },
-  {
-    q: 'Kan ik eerst overleggen voordat ik bestel?',
-    a: 'Ja. Beschrijf je idee in het formulier. Ik laat weten welk pakket logisch is voordat je iets bestelt.',
-  },
+const faqs: StudioFaq[] = [
+  { question: 'Wanneer begint de termijn van 48 uur?', answer: 'De termijn start zodra de betaling is bevestigd en je intake compleet en bruikbaar is. Ontbrekende teksten, beelden of informatie schuiven de start op.' },
+  { question: 'Is de website binnen 48 uur definitief live?', answer: 'Nee. Binnen 48 uur ontvang je de eerste werkende versie. Correcties, jouw reactietijd en de domeinkoppeling kunnen daarna extra tijd vragen.' },
+  { question: 'Wat betaal ik bij de start?', answer: 'Je betaalt de eenmalige bouwprijs plus de eerste maand Hosting & Websitebeheer. Dat is €378 voor Starter, €578 voor Pro of €978 voor Premium, telkens exclusief btw.' },
+  { question: 'Waarom betaal ik daarna €79 per maand?', answer: 'Voor managed hosting, SSL, back-ups, beveiligings- en technische updates, monitoring, formuliercontrole, e-mailondersteuning en maximaal 20 minuten kleine wijzigingen per maand.' },
+  { question: 'Wat valt onder de 20 minuten wijzigingen?', answer: 'Kleine aanpassingen binnen de bestaande website, zoals een tekst wijzigen, een afbeelding vervangen of een knop aanpassen. Nieuwe pagina’s, functies en redesigns vallen er niet onder.' },
+  { question: 'Worden ongebruikte minuten meegenomen?', answer: 'Nee. Niet-gebruikte wijzigingstijd wordt niet opgespaard of meegenomen naar een volgende maand.' },
+  { question: 'Kan ik maandelijks opzeggen?', answer: 'Ja. Hosting & Websitebeheer kan worden opgezegd tegen het einde van de lopende betaalperiode.' },
+  { question: 'Blijf ik eigenaar van mijn domein?', answer: 'Ja. Je domeinnaam blijft van jou en je houdt waar mogelijk zelf toegang tot de registrar.' },
+  { question: 'Wat gebeurt er met de website na opzegging?', answer: 'Na beëindiging stoppen hosting, technisch beheer, wijzigingen en ondersteuning aan het einde van de betaalde periode. We spreken een redelijke overdracht van domeininstellingen en klantspecifieke content af; extra migratiewerk kan apart worden berekend.' },
+  { question: 'Kan ik later uitbreiden?', answer: 'Ja. Nieuwe pagina’s, functies of koppelingen worden vooraf als aanvullend werk geprijsd.' },
+  { question: 'Kan ik overstappen met een bestaande website?', answer: 'Dat kan, afhankelijk van de techniek, inhoud en omvang van de bestaande website. Gebruik eerst het contactformulier zodat we de overstap kunnen beoordelen.' },
+  { question: 'Leveren jullie teksten?', answer: 'Starter gaat uit van aangeleverde basisteksten. Bij Pro scherpen we teksten aan. Bij Premium kan volledige conversiecopy op basis van de intake worden uitgewerkt.' },
+  { question: 'Zijn foto’s en logo inbegrepen?', answer: 'Nee. Je levert beschikbare merkbestanden en beelden aan. Fotografie en een volledig brandingtraject vallen niet standaard binnen de pakketten.' },
+  { question: 'Garanderen jullie meer aanvragen?', answer: 'Nee. We bouwen een duidelijke bezoekersroute en werkende conversiepunten, maar resultaat hangt ook af van je aanbod, markt, verkeer en opvolging.' },
+  { question: 'Kan ik eerst overleggen voordat ik betaal?', answer: 'Ja. Gebruik het formulier onderaan de pagina. Je ontvangt advies over het passende pakket en zit nog nergens aan vast.' },
 ]
 
-const packages = [
-  {
-    id: 'starter' as const,
-    name: pricingConfig.buildPackages.starter.name,
-    price: pricingConfig.buildPackages.starter.oneTimePrice,
-    fit: 'Voor een eenvoudige campagne, dienst of tijdelijke actie.',
-    features: [
-      '1 landingspagina',
-      'Maximaal 5 inhoudssecties',
-      'Standaard contactformulier',
-      'Basis-SEO',
-      '1 correctieronde',
-    ],
-  },
-  {
-    id: 'pro' as const,
-    name: pricingConfig.buildPackages.pro.name,
-    price: pricingConfig.buildPackages.pro.oneTimePrice,
-    fit: 'Voor ondernemers die hun dienst overtuigender willen presenteren.',
-    highlighted: true,
-    features: [
-      '1 uitgebreide landingspagina',
-      'Maximaal 8 inhoudssecties',
-      'Teksten inhoudelijk aangescherpt',
-      'Uitgebreid aanvraagformulier',
-      'FAQ- en bewijssecties',
-      '2 correctierondes',
-    ],
-  },
-  {
-    id: 'premium' as const,
-    name: pricingConfig.buildPackages.premium.name,
-    price: pricingConfig.buildPackages.premium.oneTimePrice,
-    fit: 'Voor bedrijven die meer pagina’s of maatwerk nodig hebben.',
-    features: [
-      'Maximaal 3 pagina’s',
-      'Maatwerkstructuur',
-      'Teksten volledig uitgewerkt',
-      'Meerdere formulieren of aanvraagflow',
-      '3 correctierondes',
-    ],
-  },
-]
+const packages = Object.entries(commercialConfig.packages).map(([id, item]) => ({
+  '@type': 'Offer',
+  name: item.name,
+  price: item.oneTimePrice,
+  priceCurrency: 'EUR',
+  url: `https://landingsite.nl/start?pakket=${id}`,
+  availability: 'https://schema.org/InStock',
+}))
 
-const jsonLd = {
+const structuredData = {
   '@context': 'https://schema.org',
   '@graph': [
     {
@@ -114,71 +66,40 @@ const jsonLd = {
       sameAs: [BUSINESS.social.instagram, BUSINESS.social.linkedin],
       taxID: BUSINESS.chamberOfCommerceNumber,
       vatID: BUSINESS.vatId,
-      address: {
-        '@type': 'PostalAddress',
-        streetAddress: BUSINESS.address.street,
-        postalCode: BUSINESS.address.postalCode,
-        addressLocality: BUSINESS.address.city,
-        addressCountry: BUSINESS.address.countryCode,
-      },
-      description: 'Webdesignbureau voor professionele landingspagina’s en kleine bedrijfswebsites voor zzp en mkb.',
       areaServed: 'NL',
     },
     {
       '@type': 'Service',
-      name: 'Professionele landingspagina laten maken',
+      name: 'Website en landingspagina laten maken',
       provider: { '@id': 'https://landingsite.nl/#organization' },
       areaServed: 'NL',
-      offers: packages.map((item) => ({
-        '@type': 'Offer',
-        name: item.name,
-        price: item.price,
-        priceCurrency: 'EUR',
-        availability: 'https://schema.org/InStock',
-      })),
-    },
-    {
-      '@type': 'Service',
-      name: pricingConfig.websiteManagement.name,
-      provider: { '@id': 'https://landingsite.nl/#organization' },
-      offers: {
-        '@type': 'Offer',
-        price: pricingConfig.websiteManagement.monthlyPrice,
-        priceCurrency: 'EUR',
-      },
+      offers: packages,
     },
     {
       '@type': 'FAQPage',
-      mainEntity: faqs.map((item) => ({
-        '@type': 'Question',
-        name: item.q,
-        acceptedAnswer: { '@type': 'Answer', text: item.a },
-      })),
+      mainEntity: faqs.map((item) => ({ '@type': 'Question', name: item.question, acceptedAnswer: { '@type': 'Answer', text: item.answer } })),
     },
   ],
 }
 
-export default function Home() {
+export default function HomePage() {
   return (
-    <div className="home-page">
+    <div className="studio">
+      <a className="skip-link" href="#main-content">Ga naar de inhoud</a>
       <ReferralCapture />
-      <HomepageAnalytics />
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd).replace(/</g, '\\u003c') }} />
-      <Header />
-      <main>
-        <Hero />
-        <PortfolioShowcase />
-        <BenefitsSection />
-        <ProcessSection />
-        <PricingSection packages={packages} />
-        <WebsiteManagementSection />
-        <AboutJannikSection />
-        <ReviewSection />
-        <FAQSection faqs={faqs} />
-        <ContactSection />
+      <AnalyticsLayer />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData).replace(/</g, '\\u003c') }} />
+      <StudioHeader />
+      <main id="main-content">
+        <StudioHero />
+        <WorkProof />
+        <ProblemAndFlow />
+        <DeliveryAndProcess />
+        <Pricing />
+        <ManagementAndComparison />
+        <FAQAndClose faqs={faqs} />
       </main>
-      <Footer />
-      <SiteChatbot />
+      <StudioFooter />
     </div>
   )
 }

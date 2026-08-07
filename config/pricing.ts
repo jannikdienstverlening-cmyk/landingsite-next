@@ -1,39 +1,22 @@
+import { cents, commercialConfig, euro } from './commercial'
+
+/**
+ * Compatibiliteitslaag voor bestaande serverroutes. Nieuwe code gebruikt
+ * commercialConfig rechtstreeks, zodat prijzen en scope één bron hebben.
+ */
 export const pricingConfig = {
-  vatIncluded: false,
-  currency: 'EUR',
+  vatIncluded: commercialConfig.pricesIncludeVat,
+  currency: commercialConfig.currency,
   websiteManagement: {
-    name: 'Websitebeheer Compleet',
-    monthlyPrice: 79,
-    billingInterval: 'month',
-    includedChangeMinutes: 30,
-    startsAt: 'go-live',
+    name: commercialConfig.management.name,
+    monthlyPrice: commercialConfig.management.monthlyPrice,
+    billingInterval: commercialConfig.management.billingInterval,
+    includedChangeMinutes: commercialConfig.management.includedChangeMinutes,
+    startsAt: commercialConfig.management.startsAt,
   },
-  buildPackages: {
-    starter: {
-      name: 'Starter',
-      oneTimePrice: 299,
-    },
-    pro: {
-      name: 'Pro',
-      oneTimePrice: 499,
-    },
-    premium: {
-      name: 'Premium',
-      oneTimePrice: 899,
-    },
-  },
+  buildPackages: commercialConfig.packages,
 } as const
 
-export type BuildPackageId = keyof typeof pricingConfig.buildPackages
+export type BuildPackageId = keyof typeof commercialConfig.packages
 
-export function euro(amount: number) {
-  return new Intl.NumberFormat('nl-NL', {
-    style: 'currency',
-    currency: pricingConfig.currency,
-    maximumFractionDigits: 0,
-  }).format(amount)
-}
-
-export function cents(amount: number) {
-  return Math.round(amount * 100)
-}
+export { cents, euro }

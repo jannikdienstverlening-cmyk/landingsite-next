@@ -98,7 +98,7 @@ export default function AdminPage() {
 
     <section className="admin-section">
       <h2>Orders en Websitebeheer</h2>
-      <p className="admin-note">De bouwbetaling en Websitebeheer blijven bewust twee aparte transacties. Maak de abonnementslink pas nadat de website is goedgekeurd en live staat.</p>
+      <p className="admin-note">Nieuwe orders combineren bouwprijs en de eerste beheermaand in één Stripe-checkout. De losse activatielink hieronder blijft alleen beschikbaar voor historische orders zonder abonnement.</p>
       <div className="management-workflow" aria-label="Werkwijze Websitebeheer activeren">
         <div><strong>1</strong><span><b>Bouw betaald</b>De klant betaalt eerst alleen Starter, Pro of Premium.</span></div>
         <div><strong>2</strong><span><b>Website live</b>Controleer de website en bevestig hieronder de livegang.</span></div>

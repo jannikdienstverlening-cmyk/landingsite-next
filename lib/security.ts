@@ -122,6 +122,18 @@ function originOf(value: string) {
   }
 }
 
+function localLoopbackMatch(left: string | null, right: string | null) {
+  if (process.env.NODE_ENV === 'production' || !left || !right) return false
+  try {
+    const a = new URL(left)
+    const b = new URL(right)
+    const loopback = new Set(['localhost', '127.0.0.1', '[::1]'])
+    return loopback.has(a.hostname) && loopback.has(b.hostname) && a.protocol === b.protocol && a.port === b.port
+  } catch {
+    return false
+  }
+}
+
 export function isSameOriginMutation(request: Request) {
   const fetchSite = request.headers.get('sec-fetch-site')
   if (fetchSite && fetchSite !== 'same-origin' && fetchSite !== 'none') return false
@@ -133,7 +145,8 @@ export function isSameOriginMutation(request: Request) {
   const configuredBaseUrl = process.env.NEXT_PUBLIC_BASE_URL
   if (configuredBaseUrl) allowed.add(originOf(configuredBaseUrl))
   allowed.delete(null)
-  return allowed.has(origin)
+  if (allowed.has(origin)) return true
+  return [...allowed].some((candidate) => localLoopbackMatch(origin, candidate))
 }
 
 export function rejectCrossOriginMutation(request: Request) {

@@ -1,18 +1,17 @@
 import Link from 'next/link'
 
 type LogoProps = {
-  variant?: 'default' | 'light'
+  variant?: 'dark' | 'light'
 }
 
-export function Logo({ variant = 'default' }: LogoProps) {
+export function Logo({ variant = 'light' }: LogoProps) {
   return (
-    <Link
-      href="/"
-      className={`brand-logo brand-logo--${variant}`}
-      aria-label="Landingsite.nl – naar de homepage"
-    >
-      <span className="brand-logo__main">Landingsite</span>
-      <span className="brand-logo__accent">.nl</span>
+    <Link href="/" className={`wordmark wordmark--${variant}`} aria-label="Landingsite.nl, naar de homepage">
+      <svg viewBox="0 0 174 30" role="img" aria-hidden="true">
+        <text x="0" y="22">landingsite</text>
+        <circle cx="133" cy="20" r="2.6" />
+        <text x="139" y="22">nl</text>
+      </svg>
     </Link>
   )
 }

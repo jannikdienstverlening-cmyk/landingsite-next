@@ -1,9 +1,9 @@
-import { pricingConfig } from './pricing'
+import { commercialConfig } from './commercial'
 
 export const partnerProgramConfig = {
   enabled: true,
   participationIsFree: true,
-  subscriptionPrice: pricingConfig.websiteManagement.monthlyPrice,
+  subscriptionPrice: commercialConfig.management.monthlyPrice,
   minimumPayout: 25,
   waitingPeriodDays: 30,
   attributionWindowDays: 30,

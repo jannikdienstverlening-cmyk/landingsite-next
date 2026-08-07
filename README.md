@@ -16,20 +16,20 @@ npm run check
 
 ## Betaal- en generatieflow
 
-1. Stripe Checkout int eenmalig de bouwprijs voor Starter, Pro of Premium.
+1. Stripe Checkout int de eenmalige bouwprijs en de eerste beheermaand in één subscription-checkout.
 2. De ondertekende webhook upsert de order en verwerkt events idempotent met een auditstatus.
 3. De klant vult de intake in en kan logo en hoofdbeeld uploaden.
 4. De API claimt de order atomair en start `generateLandingWorkflow`.
 5. Claude retourneert gevalideerde, gestructureerde copy; `landing-renderer.ts` bouwt veilige HTML.
 6. De workflow maakt of hergebruikt een Netlify-site, publiceert de pagina, slaat de status op en verstuurt de oplevermail.
-7. Na goedkeuring maakt een beheerder een aparte Stripe-link voor Websitebeheer; de eerste €79-incasso ontstaat pas wanneer de klant die link bij livegang expliciet afrondt.
-8. Betaalde Websitebeheer-facturen kunnen maximaal drie commissieposten aanmaken. Die blijven op handmatige controle staan en voeren geen automatische bankbetaling uit.
+7. Het Stripe-klantportaal geeft toegang tot facturen, betaalgegevens en opzegging tegen het einde van de lopende betaalperiode.
+8. Alleen betaalde beheerregels van €79 kunnen maximaal drie commissieposten aanmaken. Die blijven op handmatige controle staan en voeren geen automatische bankbetaling uit.
 
 ## Belangrijke beheerpunten
 
 - De Stripe webhook wijst naar `/api/stripe/webhook`.
 - De publieke voorwaarden- en privacy-URL zijn in het gekoppelde Stripe-account ingesteld; `STRIPE_TERMS_CONFIGURED=true` houdt de checkout-guard open.
-- Websitebeheer kost €79 per maand exclusief btw en omvat hosting, SSL, onderhoud, back-ups, monitoring en maximaal 30 minuten kleine wijzigingen per kalendermaand.
+- Hosting & Websitebeheer kost €79 per maand exclusief btw en omvat hosting, SSL, onderhoud, back-ups, monitoring en maximaal 20 minuten kleine wijzigingen per betaalmaand.
 - Het adminwachtwoord wordt alleen naar `/api/admin/login` gestuurd. Daarna gebruikt het dashboard een getekende HttpOnly-cookie.
 - `ADMIN_SESSION_SECRET`, `ORDER_TOKEN_SECRET`, `REFERRAL_TOKEN_SECRET`, `CUSTOMER_PORTAL_SECRET` en `IP_HASH_SALT` moeten in productie unieke lange waarden zijn.
 - Landingsite.nl wordt aangeboden door Jannik Dienstverlening, Gortstraat 31, 3905 BB Veenendaal (KvK 65549430, btw NL001557133B48).

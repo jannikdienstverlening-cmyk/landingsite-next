@@ -29,6 +29,12 @@ export async function POST(request: NextRequest) {
     contactemail: form.contactemail,
     logo_url: form.logo_url,
     hero_image_url: form.hero_image_url,
+    primaire_actie: form.primaire_actie,
+    concurrenten: form.concurrenten,
+    gewenste_paginas: form.gewenste_paginas,
+    bestaand_domein: form.bestaand_domein,
+    teksten_status: form.teksten_status,
+    technische_koppelingen: form.technische_koppelingen,
   }
   if (pakket === 'pro' || pakket === 'premium') {
     Object.assign(extraFields, {

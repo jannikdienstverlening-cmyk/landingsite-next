@@ -1,5 +1,6 @@
 import type Stripe from 'stripe'
 import { NextRequest } from 'next/server'
+import { commercialConfig, packageFirstPayment } from '@/config/commercial'
 import { partnerProgramConfig } from '@/config/partner-program'
 import { pricingConfig } from '@/config/pricing'
 import { escapeHtml } from '@/lib/html'
@@ -7,12 +8,13 @@ import { commissionForLevel } from '@/lib/partner'
 import { getResend } from '@/lib/resend'
 import { createCustomerToken } from '@/lib/security'
 import { adminRecipient } from '@/lib/server-email'
-import { getStripe, PAKKETTEN, TERMS_VERSION } from '@/lib/stripe'
+import { isFullManagementInvoiceLine } from '@/lib/stripe-billing'
+import { configuredManagementPriceId, getStripe, PAKKETTEN, TERMS_VERSION } from '@/lib/stripe'
 import { getSupabase, type ManagementStatus, type Pakket } from '@/lib/supabase'
 
 export const dynamic = 'force-dynamic'
 
-type CheckoutType = 'build' | 'management'
+type CheckoutType = 'build' | 'management' | 'combined'
 
 function objectId(value: string | { id: string } | null | undefined) {
   return typeof value === 'string' ? value : value?.id ?? null
@@ -108,6 +110,7 @@ async function markBuildPaid(session: Stripe.Checkout.Session, eventId: string) 
       updated_at: now,
     }).eq('id', attributionId).eq('status', 'visited')
     if (attributionError) throw new Error(`Partnerattributie koppelen mislukt: ${attributionError.message}`)
+
   }
 
   await audit(order.id, eventId, 'build_payment_received', existing?.status ?? 'pending', orderStatus, { payment_intent_id: paymentIntentId, pakket })
@@ -120,9 +123,112 @@ async function markBuildPaid(session: Stripe.Checkout.Session, eventId: string) 
       to: adminRecipient(),
       replyTo: email || undefined,
       subject: `Nieuwe aankoop - ${PAKKETTEN[pakket].naam} (${amount})`,
-      html: `<div style="font-family:Arial,sans-serif;line-height:1.6;color:#10231b;max-width:620px;margin:auto;padding:32px"><p style="color:#147a55;font-weight:800">Betaling bevestigd door Stripe</p><h1 style="font-size:26px">Nieuwe landingspagina verkocht</h1><p><strong>Pakket:</strong> ${escapeHtml(PAKKETTEN[pakket].naam)}<br><strong>Bedrag:</strong> ${escapeHtml(amount)}<br><strong>Bedrijf:</strong> ${escapeHtml(businessName || 'Onbekend')}<br><strong>KvK:</strong> ${escapeHtml(kvkNumber || 'Niet beschikbaar')}<br><strong>E-mail:</strong> ${escapeHtml(email || 'Niet beschikbaar')}</p><p>Websitebeheer is nog niet geactiveerd. Dat gebeurt pas via de aparte abonnementslink bij livegang.</p></div>`,
+      html: `<div style="font-family:Arial,sans-serif;line-height:1.6;color:#10231b;max-width:620px;margin:auto;padding:32px"><p style="color:#147a55;font-weight:800">Oude bouwcheckout bevestigd door Stripe</p><h1 style="font-size:26px">Nieuwe landingspagina verkocht</h1><p><strong>Pakket:</strong> ${escapeHtml(PAKKETTEN[pakket].naam)}<br><strong>Bedrag:</strong> ${escapeHtml(amount)}<br><strong>Bedrijf:</strong> ${escapeHtml(businessName || 'Onbekend')}<br><strong>KvK:</strong> ${escapeHtml(kvkNumber || 'Niet beschikbaar')}<br><strong>E-mail:</strong> ${escapeHtml(email || 'Niet beschikbaar')}</p><p>Deze aankoop gebruikte de historische losse bouwcheckout en blijft daarom in de bestaande beheerflow.</p></div>`,
     }, `build-purchase-${session.id}`)
     await audit(order.id, eventId, notificationAction, null, 'sent', { checkout_session_id: session.id })
+  }
+}
+
+async function markCombinedCheckoutPaid(session: Stripe.Checkout.Session, eventId: string) {
+  const pakket = session.metadata?.pakket
+  if (!isPackage(pakket)) throw new Error(`Ongeldig pakket in gecombineerde checkout ${session.id}.`)
+  if (session.metadata?.terms_accepted !== 'true') throw new Error(`Voorwaardenacceptatie ontbreekt in gecombineerde checkout ${session.id}.`)
+
+  const subscriptionId = objectId(session.subscription)
+  const customerId = objectId(session.customer)
+  if (!subscriptionId || !customerId) throw new Error(`Checkout ${session.id} mist klant of abonnement.`)
+
+  const email = session.customer_details?.email ?? session.customer_email ?? ''
+  const kvkNumber = session.custom_fields?.find((field) => field.key === 'kvk')?.numeric?.value ?? ''
+  const businessName = session.customer_details?.business_name ?? session.customer_details?.name ?? ''
+  const attributionId = session.metadata?.referral_attribution_id || null
+  const now = new Date().toISOString()
+  const supabase = getSupabase()
+  const { data: existing } = await supabase.from('orders')
+    .select('id, status, management_status, management_subscription_id')
+    .eq('stripe_session_id', session.id)
+    .maybeSingle()
+  if (existing?.management_subscription_id && existing.management_subscription_id !== subscriptionId) {
+    throw new Error(`Order ${existing.id} is al aan een ander abonnement gekoppeld.`)
+  }
+  const orderStatus = existing && ['generating', 'completed'].includes(existing.status) ? existing.status : 'paid'
+
+  const { data: order, error } = await supabase.from('orders').upsert({
+    stripe_session_id: session.id,
+    stripe_customer_id: customerId,
+    email,
+    business_name: businessName,
+    kvk_number: kvkNumber,
+    pakket,
+    status: orderStatus,
+    management_checkout_session_id: session.id,
+    management_subscription_id: subscriptionId,
+    management_status: 'active',
+    management_started_at: now,
+    management_cancel_at_period_end: false,
+    referral_attribution_id: attributionId,
+    last_error: null,
+    updated_at: now,
+  }, { onConflict: 'stripe_session_id' }).select('id, management_status').single()
+  if (error || !order) throw new Error(`Gecombineerde order opslaan mislukt: ${error?.message ?? 'onbekend'}`)
+
+  const subscription = await getStripe().subscriptions.retrieve(subscriptionId)
+  await getStripe().subscriptions.update(subscriptionId, {
+    metadata: {
+      ...subscription.metadata,
+      checkout_type: 'combined',
+      order_id: order.id,
+      pakket,
+      terms_accepted: 'true',
+      terms_version: TERMS_VERSION,
+    },
+  })
+
+  if (attributionId) {
+    const { error: attributionError } = await supabase.from('referral_attributions').update({
+      customer_id: customerId,
+      chosen_package: pakket,
+      converted_at: now,
+      status: 'converted',
+      subscription_status: 'active',
+      updated_at: now,
+    }).eq('id', attributionId).eq('status', 'visited')
+    if (attributionError) throw new Error(`Partnerattributie koppelen mislukt: ${attributionError.message}`)
+
+    const latestInvoiceId = objectId(subscription.latest_invoice)
+    if (latestInvoiceId) {
+      const latestInvoice = await getStripe().invoices.retrieve(latestInvoiceId)
+      if (latestInvoice.status === 'paid') await recordPartnerCommissions(latestInvoice, subscriptionId, eventId)
+    }
+  }
+
+  await audit(order.id, eventId, 'combined_checkout_paid', existing?.status ?? 'pending', orderStatus, {
+    checkout_session_id: session.id,
+    subscription_id: subscriptionId,
+    pakket,
+    initial_payment_ex_vat: packageFirstPayment(pakket),
+  })
+
+  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL ?? 'https://landingsite.nl'
+  const customerUrl = `${baseUrl}/beheer/${order.id}?token=${encodeURIComponent(createCustomerToken(order.id))}`
+  const notificationAction = 'combined_purchase_notification_sent'
+  if (!(await notificationWasSent(order.id, notificationAction))) {
+    await sendCheckedEmail({
+      from: process.env.RESEND_FROM ?? 'Landingsite.nl <noreply@landingsite.nl>',
+      to: adminRecipient(),
+      replyTo: email || undefined,
+      subject: `Nieuwe aankoop - ${PAKKETTEN[pakket].naam} + Websitebeheer`,
+      html: `<div style="font-family:Arial,sans-serif;line-height:1.6;color:#121315;max-width:620px;margin:auto;padding:32px"><p style="color:#245cff;font-weight:800">Betaling bevestigd door Stripe</p><h1 style="font-size:26px">Nieuwe websiteopdracht</h1><p><strong>Pakket:</strong> ${escapeHtml(PAKKETTEN[pakket].naam)}<br><strong>Eerste betaling:</strong> €${packageFirstPayment(pakket)} excl. btw<br><strong>Daarna:</strong> €${commercialConfig.management.monthlyPrice} per maand excl. btw<br><strong>Bedrijf:</strong> ${escapeHtml(businessName || 'Onbekend')}<br><strong>KvK:</strong> ${escapeHtml(kvkNumber || 'Niet beschikbaar')}<br><strong>E-mail:</strong> ${escapeHtml(email || 'Niet beschikbaar')}</p></div>`,
+    }, `combined-purchase-${session.id}`)
+    if (email) {
+      await sendCheckedEmail({
+        from: process.env.RESEND_FROM ?? 'Landingsite.nl <noreply@landingsite.nl>',
+        to: email,
+        subject: 'Je websiteopdracht is gestart',
+        html: `<div style="font-family:Arial,sans-serif;line-height:1.6;color:#121315;max-width:620px;margin:auto;padding:32px"><h1 style="font-size:26px">Betaling ontvangen</h1><p>Je ${escapeHtml(PAKKETTEN[pakket].naam)}-pakket en de eerste maand Hosting & Websitebeheer zijn bevestigd. Vul nu de intake volledig in; vanaf dat moment start de termijn voor de eerste werkende versie.</p><p><a href="${escapeHtml(`${baseUrl}/intake/${session.id}`)}" style="display:inline-block;background:#245cff;color:#fff;padding:13px 19px;text-decoration:none;font-weight:700">Ga naar de intake</a></p><p>Facturen, betaalgegevens en opzegging beheer je via je beveiligde klantpagina: <a href="${escapeHtml(customerUrl)}">open klantpagina</a>.</p></div>`,
+      }, `combined-customer-${session.id}`)
+    }
+    await audit(order.id, eventId, notificationAction, null, 'sent', { checkout_session_id: session.id, subscription_id: subscriptionId })
   }
 }
 
@@ -190,9 +296,13 @@ async function orderForSubscription(subscriptionId: string) {
   if (data) return data
   const subscription = await getStripe().subscriptions.retrieve(subscriptionId)
   const orderId = subscription.metadata.order_id
-  if (!orderId) return null
-  const { data: fallback, error: fallbackError } = await getSupabase().from('orders').select('id, management_status, referral_attribution_id')
-    .eq('id', orderId).maybeSingle()
+  const sessions = orderId ? null : await getStripe().checkout.sessions.list({ subscription: subscriptionId, limit: 1 })
+  const sessionId = sessions?.data[0]?.id
+  if (!orderId && !sessionId) return null
+  const query = getSupabase().from('orders').select('id, management_status, referral_attribution_id')
+  const { data: fallback, error: fallbackError } = orderId
+    ? await query.eq('id', orderId).maybeSingle()
+    : await query.eq('stripe_session_id', sessionId).maybeSingle()
   if (fallbackError) throw new Error(`Abonnementsmetadata koppelen mislukt: ${fallbackError.message}`)
   return fallback
 }
@@ -216,6 +326,28 @@ async function setManagementStatus(subscription: Stripe.Subscription, eventId: s
 }
 
 async function recordPartnerCommissions(invoice: Stripe.Invoice, subscriptionId: string, eventId: string) {
+  const subscription = await getStripe().subscriptions.retrieve(subscriptionId)
+  const configuredPriceId = configuredManagementPriceId()
+  const managementPriceIds = new Set(
+    subscription.items.data
+      .filter((item) => item.price.recurring?.interval === 'month' && item.price.unit_amount === commercialConfig.management.monthlyPrice * 100)
+      .map((item) => item.price.id),
+  )
+  if (configuredPriceId) managementPriceIds.add(configuredPriceId)
+  const managementLine = invoice.lines.data.find((line) => isFullManagementInvoiceLine(
+    line,
+    managementPriceIds,
+    commercialConfig.management.monthlyPrice * 100,
+  ))
+  if (!managementLine) {
+    const order = await orderForSubscription(subscriptionId)
+    await audit(order?.id ?? null, eventId, 'partner_commission_skipped', null, null, {
+      invoice_id: invoice.id,
+      reason: 'Geen volledig betaalde beheerregel van €79 gevonden.',
+    })
+    return
+  }
+
   const supabase = getSupabase()
   const order = await orderForSubscription(subscriptionId)
   if (!order?.referral_attribution_id) return
@@ -225,7 +357,7 @@ async function recordPartnerCommissions(invoice: Stripe.Invoice, subscriptionId:
 
   const paidAt = new Date((invoice.status_transitions.paid_at ?? Math.floor(Date.now() / 1000)) * 1_000)
   const availableAt = new Date(paidAt.getTime() + partnerProgramConfig.waitingPeriodDays * 86_400_000)
-  const period = invoice.lines.data[0]?.period
+  const period = managementLine.period
   let partnerId: string | null = attribution.partner_id
   let inserted = 0
 
@@ -276,12 +408,13 @@ async function handleEvent(event: Stripe.Event) {
       const checkoutType = session.metadata?.checkout_type as CheckoutType | undefined
       if (checkoutType === 'build') await markBuildPaid(session, event.id)
       else if (checkoutType === 'management') await markManagementActive(session, event.id)
+      else if (checkoutType === 'combined') await markCombinedCheckoutPaid(session, event.id)
       // Het Stripe-account kan meerdere projecten bedienen; onbekende sessies horen niet bij Landingsite.nl.
       return
     }
     case 'checkout.session.expired': {
       const session = event.data.object
-      if (session.metadata?.checkout_type === 'build') {
+      if (session.metadata?.checkout_type === 'build' || session.metadata?.checkout_type === 'combined') {
         await getSupabase().from('orders').update({ status: 'failed', last_error: 'Bouwcheckout verlopen zonder betaling.', updated_at: new Date().toISOString() }).eq('stripe_session_id', session.id).eq('status', 'pending')
       } else if (session.metadata?.checkout_type === 'management' && session.metadata.order_id) {
         await getSupabase().from('orders').update({ management_checkout_session_id: null, updated_at: new Date().toISOString() }).eq('id', session.metadata.order_id).eq('management_status', 'awaiting_go_live')
@@ -311,6 +444,31 @@ async function handleEvent(event: Stripe.Event) {
       const charge = event.data.object as Stripe.Charge & { invoice?: string | Stripe.Invoice | null }
       const invoiceId = objectId(charge.invoice)
       if (invoiceId) await reverseInvoiceCommissions(invoiceId, event.id, 'Betaling terugbetaald; gekoppelde commissie vervalt.')
+      return
+    }
+    case 'charge.dispute.created': {
+      const dispute = event.data.object
+      const chargeId = objectId(dispute.charge)
+      if (!chargeId) return
+      const charge = await getStripe().charges.retrieve(chargeId) as Stripe.Charge & { invoice?: string | Stripe.Invoice | null }
+      const invoiceId = objectId(charge.invoice)
+      if (invoiceId) await reverseInvoiceCommissions(invoiceId, event.id, 'Betalingsgeschil geopend; gekoppelde commissie is geblokkeerd.')
+      return
+    }
+    case 'charge.dispute.closed': {
+      const dispute = event.data.object
+      const chargeId = objectId(dispute.charge)
+      const charge = chargeId ? await getStripe().charges.retrieve(chargeId) as Stripe.Charge & { invoice?: string | Stripe.Invoice | null } : null
+      const invoiceId = objectId(charge?.invoice)
+      const order = invoiceId
+        ? await getSupabase().from('partner_commissions').select('order_id').eq('stripe_invoice_id', invoiceId).limit(1).maybeSingle()
+        : null
+      await audit(order?.data?.order_id ?? null, event.id, 'dispute_closed', null, dispute.status, {
+        dispute_id: dispute.id,
+        invoice_id: invoiceId,
+        outcome: dispute.status,
+        manual_review_required: true,
+      })
       return
     }
     case 'customer.subscription.created':

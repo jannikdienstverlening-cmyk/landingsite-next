@@ -1,37 +1,84 @@
+import type Stripe from 'stripe'
 import { NextRequest } from 'next/server'
-import { pricingConfig } from '@/config/pricing'
+import { cents, commercialConfig, packageFirstPayment } from '@/config/commercial'
 import { clientIp, checkRateLimit, rateLimitResponse } from '@/lib/rate-limit'
 import { invalidJsonResponse, readJsonBody } from '@/lib/request'
 import { referralAttributionId, referralCookie, rejectCrossOriginMutation } from '@/lib/security'
 import {
   configuredBuildPriceId,
+  configuredManagementPriceId,
   getStripe,
   PAKKETTEN,
-  STRIPE_BUILD_PAYMENT_METHODS,
+  STRIPE_COMBINED_PAYMENT_METHODS,
   stripeCheckoutBranding,
   stripePaymentMethods,
   TERMS_VERSION,
+  type PakketId,
 } from '@/lib/stripe'
 import { getSupabase } from '@/lib/supabase'
 import { checkoutSchema, validationMessage } from '@/lib/validation'
+
+function buildLineItem(pakket: PakketId): Stripe.Checkout.SessionCreateParams.LineItem {
+  const info = PAKKETTEN[pakket]
+  const priceId = configuredBuildPriceId(pakket)
+  if (priceId) return { price: priceId, quantity: 1 }
+
+  return {
+    price_data: {
+      currency: 'eur',
+      product_data: {
+        name: `Landingsite.nl ${info.naam}`,
+        description: 'Eenmalige bouwprijs voor het gekozen websitepakket.',
+      },
+      unit_amount: info.prijs,
+      tax_behavior: 'exclusive',
+    },
+    quantity: 1,
+  }
+}
+
+function managementLineItem(): Stripe.Checkout.SessionCreateParams.LineItem {
+  const priceId = configuredManagementPriceId()
+  if (priceId) return { price: priceId, quantity: 1 }
+
+  return {
+    price_data: {
+      currency: 'eur',
+      product_data: {
+        name: commercialConfig.management.name,
+        description: `Hosting, beveiliging, onderhoud en maximaal ${commercialConfig.management.includedChangeMinutes} minuten kleine wijzigingen per maand.`,
+      },
+      unit_amount: cents(commercialConfig.management.monthlyPrice),
+      recurring: { interval: 'month' },
+      tax_behavior: 'exclusive',
+    },
+    quantity: 1,
+  }
+}
 
 export async function POST(request: NextRequest) {
   const crossOrigin = rejectCrossOriginMutation(request)
   if (crossOrigin) return crossOrigin
   const limit = checkRateLimit(`checkout:${clientIp(request)}`, 8, 15 * 60_000)
   if (!limit.allowed) return rateLimitResponse(limit.retryAfter)
+
   let body: unknown
-  try { body = await readJsonBody(request, 4_000) } catch (error) { return invalidJsonResponse(error) }
+  try {
+    body = await readJsonBody(request, 4_000)
+  } catch (error) {
+    return invalidJsonResponse(error)
+  }
   const parsed = checkoutSchema.safeParse(body)
   if (!parsed.success) return Response.json({ error: validationMessage(parsed.error) }, { status: 400 })
 
   const baseUrl = process.env.NEXT_PUBLIC_BASE_URL?.replace(/\/$/, '')
   if (!baseUrl) return Response.json({ error: 'Basis-URL ontbreekt.' }, { status: 500 })
+
   const info = PAKKETTEN[parsed.data.pakket]
-  const priceId = configuredBuildPriceId(parsed.data.pakket)
   const supabase = getSupabase()
   const attributionId = referralAttributionId(request.cookies.get(referralCookie.name)?.value)
   let validAttributionId: string | null = null
+
   if (attributionId) {
     const { data: attribution, error } = await supabase.from('referral_attributions')
       .select('id, expires_at')
@@ -43,50 +90,32 @@ export async function POST(request: NextRequest) {
   }
 
   try {
+    const metadata = {
+      checkout_type: 'combined',
+      pakket: parsed.data.pakket,
+      request_id: parsed.data.requestId,
+      referral_attribution_id: validAttributionId ?? '',
+      terms_accepted: 'true',
+      terms_version: TERMS_VERSION,
+    }
     const session = await getStripe().checkout.sessions.create({
-      line_items: [{
-        ...(priceId
-          ? { price: priceId }
-          : {
-              price_data: {
-                currency: 'eur',
-                product_data: {
-                  name: `Landingsite.nl ${info.naam}`,
-                  description: `Eenmalige bouwprijs voor de gekozen landingspagina. Websitebeheer van €${pricingConfig.websiteManagement.monthlyPrice} per maand wordt pas na livegang apart geactiveerd.`,
-                },
-                unit_amount: info.prijs,
-                tax_behavior: 'exclusive' as const,
-              },
-            }),
-        quantity: 1,
-      }],
-      mode: 'payment',
-      payment_method_types: stripePaymentMethods(STRIPE_BUILD_PAYMENT_METHODS),
+      line_items: [buildLineItem(parsed.data.pakket), managementLineItem()],
+      mode: 'subscription',
+      payment_method_types: stripePaymentMethods(STRIPE_COMBINED_PAYMENT_METHODS),
       wallet_options: { link: { display: 'never' } },
-      submit_type: 'pay',
       branding_settings: stripeCheckoutBranding(baseUrl),
       success_url: `${baseUrl}/intake/{CHECKOUT_SESSION_ID}`,
-      cancel_url: `${baseUrl}/#prijzen`,
+      cancel_url: `${baseUrl}/start?pakket=${parsed.data.pakket}&status=geannuleerd`,
       client_reference_id: parsed.data.requestId,
-      customer_creation: 'always',
-      metadata: {
-        checkout_type: 'build',
-        pakket: parsed.data.pakket,
-        referral_attribution_id: validAttributionId ?? '',
-        terms_accepted: 'true',
-        terms_version: TERMS_VERSION,
-      },
-      payment_intent_data: {
-        metadata: {
-          checkout_type: 'build',
-          pakket: parsed.data.pakket,
-          request_id: parsed.data.requestId,
-        },
-      },
+      metadata,
+      subscription_data: { metadata },
       automatic_tax: { enabled: true },
       tax_id_collection: { enabled: true },
       billing_address_collection: 'required',
-      name_collection: { business: { enabled: true, optional: false }, individual: { enabled: true, optional: false } },
+      name_collection: {
+        business: { enabled: true, optional: false },
+        individual: { enabled: true, optional: false },
+      },
       custom_fields: [{
         key: 'kvk',
         label: { type: 'custom', custom: 'KvK-nummer (zakelijke bestelling)' },
@@ -95,14 +124,19 @@ export async function POST(request: NextRequest) {
         numeric: { minimum_length: 8, maximum_length: 8 },
       }],
       custom_text: {
-        submit: { message: `Eenmalige bouwprijs: ${info.prijs_label} excl. btw. Websitebeheer van €${pricingConfig.websiteManagement.monthlyPrice} per maand start alleen na livegang en een aparte abonnementsbevestiging.` },
-        after_submit: { message: 'Na de betaling ga je direct door naar de beveiligde intake voor je nieuwe landingspagina.' },
+        submit: {
+          message: `${info.naam}: ${info.prijs_label} eenmalig plus de eerste maand beheer van €${commercialConfig.management.monthlyPrice}. Eerste betaling €${packageFirstPayment(parsed.data.pakket)} excl. btw; daarna €${commercialConfig.management.monthlyPrice} per maand.`,
+        },
+        after_submit: {
+          message: 'Na de betaling ga je direct door naar de beveiligde intake. De 48 uur starten zodra die intake compleet is.',
+        },
       },
       ...(process.env.STRIPE_TERMS_CONFIGURED === 'true'
         ? { consent_collection: { terms_of_service: 'required' as const } }
         : {}),
       locale: 'nl',
     }, { idempotencyKey: `checkout-${parsed.data.requestId}` })
+
     if (!session.url) return Response.json({ error: 'Checkout kon niet worden geopend.' }, { status: 500 })
 
     const { error } = await supabase.from('orders').upsert({
@@ -114,6 +148,7 @@ export async function POST(request: NextRequest) {
       referral_attribution_id: validAttributionId,
       updated_at: new Date().toISOString(),
     }, { onConflict: 'stripe_session_id', ignoreDuplicates: true })
+
     if (error) {
       console.error('Pending order opslaan mislukt', { sessionId: session.id, error })
       try {
@@ -123,6 +158,7 @@ export async function POST(request: NextRequest) {
       }
       return Response.json({ error: 'Bestellen is tijdelijk niet beschikbaar. Er is niets afgeschreven.' }, { status: 503 })
     }
+
     return Response.json({ url: session.url })
   } catch (error) {
     console.error('Checkout voorbereiden mislukt', error)

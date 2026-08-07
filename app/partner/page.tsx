@@ -1,6 +1,6 @@
 import type { Metadata } from 'next'
-import Link from 'next/link'
-import { Logo } from '@/components/logo'
+import { AnalyticsLayer } from '@/components/site-interactions'
+import { StudioFooter, StudioHeader } from '@/components/studio-site'
 import { PartnerApplicationForm } from '@/components/partner-application-form'
 import { PartnerConditionsSummary, PartnerExample, RollingCommissionExample } from '@/components/partner-program'
 import { partnerProgramConfig } from '@/config/partner-program'
@@ -22,9 +22,11 @@ const faqs = [
 
 export default function PartnerPage() {
   return (
-    <>
-      <header className="partner-page-nav"><div className="shell"><Logo variant="light" /><Link href="#aanmelden" className="header-cta">Partner worden</Link></div></header>
-      <main className="partner-page">
+    <div className="studio studio-page partner-studio">
+      <a className="skip-link" href="#partner-main">Ga naar de inhoud</a>
+      <AnalyticsLayer />
+      <StudioHeader />
+      <main className="partner-page" id="partner-main" data-analytics-view="partner_page_view">
         <section className="partner-page-hero">
           <div className="shell">
             <p className="eyebrow"><span />Landingsite Partnerprogramma</p>
@@ -53,6 +55,7 @@ export default function PartnerPage() {
 
         <section className="section partner-apply"><div className="shell partner-apply-grid"><div><p className="section-kicker">Handmatige toelating</p><h2>Eerst controleren, daarna pas een partnercode.</h2><p>We controleren identiteit, zakelijke gegevens en mogelijke dubbele of kunstmatige constructies. IBAN en uitbetalingsgegevens vragen we pas later via een beveiligd proces.</p></div><PartnerApplicationForm /></div></section>
       </main>
-    </>
+      <StudioFooter />
+    </div>
   )
 }

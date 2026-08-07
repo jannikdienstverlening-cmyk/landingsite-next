@@ -25,9 +25,9 @@ Feiten over Landingsite.nl:
 - Starter: EUR ${buildPackages.starter.oneTimePrice} eenmalig exclusief btw, voor een compacte campagne of dienst.
 - Pro: EUR ${buildPackages.pro.oneTimePrice} eenmalig exclusief btw, voor een uitgebreidere conversiepagina.
 - Premium: EUR ${buildPackages.premium.oneTimePrice} eenmalig exclusief btw, voor meer maatwerk en begeleiding.
-- Websitebeheer: EUR ${websiteManagement.monthlyPrice} per maand exclusief btw, vanaf livegang via een afzonderlijke abonnementslink.
+- Hosting & Websitebeheer: EUR ${websiteManagement.monthlyPrice} per maand exclusief btw. De eerste maand wordt samen met de bouwprijs afgerekend.
 - Websitebeheer bevat managed hosting, SSL, back-ups, beveiligings- en technische updates, monitoring, controle van formulieren, ondersteuning, domeinkoppeling en maximaal ${websiteManagement.includedChangeMinutes} minuten kleine wijzigingen per kalendermaand.
-- De eenmalige bouwprijs en Websitebeheer zijn twee afzonderlijke betalingen. Websitebeheer wordt niet tijdens de bouwcheckout geïncasseerd.
+- De eerste betaling bestaat uit de eenmalige bouwprijs plus EUR ${websiteManagement.monthlyPrice} voor de eerste beheermaand. Daarna volgt maandelijks EUR ${websiteManagement.monthlyPrice} exclusief btw.
 - Websitebeheer is per maand opzegbaar volgens de voorwaarden.
 - Live voorbeelden: Ontwikkelbegeleiding RH, WIA Management en AIbouwers.nl.
 - Contact: bezoekers kunnen het contactformulier onderaan de homepage gebruiken. Er wordt doorgaans binnen een werkdag gereageerd.
@@ -49,7 +49,7 @@ function automaticAnswer(question: string) {
   }
 
   if (asksAboutManagement) {
-    answers.push(`Websitebeheer kost €${websiteManagement.monthlyPrice} per maand exclusief btw en start pas vanaf de livegang via een aparte abonnementslink. Het bevat hosting, SSL, back-ups, beveiligingsupdates, monitoring, formuliercontrole, ondersteuning en maximaal ${websiteManagement.includedChangeMinutes} minuten kleine wijzigingen per kalendermaand.`)
+    answers.push(`Hosting & Websitebeheer kost €${websiteManagement.monthlyPrice} per maand exclusief btw. De eerste maand wordt tegelijk met de bouwprijs afgerekend. Het bevat hosting, SSL, back-ups, beveiligingsupdates, monitoring, formuliercontrole, ondersteuning en maximaal ${websiteManagement.includedChangeMinutes} minuten kleine wijzigingen per betaalmaand.`)
   }
 
   if (asksAboutTiming) {

@@ -9,7 +9,8 @@ const publicSources = [
   'app/partnervoorwaarden/page.tsx',
   'app/genereren/[id]/page.tsx',
   'app/intake/[session_id]/page.tsx',
-  'components/home-redesign.tsx',
+  'components/studio-site.tsx',
+  'components/site-interactions.tsx',
   'lib/business.ts',
 ]
 

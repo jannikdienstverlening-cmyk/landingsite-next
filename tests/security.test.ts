@@ -31,6 +31,18 @@ test('muterende browserroutes accepteren alleen dezelfde origin', () => {
   assert.equal(isSameOriginMutation(new Request('https://landingsite.nl/api/contact', { method: 'POST' })), false)
 })
 
+test('lokale ontwikkeling accepteert localhost en 127.0.0.1 op dezelfde poort', () => {
+  process.env.NEXT_PUBLIC_BASE_URL = 'http://localhost:3001'
+  assert.equal(isSameOriginMutation(new Request('http://localhost:3001/api/contact', {
+    method: 'POST',
+    headers: { origin: 'http://127.0.0.1:3001', 'sec-fetch-site': 'same-origin' },
+  })), true)
+  assert.equal(isSameOriginMutation(new Request('http://localhost:3001/api/contact', {
+    method: 'POST',
+    headers: { origin: 'http://127.0.0.1:3002', 'sec-fetch-site': 'same-origin' },
+  })), false)
+})
+
 test('contacthoneypot kan ingevulde spam veilig afvangen', () => {
   const parsed = contactSchema.safeParse({
     naam: 'Spam Bot',

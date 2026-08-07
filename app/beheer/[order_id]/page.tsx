@@ -4,6 +4,7 @@ import Link from 'next/link'
 import { useParams, useSearchParams } from 'next/navigation'
 import { useCallback, useEffect, useState } from 'react'
 import { pricingConfig } from '@/config/pricing'
+import { trackMarketingEvent } from '@/lib/analytics'
 
 type Management = {
   management_status: string
@@ -68,6 +69,7 @@ export default function ManagementPage() {
   }
 
   async function openPortal() {
+    trackMarketingEvent('customer_portal_open', { source: 'management_page' })
     setLoading(true)
     setError('')
     try {
@@ -92,7 +94,7 @@ export default function ManagementPage() {
     <main className="legal-page management-customer-page">
       <div className="container legal-shell">
         <Link href="/" className="legal-back">← Naar Landingsite.nl</Link>
-        <h1>Websitebeheer</h1>
+        <h1>Hosting &amp; Websitebeheer</h1>
         <p className="updated">Beveiligde klantpagina</p>
         <div className="legal-content">
           {activated && (
@@ -115,13 +117,13 @@ export default function ManagementPage() {
 
           {management?.can_activate && !isActive && (
             <section className="management-activation">
-              <p className="management-eyebrow">Vanaf livegang</p>
-              <h2>Activeer Websitebeheer</h2>
+              <p className="management-eyebrow">Historische bestelling</p>
+              <h2>Activeer Hosting &amp; Websitebeheer</h2>
               <div className="management-activation-price">
                 <strong>€{pricingConfig.websiteManagement.monthlyPrice}</strong>
                 <span>per maand · exclusief btw</span>
               </div>
-              <p>Je bouwprijs is al apart betaald. Via de knop hieronder sluit je het maandelijkse abonnement af voor hosting, SSL, back-ups, beveiligingsupdates, monitoring, ondersteuning en kleine wijzigingen.</p>
+              <p>Deze bestelling is gedaan vóór de gecombineerde checkout. Je bouwprijs is al betaald; via de knop hieronder activeer je het maandelijkse beheer.</p>
               <label className="management-consent-check">
                 <input type="checkbox" checked={termsAccepted} onChange={(event) => setTermsAccepted(event.target.checked)} />
                 <span>Ik ga akkoord met de <Link href="/algemene-voorwaarden" target="_blank" rel="noopener noreferrer">algemene voorwaarden</Link> en heb het <Link href="/privacybeleid" target="_blank" rel="noopener noreferrer">privacybeleid</Link> gelezen.</span>
