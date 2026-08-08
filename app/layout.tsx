@@ -10,13 +10,13 @@ const dmMono = DM_Mono({ subsets: ['latin'], weight: ['400', '500'], variable: '
 export const metadata: Metadata = {
   title: { default: 'Website laten maken vanaf €299 | Landingsite.nl', template: '%s | Landingsite.nl' },
   description: `Websites en landingspagina’s voor zzp en mkb. Eerste werkende versie binnen 48 uur. Bouw vanaf €${commercialConfig.packages.starter.oneTimePrice} en beheer voor €${commercialConfig.management.monthlyPrice} per maand.`,
-  metadataBase: new URL('https://landingsite.nl'),
+  metadataBase: new URL('https://www.landingsite.nl'),
   alternates: { canonical: '/' },
   robots: { index: true, follow: true, googleBot: { index: true, follow: true } },
   openGraph: {
     type: 'website',
     locale: 'nl_NL',
-    url: 'https://landingsite.nl',
+    url: 'https://www.landingsite.nl',
     siteName: 'Landingsite.nl',
     title: 'Website laten maken vanaf €299 | Landingsite.nl',
     description: 'Websites voor zzp en mkb. Eerste werkende versie binnen 48 uur. Bouw vanaf €299 en beheer voor €79 per maand.',

@@ -3,43 +3,25 @@ import type { MetadataRoute } from 'next'
 export default function sitemap(): MetadataRoute.Sitemap {
   return [
     {
-      url: 'https://landingsite.nl',
+      url: 'https://www.landingsite.nl',
       lastModified: new Date(),
       changeFrequency: 'weekly',
       priority: 1,
     },
     {
-      url: 'https://landingsite.nl/algemene-voorwaarden',
+      url: 'https://www.landingsite.nl/algemene-voorwaarden',
       lastModified: new Date(),
       changeFrequency: 'yearly',
       priority: 0.3,
     },
     {
-      url: 'https://landingsite.nl/werk',
+      url: 'https://www.landingsite.nl/werk',
       lastModified: new Date(),
       changeFrequency: 'monthly',
       priority: 0.8,
     },
     {
-      url: 'https://landingsite.nl/start',
-      lastModified: new Date(),
-      changeFrequency: 'monthly',
-      priority: 0.7,
-    },
-    {
-      url: 'https://landingsite.nl/privacybeleid',
-      lastModified: new Date(),
-      changeFrequency: 'yearly',
-      priority: 0.3,
-    },
-    {
-      url: 'https://landingsite.nl/partner',
-      lastModified: new Date(),
-      changeFrequency: 'monthly',
-      priority: 0.4,
-    },
-    {
-      url: 'https://landingsite.nl/partnervoorwaarden',
+      url: 'https://www.landingsite.nl/privacybeleid',
       lastModified: new Date(),
       changeFrequency: 'yearly',
       priority: 0.3,

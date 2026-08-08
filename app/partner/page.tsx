@@ -9,6 +9,7 @@ export const metadata: Metadata = {
   title: 'Partnerprogramma voor websiteklanten',
   description: 'Breng ondernemers aan en ontvang terugkerende commissie op actieve Websitebeheer-abonnementen. Bekijk de werking, voorwaarden en het 5×5-rekenvoorbeeld.',
   alternates: { canonical: '/partner' },
+  robots: { index: false, follow: true },
 }
 
 const faqs = [

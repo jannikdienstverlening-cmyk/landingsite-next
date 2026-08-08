@@ -29,6 +29,14 @@ const nextConfig: NextConfig = {
     root: __dirname,
   },
   poweredByHeader: false,
+  async redirects() {
+    return [{
+      source: '/:path*',
+      has: [{ type: 'host', value: 'landingsite.nl' }],
+      destination: 'https://www.landingsite.nl/:path*',
+      permanent: true,
+    }]
+  },
   async headers() {
     return [{
       source: '/:path*',
@@ -45,6 +53,7 @@ const nextConfig: NextConfig = {
       source: '/api/:path*',
       headers: [
         { key: 'Cache-Control', value: 'no-store, max-age=0' },
+        { key: 'X-Robots-Tag', value: 'noindex, nofollow' },
       ],
     }]
   },

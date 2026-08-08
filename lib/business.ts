@@ -3,10 +3,10 @@ export const BUSINESS = {
   legalName: 'Jannik Dienstverlening',
   chamberOfCommerceNumber: '65549430',
   vatId: 'NL001557133B48',
-  website: 'https://landingsite.nl',
+  website: 'https://www.landingsite.nl',
   contactPath: '/#contact',
-  termsUrl: 'https://landingsite.nl/algemene-voorwaarden',
-  privacyUrl: 'https://landingsite.nl/privacybeleid',
+  termsUrl: 'https://www.landingsite.nl/algemene-voorwaarden',
+  privacyUrl: 'https://www.landingsite.nl/privacybeleid',
   social: {
     instagram: 'https://www.instagram.com/landingsite.nl/',
     linkedin: 'https://www.linkedin.com/company/137164667/',

@@ -22,7 +22,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: 'Website laten maken vanaf €299 | Landingsite.nl',
     description: 'Een duidelijke website, een werkend formulier en technisch beheer bij één partij. Eerste versie binnen 48 uur na betaling en complete intake.',
-    url: 'https://landingsite.nl',
+    url: 'https://www.landingsite.nl',
   },
 }
 
@@ -33,15 +33,8 @@ const faqs: StudioFaq[] = [
   { question: 'Waarom betaal ik daarna €79 per maand?', answer: 'Voor managed hosting, SSL, back-ups, beveiligings- en technische updates, monitoring, formuliercontrole, e-mailondersteuning en maximaal 20 minuten kleine wijzigingen per maand.' },
   { question: 'Wat valt onder de 20 minuten wijzigingen?', answer: 'Kleine aanpassingen binnen de bestaande website, zoals een tekst wijzigen, een afbeelding vervangen of een knop aanpassen. Nieuwe pagina’s, functies en redesigns vallen er niet onder.' },
   { question: 'Worden ongebruikte minuten meegenomen?', answer: 'Nee. Niet-gebruikte wijzigingstijd wordt niet opgespaard of meegenomen naar een volgende maand.' },
-  { question: 'Kan ik maandelijks opzeggen?', answer: 'Ja. Hosting & Websitebeheer kan worden opgezegd tegen het einde van de lopende betaalperiode.' },
+  { question: 'Kan ik maandelijks opzeggen?', answer: 'Ja. Opzeggen kan tegen het einde van de lopende betaalperiode. Daarna stoppen hosting, beheer, wijzigingen en ondersteuning. We spreken een redelijke overdracht van domeininstellingen en klantspecifieke content af; extra migratiewerk kan apart worden berekend.' },
   { question: 'Blijf ik eigenaar van mijn domein?', answer: 'Ja. Je domeinnaam blijft van jou en je houdt waar mogelijk zelf toegang tot de registrar.' },
-  { question: 'Wat gebeurt er met de website na opzegging?', answer: 'Na beëindiging stoppen hosting, technisch beheer, wijzigingen en ondersteuning aan het einde van de betaalde periode. We spreken een redelijke overdracht van domeininstellingen en klantspecifieke content af; extra migratiewerk kan apart worden berekend.' },
-  { question: 'Kan ik later uitbreiden?', answer: 'Ja. Nieuwe pagina’s, functies of koppelingen worden vooraf als aanvullend werk geprijsd.' },
-  { question: 'Kan ik overstappen met een bestaande website?', answer: 'Dat kan, afhankelijk van de techniek, inhoud en omvang van de bestaande website. Gebruik eerst het contactformulier zodat we de overstap kunnen beoordelen.' },
-  { question: 'Leveren jullie teksten?', answer: 'Starter gaat uit van aangeleverde basisteksten. Bij Pro scherpen we teksten aan. Bij Premium kan volledige conversiecopy op basis van de intake worden uitgewerkt.' },
-  { question: 'Zijn foto’s en logo inbegrepen?', answer: 'Nee. Je levert beschikbare merkbestanden en beelden aan. Fotografie en een volledig brandingtraject vallen niet standaard binnen de pakketten.' },
-  { question: 'Garanderen jullie meer aanvragen?', answer: 'Nee. We bouwen een duidelijke bezoekersroute en werkende conversiepunten, maar resultaat hangt ook af van je aanbod, markt, verkeer en opvolging.' },
-  { question: 'Kan ik eerst overleggen voordat ik betaal?', answer: 'Ja. Gebruik het formulier onderaan de pagina. Je ontvangt advies over het passende pakket en zit nog nergens aan vast.' },
 ]
 
 const packages = Object.entries(commercialConfig.packages).map(([id, item]) => ({
@@ -49,7 +42,7 @@ const packages = Object.entries(commercialConfig.packages).map(([id, item]) => (
   name: item.name,
   price: item.oneTimePrice,
   priceCurrency: 'EUR',
-  url: `https://landingsite.nl/start?pakket=${id}`,
+  url: `https://www.landingsite.nl/start?pakket=${id}`,
   availability: 'https://schema.org/InStock',
 }))
 
@@ -58,7 +51,7 @@ const structuredData = {
   '@graph': [
     {
       '@type': 'ProfessionalService',
-      '@id': 'https://landingsite.nl/#organization',
+      '@id': 'https://www.landingsite.nl/#organization',
       name: BUSINESS.brandName,
       legalName: BUSINESS.legalName,
       url: BUSINESS.website,
@@ -70,13 +63,9 @@ const structuredData = {
     {
       '@type': 'Service',
       name: 'Website en landingspagina laten maken',
-      provider: { '@id': 'https://landingsite.nl/#organization' },
+      provider: { '@id': 'https://www.landingsite.nl/#organization' },
       areaServed: 'NL',
       offers: packages,
-    },
-    {
-      '@type': 'FAQPage',
-      mainEntity: faqs.map((item) => ({ '@type': 'Question', name: item.question, acceptedAnswer: { '@type': 'Answer', text: item.answer } })),
     },
   ],
 }

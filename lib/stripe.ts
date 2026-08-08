@@ -18,8 +18,8 @@ export function getStripe() {
 }
 
 export const STRIPE_CHECKOUT_BRAND = {
-  backgroundColor: '#f4f0e8',
-  buttonColor: '#245cff',
+  backgroundColor: '#f3f7f4',
+  buttonColor: '#16835e',
   displayName: 'Landingsite.nl',
   fontFamily: 'inter',
   borderStyle: 'rounded',
@@ -75,7 +75,12 @@ export const STRIPE_BUILD_PRICE_ENV = {
 } as const satisfies Record<PakketId, string>
 
 function validatePriceId(value: string | undefined, environmentName: string) {
-  if (!value) return null
+  if (!value) {
+    if (process.env.NODE_ENV === 'production') {
+      throw new Error(`${environmentName} ontbreekt in productie.`)
+    }
+    return null
+  }
   if (!/^price_[A-Za-z0-9]+$/.test(value)) {
     throw new Error(`${environmentName} bevat geen geldige Stripe Price ID.`)
   }
@@ -94,4 +99,4 @@ export function configuredManagementPriceId() {
 }
 
 export const SUBSCRIPTION_INTERVAL = 'month' as const
-export const TERMS_VERSION = '2026-08-07'
+export const TERMS_VERSION = '2026-08-08'

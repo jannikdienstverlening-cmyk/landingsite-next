@@ -10,6 +10,7 @@ export type MarketingEvent =
   | 'checkout_cancel'
   | 'checkout_complete'
   | 'contact_submit'
+  | 'contact_form_start'
   | 'intake_start'
   | 'intake_step_complete'
   | 'intake_complete'

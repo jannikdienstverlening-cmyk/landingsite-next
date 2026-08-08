@@ -7,10 +7,11 @@ import {
   type CommercialPackageId,
 } from '@/config/commercial'
 import type { PortfolioProject } from '@/data/portfolio'
+import { portfolioProjects } from '@/data/portfolio'
+import { siteCopy } from '@/content/site'
 import { BUSINESS } from '@/lib/business'
 import { ContactForm, FAQList, MobileNavigation } from './site-interactions'
 import { Logo } from './logo'
-import { ProjectShowcase } from './project-showcase'
 import { SiteChatbot } from './site-chatbot'
 
 export type StudioFaq = { question: string; answer: string }
@@ -29,7 +30,7 @@ export function StudioHeader() {
           <Link className="studio-nav__minor" href="/partner">Partner</Link>
         </nav>
         <Link className="button button--primary studio-header__cta" href="/start" data-analytics-event="hero_start_click" data-analytics-location="header">
-          Start mijn website
+          {siteCopy.cta.primary}
         </Link>
         <MobileNavigation />
       </div>
@@ -58,6 +59,7 @@ export function StudioFooter() {
             <Link href="/#contact">Eerst een vraag?</Link>
             <Link href="/algemene-voorwaarden">Algemene voorwaarden</Link>
             <Link href="/privacybeleid">Privacybeleid</Link>
+            <Link href="/verwerkersovereenkomst">Verwerkersovereenkomst</Link>
             <Link href="/partner" data-analytics-event="partner_page_view">Partnerprogramma</Link>
           </nav>
           <nav aria-label="Sociale media">
@@ -82,7 +84,14 @@ export function BrowserFrame({ project, priority = false }: { project: Portfolio
     <div className="browser-frame">
       <div className="browser-frame__bar" aria-hidden="true"><i /><i /><i /><span>{project.domain}</span></div>
       <div className="browser-frame__image">
-        <Image src={project.image} alt={project.imageAlt} fill sizes="(max-width: 760px) 94vw, 64vw" priority={priority} />
+        <Image
+          src={project.image}
+          alt={project.imageAlt}
+          fill
+          sizes="(max-width: 760px) 94vw, 64vw"
+          preload={priority}
+          loading={priority ? "eager" : "lazy"}
+        />
       </div>
     </div>
   )
@@ -93,19 +102,27 @@ export function MobileProjectFrame({ project, priority = false }: { project: Por
     <div className="mobile-project-frame">
       <div className="mobile-project-frame__speaker" aria-hidden="true" />
       <div className="mobile-project-frame__image">
-        <Image src={project.mobileImage} alt={project.mobileImageAlt} fill sizes="(max-width: 760px) 90vw, 260px" priority={priority} />
+        <Image
+          src={project.mobileImage}
+          alt={project.mobileImageAlt}
+          fill
+          sizes="(max-width: 760px) 90vw, 260px"
+          preload={priority}
+          loading={priority ? "eager" : "lazy"}
+        />
       </div>
     </div>
   )
 }
 
 export function StudioHero() {
+  const featured = portfolioProjects[0]
   return (
     <section className="studio-hero">
       <div className="studio-shell studio-hero__grid">
         <div className="studio-hero__copy">
           <p className="overline">Websites voor zzp en mkb</p>
-          <h1>Een website waarop bezoekers direct begrijpen waarom ze jou moeten hebben.</h1>
+          <h1>Een website die direct duidelijk maakt wat je doet.</h1>
           <p className="studio-hero__intro">
             Landingsite bouwt duidelijke websites en landingspagina’s voor ondernemers. Je ontvangt de eerste werkende versie binnen 48 uur na betaling en een complete intake. Daarna regelen we hosting, techniek en kleine wijzigingen.
           </p>
@@ -117,7 +134,17 @@ export function StudioHero() {
           <p className="studio-hero__trust">Vaste prijzen · domein blijft van jou · maandelijks opzegbaar beheer</p>
         </div>
 
-        <ProjectShowcase />
+        <article className="hero-case" aria-labelledby="hero-case-title">
+          <a className="hero-case__desktop" href={featured.url} target="_blank" rel="noopener noreferrer" data-analytics-event="live_case_click" data-analytics-project={featured.slug}>
+            <BrowserFrame project={featured} priority />
+          </a>
+          <div className="hero-case__mobile" aria-hidden="true"><MobileProjectFrame project={featured} /></div>
+          <div className="hero-case__caption">
+            <div><span>Actuele hoofdcase</span><h2 id="hero-case-title">{featured.name}</h2></div>
+            <ul>{featured.features.slice(0, 3).map((feature) => <li key={feature}>{feature}</li>)}</ul>
+            <a href={featured.url} target="_blank" rel="noopener noreferrer" data-analytics-event="live_case_click" data-analytics-project={featured.slug}>Open {featured.domain} <span aria-hidden="true">↗</span></a>
+          </div>
+        </article>
       </div>
 
       <div className="studio-shell trust-line" role="list" aria-label="Belangrijkste zekerheden">
@@ -125,6 +152,20 @@ export function StudioHero() {
         <span role="listitem">Transparante vaste prijzen</span>
         <span role="listitem">Mobiel ontworpen</span>
         <span role="listitem">Direct persoonlijk contact</span>
+      </div>
+      <div className="studio-shell project-proof" id="werk">
+        <div className="project-proof__intro"><p className="overline">Gebouwd en live</p><h2>Drie websites die je zelf kunt openen.</h2></div>
+        <div className="project-proof__list">
+          {portfolioProjects.map((project, index) => (
+            <a href={project.url} target="_blank" rel="noopener noreferrer" key={project.slug} data-analytics-event="case_open" data-analytics-project={project.slug}>
+              <span>{String(index + 1).padStart(2, '0')}</span>
+              <Image src={project.image} alt="" width={128} height={80} sizes="128px" />
+              <span className="project-proof__name"><strong>{project.name}</strong><small>{project.industry}</small></span>
+              <i aria-hidden="true">↗</i>
+            </a>
+          ))}
+        </div>
+        <Link href="/werk" className="project-proof__all">Bekijk de cases met screenshots en toelichting</Link>
       </div>
     </section>
   )

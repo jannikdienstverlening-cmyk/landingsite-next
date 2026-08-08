@@ -16,14 +16,50 @@ const navigation = [
 
 export function MobileNavigation() {
   const [open, setOpen] = useState(false)
+  const menuButton = useRef<HTMLButtonElement>(null)
+  const menu = useRef<HTMLElement>(null)
+
+  useEffect(() => {
+    if (!open) return
+    const previousOverflow = document.body.style.overflow
+    document.body.style.overflow = 'hidden'
+    const focusable = () => Array.from(menu.current?.querySelectorAll<HTMLElement>('a[href], button:not([disabled])') ?? [])
+    focusable()[0]?.focus()
+
+    function onKeyDown(event: KeyboardEvent) {
+      if (event.key === 'Escape') {
+        setOpen(false)
+        menuButton.current?.focus()
+        return
+      }
+      if (event.key !== 'Tab') return
+      const items = focusable()
+      const first = items[0]
+      const last = items.at(-1)
+      if (!first || !last) return
+      if (event.shiftKey && document.activeElement === first) {
+        event.preventDefault()
+        last.focus()
+      } else if (!event.shiftKey && document.activeElement === last) {
+        event.preventDefault()
+        first.focus()
+      }
+    }
+
+    document.addEventListener('keydown', onKeyDown)
+    return () => {
+      document.body.style.overflow = previousOverflow
+      document.removeEventListener('keydown', onKeyDown)
+    }
+  }, [open])
 
   return (
     <>
-      <button className="studio-menu" type="button" aria-expanded={open} aria-controls="studio-mobile-nav" onClick={() => setOpen(!open)}>
+      <button ref={menuButton} className="studio-menu" type="button" aria-expanded={open} aria-controls="studio-mobile-nav" onClick={() => setOpen(!open)}>
         <span className="sr-only">Menu {open ? 'sluiten' : 'openen'}</span>
         <span /><span />
       </button>
-      <nav className={`studio-mobile-nav${open ? ' is-open' : ''}`} id="studio-mobile-nav" aria-label="Mobiele navigatie">
+      <nav ref={menu} className={`studio-mobile-nav${open ? ' is-open' : ''}`} id="studio-mobile-nav" aria-label="Mobiele navigatie" aria-hidden={!open}>
         {navigation.map(([label, href]) => <Link href={`/${href}`} key={href} onClick={() => setOpen(false)}>{label}</Link>)}
         <Link href="/partner" onClick={() => setOpen(false)}>Partner</Link>
         <Link className="button button--primary" href="/start" onClick={() => setOpen(false)} data-analytics-event="hero_start_click">Start mijn website</Link>
@@ -128,6 +164,7 @@ export function ContactForm() {
   const [status, setStatus] = useState<'idle' | 'sending' | 'success' | 'error'>('idle')
   const [error, setError] = useState('')
   const requestId = useRef(crypto.randomUUID())
+  const started = useRef(false)
 
   function update(key: keyof typeof form, value: string) {
     setForm((current) => ({ ...current, [key]: value }))
@@ -156,7 +193,11 @@ export function ContactForm() {
   }
 
   return (
-    <form className="studio-contact-form" onSubmit={submit}>
+    <form className="studio-contact-form" onSubmit={submit} onFocus={() => {
+      if (started.current) return
+      started.current = true
+      trackMarketingEvent('contact_form_start', { form: 'short_question' })
+    }}>
       <div className="form-row">
         <label><span>Naam</span><input required minLength={2} autoComplete="name" value={form.naam} onChange={(event) => update('naam', event.target.value)} /></label>
         <label><span>E-mailadres</span><input required type="email" autoComplete="email" value={form.email} onChange={(event) => update('email', event.target.value)} /></label>

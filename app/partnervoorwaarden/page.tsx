@@ -7,7 +7,7 @@ export const metadata: Metadata = {
   title: 'Partnervoorwaarden',
   description: 'Voorwaarden voor deelname aan het Landingsite Partnerprogramma.',
   alternates: { canonical: '/partnervoorwaarden' },
-  robots: { index: true, follow: true },
+  robots: { index: false, follow: true },
 }
 
 export default function PartnerTermsPage() {

@@ -8,7 +8,7 @@ export const metadata: Metadata = {
   title: 'Start je website',
   description: 'Kies Starter, Pro of Premium en bekijk de volledige eerste betaling voordat je naar Stripe gaat.',
   alternates: { canonical: '/start' },
-  robots: { index: true, follow: true },
+  robots: { index: false, follow: true },
 }
 
 function packageId(value: string | string[] | undefined): CommercialPackageId {

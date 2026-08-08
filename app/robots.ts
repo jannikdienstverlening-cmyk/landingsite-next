@@ -5,7 +5,7 @@ export default function robots(): MetadataRoute.Robots {
     rules: [
       { userAgent: '*', allow: '/', disallow: ['/admin/', '/api/', '/beheer/', '/intake/', '/genereren/'] },
     ],
-    sitemap: 'https://landingsite.nl/sitemap.xml',
-    host: 'https://landingsite.nl',
+    sitemap: 'https://www.landingsite.nl/sitemap.xml',
+    host: 'https://www.landingsite.nl',
   }
 }

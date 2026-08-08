@@ -65,7 +65,7 @@ export function renderLandingPage(opts: {
 }) {
   const { intake, content, leadToken } = opts
   const theme = themes[content.theme]
-  const baseUrl = (process.env.NEXT_PUBLIC_BASE_URL ?? 'https://landingsite.nl').replace(/\/$/, '')
+  const baseUrl = (process.env.NEXT_PUBLIC_BASE_URL ?? 'https://www.landingsite.nl').replace(/\/$/, '')
   const endpoint = `${baseUrl}/api/leads`
   const logoUrl = safeUrl(intake.extra_fields?.logo_url)
   const heroUrl = safeUrl(intake.extra_fields?.hero_image_url)

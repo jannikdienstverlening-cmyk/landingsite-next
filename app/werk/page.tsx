@@ -9,11 +9,25 @@ export const metadata: Metadata = {
   alternates: { canonical: '/werk' },
 }
 
+const structuredData = {
+  '@context': 'https://schema.org',
+  '@type': 'ItemList',
+  name: 'Live websites gebouwd door Landingsite.nl',
+  itemListElement: portfolioProjects.map((project, index) => ({
+    '@type': 'ListItem',
+    position: index + 1,
+    url: project.url,
+    name: project.name,
+    description: project.description,
+  })),
+}
+
 export default function WorkPage() {
   return (
     <div className="studio studio-page">
       <a className="skip-link" href="#main-content">Ga naar de inhoud</a>
       <AnalyticsLayer />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData).replace(/</g, '\\u003c') }} />
       <StudioHeader />
       <main id="main-content">
         <header className="studio-page-hero studio-shell">

@@ -41,7 +41,7 @@ export async function POST(request: NextRequest) {
   }
   if (!referralCode) return Response.json({ error: 'Unieke partnercode maken lukt nu niet.' }, { status: 503 })
 
-  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL ?? 'https://landingsite.nl'
+  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL ?? 'https://www.landingsite.nl'
   try {
     await getResend().emails.send({
       from: process.env.RESEND_FROM ?? 'Landingsite.nl <noreply@landingsite.nl>',

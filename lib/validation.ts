@@ -126,6 +126,8 @@ export const referralCaptureSchema = z.object({
   utmSource: z.string().trim().max(120).default(''),
   utmMedium: z.string().trim().max(120).default(''),
   utmCampaign: z.string().trim().max(160).default(''),
+  persistence: z.enum(['session', 'persistent']).default('session'),
+  consentVersion: z.string().trim().max(40).default(''),
 }).strict()
 
 export const managementActivationSchema = z.object({

@@ -1,0 +1,22 @@
+{
+  "exact": [
+    "+38% conversie",
+    "1.2s laadtijd",
+    "Performance 98",
+    "Lisa van Studio Noord",
+    "Zojuist binnengekomen",
+    "jouwcampagne.nl",
+    "Premium AI-webbureau",
+    "onbeperkte AI-ondersteuning",
+    "AI-optimalisatie",
+    "hosting van EUR 15",
+    "hosting pas na akkoord"
+  ],
+  "patterns": [
+    "\\u20ac\\s*15\\s*(?:per maand|p/m)",
+    "\\u20ac\\s*(?:129|199)\\s*(?:per maand|p/m)",
+    "\\b(?:EUR|euro)\\s*15\\s*(?:per maand|p/m)\\b",
+    "\\b(?:EUR|euro)\\s*(?:129|199)\\s*(?:per maand|p/m)\\b",
+    "\\bbinnen 48 uur live\\b"
+  ]
+}

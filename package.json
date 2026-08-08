@@ -9,7 +9,10 @@
     "lint": "eslint",
     "typecheck": "tsc --noEmit",
     "test": "node --import tsx --test tests/*.test.ts",
-    "check": "npm run lint && npm run typecheck && npm run test && npm run build",
+    "content:lint": "node scripts/content-lint.mjs",
+    "content:lint:build": "node scripts/content-lint.mjs --built",
+    "smoke": "node scripts/smoke-routes.mjs",
+    "check": "npm run lint && npm run typecheck && npm run content:lint && npm run test && npm run build && npm run content:lint:build",
     "stripe:sync": "tsx scripts/sync-stripe-catalog.ts",
     "supabase:harden-assets": "tsx scripts/harden-customer-assets.ts"
   },

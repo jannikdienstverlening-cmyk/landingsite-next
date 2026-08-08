@@ -209,7 +209,7 @@ async function markCombinedCheckoutPaid(session: Stripe.Checkout.Session, eventI
     initial_payment_ex_vat: packageFirstPayment(pakket),
   })
 
-  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL ?? 'https://landingsite.nl'
+  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL ?? 'https://www.landingsite.nl'
   const customerUrl = `${baseUrl}/beheer/${order.id}?token=${encodeURIComponent(createCustomerToken(order.id))}`
   const notificationAction = 'combined_purchase_notification_sent'
   if (!(await notificationWasSent(order.id, notificationAction))) {
@@ -267,7 +267,7 @@ async function markManagementActive(session: Stripe.Checkout.Session, eventId: s
   }
   await audit(orderId, eventId, 'management_activated', order.management_status, 'active', { subscription_id: subscriptionId, checkout_session_id: session.id })
 
-  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL ?? 'https://landingsite.nl'
+  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL ?? 'https://www.landingsite.nl'
   const customerUrl = `${baseUrl}/beheer/${orderId}?token=${encodeURIComponent(createCustomerToken(orderId))}`
   await sendCheckedEmail({
     from: process.env.RESEND_FROM ?? 'Landingsite.nl <noreply@landingsite.nl>',
