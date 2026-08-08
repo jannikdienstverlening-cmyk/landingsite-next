@@ -9,7 +9,7 @@ const dmMono = DM_Mono({ subsets: ['latin'], weight: ['400', '500'], variable: '
 
 export const metadata: Metadata = {
   title: { default: 'Website laten maken vanaf €299 | Landingsite.nl', template: '%s | Landingsite.nl' },
-  description: `Websites en landingspagina’s voor zzp en mkb. Bouw vanaf €${commercialConfig.packages.starter.oneTimePrice} en managed hosting en websitebeheer voor €${commercialConfig.management.monthlyPrice} per maand.`,
+  description: `Websites en landingspagina’s voor zzp en mkb. Eerste werkende versie binnen 48 uur. Bouw vanaf €${commercialConfig.packages.starter.oneTimePrice} en beheer voor €${commercialConfig.management.monthlyPrice} per maand.`,
   metadataBase: new URL('https://landingsite.nl'),
   alternates: { canonical: '/' },
   robots: { index: true, follow: true, googleBot: { index: true, follow: true } },
@@ -19,7 +19,7 @@ export const metadata: Metadata = {
     url: 'https://landingsite.nl',
     siteName: 'Landingsite.nl',
     title: 'Website laten maken vanaf €299 | Landingsite.nl',
-    description: 'Een scherpe website, een werkend formulier en technisch beheer bij één partij.',
+    description: 'Websites voor zzp en mkb. Eerste werkende versie binnen 48 uur. Bouw vanaf €299 en beheer voor €79 per maand.',
   },
   twitter: {
     card: 'summary_large_image',

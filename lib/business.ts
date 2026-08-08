@@ -10,6 +10,7 @@ export const BUSINESS = {
   social: {
     instagram: 'https://www.instagram.com/landingsite.nl/',
     linkedin: 'https://www.linkedin.com/company/137164667/',
+    tiktok: 'https://www.tiktok.com/@landingsite.nl',
   },
   address: {
     street: 'Gortstraat 31',

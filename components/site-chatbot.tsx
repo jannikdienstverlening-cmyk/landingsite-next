@@ -1,5 +1,6 @@
 'use client'
 
+import Link from 'next/link'
 import { type FormEvent, useEffect, useRef, useState } from 'react'
 
 type ChatMessage = {
@@ -88,7 +89,7 @@ export function SiteChatbot() {
           <header className="chat-header">
             <div>
               <span className="chat-status-dot" aria-hidden="true" />
-              <div><strong>Landingsite Assistent</strong><span>Automatisch antwoord</span></div>
+              <div><strong>Landingsite Assistent</strong><span>Direct antwoord</span></div>
             </div>
             <button type="button" className="chat-close" onClick={closeChat} aria-label="Chat sluiten" title="Chat sluiten">×</button>
           </header>
@@ -103,7 +104,7 @@ export function SiteChatbot() {
               </div>
             )}
             {sending && <div className="chat-typing" role="status"><span /><span /><span /><span className="sr-only">De assistent schrijft</span></div>}
-            {error && <p className="chat-error" role="alert">{error} <a href="#contact" onClick={() => setOpen(false)}>Naar contact</a></p>}
+            {error && <p className="chat-error" role="alert">{error} <Link href="/#contact" onClick={() => setOpen(false)}>Naar contact</Link></p>}
             <div ref={messageEndRef} />
           </div>
 

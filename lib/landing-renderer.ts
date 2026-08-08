@@ -10,6 +10,7 @@ const themes = {
 
 function safeUrl(value: string | undefined) {
   if (!value) return ''
+  if (/^\/assets\/[a-z0-9-]+\.webp$/i.test(value)) return escapeHtml(value)
   try {
     const url = new URL(value)
     return url.protocol === 'https:' || url.protocol === 'http:' ? escapeHtml(url.toString()) : ''

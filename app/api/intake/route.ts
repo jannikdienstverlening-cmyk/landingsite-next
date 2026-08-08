@@ -35,14 +35,14 @@ export async function POST(request: NextRequest) {
     bestaand_domein: form.bestaand_domein,
     teksten_status: form.teksten_status,
     technische_koppelingen: form.technische_koppelingen,
+    doelgroep: form.doelgroep,
+    werkgebied: form.werkgebied,
+    social_facebook: form.social_facebook,
+    social_instagram: form.social_instagram,
+    social_linkedin: form.social_linkedin,
   }
   if (pakket === 'pro' || pakket === 'premium') {
     Object.assign(extraFields, {
-      doelgroep: form.doelgroep,
-      werkgebied: form.werkgebied,
-      social_facebook: form.social_facebook,
-      social_instagram: form.social_instagram,
-      social_linkedin: form.social_linkedin,
       testimonials: [
         form.testimonial_1_naam && form.testimonial_1_tekst ? { naam: form.testimonial_1_naam, tekst: form.testimonial_1_tekst } : null,
         form.testimonial_2_naam && form.testimonial_2_tekst ? { naam: form.testimonial_2_naam, tekst: form.testimonial_2_tekst } : null,

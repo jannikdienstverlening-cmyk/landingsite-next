@@ -204,9 +204,9 @@ ALTER TABLE referral_attributions ENABLE ROW LEVEL SECURITY;
 ALTER TABLE partner_commissions ENABLE ROW LEVEL SECURITY;
 ALTER TABLE subscription_audit_log ENABLE ROW LEVEL SECURITY;
 
--- Publieke klantassets worden uitsluitend via een betaalde, server-side uploadroute geplaatst.
+-- Klantassets blijven privé en worden uitsluitend via betaalde serverroutes verwerkt.
 INSERT INTO storage.buckets (id, name, public, file_size_limit, allowed_mime_types)
-VALUES ('customer-assets', 'customer-assets', true, 5242880, ARRAY['image/jpeg','image/png','image/webp'])
+VALUES ('customer-assets', 'customer-assets', false, 5242880, ARRAY['image/jpeg','image/png','image/webp'])
 ON CONFLICT (id) DO UPDATE SET
   public = EXCLUDED.public,
   file_size_limit = EXCLUDED.file_size_limit,

@@ -1,6 +1,7 @@
 import 'server-only'
 
 import Anthropic from '@anthropic-ai/sdk'
+import { packageFirstPayment } from '@/config/commercial'
 import { pricingConfig } from '@/config/pricing'
 import type { z } from 'zod'
 import type { chatMessageSchema } from './validation'
@@ -22,9 +23,9 @@ function knowledgeBase() {
 Feiten over Landingsite.nl:
 - Doelgroep: zzp'ers en kleine bedrijven die een professionele landingspagina willen.
 - Eerste versie: binnen 48 uur na succesvolle bouwbetaling en ontvangst van een complete intake. Dit is geen garantie bij ontbrekende input of extra wensen.
-- Starter: EUR ${buildPackages.starter.oneTimePrice} eenmalig exclusief btw, voor een compacte campagne of dienst.
-- Pro: EUR ${buildPackages.pro.oneTimePrice} eenmalig exclusief btw, voor een uitgebreidere conversiepagina.
-- Premium: EUR ${buildPackages.premium.oneTimePrice} eenmalig exclusief btw, voor meer maatwerk en begeleiding.
+- Starter: EUR ${buildPackages.starter.oneTimePrice} eenmalig exclusief btw, voor één duidelijke dienst, product of aanbod. De eerste betaling is EUR ${packageFirstPayment('starter')} exclusief btw inclusief de eerste beheermaand.
+- Pro: EUR ${buildPackages.pro.oneTimePrice} eenmalig exclusief btw, voor een onderneming die meer uitleg, bewijs en inhoud nodig heeft. De eerste betaling is EUR ${packageFirstPayment('pro')} exclusief btw inclusief de eerste beheermaand.
+- Premium: EUR ${buildPackages.premium.oneTimePrice} eenmalig exclusief btw, voor een onderneming die de volledige website wil laten uitwerken. De eerste betaling is EUR ${packageFirstPayment('premium')} exclusief btw inclusief de eerste beheermaand.
 - Hosting & Websitebeheer: EUR ${websiteManagement.monthlyPrice} per maand exclusief btw. De eerste maand wordt samen met de bouwprijs afgerekend.
 - Websitebeheer bevat managed hosting, SSL, back-ups, beveiligings- en technische updates, monitoring, controle van formulieren, ondersteuning, domeinkoppeling en maximaal ${websiteManagement.includedChangeMinutes} minuten kleine wijzigingen per kalendermaand.
 - De eerste betaling bestaat uit de eenmalige bouwprijs plus EUR ${websiteManagement.monthlyPrice} voor de eerste beheermaand. Daarna volgt maandelijks EUR ${websiteManagement.monthlyPrice} exclusief btw.
@@ -45,7 +46,15 @@ function automaticAnswer(question: string) {
     || (!asksAboutManagement && /wanneer|livegang|live/.test(normalized))
 
   if (asksAboutPackages) {
-    answers.push(`Starter kost €${buildPackages.starter.oneTimePrice} eenmalig exclusief btw en past bij een compacte campagne of dienst. Pro kost €${buildPackages.pro.oneTimePrice} en biedt meer ruimte voor bewijs, inhoud en formulieren. Premium kost €${buildPackages.premium.oneTimePrice} en is bedoeld voor meer maatwerk en begeleiding.`)
+    if (/starter/.test(normalized)) {
+      answers.push(`Voor Starter betaal je bij de start €${packageFirstPayment('starter')} exclusief btw: €${buildPackages.starter.oneTimePrice} voor de bouw en €${websiteManagement.monthlyPrice} voor de eerste maand Hosting & Websitebeheer. Daarna betaal je €${websiteManagement.monthlyPrice} per maand exclusief btw.`)
+    } else if (/\bpro\b/.test(normalized)) {
+      answers.push(`Voor Pro betaal je bij de start €${packageFirstPayment('pro')} exclusief btw: €${buildPackages.pro.oneTimePrice} voor de bouw en €${websiteManagement.monthlyPrice} voor de eerste maand Hosting & Websitebeheer. Daarna betaal je €${websiteManagement.monthlyPrice} per maand exclusief btw.`)
+    } else if (/premium/.test(normalized)) {
+      answers.push(`Voor Premium betaal je bij de start €${packageFirstPayment('premium')} exclusief btw: €${buildPackages.premium.oneTimePrice} voor de bouw en €${websiteManagement.monthlyPrice} voor de eerste maand Hosting & Websitebeheer. Daarna betaal je €${websiteManagement.monthlyPrice} per maand exclusief btw.`)
+    } else {
+      answers.push(`Starter kost €${buildPackages.starter.oneTimePrice}, Pro €${buildPackages.pro.oneTimePrice} en Premium €${buildPackages.premium.oneTimePrice} eenmalig exclusief btw. Bij de start komt daar voor ieder pakket €${websiteManagement.monthlyPrice} voor de eerste beheermaand bij. Daarna betaal je alleen €${websiteManagement.monthlyPrice} per maand exclusief btw.`)
+    }
   }
 
   if (asksAboutManagement) {
@@ -53,11 +62,11 @@ function automaticAnswer(question: string) {
   }
 
   if (asksAboutTiming) {
-    answers.push('De eerste versie staat normaal binnen 48 uur klaar nadat de eenmalige bouwprijs is betaald en je complete intake is ontvangen. Na jouw goedkeuring koppelen we het domein en gaat de pagina live.')
+    answers.push('De eerste versie staat normaal binnen 48 uur klaar nadat de eerste betaling is bevestigd en je complete intake is ontvangen. Na jouw goedkeuring koppelen we het domein en gaat de website live.')
   }
 
   if (/voorbeeld|portfolio|referentie|eerder gemaakt|werk/.test(normalized)) {
-    answers.push('Je kunt op de homepage echte live voorbeelden bekijken van Ontwikkelbegeleiding RH, WIA Management en AIbouwers.nl. Ontwikkelbegeleiding staat als hoofdreferentie bovenaan.')
+    answers.push('Je kunt op de homepage echte live voorbeelden bekijken van Ontwikkelbegeleiding.nl, WIA Management en AIbouwers.nl. Ontwikkelbegeleiding.nl staat als hoofdreferentie bovenaan.')
   }
 
   if (/partner|commissie|aanbreng/.test(normalized)) {
@@ -65,7 +74,7 @@ function automaticAnswer(question: string) {
   }
 
   if (/contact|gesprek|bellen|mens|advies|offerte/.test(normalized)) {
-    answers.push('Voor persoonlijk advies kun je het contactformulier onderaan de homepage gebruiken. Beschrijf kort wat je wilt lanceren; je ontvangt doorgaans binnen één werkdag een reactie.')
+    answers.push('Voor persoonlijk advies kun je het contactformulier onderaan de homepage gebruiken. Beschrijf kort wat je wilt laten bouwen; je ontvangt doorgaans binnen één werkdag een reactie.')
   }
 
   return answers.length ? answers.slice(0, 3).join('\n\n') : null

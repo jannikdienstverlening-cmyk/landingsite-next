@@ -4,6 +4,7 @@ import sharp from 'sharp'
 import { clientIp, checkRateLimit, rateLimitResponse } from '@/lib/rate-limit'
 import { rejectCrossOriginMutation } from '@/lib/security'
 import { getSupabase } from '@/lib/supabase'
+import { createCustomerAssetReference } from '@/lib/customer-assets'
 
 const types = new Set(['image/jpeg', 'image/png', 'image/webp'])
 
@@ -50,5 +51,7 @@ export async function POST(request: NextRequest) {
     console.error('Assetupload mislukt', error)
     return Response.json({ error: 'Uploaden is niet gelukt.' }, { status: 500 })
   }
-  return Response.json({ url: supabase.storage.from('customer-assets').getPublicUrl(path).data.publicUrl }, { status: 201 })
+  const { data: preview, error: previewError } = await supabase.storage.from('customer-assets').createSignedUrl(path, 15 * 60)
+  if (previewError || !preview?.signedUrl) return Response.json({ error: 'De beveiligde preview kon niet worden gemaakt.' }, { status: 500 })
+  return Response.json({ assetRef: createCustomerAssetReference(path), previewUrl: preview.signedUrl }, { status: 201 })
 }

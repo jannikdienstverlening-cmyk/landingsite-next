@@ -3,6 +3,11 @@ import { z } from 'zod'
 export const packageSchema = z.enum(['starter', 'pro', 'premium'])
 
 const optionalUrl = z.union([z.literal(''), z.url().max(2_048)])
+const optionalCustomerAsset = z.union([
+  z.literal(''),
+  z.url().max(2_048),
+  z.string().regex(/^asset:\/\/customer-assets\/[0-9a-f-]{36}\/[0-9a-f]{32}\.webp$/i),
+])
 const optionalShort = z.string().trim().max(160).default('')
 const optionalText = z.string().trim().max(2_000).default('')
 
@@ -44,8 +49,8 @@ export const intakeFormSchema = z.object({
   faq_3_antwoord: optionalText,
   extra_wensen: optionalText,
   sfeer: optionalShort,
-  logo_url: optionalUrl,
-  hero_image_url: optionalUrl,
+  logo_url: optionalCustomerAsset,
+  hero_image_url: optionalCustomerAsset,
 }).strict()
 
 export const intakeSchema = z.object({
@@ -66,14 +71,10 @@ export const adminRegenerateSchema = z.object({
 }).strict()
 
 export const contactSchema = z.object({
+  requestId: z.uuid(),
   naam: z.string().trim().min(2).max(100),
   email: z.email().max(254),
-  bedrijf: z.string().trim().max(100).default(''),
-  telefoon: z.string().trim().max(40).default(''),
   bericht: z.string().trim().min(10).max(3_000),
-  materiaal: z.enum(['ja', 'deels', 'nee', 'onbekend']),
-  startdatum: z.string().trim().regex(/^$|^\d{4}-\d{2}-\d{2}$/).default(''),
-  voorkeur: z.enum(['', 'starter', 'pro', 'premium', 'advies']).default(''),
   website: z.string().max(200).optional(),
 }).strict()
 

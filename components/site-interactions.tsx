@@ -4,7 +4,6 @@ import type { FormEvent } from 'react'
 import { useEffect, useRef, useState } from 'react'
 import Link from 'next/link'
 import type { CommercialPackageId } from '@/config/commercial'
-import { commercialConfig } from '@/config/commercial'
 import { trackMarketingEvent, type MarketingEvent } from '@/lib/analytics'
 
 const navigation = [
@@ -70,7 +69,9 @@ export function FAQList({ items }: { items: Array<{ question: string; answer: st
   return (
     <div className="studio-faq-list">
       {items.map((item, index) => (
-        <details key={item.question} open={index === 0}>
+        <details key={item.question} open={index === 0} onToggle={(event) => {
+          if (event.currentTarget.open) trackMarketingEvent('faq_open', { question_index: String(index + 1) })
+        }}>
           <summary><span>{item.question}</span><span aria-hidden="true">+</span></summary>
           <p>{item.answer}</p>
         </details>
@@ -119,20 +120,16 @@ export function CheckoutButton({ packageId, label }: { packageId: CommercialPack
 }
 
 const emptyContact = {
-  naam: '', bedrijf: '', email: '', telefoon: '', bericht: '', materiaal: '', startdatum: '', voorkeur: '', website: '',
+  naam: '', email: '', bericht: '', website: '',
 }
 
 export function ContactForm() {
   const [form, setForm] = useState(emptyContact)
   const [status, setStatus] = useState<'idle' | 'sending' | 'success' | 'error'>('idle')
   const [error, setError] = useState('')
-  const started = useRef(false)
+  const requestId = useRef(crypto.randomUUID())
 
   function update(key: keyof typeof form, value: string) {
-    if (!started.current) {
-      started.current = true
-      trackMarketingEvent('contact_form_start', { form: 'website_request' })
-    }
     setForm((current) => ({ ...current, [key]: value }))
   }
 
@@ -144,13 +141,14 @@ export function ContactForm() {
       const response = await fetch('/api/contact', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(form),
+        body: JSON.stringify({ ...form, requestId: requestId.current }),
       })
       const data = await response.json()
       if (!response.ok) throw new Error(data.error || 'Verzenden is niet gelukt.')
       setForm(emptyContact)
+      requestId.current = crypto.randomUUID()
       setStatus('success')
-      trackMarketingEvent('contact_form_submit', { form: 'website_request' })
+      trackMarketingEvent('contact_submit', { form: 'short_question' })
     } catch (caught) {
       setError(caught instanceof Error ? caught.message : 'Verzenden is niet gelukt.')
       setStatus('error')
@@ -161,21 +159,11 @@ export function ContactForm() {
     <form className="studio-contact-form" onSubmit={submit}>
       <div className="form-row">
         <label><span>Naam</span><input required minLength={2} autoComplete="name" value={form.naam} onChange={(event) => update('naam', event.target.value)} /></label>
-        <label><span>Bedrijfsnaam <small>optioneel</small></span><input autoComplete="organization" value={form.bedrijf} onChange={(event) => update('bedrijf', event.target.value)} /></label>
-      </div>
-      <div className="form-row">
         <label><span>E-mailadres</span><input required type="email" autoComplete="email" value={form.email} onChange={(event) => update('email', event.target.value)} /></label>
-        <label><span>Telefoonnummer <small>optioneel</small></span><input type="tel" autoComplete="tel" value={form.telefoon} onChange={(event) => update('telefoon', event.target.value)} /></label>
       </div>
-      <label><span>Wat wil je laten bouwen?</span><textarea required minLength={10} value={form.bericht} onChange={(event) => update('bericht', event.target.value)} /></label>
-      <div className="form-row">
-        <label><span>Heb je al teksten en afbeeldingen?</span><select required value={form.materiaal} onChange={(event) => update('materiaal', event.target.value)}><option value="">Maak een keuze</option><option value="ja">Ja, alles is beschikbaar</option><option value="deels">Gedeeltelijk</option><option value="nee">Nog niet</option><option value="onbekend">Ik wil hierover advies</option></select></label>
-        <label><span>Gewenste startdatum <small>optioneel</small></span><input type="date" value={form.startdatum} onChange={(event) => update('startdatum', event.target.value)} /></label>
-      </div>
-      <label><span>Pakketvoorkeur <small>optioneel</small></span><select value={form.voorkeur} onChange={(event) => update('voorkeur', event.target.value)}><option value="">Nog niet zeker</option>{Object.entries(commercialConfig.packages).map(([id, item]) => <option value={id} key={id}>{item.name} · €{item.oneTimePrice}</option>)}<option value="advies">Graag eerst advies</option></select></label>
+      <label><span>Korte vraag</span><textarea required minLength={10} maxLength={3000} value={form.bericht} onChange={(event) => update('bericht', event.target.value)} /></label>
       <label className="honeypot" aria-hidden="true">Website<input tabIndex={-1} autoComplete="off" value={form.website} onChange={(event) => update('website', event.target.value)} /></label>
-      <button className="button button--primary button--full" disabled={status === 'sending'} type="submit">{status === 'sending' ? 'Aanvraag versturen…' : 'Eerst kort overleggen'}</button>
-      <p className="form-note">Je zit nog nergens aan vast.</p>
+      <button className="button button--primary button--full" disabled={status === 'sending'} type="submit">{status === 'sending' ? 'Vraag versturen…' : 'Vraag versturen'}</button>
       <div aria-live="polite">
         {status === 'success' && <p className="form-message form-message--success">Je aanvraag is ontvangen. Je krijgt persoonlijk antwoord.</p>}
         {status === 'error' && <p className="form-message form-message--error" role="alert">{error}</p>}

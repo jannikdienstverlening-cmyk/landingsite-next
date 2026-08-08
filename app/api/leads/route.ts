@@ -75,9 +75,9 @@ export async function POST(request: NextRequest) {
       from: process.env.RESEND_FROM ?? 'Landingsite.nl <noreply@landingsite.nl>',
       to: recipient,
       replyTo: result.data.email,
-      subject: `Nieuwe aanvraag via ${intake.bedrijfsnaam}`,
+      subject: `Formulierinzending via ${intake.bedrijfsnaam}`,
       html: `<div style="font-family:Arial,sans-serif;line-height:1.6;color:#10201c;max-width:640px;margin:auto;padding:32px">
-        <p style="color:#147a55;font-weight:700">Nieuwe aanvraag</p>
+        <p style="color:#147a55;font-weight:700">Nieuwe formulierinzending</p>
         <h1 style="font-size:26px">Iemand nam contact op via je landingspagina</h1>
         <p><strong>Naam:</strong> ${escapeHtml(result.data.naam)}<br><strong>E-mail:</strong> <a href="mailto:${escapeHtml(result.data.email)}">${escapeHtml(result.data.email)}</a>${result.data.telefoon ? `<br><strong>Telefoon:</strong> ${escapeHtml(result.data.telefoon)}` : ''}</p>
         ${result.data.bericht ? `<p><strong>Bericht:</strong></p><p style="white-space:pre-wrap">${escapeHtml(result.data.bericht)}</p>` : ''}

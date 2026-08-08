@@ -69,9 +69,9 @@ export const PAKKETTEN = {
 export type PakketId = CommercialPackageId
 
 export const STRIPE_BUILD_PRICE_ENV = {
-  starter: 'STRIPE_BUILD_PRICE_STARTER',
-  pro: 'STRIPE_BUILD_PRICE_PRO',
-  premium: 'STRIPE_BUILD_PRICE_PREMIUM',
+  starter: commercialConfig.packages.starter.stripePriceEnv,
+  pro: commercialConfig.packages.pro.stripePriceEnv,
+  premium: commercialConfig.packages.premium.stripePriceEnv,
 } as const satisfies Record<PakketId, string>
 
 function validatePriceId(value: string | undefined, environmentName: string) {
@@ -87,7 +87,7 @@ export function configuredBuildPriceId(pakket: PakketId) {
   return validatePriceId(process.env[environmentName]?.trim(), environmentName)
 }
 
-export const STRIPE_MANAGEMENT_PRICE_ENV = 'STRIPE_PRICE_WEBSITE_MANAGEMENT'
+export const STRIPE_MANAGEMENT_PRICE_ENV = commercialConfig.management.stripePriceEnv
 
 export function configuredManagementPriceId() {
   return validatePriceId(process.env[STRIPE_MANAGEMENT_PRICE_ENV]?.trim(), STRIPE_MANAGEMENT_PRICE_ENV)

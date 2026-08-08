@@ -42,7 +42,7 @@ export default async function StartPage({ searchParams }: { searchParams: Promis
             </nav>
             <div className="start-scope"><h2>{item.name}</h2><p>{item.audience}</p><ul>{item.features.map((feature) => <li key={feature}>{feature}</li>)}</ul></div>
           </section>
-          <aside className="order-summary" aria-label={`Bestelsamenvatting voor ${item.name}`}>
+          <aside className="order-summary" aria-label={`Bestelsamenvatting voor ${item.name}`} data-analytics-view="checkout_view">
             <p className="overline">Bestelsamenvatting</p>
             <h2>{item.name}</h2>
             <dl>
@@ -55,7 +55,7 @@ export default async function StartPage({ searchParams }: { searchParams: Promis
             <div className="order-summary__recurring"><span>Daarna maandelijks</span><strong>€{commercialConfig.management.monthlyPrice} excl. btw</strong><p>De volgende incasso volgt één maand na de eerste betaling. Stripe toont de exacte datum vóór bevestiging.</p></div>
             <ul className="order-summary__facts"><li>Maandelijks opzegbaar aan het einde van de betaalperiode</li><li>Domein blijft van jou</li><li>Intake opent direct na betaling</li><li>Eerste versie binnen 48 uur na complete intake</li></ul>
             <CheckoutButton packageId={selected} label={`Betaal veilig via Stripe`} />
-            <p className="order-summary__help">Nog niet zeker? <Link href="/#contact" data-analytics-event="contact_form_start">Eerst kort overleggen</Link>.</p>
+            <p className="order-summary__help">Nog niet zeker? <Link href="/#contact">Stel eerst een vraag</Link>.</p>
           </aside>
         </div>
       </main>

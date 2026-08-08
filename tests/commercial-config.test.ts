@@ -23,3 +23,12 @@ test('primaire Stripe-checkout gebruikt subscription mode en twee regels', async
   assert.match(source, /line_items:\s*\[buildLineItem\(parsed\.data\.pakket\), managementLineItem\(\)\]/)
   assert.doesNotMatch(source, /mode:\s*'payment'/)
 })
+
+test('frontend en Stripe gebruiken dezelfde centrale configuratie', async () => {
+  const stripeSource = await readFile(new URL('../lib/stripe.ts', import.meta.url), 'utf8')
+  const homepageSource = await readFile(new URL('../components/studio-site.tsx', import.meta.url), 'utf8')
+  assert.match(stripeSource, /commercialConfig\.packages\.starter\.stripePriceEnv/)
+  assert.match(stripeSource, /commercialConfig\.management\.stripePriceEnv/)
+  assert.match(homepageSource, /packageFirstPayment\(id\)/)
+  assert.doesNotMatch(homepageSource, /firstPayment:\s*\d+/)
+})

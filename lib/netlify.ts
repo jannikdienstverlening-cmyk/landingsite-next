@@ -54,23 +54,29 @@ function siteResult(site: NetlifySite) {
   return { siteId: site.id, siteUrl }
 }
 
-export async function deployToNetlifySite(siteId: string, html: string) {
-  const htmlBuffer = Buffer.from(html, 'utf8')
-  const digest = createHash('sha1').update(htmlBuffer).digest('hex')
+export async function deployToNetlifySite(siteId: string, html: string, assets: Record<string, string> = {}) {
+  const files = new Map<string, { body: Buffer; contentType: string }>([
+    ['/index.html', { body: Buffer.from(html, 'utf8'), contentType: 'text/html; charset=utf-8' }],
+    ...Object.entries(assets).map(([path, base64]) => [path, { body: Buffer.from(base64, 'base64'), contentType: 'image/webp' }] as const),
+  ])
+  const manifest = Object.fromEntries([...files].map(([path, file]) => [path, createHash('sha1').update(file.body).digest('hex')]))
   const deployResponse = await fetch(`${NETLIFY_API}/sites/${encodeURIComponent(siteId)}/deploys`, {
     method: 'POST',
     headers: headers(true),
-    body: JSON.stringify({ files: { '/index.html': digest } }),
+    body: JSON.stringify({ files: manifest }),
   })
   if (!deployResponse.ok) throw new Error(`Netlify-deploy aanmaken mislukt (${deployResponse.status}): ${await deployResponse.text()}`)
 
   const deploy = await deployResponse.json() as { id?: string; required?: string[] }
   if (!deploy.id) throw new Error('Netlify gaf geen deploy-ID terug.')
-  if (deploy.required?.includes(digest)) {
-    const uploadResponse = await fetch(`${NETLIFY_API}/deploys/${encodeURIComponent(deploy.id)}/files/index.html`, {
+  const required = new Set(deploy.required ?? [])
+  for (const [path, file] of files) {
+    if (!required.has(manifest[path])) continue
+    const encodedPath = path.split('/').map(segment => encodeURIComponent(segment)).join('/')
+    const uploadResponse = await fetch(`${NETLIFY_API}/deploys/${encodeURIComponent(deploy.id)}/files${encodedPath}`, {
       method: 'PUT',
-      headers: { ...headers(), 'Content-Type': 'text/html; charset=utf-8' },
-      body: htmlBuffer,
+      headers: { ...headers(), 'Content-Type': file.contentType },
+      body: new Uint8Array(file.body),
     })
     if (!uploadResponse.ok) throw new Error(`Netlify-upload mislukt (${uploadResponse.status}): ${await uploadResponse.text()}`)
   }

@@ -1,7 +1,6 @@
 import type { Metadata } from 'next'
-import Image from 'next/image'
 import { AnalyticsLayer } from '@/components/site-interactions'
-import { StudioFooter, StudioHeader } from '@/components/studio-site'
+import { BrowserFrame, MobileProjectFrame, StudioFooter, StudioHeader } from '@/components/studio-site'
 import { portfolioProjects } from '@/data/portfolio'
 
 export const metadata: Metadata = {
@@ -24,13 +23,15 @@ export default function WorkPage() {
         </header>
         <section className="work-index studio-shell" aria-label="Projectoverzicht">
           {portfolioProjects.map((project, index) => (
-            <article className="work-detail" key={project.slug}>
-              <div className="work-detail__meta"><span>0{index + 1}</span><p>{project.industry}</p><h2>{project.name}</h2><a href={project.url} target="_blank" rel="noopener noreferrer" data-analytics-event="portfolio_case_open" data-analytics-project={project.slug}>Bekijk live website ↗</a></div>
-              <a className="work-detail__image" href={project.url} target="_blank" rel="noopener noreferrer" aria-label={`Open ${project.name}`} data-analytics-event="portfolio_case_open" data-analytics-project={project.slug}>
-                <div className="browser-frame__bar" aria-hidden="true"><i /><i /><i /><span>{project.domain}</span></div>
-                <div><Image src={project.image} alt={project.imageAlt} fill sizes="(max-width: 800px) 92vw, 64vw" loading={index === 0 ? 'eager' : 'lazy'} fetchPriority={index === 0 ? 'high' : 'auto'} /></div>
-              </a>
-              <div className="work-detail__story"><p><strong>De vraag</strong>{project.problem}</p><p><strong>Gebouwd</strong>{project.result}</p><ul>{project.features.map((feature) => <li key={feature}>{feature}</li>)}</ul></div>
+            <article className="work-detail" id={project.slug} key={project.slug}>
+              <div className="work-detail__meta"><p>{project.industry}</p><h2>{project.name}</h2><a href={project.url} target="_blank" rel="noopener noreferrer" data-analytics-event="live_case_click" data-analytics-project={project.slug}>Bekijk live website ↗</a></div>
+              <div className="work-detail__media">
+                <a href={project.url} target="_blank" rel="noopener noreferrer" aria-label={`Open ${project.name}`} data-analytics-event="case_open" data-analytics-project={project.slug}>
+                  <BrowserFrame project={project} priority={index === 0} />
+                </a>
+                <MobileProjectFrame project={project} priority={index === 0} />
+              </div>
+              <div className="work-detail__story"><p><strong>De vraag</strong>{project.problem}</p><p><strong>Opgeleverd</strong>{project.result}</p><ul>{project.features.map((feature) => <li key={feature}>{feature}</li>)}</ul></div>
             </article>
           ))}
         </section>

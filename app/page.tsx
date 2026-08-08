@@ -3,13 +3,12 @@ import { AnalyticsLayer } from '@/components/site-interactions'
 import {
   DeliveryAndProcess,
   FAQAndClose,
-  ManagementAndComparison,
+  ManagementSection,
   Pricing,
-  ProblemAndFlow,
+  ProblemSection,
   StudioFooter,
   StudioHeader,
   StudioHero,
-  WorkProof,
   type StudioFaq,
 } from '@/components/studio-site'
 import { commercialConfig } from '@/config/commercial'
@@ -18,11 +17,11 @@ import { BUSINESS } from '@/lib/business'
 
 export const metadata: Metadata = {
   title: { absolute: 'Website laten maken vanaf €299 | Landingsite.nl' },
-  description: 'Websites en landingspagina’s voor zzp en mkb. Bouw vanaf €299 en managed hosting en websitebeheer voor €79 per maand.',
+  description: 'Websites en landingspagina’s voor zzp en mkb. Eerste werkende versie binnen 48 uur. Bouw vanaf €299 en beheer voor €79 per maand.',
   alternates: { canonical: '/' },
   openGraph: {
     title: 'Website laten maken vanaf €299 | Landingsite.nl',
-    description: 'Een scherpe website, een werkend formulier en technisch beheer bij één partij. Eerste versie binnen 48 uur na betaling en complete intake.',
+    description: 'Een duidelijke website, een werkend formulier en technisch beheer bij één partij. Eerste versie binnen 48 uur na betaling en complete intake.',
     url: 'https://landingsite.nl',
   },
 }
@@ -63,7 +62,7 @@ const structuredData = {
       name: BUSINESS.brandName,
       legalName: BUSINESS.legalName,
       url: BUSINESS.website,
-      sameAs: [BUSINESS.social.instagram, BUSINESS.social.linkedin],
+      sameAs: [BUSINESS.social.instagram, BUSINESS.social.linkedin, BUSINESS.social.tiktok],
       taxID: BUSINESS.chamberOfCommerceNumber,
       vatID: BUSINESS.vatId,
       areaServed: 'NL',
@@ -92,11 +91,10 @@ export default function HomePage() {
       <StudioHeader />
       <main id="main-content">
         <StudioHero />
-        <WorkProof />
-        <ProblemAndFlow />
+        <ProblemSection />
         <DeliveryAndProcess />
         <Pricing />
-        <ManagementAndComparison />
+        <ManagementSection />
         <FAQAndClose faqs={faqs} />
       </main>
       <StudioFooter />

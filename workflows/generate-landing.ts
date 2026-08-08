@@ -4,6 +4,7 @@ import { sendDeliveryEmail } from '@/lib/email'
 import { renderLandingPage } from '@/lib/landing-renderer'
 import { deployToNetlifySite, ensureNetlifySite } from '@/lib/netlify'
 import { getSupabase, type Pakket } from '@/lib/supabase'
+import { downloadCustomerAsset } from '@/lib/customer-assets'
 
 type GenerationInput = {
   orderId: string
@@ -51,10 +52,26 @@ async function loadInput(orderId: string, pageId: string): Promise<GenerationInp
 async function buildHtml(input: GenerationInput) {
   'use step'
   console.info('generation.content.start', { orderId: input.orderId, pageId: input.pageId })
-  const content = await generateLandingContent(input.intake)
-  const html = renderLandingPage({ intake: input.intake, content, leadToken: input.leadToken })
+  const contentInput = structuredClone(input.intake)
+  contentInput.extra_fields = { ...contentInput.extra_fields, logo_url: '', hero_image_url: '' }
+  const content = await generateLandingContent(contentInput)
+  const [logo, hero] = await Promise.all([
+    downloadCustomerAsset(input.intake.extra_fields?.logo_url),
+    downloadCustomerAsset(input.intake.extra_fields?.hero_image_url),
+  ])
+  const assets: Record<string, string> = {}
+  const intake = structuredClone(input.intake)
+  if (logo) {
+    assets['/assets/logo.webp'] = logo.toString('base64')
+    intake.extra_fields = { ...intake.extra_fields, logo_url: '/assets/logo.webp' }
+  }
+  if (hero) {
+    assets['/assets/hero.webp'] = hero.toString('base64')
+    intake.extra_fields = { ...intake.extra_fields, hero_image_url: '/assets/hero.webp' }
+  }
+  const html = renderLandingPage({ intake, content, leadToken: input.leadToken })
   console.info('generation.content.done', { orderId: input.orderId, pageId: input.pageId, bytes: html.length })
-  return html
+  return { html, assets }
 }
 
 async function prepareSite(input: GenerationInput) {
@@ -76,10 +93,10 @@ async function prepareSite(input: GenerationInput) {
   return site
 }
 
-async function publishSite(input: GenerationInput, siteId: string, html: string) {
+async function publishSite(input: GenerationInput, siteId: string, bundle: { html: string; assets: Record<string, string> }) {
   'use step'
   console.info('generation.deploy.start', { orderId: input.orderId, pageId: input.pageId, siteId })
-  const result = await deployToNetlifySite(siteId, html)
+  const result = await deployToNetlifySite(siteId, bundle.html, bundle.assets)
   console.info('generation.deploy.done', { orderId: input.orderId, pageId: input.pageId, deployId: result.deployId })
   return result
 }
@@ -126,10 +143,10 @@ export async function generateLandingWorkflow(orderId: string, pageId: string) {
   'use workflow'
   try {
     const input = await loadInput(orderId, pageId)
-    const html = await buildHtml(input)
+    const bundle = await buildHtml(input)
     const site = await prepareSite(input)
-    await publishSite(input, site.siteId, html)
-    await persistCompletion(input, html, site.siteUrl)
+    await publishSite(input, site.siteId, bundle)
+    await persistCompletion(input, bundle.html, site.siteUrl)
     await notifyCustomer(input, site.siteUrl)
     return { pageId, siteUrl: site.siteUrl }
   } catch (error) {

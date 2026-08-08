@@ -2,6 +2,7 @@ import assert from 'node:assert/strict'
 import test from 'node:test'
 import { createOrderToken, isSameOriginMutation, passwordMatches, verifyOrderToken } from '../lib/security'
 import { contactSchema } from '../lib/validation'
+import { createCustomerAssetReference, parseCustomerAssetReference } from '../lib/customer-assets'
 
 process.env.ORDER_TOKEN_SECRET = 'test-order-secret-that-is-long-enough'
 process.env.ADMIN_PASSWORD = 'correct horse battery staple'
@@ -45,14 +46,10 @@ test('lokale ontwikkeling accepteert localhost en 127.0.0.1 op dezelfde poort', 
 
 test('contacthoneypot kan ingevulde spam veilig afvangen', () => {
   const parsed = contactSchema.safeParse({
+    requestId: '91f70936-b572-4b35-9044-ce47e87ac099',
     naam: 'Spam Bot',
     email: 'spam@example.com',
-    bedrijf: '',
-    telefoon: '',
     bericht: 'Geautomatiseerd spambericht.',
-    materiaal: 'onbekend',
-    startdatum: '',
-    voorkeur: '',
     website: 'https://spam.example',
   })
 
@@ -60,24 +57,28 @@ test('contacthoneypot kan ingevulde spam veilig afvangen', () => {
   if (parsed.success) assert.equal(Boolean(parsed.data.website), true)
 })
 
-test('websiteaanvraag valideert materiaal en optionele projectvoorkeuren', () => {
+test('kort contactformulier valideert alleen noodzakelijke velden', () => {
   const parsed = contactSchema.safeParse({
+    requestId: '91f70936-b572-4b35-9044-ce47e87ac099',
     naam: 'Test Ondernemer',
     email: 'test@example.com',
-    bedrijf: 'Testbedrijf',
-    telefoon: '06 12345678',
     bericht: 'Ik wil een professionele landingspagina laten bouwen.',
-    materiaal: 'deels',
-    startdatum: '2026-09-01',
-    voorkeur: 'pro',
     website: '',
   })
 
   assert.equal(parsed.success, true)
   assert.equal(contactSchema.safeParse({
+    requestId: '91f70936-b572-4b35-9044-ce47e87ac099',
     naam: 'Test Ondernemer',
-    email: 'test@example.com',
+    email: 'geen-geldig-adres',
     bericht: 'Ik wil een professionele landingspagina laten bouwen.',
-    materiaal: 'misschien',
   }).success, false)
+})
+
+test('klantassets gebruiken alleen een afgeschermde interne referentie', () => {
+  const path = '91f70936-b572-4b35-9044-ce47e87ac099/0123456789abcdef0123456789abcdef.webp'
+  const reference = createCustomerAssetReference(path)
+  assert.equal(reference, `asset://customer-assets/${path}`)
+  assert.equal(parseCustomerAssetReference(reference), path)
+  assert.equal(parseCustomerAssetReference('asset://customer-assets/../secret.webp'), null)
 })
