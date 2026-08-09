@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
+import { customerDataSubprocessors } from '@/config/vendors'
 import { BUSINESS, BUSINESS_ADDRESS } from '@/lib/business'
 
 export const metadata: Metadata = {
@@ -7,13 +8,6 @@ export const metadata: Metadata = {
   description: 'Afspraken over persoonsgegevens binnen Hosting & Websitebeheer.',
   robots: { index: false, follow: true },
 }
-
-const subprocessors = [
-  ['Vercel', 'Applicatiehosting en serverfuncties'],
-  ['Supabase', 'Database en afgeschermde bestandsopslag'],
-  ['Resend', 'Transactionele e-mail'],
-  ['Netlify', 'Hosting van opgeleverde klantwebsites waar van toepassing'],
-]
 
 export default function ProcessorAgreementPage() {
   return (
@@ -28,7 +22,7 @@ export default function ProcessorAgreementPage() {
           <section><h2>3. Gegevens en betrokkenen</h2><p>Het kan gaan om naam, zakelijke contactgegevens, formulierinhoud, technische loggegevens en andere gegevens die de klant bewust in het formulier laat opnemen. Betrokkenen zijn bezoekers, prospects en klanten van de klant. Bijzondere persoonsgegevens, BSN, medische gegevens en betaalgegevens mogen niet via een standaardformulier worden gevraagd zonder voorafgaande schriftelijke afspraken en passende extra maatregelen.</p></section>
           <section><h2>4. Instructies en doelen</h2><p>Landingsite.nl verwerkt de gegevens uitsluitend volgens gedocumenteerde instructies van de klant, voor het werkend houden van de website en het afleveren van aanvragen. Als een instructie volgens ons strijdig is met privacywetgeving, melden we dat voordat we haar uitvoeren. De klant bepaalt doelen, grondslagen, formulierinhoud, ontvangers en bewaartermijnen.</p></section>
           <section><h2>5. Vertrouwelijkheid en beveiliging</h2><p>Toegang is beperkt tot personen en systemen die deze voor hun taak nodig hebben. We gebruiken versleutelde verbindingen, afgeschermde serviceaccounts, private opslag, invoervalidatie, verzoeklimieten, beveiligingsheaders, back-ups en logging van relevante beheerhandelingen.</p></section>
-          <section><h2>6. Subverwerkers</h2><p>De klant geeft algemene toestemming voor onderstaande categorieen subverwerkers. We blijven verantwoordelijk voor passende verwerkersafspraken en informeren bestaande klanten vooraf wanneer een wezenlijke nieuwe subverwerker wordt toegevoegd.</p><ul>{subprocessors.map(([name, purpose]) => <li key={name}><strong>{name}:</strong> {purpose}.</li>)}</ul></section>
+          <section><h2>6. Subverwerkers</h2><p>De klant geeft algemene toestemming voor onderstaande subverwerkers. We blijven verantwoordelijk voor passende verwerkersafspraken en informeren bestaande klanten vooraf wanneer een wezenlijke nieuwe subverwerker wordt toegevoegd.</p><ul>{customerDataSubprocessors.map((vendor) => <li key={vendor.name}><strong>{vendor.name}:</strong> {vendor.purpose}. Verwerkte gegevens: {vendor.data}.</li>)}</ul></section>
           <section><h2>7. Doorgifte buiten de EER</h2><p>Wanneer een leverancier gegevens buiten de Europese Economische Ruimte verwerkt, gebruiken we een geldig doorgiftemechanisme en beoordelen we aanvullende beveiligingsmaatregelen waar dat nodig is.</p></section>
           <section><h2>8. Rechten, toezicht en incidenten</h2><p>We helpen de klant redelijkerwijs bij verzoeken van betrokkenen, beveiligingsbeoordelingen en vragen van toezichthouders. Een inbreuk in verband met persoonsgegevens melden we zonder onredelijke vertraging nadat deze is vastgesteld, met de informatie die op dat moment beschikbaar is.</p></section>
           <section><h2>9. Verwijderen, teruggeven en back-ups</h2><p>Na einde van de dienstverlening verwijderen of geven we persoonsgegevens terug volgens de instructie van de klant, behalve wanneer een wettelijke plicht langere bewaring vereist. Gegevens kunnen nog tijdelijk in beveiligde back-ups staan en worden daar volgens de normale rotatie verwijderd.</p></section>
@@ -39,4 +33,3 @@ export default function ProcessorAgreementPage() {
     </main>
   )
 }
-

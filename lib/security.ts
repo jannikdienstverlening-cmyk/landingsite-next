@@ -3,7 +3,7 @@ import { createHash, createHmac, randomBytes, timingSafeEqual } from 'node:crypt
 const ADMIN_COOKIE = 'landingsite_admin'
 const REFERRAL_COOKIE = '__Host-landingsite_referral'
 const TOKEN_VERSION = 'v1'
-type TokenPurpose = 'admin' | 'order' | 'referral' | 'customer'
+type TokenPurpose = 'admin' | 'order' | 'referral' | 'customer' | 'marketing'
 
 function secretFor(purpose: TokenPurpose) {
   const dedicatedSecret = purpose === 'admin'
@@ -12,7 +12,9 @@ function secretFor(purpose: TokenPurpose) {
       ? process.env.ORDER_TOKEN_SECRET
       : purpose === 'referral'
         ? process.env.REFERRAL_TOKEN_SECRET
-        : process.env.CUSTOMER_PORTAL_SECRET
+        : purpose === 'marketing'
+          ? process.env.MARKETING_TOKEN_SECRET
+          : process.env.CUSTOMER_PORTAL_SECRET
   if (process.env.NODE_ENV === 'production' && !dedicatedSecret) {
     throw new Error(`${purpose.toUpperCase()} dedicated token secret ontbreekt.`)
   }
@@ -86,6 +88,22 @@ export function createCustomerToken(orderId: string) {
 
 export function verifyCustomerToken(token: string | undefined, orderId: string) {
   return verifyToken(token, orderId, 'customer')
+}
+
+export function createMarketingPreferenceToken(subscriberId: string) {
+  return issueToken(subscriberId, 'marketing', 60 * 60 * 24 * 365 * 6)
+}
+
+export function marketingSubscriberId(token: string | undefined) {
+  if (!token) return null
+  const payload = token.split('.')[2]
+  if (!payload || !verifyToken(token, null, 'marketing')) return null
+  try {
+    const decoded = JSON.parse(Buffer.from(payload, 'base64url').toString('utf8')) as { sub?: string }
+    return decoded.sub ?? null
+  } catch {
+    return null
+  }
 }
 
 export function createReferralToken(attributionId: string, ttlSeconds: number) {

@@ -1,3 +1,5 @@
+import { consentConfig } from '@/config/consent'
+
 export type MarketingEvent =
   | 'hero_start_click'
   | 'hero_work_click'
@@ -27,6 +29,10 @@ declare global {
 export function trackMarketingEvent(event: MarketingEvent, properties: Record<string, string> = {}) {
   if (typeof window === 'undefined') return
   const query = new URLSearchParams(window.location.search)
+  const allowedPropertyKeys = new Set(['location', 'project', 'package', 'section', 'form', 'question_index'])
+  const safeProperties = Object.fromEntries(
+    Object.entries(properties).filter(([key, value]) => allowedPropertyKeys.has(key) && value.length <= 100),
+  )
   const payload = {
     event,
     page_path: window.location.pathname,
@@ -34,8 +40,13 @@ export function trackMarketingEvent(event: MarketingEvent, properties: Record<st
     utm_source: query.get('utm_source') ?? undefined,
     utm_medium: query.get('utm_medium') ?? undefined,
     utm_campaign: query.get('utm_campaign') ?? undefined,
-    ...properties,
+    ...safeProperties,
   }
-  window.dataLayer?.push(payload)
+  const hasExternalAnalyticsConsent = document.cookie
+    .split('; ')
+    .includes(`${consentConfig.analytics.consentCookie}=${consentConfig.analytics.consentVersion}`)
+  if (consentConfig.analytics.externalCollectionEnabled && hasExternalAnalyticsConsent) {
+    window.dataLayer?.push(payload)
+  }
   window.dispatchEvent(new CustomEvent('landingsite:analytics', { detail: payload }))
 }

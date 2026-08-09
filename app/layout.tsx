@@ -20,11 +20,13 @@ export const metadata: Metadata = {
     siteName: 'Landingsite.nl',
     title: 'Website laten maken vanaf €299 | Landingsite.nl',
     description: 'Websites voor zzp en mkb. Eerste werkende versie binnen 48 uur. Bouw vanaf €299 en beheer voor €79 per maand.',
+    images: [{ url: '/og/default.png', width: 1200, height: 630, alt: 'Landingsite.nl - websites voor zzp en mkb' }],
   },
   twitter: {
     card: 'summary_large_image',
     title: 'Website laten maken vanaf €299 | Landingsite.nl',
     description: 'Eerste werkende versie binnen 48 uur na betaling en complete intake.',
+    images: ['/og/default.png'],
   },
   verification: { google: 'b1zb9KbeJjn0en587SxszRJ09cnt0CzRAANU47-3y-Q' },
   keywords: [

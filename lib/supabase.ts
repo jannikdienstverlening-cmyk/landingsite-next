@@ -39,6 +39,7 @@ export interface Order {
   went_live_at: string | null
   management_started_at: string | null
   management_cancel_at_period_end: boolean
+  management_event_created: number | null
   referral_attribution_id: string | null
   email: string
   pakket: Pakket

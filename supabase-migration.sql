@@ -128,6 +128,51 @@ CREATE TABLE IF NOT EXISTS subscription_audit_log (
   created_at TIMESTAMPTZ NOT NULL DEFAULT now()
 );
 
+-- Marketing is volledig gescheiden van orders en contactaanvragen. Alleen een
+-- bevestigde, actuele toestemming kan een actieve abonnee opleveren.
+CREATE TABLE IF NOT EXISTS marketing_consent_requests (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  normalized_email TEXT NOT NULL,
+  source TEXT NOT NULL CHECK (source IN ('newsletter', 'download', 'customer-preferences', 'manual-import')),
+  consent_text TEXT NOT NULL,
+  consent_version TEXT NOT NULL,
+  token_hash TEXT UNIQUE NOT NULL,
+  status TEXT NOT NULL DEFAULT 'pending' CHECK (status IN ('pending', 'confirmed', 'expired', 'cancelled')),
+  requested_at TIMESTAMPTZ NOT NULL DEFAULT now(),
+  confirmed_at TIMESTAMPTZ,
+  expires_at TIMESTAMPTZ NOT NULL,
+  ip_hash TEXT
+);
+
+CREATE TABLE IF NOT EXISTS marketing_subscribers (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  normalized_email TEXT UNIQUE NOT NULL,
+  status TEXT NOT NULL DEFAULT 'active' CHECK (status IN ('active', 'unsubscribed')),
+  consent_source TEXT NOT NULL,
+  consent_text TEXT NOT NULL,
+  consent_version TEXT NOT NULL,
+  granted_at TIMESTAMPTZ NOT NULL,
+  revoked_at TIMESTAMPTZ,
+  updated_at TIMESTAMPTZ NOT NULL DEFAULT now()
+);
+
+CREATE TABLE IF NOT EXISTS marketing_suppressions (
+  normalized_email TEXT PRIMARY KEY,
+  reason TEXT NOT NULL,
+  created_at TIMESTAMPTZ NOT NULL DEFAULT now()
+);
+
+CREATE TABLE IF NOT EXISTS marketing_consent_audit (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  subscriber_id UUID REFERENCES marketing_subscribers(id) ON DELETE SET NULL,
+  normalized_email TEXT NOT NULL,
+  action TEXT NOT NULL CHECK (action IN ('requested', 'confirmed', 'revoked', 'suppressed')),
+  source TEXT NOT NULL,
+  consent_version TEXT NOT NULL,
+  evidence JSONB NOT NULL DEFAULT '{}'::jsonb,
+  created_at TIMESTAMPTZ NOT NULL DEFAULT now()
+);
+
 CREATE TABLE IF NOT EXISTS leads (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   generated_page_id UUID NOT NULL REFERENCES generated_pages(id) ON DELETE CASCADE,
@@ -153,6 +198,7 @@ ALTER TABLE orders ADD COLUMN IF NOT EXISTS management_status TEXT NOT NULL DEFA
 ALTER TABLE orders ADD COLUMN IF NOT EXISTS went_live_at TIMESTAMPTZ;
 ALTER TABLE orders ADD COLUMN IF NOT EXISTS management_started_at TIMESTAMPTZ;
 ALTER TABLE orders ADD COLUMN IF NOT EXISTS management_cancel_at_period_end BOOLEAN NOT NULL DEFAULT false;
+ALTER TABLE orders ADD COLUMN IF NOT EXISTS management_event_created BIGINT;
 ALTER TABLE orders ADD COLUMN IF NOT EXISTS referral_attribution_id UUID REFERENCES referral_attributions(id) ON DELETE SET NULL;
 
 DO $$
@@ -192,6 +238,8 @@ CREATE UNIQUE INDEX IF NOT EXISTS idx_orders_management_subscription ON orders(m
 CREATE INDEX IF NOT EXISTS idx_referral_attributions_partner ON referral_attributions(partner_id, created_at DESC);
 CREATE INDEX IF NOT EXISTS idx_commissions_partner_status ON partner_commissions(partner_id, status, available_at);
 CREATE INDEX IF NOT EXISTS idx_subscription_audit_order ON subscription_audit_log(order_id, created_at DESC);
+CREATE INDEX IF NOT EXISTS idx_marketing_requests_email ON marketing_consent_requests(normalized_email, requested_at DESC);
+CREATE INDEX IF NOT EXISTS idx_marketing_audit_email ON marketing_consent_audit(normalized_email, created_at DESC);
 
 -- Alle browsertoegang blijft dicht; serverroutes gebruiken uitsluitend de service-role key.
 ALTER TABLE orders ENABLE ROW LEVEL SECURITY;
@@ -203,6 +251,10 @@ ALTER TABLE partners ENABLE ROW LEVEL SECURITY;
 ALTER TABLE referral_attributions ENABLE ROW LEVEL SECURITY;
 ALTER TABLE partner_commissions ENABLE ROW LEVEL SECURITY;
 ALTER TABLE subscription_audit_log ENABLE ROW LEVEL SECURITY;
+ALTER TABLE marketing_consent_requests ENABLE ROW LEVEL SECURITY;
+ALTER TABLE marketing_subscribers ENABLE ROW LEVEL SECURITY;
+ALTER TABLE marketing_suppressions ENABLE ROW LEVEL SECURITY;
+ALTER TABLE marketing_consent_audit ENABLE ROW LEVEL SECURITY;
 
 -- Klantassets blijven privé en worden uitsluitend via betaalde serverroutes verwerkt.
 INSERT INTO storage.buckets (id, name, public, file_size_limit, allowed_mime_types)

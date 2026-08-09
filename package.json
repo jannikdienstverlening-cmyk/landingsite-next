@@ -12,8 +12,12 @@
     "content:lint": "node scripts/content-lint.mjs",
     "content:lint:build": "node scripts/content-lint.mjs --built",
     "smoke": "node scripts/smoke-routes.mjs",
+    "test:e2e": "playwright test",
+    "test:e2e:update": "playwright test --update-snapshots",
+    "audit:production": "npm audit --omit=dev --audit-level=high",
     "check": "npm run lint && npm run typecheck && npm run content:lint && npm run test && npm run build && npm run content:lint:build",
     "stripe:sync": "tsx scripts/sync-stripe-catalog.ts",
+    "stripe:validate": "tsx scripts/validate-stripe-catalog.ts",
     "supabase:harden-assets": "tsx scripts/harden-customer-assets.ts"
   },
   "dependencies": {
@@ -25,10 +29,12 @@
     "resend": "^6.17.2",
     "sharp": "^0.35.3",
     "stripe": "^22.3.2",
-    "workflow": "^4.8.0",
+    "workflow": "^4.8.1",
     "zod": "^4.4.3"
   },
   "devDependencies": {
+    "@axe-core/playwright": "^4.12.1",
+    "@playwright/test": "^1.62.1",
     "@types/node": "^20",
     "@types/react": "^19.2.18",
     "@types/react-dom": "^19.2.4",
@@ -41,7 +47,10 @@
     "postcss": "8.5.25",
     "sharp": "$sharp",
     "minimatch@3.1.5": {
-      "brace-expansion": "1.1.17"
-    }
+      "brace-expansion": "1.1.18"
+    },
+    "js-yaml": "4.3.1",
+    "nanoid": "5.1.16",
+    "undici": "7.29.0"
   }
 }

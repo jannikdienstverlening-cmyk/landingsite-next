@@ -90,7 +90,7 @@ export default function AdminPage() {
 
   const activeManagement = orders.filter((order) => order.management_status === 'active').length
   const pendingCommission = commissions.filter((commission) => commission.status === 'pending_review').reduce((sum, commission) => sum + commission.amount_cents, 0) / 100
-  return <><style>{css}</style><nav className="admin-nav"><Link href="/" className="admin-logo">landing<span>site</span>.nl · admin</Link><button onClick={logout}>Uitloggen</button></nav><main className="admin-page"><div className="admin-wrap">
+  return <><style>{css}</style><nav className="admin-nav"><Link href="/" className="admin-logo">landing<span>site</span>.nl · admin</Link><div className="actions"><Link className="admin-button" href="/dashboard">Lead Engine</Link><button onClick={logout}>Uitloggen</button></div></nav><main className="admin-page"><div className="admin-wrap">
     <header className="admin-head"><div><h1>Beheer en controle</h1><p>Bouworders, Websitebeheer, partners en commissies. Uitbetalingen blijven handmatig.</p></div><button className="admin-button" onClick={() => load().catch((caught) => setError(String(caught)))}>Vernieuwen</button></header>
     {error && <p className="admin-error" role="alert">{error}</p>}
     {notice && <p className="admin-note" role="status">{notice}</p>}

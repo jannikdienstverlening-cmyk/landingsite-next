@@ -1,8 +1,7 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-
-const CONSENT_VERSION = 'referral-30d-v1'
+import { consentConfig } from '@/config/consent'
 
 export function ReferralCapture() {
   const [code, setCode] = useState('')
@@ -49,7 +48,7 @@ export function ReferralCapture() {
           utmMedium: url.searchParams.get('utm_medium') ?? '',
           utmCampaign: url.searchParams.get('utm_campaign') ?? '',
           persistence: 'persistent',
-          consentVersion: CONSENT_VERSION,
+          consentVersion: consentConfig.referral.persistenceVersion,
         }),
       })
       if (!response.ok) throw new Error('Opslaan mislukt')

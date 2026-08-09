@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { consentConfig } from '@/config/consent'
 import { partnerProgramConfig } from '@/config/partner-program'
 import { clientIp, checkRateLimit, rateLimitResponse } from '@/lib/rate-limit'
 import { invalidJsonResponse, readJsonBody } from '@/lib/request'
@@ -27,7 +28,7 @@ export async function POST(request: NextRequest) {
   if (!partner) return Response.json({ accepted: false }, { status: 200 })
 
   const persistent = parsed.data.persistence === 'persistent'
-  if (persistent && parsed.data.consentVersion !== 'referral-30d-v1') {
+  if (persistent && parsed.data.consentVersion !== consentConfig.referral.persistenceVersion) {
     return Response.json({ error: 'Ongeldige toestemmingsversie.' }, { status: 400 })
   }
 

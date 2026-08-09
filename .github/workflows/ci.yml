@@ -22,10 +22,13 @@ jobs:
           node-version: 22
           cache: npm
       - run: npm ci
+      - run: npx playwright install --with-deps chromium
       - run: npm run lint
       - run: npm run typecheck
       - run: npm run content:lint
       - run: npm test
+      - run: npm run audit:production
+      - run: npm run test:e2e
       - run: npm run build
       - run: npm run content:lint:build
       - name: Smoke test production routes
@@ -33,4 +36,12 @@ jobs:
           npm start -- --hostname 127.0.0.1 --port 3001 &
           for i in {1..30}; do curl -fsS http://127.0.0.1:3001/ >/dev/null && break; sleep 1; done
           npm run smoke
-
+      - name: Bewaar browserrapport bij fouten
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report
+          path: |
+            playwright-report
+            test-results
+          if-no-files-found: ignore

@@ -138,7 +138,7 @@ export function StudioHero() {
           <a className="hero-case__desktop" href={featured.url} target="_blank" rel="noopener noreferrer" data-analytics-event="live_case_click" data-analytics-project={featured.slug}>
             <BrowserFrame project={featured} priority />
           </a>
-          <div className="hero-case__mobile" aria-hidden="true"><MobileProjectFrame project={featured} /></div>
+          <div className="hero-case__mobile" aria-hidden="true"><MobileProjectFrame project={featured} priority /></div>
           <div className="hero-case__caption">
             <div><span>Actuele hoofdcase</span><h2 id="hero-case-title">{featured.name}</h2></div>
             <ul>{featured.features.slice(0, 3).map((feature) => <li key={feature}>{feature}</li>)}</ul>
@@ -159,7 +159,7 @@ export function StudioHero() {
           {portfolioProjects.map((project, index) => (
             <a href={project.url} target="_blank" rel="noopener noreferrer" key={project.slug} data-analytics-event="case_open" data-analytics-project={project.slug}>
               <span>{String(index + 1).padStart(2, '0')}</span>
-              <Image src={project.image} alt="" width={128} height={80} sizes="128px" />
+              <Image src={project.image} alt="" width={128} height={80} sizes="128px" loading={index === 0 ? 'eager' : 'lazy'} />
               <span className="project-proof__name"><strong>{project.name}</strong><small>{project.industry}</small></span>
               <i aria-hidden="true">↗</i>
             </a>

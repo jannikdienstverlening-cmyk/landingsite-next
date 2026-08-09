@@ -1,3 +1,4 @@
+import Image from 'next/image'
 import Link from 'next/link'
 
 type LogoProps = {
@@ -7,7 +8,14 @@ type LogoProps = {
 export function Logo({ variant = 'light' }: LogoProps) {
   return (
     <Link href="/" className={`wordmark wordmark--${variant}`} aria-label="Landingsite.nl, naar de homepage">
-      <span>landingsite</span><span className="wordmark__dot">.</span><span>nl</span>
+      <Image
+        src={`/brand/landingsite-wordmark-${variant}.svg`}
+        alt=""
+        width={341}
+        height={64}
+        priority
+        unoptimized
+      />
     </Link>
   )
 }

@@ -18,8 +18,8 @@ export function getStripe() {
 }
 
 export const STRIPE_CHECKOUT_BRAND = {
-  backgroundColor: '#f3f7f4',
-  buttonColor: '#16835e',
+  backgroundColor: '#f7f4ec',
+  buttonColor: '#1d4ed8',
   displayName: 'Landingsite.nl',
   fontFamily: 'inter',
   borderStyle: 'rounded',

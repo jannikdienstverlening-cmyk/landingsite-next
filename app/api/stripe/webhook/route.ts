@@ -10,6 +10,7 @@ import { createCustomerToken } from '@/lib/security'
 import { adminRecipient } from '@/lib/server-email'
 import { isFullManagementInvoiceLine } from '@/lib/stripe-billing'
 import { configuredManagementPriceId, getStripe, PAKKETTEN, TERMS_VERSION } from '@/lib/stripe'
+import { shouldApplyStripeEvent } from '@/lib/stripe-event-order'
 import { getSupabase, type ManagementStatus, type Pakket } from '@/lib/supabase'
 
 export const dynamic = 'force-dynamic'
@@ -290,7 +291,7 @@ async function markManagementActive(session: Stripe.Checkout.Session, eventId: s
 }
 
 async function orderForSubscription(subscriptionId: string) {
-  const { data, error } = await getSupabase().from('orders').select('id, management_status, referral_attribution_id')
+  const { data, error } = await getSupabase().from('orders').select('id, management_status, management_event_created, referral_attribution_id')
     .eq('management_subscription_id', subscriptionId).maybeSingle()
   if (error) throw new Error(`Abonnement koppelen aan order mislukt: ${error.message}`)
   if (data) return data
@@ -299,7 +300,7 @@ async function orderForSubscription(subscriptionId: string) {
   const sessions = orderId ? null : await getStripe().checkout.sessions.list({ subscription: subscriptionId, limit: 1 })
   const sessionId = sessions?.data[0]?.id
   if (!orderId && !sessionId) return null
-  const query = getSupabase().from('orders').select('id, management_status, referral_attribution_id')
+  const query = getSupabase().from('orders').select('id, management_status, management_event_created, referral_attribution_id')
   const { data: fallback, error: fallbackError } = orderId
     ? await query.eq('id', orderId).maybeSingle()
     : await query.eq('stripe_session_id', sessionId).maybeSingle()
@@ -307,14 +308,23 @@ async function orderForSubscription(subscriptionId: string) {
   return fallback
 }
 
-async function setManagementStatus(subscription: Stripe.Subscription, eventId: string, forced?: ManagementStatus) {
+async function setManagementStatus(subscription: Stripe.Subscription, eventId: string, eventCreated: number, forced?: ManagementStatus) {
   const order = await orderForSubscription(subscription.id)
   if (!order) return
+  if (!shouldApplyStripeEvent(order.management_event_created, eventCreated)) {
+    await audit(order.id, eventId, 'stale_management_event_ignored', order.management_status, order.management_status, {
+      subscription_id: subscription.id,
+      incoming_created: eventCreated,
+      last_applied_created: order.management_event_created,
+    })
+    return
+  }
   const nextStatus = forced ?? subscriptionManagementStatus(subscription)
   const { error } = await getSupabase().from('orders').update({
     management_subscription_id: subscription.id,
     stripe_customer_id: objectId(subscription.customer),
     management_status: nextStatus,
+    management_event_created: eventCreated,
     management_cancel_at_period_end: subscription.cancel_at_period_end,
     updated_at: new Date().toISOString(),
   }).eq('id', order.id)
@@ -426,7 +436,7 @@ async function handleEvent(event: Stripe.Event) {
       const subscriptionId = invoiceSubscriptionId(event.data.object)
       if (!subscriptionId) return
       const subscription = await getStripe().subscriptions.retrieve(subscriptionId)
-      await setManagementStatus(subscription, event.id, 'active')
+      await setManagementStatus(subscription, event.id, event.created, 'active')
       await recordPartnerCommissions(event.data.object, subscriptionId, event.id)
       return
     }
@@ -434,7 +444,7 @@ async function handleEvent(event: Stripe.Event) {
       const subscriptionId = invoiceSubscriptionId(event.data.object)
       if (!subscriptionId) return
       const subscription = await getStripe().subscriptions.retrieve(subscriptionId)
-      await setManagementStatus(subscription, event.id, 'payment_failed')
+      await setManagementStatus(subscription, event.id, event.created, 'payment_failed')
       return
     }
     case 'invoice.voided':
@@ -473,10 +483,10 @@ async function handleEvent(event: Stripe.Event) {
     }
     case 'customer.subscription.created':
     case 'customer.subscription.updated':
-      await setManagementStatus(event.data.object, event.id)
+      await setManagementStatus(event.data.object, event.id, event.created)
       return
     case 'customer.subscription.deleted':
-      await setManagementStatus(event.data.object, event.id, 'cancelled')
+      await setManagementStatus(event.data.object, event.id, event.created, 'cancelled')
       return
   }
 }

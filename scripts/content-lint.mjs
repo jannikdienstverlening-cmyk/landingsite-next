@@ -6,9 +6,9 @@ const root = process.cwd()
 const config = JSON.parse(await readFile(join(root, 'config', 'banned-public-claims.json'), 'utf8'))
 const scanBuilt = process.argv.includes('--built')
 const roots = scanBuilt
-  ? ['.next/server/app']
-  : ['app', 'components', 'content', 'config', 'data', 'lib']
-const extensions = new Set(['.ts', '.tsx', '.js', '.jsx', '.json', '.html', '.txt'])
+  ? ['.next/server/app', '.next/static/chunks']
+  : ['app', 'components', 'content', 'config', 'data', 'lib', 'public']
+const extensions = new Set(['.ts', '.tsx', '.js', '.jsx', '.json', '.html', '.txt', '.svg'])
 const ignore = new Set([
   'config/banned-public-claims.json',
   'scripts/content-lint.mjs',

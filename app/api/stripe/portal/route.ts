@@ -1,5 +1,6 @@
 import { NextRequest } from 'next/server'
 import { invalidJsonResponse, readJsonBody } from '@/lib/request'
+import { clientIp, checkRateLimit, rateLimitResponse } from '@/lib/rate-limit'
 import { rejectCrossOriginMutation, verifyCustomerToken } from '@/lib/security'
 import { getStripe } from '@/lib/stripe'
 import { getSupabase } from '@/lib/supabase'
@@ -8,6 +9,8 @@ import { customerManagementSchema, validationMessage } from '@/lib/validation'
 export async function POST(request: NextRequest) {
   const crossOrigin = rejectCrossOriginMutation(request)
   if (crossOrigin) return crossOrigin
+  const limit = checkRateLimit(`customer-portal:${clientIp(request)}`, 10, 15 * 60_000)
+  if (!limit.allowed) return rateLimitResponse(limit.retryAfter)
   let body: unknown
   try { body = await readJsonBody(request, 4_000) } catch (error) { return invalidJsonResponse(error) }
   const parsed = customerManagementSchema.safeParse(body)

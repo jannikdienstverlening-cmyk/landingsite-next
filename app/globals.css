@@ -1,18 +1,18 @@
 :root {
-  --forest: #071c16;
-  --forest-2: #0b3025;
-  --forest-3: #103b2e;
-  --green: #47dda3;
-  --green-soft: #dff8ed;
-  --green-dark: #147c59;
-  --blue: #2069e8;
-  --paper: #f7faf7;
-  --ice: #edf6f1;
+  --forest: #0b1220;
+  --forest-2: #111c31;
+  --forest-3: #17243d;
+  --green: #246bfd;
+  --green-soft: #e8efff;
+  --green-dark: #1d4ed8;
+  --blue: #246bfd;
+  --paper: #f7f4ec;
+  --ice: #eef2f8;
   --white: #fff;
-  --ink: #0b2119;
-  --muted: #667972;
-  --line: #d8e4de;
-  --shadow: 0 26px 80px rgba(7, 28, 22, .14);
+  --ink: #0b1220;
+  --muted: #5f6876;
+  --line: #d8d5cc;
+  --shadow: 0 26px 80px rgba(11, 18, 32, .14);
   --radius-lg: 32px;
   --radius-md: 22px;
   --radius-sm: 14px;
@@ -1706,16 +1706,16 @@ button, input, textarea, select { font: inherit; }
 
 /* Calm Landingsite homepage refresh */
 :root {
-  --paper: #fbfaf6;
-  --ice: #f1f6f2;
+  --paper: #f7f4ec;
+  --ice: #eef2f8;
   --white: #fff;
-  --ink: #10231b;
-  --muted: #5d6f67;
-  --line: #dce7df;
-  --green: #42d28f;
-  --green-soft: #e4f7ee;
-  --green-dark: #147a55;
-  --shadow: 0 18px 45px rgba(16, 35, 27, .08);
+  --ink: #0b1220;
+  --muted: #5f6876;
+  --line: #d8d5cc;
+  --green: #246bfd;
+  --green-soft: #e8efff;
+  --green-dark: #1d4ed8;
+  --shadow: 0 18px 45px rgba(11, 18, 32, .08);
   --radius-lg: 18px;
   --radius-md: 16px;
   --radius-sm: 12px;

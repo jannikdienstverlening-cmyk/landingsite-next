@@ -1,5 +1,6 @@
 import assert from 'node:assert/strict'
 import test from 'node:test'
+import { consentConfig } from '../config/consent'
 import { referralCaptureSchema } from '../lib/validation'
 
 const base = {
@@ -17,8 +18,7 @@ test('referraltracking blijft standaard beperkt tot de browsersessie', () => {
 })
 
 test('langdurige referraltracking vereist een expliciete toestemmingsversie in de route', () => {
-  const parsed = referralCaptureSchema.parse({ ...base, persistence: 'persistent', consentVersion: 'referral-30d-v1' })
+  const parsed = referralCaptureSchema.parse({ ...base, persistence: 'persistent', consentVersion: consentConfig.referral.persistenceVersion })
   assert.equal(parsed.persistence, 'persistent')
-  assert.equal(parsed.consentVersion, 'referral-30d-v1')
+  assert.equal(parsed.consentVersion, consentConfig.referral.persistenceVersion)
 })
-

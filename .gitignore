@@ -13,6 +13,8 @@
 # testing
 /coverage
 /artifacts/
+/playwright-report/
+/test-results/
 
 # next.js
 /.next/
@@ -24,6 +26,18 @@
 # misc
 .DS_Store
 *.pem
+/.codex-remote-attachments/
+/.codex-screenshots/
+/tmp/
+
+# Local social-media render workbench and exports are not web runtime assets.
+/public/social/
+/remotion-social/
+/public/linkedin-banner*.jpg
+/public/linkedin-logo.png
+/scripts/render-blue-social-brand-assets.mjs
+/scripts/render-instagram-replacement-*.mjs
+/scripts/render-social-campaign-*.mjs
 
 # debug
 npm-debug.log*
