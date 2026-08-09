@@ -160,7 +160,10 @@ export function StudioHero() {
             <a href={project.url} target="_blank" rel="noopener noreferrer" key={project.slug} data-analytics-event="case_open" data-analytics-project={project.slug}>
               <span>{String(index + 1).padStart(2, '0')}</span>
               <Image src={project.image} alt="" width={128} height={80} sizes="128px" loading={index === 0 ? 'eager' : 'lazy'} />
-              <span className="project-proof__name"><strong>{project.name}</strong><small>{project.industry}</small></span>
+              <span className={`project-proof__name${project.name.length > 20 ? ' project-proof__name--long' : ''}`}>
+                <strong>{project.name}</strong>
+                <small>{project.industry}</small>
+              </span>
               <i aria-hidden="true">↗</i>
             </a>
           ))}
