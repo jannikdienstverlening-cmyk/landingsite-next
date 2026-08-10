@@ -6,6 +6,13 @@ const packages = [
   { code: 'premium', name: 'Premium', build: 899, initial: 978 },
 ]
 
+test('/start forceert geen pakketkeuze', async ({ page }) => {
+  await page.goto('/start')
+  await expect(page.locator('.start-package-tabs a.is-active')).toHaveCount(0)
+  await expect(page.getByRole('heading', { name: 'Nog geen pakket gekozen' })).toBeVisible()
+  await expect(page.getByRole('button', { name: 'Betaal veilig via Stripe' })).toHaveCount(0)
+})
+
 for (const item of packages) {
   test(`/start toont de serverprijs van ${item.name}`, async ({ page }) => {
     await page.goto(`/start?pakket=${item.code}`)

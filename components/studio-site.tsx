@@ -9,6 +9,7 @@ import {
 import type { PortfolioProject } from '@/data/portfolio'
 import { portfolioProjects } from '@/data/portfolio'
 import { siteCopy } from '@/content/site'
+import { seoPage } from '@/content/seo-pages'
 import { BUSINESS } from '@/lib/business'
 import { ContactForm, FAQList, MobileNavigation } from './site-interactions'
 import { Logo } from './logo'
@@ -50,6 +51,10 @@ export function StudioFooter() {
           <nav aria-label="Footer navigatie">
             <strong>Bekijk</strong>
             <Link href="/werk">Werk</Link>
+            <Link href="/landingspagina-laten-maken">Landingspagina</Link>
+            <Link href="/website-laten-maken-zzp">Voor zzp</Link>
+            <Link href="/kosten-website-laten-maken">Kosten</Link>
+            <Link href="/over-landingsite">Over</Link>
             <Link href="/#aanpak">Aanpak</Link>
             <Link href="/#pakketten">Pakketten</Link>
             <Link href="/#beheer">Beheer</Link>
@@ -117,14 +122,15 @@ export function MobileProjectFrame({ project, priority = false }: { project: Por
 
 export function StudioHero() {
   const featured = portfolioProjects[0]
+  const homepage = seoPage('/')
   return (
     <section className="studio-hero">
       <div className="studio-shell studio-hero__grid">
         <div className="studio-hero__copy">
           <p className="overline">Websites voor zzp en mkb</p>
-          <h1>Een website die direct duidelijk maakt wat je doet.</h1>
+          <h1>{homepage.h1}</h1>
           <p className="studio-hero__intro">
-            Landingsite bouwt duidelijke websites en landingspagina’s voor ondernemers. Je ontvangt de eerste werkende versie binnen 48 uur na betaling en een complete intake. Daarna regelen we hosting, techniek en kleine wijzigingen.
+            Wil je een website laten maken voor je bedrijf? Landingsite bouwt websites en landingspagina’s waarop bezoekers snel begrijpen wat je aanbiedt en hoe ze contact opnemen. Je ontvangt de eerste werkende versie binnen 48 uur na betaling en een complete intake.
           </p>
           <div className="studio-actions">
             <Link className="button button--primary" href="/start" data-analytics-event="hero_start_click" data-analytics-location="hero">Start mijn website</Link>
@@ -135,14 +141,14 @@ export function StudioHero() {
         </div>
 
         <article className="hero-case" aria-labelledby="hero-case-title">
-          <a className="hero-case__desktop" href={featured.url} target="_blank" rel="noopener noreferrer" data-analytics-event="live_case_click" data-analytics-project={featured.slug}>
+          <a className="hero-case__desktop" href={featured.url} target="_blank" rel="noopener noreferrer" data-analytics-event="case_outbound_click" data-analytics-project={featured.slug}>
             <BrowserFrame project={featured} priority />
           </a>
           <div className="hero-case__mobile" aria-hidden="true"><MobileProjectFrame project={featured} priority /></div>
           <div className="hero-case__caption">
             <div><span>Actuele hoofdcase</span><h2 id="hero-case-title">{featured.name}</h2></div>
             <ul>{featured.features.slice(0, 3).map((feature) => <li key={feature}>{feature}</li>)}</ul>
-            <a href={featured.url} target="_blank" rel="noopener noreferrer" data-analytics-event="live_case_click" data-analytics-project={featured.slug}>Open {featured.domain} <span aria-hidden="true">↗</span></a>
+            <a href={featured.url} target="_blank" rel="noopener noreferrer" data-analytics-event="case_outbound_click" data-analytics-project={featured.slug}>Open {featured.domain} <span aria-hidden="true">↗</span></a>
           </div>
         </article>
       </div>
@@ -157,7 +163,7 @@ export function StudioHero() {
         <div className="project-proof__intro"><p className="overline">Gebouwd en live</p><h2>Drie websites die je zelf kunt openen.</h2></div>
         <div className="project-proof__list">
           {portfolioProjects.map((project, index) => (
-            <a href={project.url} target="_blank" rel="noopener noreferrer" key={project.slug} data-analytics-event="case_open" data-analytics-project={project.slug}>
+            <a href={project.url} target="_blank" rel="noopener noreferrer" key={project.slug} data-analytics-event="case_outbound_click" data-analytics-project={project.slug}>
               <span>{String(index + 1).padStart(2, '0')}</span>
               <Image src={project.image} alt="" width={128} height={80} sizes="128px" loading={index === 0 ? 'eager' : 'lazy'} />
               <span className={`project-proof__name${project.name.length > 20 ? ' project-proof__name--long' : ''}`}>
@@ -168,7 +174,7 @@ export function StudioHero() {
             </a>
           ))}
         </div>
-        <Link href="/werk" className="project-proof__all">Bekijk de cases met screenshots en toelichting</Link>
+        <Link href="/werk" className="project-proof__all" data-analytics-event="case_view">Bekijk de cases met screenshots en toelichting</Link>
       </div>
     </section>
   )

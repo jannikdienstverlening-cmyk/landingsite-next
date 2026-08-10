@@ -7,6 +7,10 @@ const publicSources = [
   'app/layout.tsx',
   'app/start/page.tsx',
   'app/werk/page.tsx',
+  'app/landingspagina-laten-maken/page.tsx',
+  'app/website-laten-maken-zzp/page.tsx',
+  'app/kosten-website-laten-maken/page.tsx',
+  'app/over-landingsite/page.tsx',
   'components/studio-site.tsx',
   'components/site-interactions.tsx',
   'config/commercial.ts',
@@ -38,4 +42,11 @@ test('homepage gebruikt een statische echte hoofdcase zonder FAQ reviewschema', 
   assert.match(homepage, /portfolioProjects\[0\]/)
   assert.doesNotMatch(homepage, /ProjectShowcase/)
   assert.doesNotMatch(page, /FAQPage/)
+})
+
+test('nieuwe intentpagina’s gebruiken echte prijzen en geen resultaatgaranties', async () => {
+  const source = (await Promise.all(publicSources.map(path => readFile(path, 'utf8')))).join('\n')
+  assert.match(source, /commercialConfig/)
+  assert.doesNotMatch(source, /gegarandeerd(?:e)? (?:leads|omzet|top 10)/i)
+  assert.doesNotMatch(source, /AggregateRating|Review-schema/i)
 })

@@ -13,18 +13,13 @@ import {
 } from '@/components/studio-site'
 import { commercialConfig } from '@/config/commercial'
 import { ReferralCapture } from '@/components/referral-capture'
+import { SocialFeedSection } from '@/components/social-feed'
+import { seoPage } from '@/content/seo-pages'
 import { BUSINESS } from '@/lib/business'
+import { seoMetadata } from '@/lib/seo'
 
-export const metadata: Metadata = {
-  title: { absolute: 'Website laten maken vanaf €299 | Landingsite.nl' },
-  description: 'Websites en landingspagina’s voor zzp en mkb. Eerste werkende versie binnen 48 uur. Bouw vanaf €299 en beheer voor €79 per maand.',
-  alternates: { canonical: '/' },
-  openGraph: {
-    title: 'Website laten maken vanaf €299 | Landingsite.nl',
-    description: 'Een duidelijke website, een werkend formulier en technisch beheer bij één partij. Eerste versie binnen 48 uur na betaling en complete intake.',
-    url: 'https://www.landingsite.nl',
-  },
-}
+const homepageContent = seoPage('/')
+export const metadata: Metadata = seoMetadata(homepageContent)
 
 const faqs: StudioFaq[] = [
   { question: 'Wanneer begint de termijn van 48 uur?', answer: 'De termijn start zodra de betaling is bevestigd en je intake compleet en bruikbaar is. Ontbrekende teksten, beelden of informatie schuiven de start op.' },
@@ -50,7 +45,7 @@ const structuredData = {
   '@context': 'https://schema.org',
   '@graph': [
     {
-      '@type': 'ProfessionalService',
+      '@type': 'Organization',
       '@id': 'https://www.landingsite.nl/#organization',
       name: BUSINESS.brandName,
       legalName: BUSINESS.legalName,
@@ -61,11 +56,23 @@ const structuredData = {
       areaServed: 'NL',
     },
     {
+      '@type': 'WebSite',
+      '@id': 'https://www.landingsite.nl/#website',
+      name: BUSINESS.brandName,
+      url: BUSINESS.website,
+      publisher: { '@id': 'https://www.landingsite.nl/#organization' },
+      inLanguage: 'nl-NL',
+    },
+    {
       '@type': 'Service',
       name: 'Website en landingspagina laten maken',
       provider: { '@id': 'https://www.landingsite.nl/#organization' },
       areaServed: 'NL',
-      offers: packages,
+      hasOfferCatalog: {
+        '@type': 'OfferCatalog',
+        name: 'Websitebouwpakketten',
+        itemListElement: packages,
+      },
     },
   ],
 }
@@ -85,6 +92,7 @@ export default function HomePage() {
         <Pricing />
         <ManagementSection />
         <FAQAndClose faqs={faqs} />
+        <SocialFeedSection />
       </main>
       <StudioFooter />
     </div>

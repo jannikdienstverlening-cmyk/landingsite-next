@@ -3,13 +3,14 @@ import { DM_Mono, Syne } from 'next/font/google'
 import { commercialConfig } from '@/config/commercial'
 import './globals.css'
 import './homepage.css'
+import './seo-pages.css'
 
 const syne = Syne({ subsets: ['latin'], weight: ['400', '700', '800'], variable: '--font-syne', display: 'swap' })
 const dmMono = DM_Mono({ subsets: ['latin'], weight: ['400', '500'], variable: '--font-dm-mono', display: 'swap' })
 
 export const metadata: Metadata = {
   title: { default: 'Website laten maken vanaf €299 | Landingsite.nl', template: '%s | Landingsite.nl' },
-  description: `Websites en landingspagina’s voor zzp en mkb. Eerste werkende versie binnen 48 uur. Bouw vanaf €${commercialConfig.packages.starter.oneTimePrice} en beheer voor €${commercialConfig.management.monthlyPrice} per maand.`,
+  description: `Laat een website bouwen voor een vaste prijs. Eerste werkende versie binnen 48 uur na betaling en complete intake. Bouw vanaf €${commercialConfig.packages.starter.oneTimePrice} en beheer voor €${commercialConfig.management.monthlyPrice} per maand.`,
   metadataBase: new URL('https://www.landingsite.nl'),
   alternates: { canonical: '/' },
   robots: { index: true, follow: true, googleBot: { index: true, follow: true } },
@@ -35,7 +36,6 @@ export const metadata: Metadata = {
     'hosting en websitebeheer',
     'website laten onderhouden',
     'website hosting en onderhoud',
-    'landingspagina laten maken',
     'website voor zzp',
     'website mkb',
     'professionele website',

@@ -1,30 +1,11 @@
 import type { MetadataRoute } from 'next'
+import { publishedSeoPages } from '@/content/seo-pages'
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  return [
-    {
-      url: 'https://www.landingsite.nl',
-      lastModified: new Date(),
-      changeFrequency: 'weekly',
-      priority: 1,
-    },
-    {
-      url: 'https://www.landingsite.nl/algemene-voorwaarden',
-      lastModified: new Date(),
-      changeFrequency: 'yearly',
-      priority: 0.3,
-    },
-    {
-      url: 'https://www.landingsite.nl/werk',
-      lastModified: new Date(),
-      changeFrequency: 'monthly',
-      priority: 0.8,
-    },
-    {
-      url: 'https://www.landingsite.nl/privacybeleid',
-      lastModified: new Date(),
-      changeFrequency: 'yearly',
-      priority: 0.3,
-    },
-  ]
+  return publishedSeoPages.filter((page) => page.includedInSitemap).map((page) => ({
+    url: page.canonical,
+    lastModified: new Date(`${page.updatedAt}T12:00:00+02:00`),
+    changeFrequency: page.slug === '/' ? 'weekly' as const : page.slug === '/werk' ? 'monthly' as const : 'yearly' as const,
+    priority: page.slug === '/' ? 1 : ['/werk', '/landingspagina-laten-maken', '/website-laten-maken-zzp', '/kosten-website-laten-maken'].includes(page.slug) ? .8 : .4,
+  }))
 }

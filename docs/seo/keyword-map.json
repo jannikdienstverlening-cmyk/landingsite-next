@@ -1,0 +1,24 @@
+{
+  "version": "2026-08-09",
+  "rules": {
+    "onePrimaryIntentPerPage": true,
+    "doorwayPagesAllowed": false,
+    "draftsIndexable": false
+  },
+  "pages": [
+    { "path": "/", "primaryKeyword": "website laten maken", "intent": "brede commerciële oriëntatie en pakketkeuze" },
+    { "path": "/landingspagina-laten-maken", "primaryKeyword": "landingspagina laten maken", "intent": "één landingspagina vergelijken en bestellen" },
+    { "path": "/website-laten-maken-zzp", "primaryKeyword": "website laten maken zzp", "intent": "pakket kiezen als zelfstandige" },
+    { "path": "/kosten-website-laten-maken", "primaryKeyword": "wat kost een website laten maken", "intent": "prijsopbouw en terugkerende kosten begrijpen" },
+    { "path": "/werk", "primaryKeyword": "voorbeelden websites laten maken", "intent": "echt opgeleverd werk controleren" },
+    { "path": "/over-landingsite", "primaryKeyword": "over Landingsite.nl", "intent": "verantwoordelijkheid en werkwijze controleren" },
+    { "path": "/algemene-voorwaarden", "primaryKeyword": "algemene voorwaarden Landingsite.nl", "intent": "contractvoorwaarden controleren" },
+    { "path": "/privacybeleid", "primaryKeyword": "privacybeleid Landingsite.nl", "intent": "gegevensverwerking controleren" }
+  ],
+  "notPublished": [
+    {
+      "path": "/website-laten-maken-binnen-48-uur",
+      "reason": "De intentie overlapt te sterk met de homepage en de uitleg op de commerciële pagina's. De 48-uursvoorwaarde blijft daar zichtbaar zonder een extra doorwayachtige pagina."
+    }
+  ]
+}

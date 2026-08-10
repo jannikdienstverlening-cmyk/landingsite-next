@@ -1,0 +1,74 @@
+{
+  "generatedAt": "2026-08-09T17:19:49.284Z",
+  "indexableRoutes": [
+    {
+      "slug": "/",
+      "title": "Website laten maken vanaf €299 | Landingsite.nl",
+      "primaryKeyword": "website laten maken",
+      "canonical": "https://www.landingsite.nl/"
+    },
+    {
+      "slug": "/landingspagina-laten-maken",
+      "title": "Landingspagina laten maken vanaf €299 | Landingsite.nl",
+      "primaryKeyword": "landingspagina laten maken",
+      "canonical": "https://www.landingsite.nl/landingspagina-laten-maken"
+    },
+    {
+      "slug": "/website-laten-maken-zzp",
+      "title": "Website laten maken voor zzp | Landingsite.nl",
+      "primaryKeyword": "website laten maken zzp",
+      "canonical": "https://www.landingsite.nl/website-laten-maken-zzp"
+    },
+    {
+      "slug": "/kosten-website-laten-maken",
+      "title": "Wat kost een website laten maken? | Landingsite.nl",
+      "primaryKeyword": "wat kost een website laten maken",
+      "canonical": "https://www.landingsite.nl/kosten-website-laten-maken"
+    },
+    {
+      "slug": "/werk",
+      "title": "Live voorbeelden van websites | Landingsite.nl",
+      "primaryKeyword": "voorbeelden websites laten maken",
+      "canonical": "https://www.landingsite.nl/werk"
+    },
+    {
+      "slug": "/over-landingsite",
+      "title": "Over Landingsite.nl | Werkwijze en verantwoordelijkheid",
+      "primaryKeyword": "over Landingsite.nl",
+      "canonical": "https://www.landingsite.nl/over-landingsite"
+    },
+    {
+      "slug": "/algemene-voorwaarden",
+      "title": "Algemene voorwaarden bouw en Websitebeheer | Landingsite.nl",
+      "primaryKeyword": "algemene voorwaarden Landingsite.nl",
+      "canonical": "https://www.landingsite.nl/algemene-voorwaarden"
+    },
+    {
+      "slug": "/privacybeleid",
+      "title": "Privacybeleid voor klanten en bezoekers | Landingsite.nl",
+      "primaryKeyword": "privacybeleid Landingsite.nl",
+      "canonical": "https://www.landingsite.nl/privacybeleid"
+    }
+  ],
+  "nonIndexableOrUnregisteredRoutes": [
+    "/start",
+    "/partner",
+    "/partnervoorwaarden",
+    "/verwerkersovereenkomst",
+    "/intake/*",
+    "/beheer/*",
+    "/preview/*",
+    "/admin/*",
+    "/dashboard",
+    "/leads",
+    "/outreach",
+    "/crm",
+    "/insights",
+    "/settings"
+  ],
+  "draftRoutes": [],
+  "decision": {
+    "fastDeliveryPagePublished": false,
+    "reason": "De 48-uursintentie overlapt te sterk met homepage en pakketuitleg."
+  }
+}

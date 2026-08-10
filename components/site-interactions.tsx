@@ -70,6 +70,9 @@ export function MobileNavigation() {
 
 export function AnalyticsLayer() {
   useEffect(() => {
+    if (/google\.|bing\.|duckduckgo\.|ecosia\./i.test(document.referrer)) {
+      trackMarketingEvent('organic_landing', { location: window.location.pathname })
+    }
     const seen = new Set<string>()
     const observer = new IntersectionObserver((entries) => {
       for (const entry of entries) {
@@ -185,7 +188,7 @@ export function ContactForm() {
       setForm(emptyContact)
       requestId.current = crypto.randomUUID()
       setStatus('success')
-      trackMarketingEvent('contact_submit', { form: 'short_question' })
+      trackMarketingEvent('question_form_submit', { form: 'short_question' })
     } catch (caught) {
       setError(caught instanceof Error ? caught.message : 'Verzenden is niet gelukt.')
       setStatus('error')

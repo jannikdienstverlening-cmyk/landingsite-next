@@ -16,7 +16,7 @@ test('homepage toont echte projecten en een consistente hoofdactie', async ({ pa
   await page.goto('/')
 
   await expect(page.locator('h1')).toHaveCount(1)
-  await expect(page.getByRole('heading', { level: 1 })).toContainText('Een website die direct duidelijk maakt')
+  await expect(page.getByRole('heading', { level: 1 })).toContainText('Een website laten maken die direct duidelijk maakt')
   await expect(page.getByRole('link', { name: 'Start mijn website' }).first()).toBeVisible()
   await expect(page.getByRole('link', { name: /Bekijk live werk/ }).first()).toBeVisible()
   await expect(page.getByText('Ontwikkelbegeleiding.nl', { exact: true }).first()).toBeVisible()
