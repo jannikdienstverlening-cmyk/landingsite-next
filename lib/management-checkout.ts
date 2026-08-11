@@ -81,7 +81,7 @@ export async function createOrReuseManagementCheckout(
         : { price_data: {
             currency: 'eur',
             unit_amount: cents(pricingConfig.websiteManagement.monthlyPrice),
-            tax_behavior: 'exclusive' as const,
+            tax_behavior: pricingConfig.vatIncluded ? 'inclusive' as const : 'exclusive' as const,
             recurring: { interval: SUBSCRIPTION_INTERVAL },
             product_data: {
               name: pricingConfig.websiteManagement.name,
@@ -107,7 +107,7 @@ export async function createOrReuseManagementCheckout(
     billing_address_collection: 'required',
     custom_text: {
       submit: {
-        message: `Je start Websitebeheer voor €${pricingConfig.websiteManagement.monthlyPrice} per maand excl. btw. De eerste afschrijving vindt plaats na je bevestiging. Daarna wordt het bedrag maandelijks afgeschreven.`,
+        message: `Je start Websitebeheer voor €${pricingConfig.websiteManagement.monthlyPrice} per maand inclusief btw. De eerste afschrijving vindt plaats na je bevestiging. Daarna wordt het bedrag maandelijks afgeschreven.`,
       },
       after_submit: {
         message: 'Je ontvangt een bevestiging en kunt facturen, betaalgegevens en opzegging daarna beheren via je beveiligde klantpagina.',

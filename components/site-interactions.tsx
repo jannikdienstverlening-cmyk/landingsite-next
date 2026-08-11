@@ -7,11 +7,11 @@ import type { CommercialPackageId } from '@/config/commercial'
 import { trackMarketingEvent, type MarketingEvent } from '@/lib/analytics'
 
 const navigation = [
-  ['Werk', '#werk'],
-  ['Aanpak', '#aanpak'],
-  ['Pakketten', '#pakketten'],
-  ['Beheer', '#beheer'],
-  ['FAQ', '#faq'],
+  ['Werk', '/#werk'],
+  ['Aanpak', '/#aanpak'],
+  ['Pakketten', '/#pakketten'],
+  ['Beheer', '/#beheer'],
+  ['FAQ', '/#faq'],
 ]
 
 export function MobileNavigation() {
@@ -60,8 +60,9 @@ export function MobileNavigation() {
         <span /><span />
       </button>
       <nav ref={menu} className={`studio-mobile-nav${open ? ' is-open' : ''}`} id="studio-mobile-nav" aria-label="Mobiele navigatie" aria-hidden={!open}>
-        {navigation.map(([label, href]) => <Link href={`/${href}`} key={href} onClick={() => setOpen(false)}>{label}</Link>)}
+        {navigation.map(([label, href]) => <Link href={href} key={href} onClick={() => setOpen(false)}>{label}</Link>)}
         <Link href="/partner" onClick={() => setOpen(false)}>Partner</Link>
+        <Link href="/blog" onClick={() => setOpen(false)}>Blog</Link>
         <Link className="button button--primary" href="/start" onClick={() => setOpen(false)} data-analytics-event="hero_start_click">Start mijn website</Link>
       </nav>
     </>

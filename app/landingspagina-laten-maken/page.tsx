@@ -34,7 +34,7 @@ export default function LandingPageServicePage() {
       <header className="seo-hero">
         <div className="studio-shell seo-hero__grid">
           <div><p className="overline">Eén pagina · één hoofdactie</p><h1>{content.h1}</h1><p className="seo-hero__intro">Een landingspagina laat bezoekers zonder omwegen zien wat je aanbiedt, voor wie het bedoeld is en hoe ze reageren. Je krijgt indexeerbare HTML, een mobiele uitwerking en een formulier dat vóór oplevering wordt gecontroleerd.</p></div>
-          <dl className="seo-hero__facts"><div><dt>Bouwprijs</dt><dd>{euro(starter.oneTimePrice)} excl. btw</dd></div><div><dt>Eerste betaling</dt><dd>{euro(packageFirstPayment('starter'))} excl. btw</dd></div><div><dt>Daarna</dt><dd>{euro(commercialConfig.management.monthlyPrice)} p/m voor beheer</dd></div></dl>
+          <dl className="seo-hero__facts"><div><dt>Bouwprijs</dt><dd>{euro(starter.oneTimePrice)} incl. btw</dd></div><div><dt>Eerste betaling</dt><dd>{euro(packageFirstPayment('starter'))} incl. btw</dd></div><div><dt>Daarna</dt><dd>{euro(commercialConfig.management.monthlyPrice)} p/m incl. btw</dd></div></dl>
         </div>
         <div className="studio-shell"><StartCta compact /><PageProvenance updatedAt={content.updatedAt} /></div>
       </header>

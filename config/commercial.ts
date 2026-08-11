@@ -1,7 +1,8 @@
 export const commercialConfig = {
   currency: 'EUR',
   vatRate: 0.21,
-  pricesIncludeVat: false,
+  pricesIncludeVat: true,
+  stripeTaxBehavior: 'inclusive',
   firstVersion: {
     hours: 48,
     startsAfter: 'payment-and-complete-intake',
@@ -124,9 +125,18 @@ export function packageSpecs(packageId: CommercialPackageId) {
 }
 
 export function vatFor(amount: number) {
-  return Math.round(amount * commercialConfig.vatRate * 100) / 100
+  const vat = commercialConfig.pricesIncludeVat
+    ? amount - (amount / (1 + commercialConfig.vatRate))
+    : amount * commercialConfig.vatRate
+  return Math.round(vat * 100) / 100
+}
+
+export function amountExcludingVat(amount: number) {
+  if (!commercialConfig.pricesIncludeVat) return Math.round(amount * 100) / 100
+  return Math.round((amount - vatFor(amount)) * 100) / 100
 }
 
 export function amountIncludingVat(amount: number) {
+  if (commercialConfig.pricesIncludeVat) return Math.round(amount * 100) / 100
   return Math.round((amount + vatFor(amount)) * 100) / 100
 }

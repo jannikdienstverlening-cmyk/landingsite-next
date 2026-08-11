@@ -29,6 +29,7 @@ export function StudioHeader() {
           <Link href="/#beheer">Beheer</Link>
           <Link href="/#faq">FAQ</Link>
           <Link className="studio-nav__minor" href="/partner">Partner</Link>
+          <Link href="/blog">Blog</Link>
         </nav>
         <Link className="button button--primary studio-header__cta" href="/start" data-analytics-event="hero_start_click" data-analytics-location="header">
           {siteCopy.cta.primary}
@@ -136,7 +137,7 @@ export function StudioHero() {
             <Link className="button button--primary" href="/start" data-analytics-event="hero_start_click" data-analytics-location="hero">Start mijn website</Link>
             <a className="button button--text" href="#werk" data-analytics-event="hero_work_click">Bekijk live werk <span aria-hidden="true">↘</span></a>
           </div>
-          <p className="studio-hero__micro">Bouw vanaf €{commercialConfig.packages.starter.oneTimePrice} · daarna €{commercialConfig.management.monthlyPrice} p/m voor Hosting & Websitebeheer · excl. btw</p>
+          <p className="studio-hero__micro">Bouw vanaf €{commercialConfig.packages.starter.oneTimePrice} · daarna €{commercialConfig.management.monthlyPrice} p/m voor Hosting & Websitebeheer · incl. btw</p>
           <p className="studio-hero__trust">Vaste prijzen · domein blijft van jou · maandelijks opzegbaar beheer</p>
         </div>
 
@@ -242,11 +243,11 @@ export function Pricing() {
               <div>{item.recommended && <span>Aanbevolen</span>}<h3>{item.name}</h3></div>
               <p>{item.audience}</p>
             </header>
-            <div className="pricing-option__price"><strong>€{item.oneTimePrice}</strong><span>eenmalige bouwprijs · excl. btw</span></div>
+            <div className="pricing-option__price"><strong>€{item.oneTimePrice}</strong><span>eenmalige bouwprijs · incl. btw</span></div>
             <div className="pricing-option__today">
               <span>+ €{commercialConfig.management.monthlyPrice} eerste maand beheer</span>
-              <strong>Eerste betaling: €{packageFirstPayment(id)} excl. btw</strong>
-              <small>Daarna €{commercialConfig.management.monthlyPrice} p/m excl. btw</small>
+              <strong>Eerste betaling: €{packageFirstPayment(id)} incl. btw</strong>
+              <small>Daarna €{commercialConfig.management.monthlyPrice} p/m incl. btw</small>
             </div>
             <dl className="pricing-specs">{packageSpecs(id).map((spec) => <div key={spec.label}><dt>{spec.label}</dt><dd>{spec.value}</dd></div>)}</dl>
             <ul>{item.features.map((feature) => <li key={feature}>{feature}</li>)}</ul>
@@ -254,7 +255,7 @@ export function Pricing() {
           </article>
         ))}
       </div>
-      <div className="studio-shell pricing-after"><strong>Daarna wordt alleen €{commercialConfig.management.monthlyPrice} per maand voor Hosting & Websitebeheer geïncasseerd.</strong><span>Exclusief btw · maandelijks opzegbaar tegen het einde van de lopende betaalperiode.</span></div>
+      <div className="studio-shell pricing-after"><strong>Daarna wordt alleen €{commercialConfig.management.monthlyPrice} per maand voor Hosting & Websitebeheer geïncasseerd.</strong><span>Inclusief btw · maandelijks opzegbaar tegen het einde van de lopende betaalperiode.</span></div>
     </section>
   )
 }
@@ -268,7 +269,7 @@ export function ManagementSection() {
           <p className="overline">Hosting & Websitebeheer</p>
           <h2>Ook na oplevering blijft iemand verantwoordelijk.</h2>
           <p>Na oplevering hoef je niet zelf uit te zoeken waar de website draait, wie updates uitvoert of waarom een formulier niet meer aankomt.</p>
-          <div className="management-price"><strong>€{management.monthlyPrice}</strong><span>per maand · excl. btw</span></div>
+          <div className="management-price"><strong>€{management.monthlyPrice}</strong><span>per maand · incl. btw</span></div>
         </div>
         <div className="management-details">
           <ul>{management.features.map((feature) => <li key={feature}>{feature}</li>)}</ul>
@@ -293,7 +294,7 @@ export function FAQAndClose({ faqs }: { faqs: StudioFaq[] }) {
       <section className="studio-section studio-close">
         <div className="studio-shell studio-close__inner">
           <div><p className="overline">Klaar om te starten?</p><h2>Zet je website eindelijk goed neer.</h2><p>Kies je pakket, rond de betaling af en vul de intake in. Binnen 48 uur ontvang je de eerste werkende versie.</p></div>
-          <div><Link className="button button--primary" href="/start" data-analytics-event="hero_start_click" data-analytics-location="closing">Start mijn website</Link><a href="/werk" data-analytics-event="hero_work_click">Bekijk live werk</a><span>Vanaf €299 eenmalig · daarna €79 p/m · excl. btw</span></div>
+          <div><Link className="button button--primary" href="/start" data-analytics-event="hero_start_click" data-analytics-location="closing">Start mijn website</Link><a href="/werk" data-analytics-event="hero_work_click">Bekijk live werk</a><span>Vanaf €299 eenmalig · daarna €79 p/m · incl. btw</span></div>
         </div>
       </section>
       <section className="studio-section studio-contact" id="contact">

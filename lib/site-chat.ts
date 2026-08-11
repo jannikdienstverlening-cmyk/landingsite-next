@@ -23,12 +23,12 @@ function knowledgeBase() {
 Feiten over Landingsite.nl:
 - Doelgroep: zzp'ers en kleine bedrijven die een professionele landingspagina willen.
 - Eerste versie: binnen 48 uur na succesvolle bouwbetaling en ontvangst van een complete intake. Dit is geen garantie bij ontbrekende input of extra wensen.
-- Starter: EUR ${buildPackages.starter.oneTimePrice} eenmalig exclusief btw, voor één duidelijke dienst, product of aanbod. De eerste betaling is EUR ${packageFirstPayment('starter')} exclusief btw inclusief de eerste beheermaand.
-- Pro: EUR ${buildPackages.pro.oneTimePrice} eenmalig exclusief btw, voor een onderneming die meer uitleg, bewijs en inhoud nodig heeft. De eerste betaling is EUR ${packageFirstPayment('pro')} exclusief btw inclusief de eerste beheermaand.
-- Premium: EUR ${buildPackages.premium.oneTimePrice} eenmalig exclusief btw, voor een onderneming die de volledige website wil laten uitwerken. De eerste betaling is EUR ${packageFirstPayment('premium')} exclusief btw inclusief de eerste beheermaand.
-- Hosting & Websitebeheer: EUR ${websiteManagement.monthlyPrice} per maand exclusief btw. De eerste maand wordt samen met de bouwprijs afgerekend.
+- Starter: EUR ${buildPackages.starter.oneTimePrice} eenmalig inclusief btw, voor één duidelijke dienst, product of aanbod. De eerste betaling is EUR ${packageFirstPayment('starter')} inclusief btw en bevat de eerste beheermaand.
+- Pro: EUR ${buildPackages.pro.oneTimePrice} eenmalig inclusief btw, voor een onderneming die meer uitleg, bewijs en inhoud nodig heeft. De eerste betaling is EUR ${packageFirstPayment('pro')} inclusief btw en bevat de eerste beheermaand.
+- Premium: EUR ${buildPackages.premium.oneTimePrice} eenmalig inclusief btw, voor een onderneming die de volledige website wil laten uitwerken. De eerste betaling is EUR ${packageFirstPayment('premium')} inclusief btw en bevat de eerste beheermaand.
+- Hosting & Websitebeheer: EUR ${websiteManagement.monthlyPrice} per maand inclusief btw. De eerste maand wordt samen met de bouwprijs afgerekend.
 - Websitebeheer bevat managed hosting, SSL, back-ups, beveiligings- en technische updates, monitoring, controle van formulieren, ondersteuning, domeinkoppeling en maximaal ${websiteManagement.includedChangeMinutes} minuten kleine wijzigingen per kalendermaand.
-- De eerste betaling bestaat uit de eenmalige bouwprijs plus EUR ${websiteManagement.monthlyPrice} voor de eerste beheermaand. Daarna volgt maandelijks EUR ${websiteManagement.monthlyPrice} exclusief btw.
+- De eerste betaling bestaat uit de eenmalige bouwprijs plus EUR ${websiteManagement.monthlyPrice} voor de eerste beheermaand. Daarna volgt maandelijks EUR ${websiteManagement.monthlyPrice} inclusief btw.
 - Websitebeheer is per maand opzegbaar volgens de voorwaarden.
 - Live voorbeelden: Ontwikkelbegeleiding RH, WIA Management en AIbouwers.nl.
 - Contact: bezoekers kunnen het contactformulier onderaan de homepage gebruiken. Er wordt doorgaans binnen een werkdag gereageerd.
@@ -47,18 +47,18 @@ function automaticAnswer(question: string) {
 
   if (asksAboutPackages) {
     if (/starter/.test(normalized)) {
-      answers.push(`Voor Starter betaal je bij de start €${packageFirstPayment('starter')} exclusief btw: €${buildPackages.starter.oneTimePrice} voor de bouw en €${websiteManagement.monthlyPrice} voor de eerste maand Hosting & Websitebeheer. Daarna betaal je €${websiteManagement.monthlyPrice} per maand exclusief btw.`)
+      answers.push(`Voor Starter betaal je bij de start €${packageFirstPayment('starter')} inclusief btw: €${buildPackages.starter.oneTimePrice} voor de bouw en €${websiteManagement.monthlyPrice} voor de eerste maand Hosting & Websitebeheer. Daarna betaal je €${websiteManagement.monthlyPrice} per maand inclusief btw.`)
     } else if (/\bpro\b/.test(normalized)) {
-      answers.push(`Voor Pro betaal je bij de start €${packageFirstPayment('pro')} exclusief btw: €${buildPackages.pro.oneTimePrice} voor de bouw en €${websiteManagement.monthlyPrice} voor de eerste maand Hosting & Websitebeheer. Daarna betaal je €${websiteManagement.monthlyPrice} per maand exclusief btw.`)
+      answers.push(`Voor Pro betaal je bij de start €${packageFirstPayment('pro')} inclusief btw: €${buildPackages.pro.oneTimePrice} voor de bouw en €${websiteManagement.monthlyPrice} voor de eerste maand Hosting & Websitebeheer. Daarna betaal je €${websiteManagement.monthlyPrice} per maand inclusief btw.`)
     } else if (/premium/.test(normalized)) {
-      answers.push(`Voor Premium betaal je bij de start €${packageFirstPayment('premium')} exclusief btw: €${buildPackages.premium.oneTimePrice} voor de bouw en €${websiteManagement.monthlyPrice} voor de eerste maand Hosting & Websitebeheer. Daarna betaal je €${websiteManagement.monthlyPrice} per maand exclusief btw.`)
+      answers.push(`Voor Premium betaal je bij de start €${packageFirstPayment('premium')} inclusief btw: €${buildPackages.premium.oneTimePrice} voor de bouw en €${websiteManagement.monthlyPrice} voor de eerste maand Hosting & Websitebeheer. Daarna betaal je €${websiteManagement.monthlyPrice} per maand inclusief btw.`)
     } else {
-      answers.push(`Starter kost €${buildPackages.starter.oneTimePrice}, Pro €${buildPackages.pro.oneTimePrice} en Premium €${buildPackages.premium.oneTimePrice} eenmalig exclusief btw. Bij de start komt daar voor ieder pakket €${websiteManagement.monthlyPrice} voor de eerste beheermaand bij. Daarna betaal je alleen €${websiteManagement.monthlyPrice} per maand exclusief btw.`)
+      answers.push(`Starter kost €${buildPackages.starter.oneTimePrice}, Pro €${buildPackages.pro.oneTimePrice} en Premium €${buildPackages.premium.oneTimePrice} eenmalig inclusief btw. Bij de start komt daar voor ieder pakket €${websiteManagement.monthlyPrice} voor de eerste beheermaand bij. Daarna betaal je alleen €${websiteManagement.monthlyPrice} per maand inclusief btw.`)
     }
   }
 
   if (asksAboutManagement) {
-    answers.push(`Hosting & Websitebeheer kost €${websiteManagement.monthlyPrice} per maand exclusief btw. De eerste maand wordt tegelijk met de bouwprijs afgerekend. Het bevat hosting, SSL, back-ups, beveiligingsupdates, monitoring, formuliercontrole, ondersteuning en maximaal ${websiteManagement.includedChangeMinutes} minuten kleine wijzigingen per betaalmaand.`)
+    answers.push(`Hosting & Websitebeheer kost €${websiteManagement.monthlyPrice} per maand inclusief btw. De eerste maand wordt tegelijk met de bouwprijs afgerekend. Het bevat hosting, SSL, back-ups, beveiligingsupdates, monitoring, formuliercontrole, ondersteuning en maximaal ${websiteManagement.includedChangeMinutes} minuten kleine wijzigingen per betaalmaand.`)
   }
 
   if (asksAboutTiming) {

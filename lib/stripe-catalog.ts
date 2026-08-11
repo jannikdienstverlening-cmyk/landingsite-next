@@ -33,7 +33,7 @@ export function validateStripeCatalogPrice(entry: StripeCatalogEntry, price: Str
   if (!price.active) errors.push('prijs is niet actief')
   if (price.currency !== 'eur') errors.push(`valuta is ${price.currency}, verwacht eur`)
   if (price.unit_amount !== cents(entry.amount)) errors.push(`bedrag is ${price.unit_amount}, verwacht ${cents(entry.amount)} cent`)
-  if (price.tax_behavior !== 'exclusive') errors.push(`tax_behavior is ${price.tax_behavior}, verwacht exclusive`)
+  if (price.tax_behavior !== commercialConfig.stripeTaxBehavior) errors.push(`tax_behavior is ${price.tax_behavior}, verwacht ${commercialConfig.stripeTaxBehavior}`)
   if (entry.recurring) {
     if (price.type !== 'recurring') errors.push(`type is ${price.type}, verwacht recurring`)
     if (price.recurring?.interval !== 'month' || price.recurring.interval_count !== 1) errors.push('beheerinterval is niet exact één maand')

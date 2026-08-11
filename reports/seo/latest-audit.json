@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-08-09T17:19:49.284Z",
+  "generatedAt": "2026-08-11T14:49:34.798Z",
   "indexableRoutes": [
     {
       "slug": "/",
@@ -32,6 +32,12 @@
       "canonical": "https://www.landingsite.nl/werk"
     },
     {
+      "slug": "/blog",
+      "title": "Websiteblog voor ondernemers | Landingsite.nl",
+      "primaryKeyword": "webdesign blog voor ondernemers",
+      "canonical": "https://www.landingsite.nl/blog"
+    },
+    {
       "slug": "/over-landingsite",
       "title": "Over Landingsite.nl | Werkwijze en verantwoordelijkheid",
       "primaryKeyword": "over Landingsite.nl",
@@ -48,6 +54,18 @@
       "title": "Privacybeleid voor klanten en bezoekers | Landingsite.nl",
       "primaryKeyword": "privacybeleid Landingsite.nl",
       "canonical": "https://www.landingsite.nl/privacybeleid"
+    },
+    {
+      "slug": "/blog/hoeveel-paginas-heeft-een-zakelijke-website-nodig",
+      "title": "Hoeveel pagina's heeft een zakelijke website nodig? | Landingsite.nl",
+      "primaryKeyword": "hoeveel pagina's heeft een zakelijke website nodig",
+      "canonical": "https://www.landingsite.nl/blog/hoeveel-paginas-heeft-een-zakelijke-website-nodig"
+    },
+    {
+      "slug": "/blog/wat-moet-er-bovenaan-je-website-staan",
+      "title": "Wat moet er bovenaan je website staan? | Landingsite.nl",
+      "primaryKeyword": "wat moet er bovenaan een website staan",
+      "canonical": "https://www.landingsite.nl/blog/wat-moet-er-bovenaan-je-website-staan"
     }
   ],
   "nonIndexableOrUnregisteredRoutes": [

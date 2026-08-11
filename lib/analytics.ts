@@ -22,6 +22,7 @@ export type MarketingEvent =
   | 'social_feed_view'
   | 'social_post_open'
   | 'partner_page_view'
+  | 'blog_open'
   | 'customer_portal_open'
 
 declare global {
@@ -33,7 +34,7 @@ declare global {
 export function trackMarketingEvent(event: MarketingEvent, properties: Record<string, string> = {}) {
   if (typeof window === 'undefined') return
   const query = new URLSearchParams(window.location.search)
-  const allowedPropertyKeys = new Set(['location', 'project', 'package', 'section', 'form', 'question_index', 'platform'])
+  const allowedPropertyKeys = new Set(['location', 'project', 'package', 'section', 'form', 'question_index', 'platform', 'slug'])
   const safeProperties = Object.fromEntries(
     Object.entries(properties).filter(([key, value]) => allowedPropertyKeys.has(key) && value.length <= 100),
   )

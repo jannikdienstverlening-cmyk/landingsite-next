@@ -31,7 +31,7 @@ function buildLineItem(pakket: PakketId): Stripe.Checkout.SessionCreateParams.Li
         description: 'Eenmalige bouwprijs voor het gekozen websitepakket.',
       },
       unit_amount: info.prijs,
-      tax_behavior: 'exclusive',
+      tax_behavior: commercialConfig.stripeTaxBehavior,
     },
     quantity: 1,
   }
@@ -50,7 +50,7 @@ function managementLineItem(): Stripe.Checkout.SessionCreateParams.LineItem {
       },
       unit_amount: cents(commercialConfig.management.monthlyPrice),
       recurring: { interval: 'month' },
-      tax_behavior: 'exclusive',
+      tax_behavior: commercialConfig.stripeTaxBehavior,
     },
     quantity: 1,
   }
@@ -125,7 +125,7 @@ export async function POST(request: NextRequest) {
       }],
       custom_text: {
         submit: {
-          message: `${info.naam}: ${info.prijs_label} eenmalig plus de eerste maand beheer van €${commercialConfig.management.monthlyPrice}. Eerste betaling €${packageFirstPayment(parsed.data.pakket)} excl. btw; daarna €${commercialConfig.management.monthlyPrice} per maand.`,
+          message: `${info.naam}: ${info.prijs_label} inclusief btw plus de eerste maand beheer van €${commercialConfig.management.monthlyPrice} inclusief btw. Eerste betaling €${packageFirstPayment(parsed.data.pakket)} inclusief btw; daarna €${commercialConfig.management.monthlyPrice} per maand inclusief btw.`,
         },
         after_submit: {
           message: 'Na de betaling ga je direct door naar de beveiligde intake. De 48 uur starten zodra die intake compleet is.',

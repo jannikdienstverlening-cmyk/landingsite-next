@@ -5,6 +5,7 @@ import { STRIPE_BUILD_PRICE_ENV, STRIPE_MANAGEMENT_PRICE_ENV, SUBSCRIPTION_INTER
 
 const PACKAGE_IDS = Object.keys(pricingConfig.buildPackages) as BuildPackageId[]
 const ALLOW_LIVE = process.argv.includes('--allow-live')
+const ARCHIVE_OLD = process.argv.includes('--archive-old')
 
 async function loadLocalEnvironment() {
   try {
@@ -43,7 +44,7 @@ async function syncPrice(stripe: Stripe, options: {
   const prices = await stripe.prices.list({ product: product.id, active: true, limit: 100 })
   let price = prices.data.find((candidate) => candidate.currency === 'eur'
     && candidate.unit_amount === cents(options.amount)
-    && candidate.tax_behavior === 'exclusive'
+    && candidate.tax_behavior === (pricingConfig.vatIncluded ? 'inclusive' : 'exclusive')
     && (options.recurring ? candidate.recurring?.interval === SUBSCRIPTION_INTERVAL : candidate.type === 'one_time'))
 
   if (!price) {
@@ -51,7 +52,7 @@ async function syncPrice(stripe: Stripe, options: {
       product: product.id,
       currency: 'eur',
       unit_amount: cents(options.amount),
-      tax_behavior: 'exclusive',
+      tax_behavior: pricingConfig.vatIncluded ? 'inclusive' : 'exclusive',
       ...(options.recurring ? { recurring: { interval: SUBSCRIPTION_INTERVAL } } : {}),
       nickname: options.nickname,
       lookup_key: options.catalogKey,
@@ -61,7 +62,9 @@ async function syncPrice(stripe: Stripe, options: {
   }
 
   await stripe.products.update(product.id, { default_price: price.id })
-  for (const oldPrice of prices.data) if (oldPrice.id !== price.id) await stripe.prices.update(oldPrice.id, { active: false })
+  if (ARCHIVE_OLD) {
+    for (const oldPrice of prices.data) if (oldPrice.id !== price.id) await stripe.prices.update(oldPrice.id, { active: false })
+  }
   return price.id
 }
 
@@ -122,7 +125,7 @@ async function main() {
     }
   }
 
-  console.log(JSON.stringify({ mode: liveMode ? 'live' : 'test', accountId: account.id, prices, webhookEndpoint }, null, 2))
+  console.log(JSON.stringify({ mode: liveMode ? 'live' : 'test', accountId: account.id, prices, webhookEndpoint, archivedOldPrices: ARCHIVE_OLD }, null, 2))
 }
 
 main().catch((error) => {

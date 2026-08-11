@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict'
 import { readFile } from 'node:fs/promises'
 import test from 'node:test'
-import { commercialConfig, packageFirstPayment } from '../config/commercial'
+import { amountExcludingVat, amountIncludingVat, commercialConfig, packageFirstPayment, vatFor } from '../config/commercial'
 
 test('commerciële configuratie bevat de definitieve bedragen', () => {
   assert.equal(commercialConfig.packages.starter.oneTimePrice, 299)
@@ -9,12 +9,22 @@ test('commerciële configuratie bevat de definitieve bedragen', () => {
   assert.equal(commercialConfig.packages.premium.oneTimePrice, 899)
   assert.equal(commercialConfig.management.monthlyPrice, 79)
   assert.equal(commercialConfig.management.includedChangeMinutes, 20)
+  assert.equal(commercialConfig.pricesIncludeVat, true)
+  assert.equal(commercialConfig.stripeTaxBehavior, 'inclusive')
 })
 
 test('eerste betalingen combineren bouw en eerste beheermaand', () => {
   assert.equal(packageFirstPayment('starter'), 378)
   assert.equal(packageFirstPayment('pro'), 578)
   assert.equal(packageFirstPayment('premium'), 978)
+})
+
+test('btw zit in de getoonde en af te schrijven bedragen', () => {
+  assert.equal(amountIncludingVat(378), 378)
+  assert.equal(amountExcludingVat(378), 312.4)
+  assert.equal(vatFor(378), 65.6)
+  assert.equal(amountIncludingVat(79), 79)
+  assert.equal(vatFor(79), 13.71)
 })
 
 test('primaire Stripe-checkout gebruikt subscription mode en twee regels', async () => {

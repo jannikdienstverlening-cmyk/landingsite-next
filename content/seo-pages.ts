@@ -1,3 +1,5 @@
+import { blogPostCanonical, blogPosts } from './blog-posts'
+
 export type SeoPageStatus = 'draft' | 'awaiting-review' | 'approved' | 'published' | 'archived'
 
 export type SeoPageEntry = {
@@ -22,8 +24,12 @@ export type SeoPageEntry = {
 
 const baseUrl = 'https://www.landingsite.nl'
 const verifiedAt = '2026-08-09'
+const today = new Date().toISOString().slice(0, 10)
+const publicBlogPaths = blogPosts
+  .filter((post) => (post.status === 'approved' || post.status === 'published') && post.publishedAt <= today)
+  .map((post) => `/blog/${post.slug}`)
 
-export const seoPages: SeoPageEntry[] = [
+const coreSeoPages: SeoPageEntry[] = [
   {
     slug: '/',
     status: 'published',
@@ -37,7 +43,7 @@ export const seoPages: SeoPageEntry[] = [
     author: 'Jannik', reviewer: 'Jannik', verifiedAt, updatedAt: verifiedAt,
     indexable: true, includedInSitemap: true,
     sources: ['config/commercial.ts', 'data/portfolio.ts', 'config/verified-claims.ts'],
-    relatedPages: ['/landingspagina-laten-maken', '/website-laten-maken-zzp', '/kosten-website-laten-maken', '/werk', '/over-landingsite', '/start'],
+    relatedPages: ['/landingspagina-laten-maken', '/website-laten-maken-zzp', '/kosten-website-laten-maken', '/werk', '/blog', '/over-landingsite', '/start'],
   },
   {
     slug: '/landingspagina-laten-maken',
@@ -76,7 +82,7 @@ export const seoPages: SeoPageEntry[] = [
     secondaryKeywords: ['website laten maken kosten', 'prijs website laten maken', 'maandelijkse kosten website'],
     searchIntent: 'Prijsopbouw, pakketverschillen en terugkerende kosten begrijpen',
     title: 'Wat kost een website laten maken? | Landingsite.nl',
-    description: 'Bekijk de bouwprijzen, eerste betaling, btw en maandelijkse beheerkosten. Starter €299, Pro €499 en Premium €899, exclusief btw.',
+    description: 'Bekijk de bouwprijzen, eerste betaling en maandelijkse beheerkosten. Starter €299, Pro €499 en Premium €899, inclusief btw.',
     canonical: `${baseUrl}/kosten-website-laten-maken`,
     h1: 'Wat kost een website laten maken?',
     author: 'Jannik', reviewer: 'Jannik', verifiedAt, updatedAt: verifiedAt,
@@ -98,6 +104,21 @@ export const seoPages: SeoPageEntry[] = [
     indexable: true, includedInSitemap: true,
     sources: ['data/portfolio.ts', 'lokale projectscreenshots'],
     relatedPages: ['/', '/landingspagina-laten-maken', '/website-laten-maken-zzp', '/over-landingsite', '/start'],
+  },
+  {
+    slug: '/blog',
+    status: 'published',
+    primaryKeyword: 'webdesign blog voor ondernemers',
+    secondaryKeywords: ['website tips voor ondernemers', 'blog over websites', 'landingspagina tips'],
+    searchIntent: 'Praktische informatie over website-inhoud, ontwerp en beheer lezen',
+    title: 'Websiteblog voor ondernemers | Landingsite.nl',
+    description: 'Praktische artikelen over websites, landingspagina\'s, inhoud en beheer voor zzp en mkb. Iedere vrijdag een nieuwe editie.',
+    canonical: `${baseUrl}/blog`,
+    h1: 'Vrijdagblog over websites die duidelijk werken.',
+    author: 'Jannik', reviewer: 'Jannik', verifiedAt: '2026-08-11', updatedAt: '2026-08-11',
+    indexable: true, includedInSitemap: true,
+    sources: ['content/blog-posts.ts'],
+    relatedPages: ['/', '/werk', '/start', ...publicBlogPaths],
   },
   {
     slug: '/over-landingsite',
@@ -145,6 +166,31 @@ export const seoPages: SeoPageEntry[] = [
     relatedPages: ['/', '/algemene-voorwaarden', '/start'],
   },
 ]
+
+const blogSeoPages: SeoPageEntry[] = blogPosts.map((post) => {
+  const publicOnDate = (post.status === 'approved' || post.status === 'published') && post.publishedAt <= today
+  return {
+    slug: `/blog/${post.slug}`,
+    status: post.status,
+    primaryKeyword: post.primaryKeyword,
+    secondaryKeywords: post.secondaryKeywords,
+    searchIntent: post.searchIntent,
+    title: `${post.title} | Landingsite.nl`,
+    description: post.description,
+    canonical: blogPostCanonical(post),
+    h1: post.title,
+    author: post.author,
+    reviewer: post.reviewer,
+    verifiedAt: post.updatedAt,
+    updatedAt: post.updatedAt,
+    indexable: publicOnDate,
+    includedInSitemap: publicOnDate,
+    sources: post.sources,
+    relatedPages: ['/blog', '/werk', '/', '/start'],
+  }
+})
+
+export const seoPages: SeoPageEntry[] = [...coreSeoPages, ...blogSeoPages]
 
 export const publishedSeoPages = seoPages.filter((page) =>
   (page.status === 'approved' || page.status === 'published') && page.indexable,

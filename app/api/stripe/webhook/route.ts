@@ -118,7 +118,7 @@ async function markBuildPaid(session: Stripe.Checkout.Session, eventId: string) 
 
   const notificationAction = 'build_purchase_notification_sent'
   if (!(await notificationWasSent(order.id, notificationAction))) {
-    const amount = `${PAKKETTEN[pakket].prijs_label} eenmalig excl. btw`
+    const amount = `${PAKKETTEN[pakket].prijs_label} eenmalig incl. btw`
     await sendCheckedEmail({
       from: process.env.RESEND_FROM ?? 'Landingsite.nl <noreply@landingsite.nl>',
       to: adminRecipient(),
@@ -207,7 +207,7 @@ async function markCombinedCheckoutPaid(session: Stripe.Checkout.Session, eventI
     checkout_session_id: session.id,
     subscription_id: subscriptionId,
     pakket,
-    initial_payment_ex_vat: packageFirstPayment(pakket),
+    initial_payment_including_vat: packageFirstPayment(pakket),
   })
 
   const baseUrl = process.env.NEXT_PUBLIC_BASE_URL ?? 'https://www.landingsite.nl'
@@ -219,7 +219,7 @@ async function markCombinedCheckoutPaid(session: Stripe.Checkout.Session, eventI
       to: adminRecipient(),
       replyTo: email || undefined,
       subject: `Nieuwe aankoop - ${PAKKETTEN[pakket].naam} + Websitebeheer`,
-      html: `<div style="font-family:Arial,sans-serif;line-height:1.6;color:#121315;max-width:620px;margin:auto;padding:32px"><p style="color:#245cff;font-weight:800">Betaling bevestigd door Stripe</p><h1 style="font-size:26px">Nieuwe websiteopdracht</h1><p><strong>Pakket:</strong> ${escapeHtml(PAKKETTEN[pakket].naam)}<br><strong>Eerste betaling:</strong> €${packageFirstPayment(pakket)} excl. btw<br><strong>Daarna:</strong> €${commercialConfig.management.monthlyPrice} per maand excl. btw<br><strong>Bedrijf:</strong> ${escapeHtml(businessName || 'Onbekend')}<br><strong>KvK:</strong> ${escapeHtml(kvkNumber || 'Niet beschikbaar')}<br><strong>E-mail:</strong> ${escapeHtml(email || 'Niet beschikbaar')}</p></div>`,
+      html: `<div style="font-family:Arial,sans-serif;line-height:1.6;color:#121315;max-width:620px;margin:auto;padding:32px"><p style="color:#245cff;font-weight:800">Betaling bevestigd door Stripe</p><h1 style="font-size:26px">Nieuwe websiteopdracht</h1><p><strong>Pakket:</strong> ${escapeHtml(PAKKETTEN[pakket].naam)}<br><strong>Eerste betaling:</strong> €${packageFirstPayment(pakket)} incl. btw<br><strong>Daarna:</strong> €${commercialConfig.management.monthlyPrice} per maand incl. btw<br><strong>Bedrijf:</strong> ${escapeHtml(businessName || 'Onbekend')}<br><strong>KvK:</strong> ${escapeHtml(kvkNumber || 'Niet beschikbaar')}<br><strong>E-mail:</strong> ${escapeHtml(email || 'Niet beschikbaar')}</p></div>`,
     }, `combined-purchase-${session.id}`)
     if (email) {
       await sendCheckedEmail({
@@ -274,7 +274,7 @@ async function markManagementActive(session: Stripe.Checkout.Session, eventId: s
     from: process.env.RESEND_FROM ?? 'Landingsite.nl <noreply@landingsite.nl>',
     to: order.email,
     subject: 'Websitebeheer is actief',
-    html: `<div style="font-family:Arial,sans-serif;line-height:1.6;color:#10231b;max-width:620px;margin:auto;padding:32px"><h1 style="font-size:25px">Websitebeheer is actief</h1><p>Je abonnement van €${pricingConfig.websiteManagement.monthlyPrice} per maand exclusief btw is na jouw toestemming gestart. Via de beveiligde beheerpagina kun je betaalgegevens, facturen en opzegging beheren.</p><p><a href="${escapeHtml(customerUrl)}" style="display:inline-block;background:#147a55;color:#fff;padding:13px 19px;border-radius:999px;text-decoration:none;font-weight:700">Open Websitebeheer</a></p></div>`,
+    html: `<div style="font-family:Arial,sans-serif;line-height:1.6;color:#10231b;max-width:620px;margin:auto;padding:32px"><h1 style="font-size:25px">Websitebeheer is actief</h1><p>Je abonnement van €${pricingConfig.websiteManagement.monthlyPrice} per maand inclusief btw is na jouw toestemming gestart. Via de beveiligde beheerpagina kun je betaalgegevens, facturen en opzegging beheren.</p><p><a href="${escapeHtml(customerUrl)}" style="display:inline-block;background:#147a55;color:#fff;padding:13px 19px;border-radius:999px;text-decoration:none;font-weight:700">Open Websitebeheer</a></p></div>`,
   }, `management-active-${session.id}`)
 
   const notificationAction = 'management_purchase_notification_sent'
@@ -284,7 +284,7 @@ async function markManagementActive(session: Stripe.Checkout.Session, eventId: s
       to: adminRecipient(),
       replyTo: order.email,
       subject: `Nieuw Websitebeheer-abonnement - €${pricingConfig.websiteManagement.monthlyPrice} p/m`,
-      html: `<div style="font-family:Arial,sans-serif;line-height:1.6;color:#10231b;max-width:620px;margin:auto;padding:32px"><p style="color:#147a55;font-weight:800">Abonnement bevestigd door Stripe</p><h1 style="font-size:26px">Websitebeheer is verkocht</h1><p><strong>Bedrag:</strong> €${pricingConfig.websiteManagement.monthlyPrice} per maand excl. btw<br><strong>Klant:</strong> ${escapeHtml(order.email)}<br><strong>Start:</strong> ${escapeHtml(new Date(now).toLocaleDateString('nl-NL'))}</p><p>Het abonnement is actief en gekoppeld aan order ${escapeHtml(orderId)}.</p></div>`,
+      html: `<div style="font-family:Arial,sans-serif;line-height:1.6;color:#10231b;max-width:620px;margin:auto;padding:32px"><p style="color:#147a55;font-weight:800">Abonnement bevestigd door Stripe</p><h1 style="font-size:26px">Websitebeheer is verkocht</h1><p><strong>Bedrag:</strong> €${pricingConfig.websiteManagement.monthlyPrice} per maand incl. btw<br><strong>Klant:</strong> ${escapeHtml(order.email)}<br><strong>Start:</strong> ${escapeHtml(new Date(now).toLocaleDateString('nl-NL'))}</p><p>Het abonnement is actief en gekoppeld aan order ${escapeHtml(orderId)}.</p></div>`,
     }, `management-purchase-${session.id}`)
     await audit(orderId, eventId, notificationAction, null, 'sent', { checkout_session_id: session.id, subscription_id: subscriptionId })
   }

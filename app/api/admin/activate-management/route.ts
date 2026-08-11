@@ -50,7 +50,7 @@ export async function POST(request: NextRequest) {
       from: process.env.RESEND_FROM ?? 'Landingsite.nl <noreply@landingsite.nl>',
       to: order.email,
       subject: 'Je website gaat live: activeer Websitebeheer',
-      html: `<div style="font-family:Arial,sans-serif;line-height:1.6;color:#10231b;max-width:620px;margin:auto;padding:32px"><h1 style="font-size:25px">Je website is klaar voor livegang</h1><p>Websitebeheer wordt pas actief nadat je de aparte Stripe-checkout zelf afrondt. Het kost €${pricingConfig.websiteManagement.monthlyPrice} per maand exclusief btw.</p><p><a href="${escapeHtml(customerPage)}" style="display:inline-block;background:#147a55;color:#fff;padding:13px 19px;border-radius:999px;text-decoration:none;font-weight:700">Websitebeheer activeren</a></p><p>Op deze beveiligde pagina rond je het abonnement af en beheer je daarna je betaalgegevens, facturen en opzegging.</p></div>`,
+      html: `<div style="font-family:Arial,sans-serif;line-height:1.6;color:#10231b;max-width:620px;margin:auto;padding:32px"><h1 style="font-size:25px">Je website is klaar voor livegang</h1><p>Websitebeheer wordt pas actief nadat je de aparte Stripe-checkout zelf afrondt. Het kost €${pricingConfig.websiteManagement.monthlyPrice} per maand inclusief btw.</p><p><a href="${escapeHtml(customerPage)}" style="display:inline-block;background:#147a55;color:#fff;padding:13px 19px;border-radius:999px;text-decoration:none;font-weight:700">Websitebeheer activeren</a></p><p>Op deze beveiligde pagina rond je het abonnement af en beheer je daarna je betaalgegevens, facturen en opzegging.</p></div>`,
     }, { idempotencyKey: `management-link-${order.id}-${checkout.goLiveAt}` })
   } catch (emailError) {
     emailSent = false

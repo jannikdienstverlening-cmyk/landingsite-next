@@ -1,7 +1,7 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
 import { PageProvenance, SeoPage, StartCta } from '@/components/seo-page'
-import { amountIncludingVat, commercialConfig, euro, packageFirstPayment, type CommercialPackageId, vatFor } from '@/config/commercial'
+import { amountExcludingVat, commercialConfig, euro, packageFirstPayment, type CommercialPackageId, vatFor } from '@/config/commercial'
 import { seoPage } from '@/content/seo-pages'
 import { breadcrumbSchema, seoMetadata, serviceSchema } from '@/lib/seo'
 
@@ -15,7 +15,7 @@ export default function WebsiteCostsPage() {
     <SeoPage breadcrumbs={[{ label: 'Kosten website laten maken', href: content.slug }]} schema={schema}>
       <header className="seo-hero">
         <div className="studio-shell seo-hero__grid">
-          <div><p className="overline">Prijsopbouw zonder verrassingen</p><h1>{content.h1}</h1><p className="seo-hero__intro">Je betaalt één keer voor de bouw en daarna maandelijks voor Hosting & Websitebeheer. De eerste beheermaand wordt samen met de bouwprijs afgerekend. Alle bedragen op deze pagina zijn exclusief btw.</p></div>
+          <div><p className="overline">Prijsopbouw zonder verrassingen</p><h1>{content.h1}</h1><p className="seo-hero__intro">Je betaalt één keer voor de bouw en daarna maandelijks voor Hosting & Websitebeheer. De eerste beheermaand wordt samen met de bouwprijs afgerekend. Alle getoonde verkoopprijzen zijn inclusief btw.</p></div>
           <dl className="seo-hero__facts"><div><dt>Bouw</dt><dd>Vanaf {euro(commercialConfig.packages.starter.oneTimePrice)} eenmalig</dd></div><div><dt>Beheer</dt><dd>{euro(commercialConfig.management.monthlyPrice)} per maand</dd></div><div><dt>Opzegging</dt><dd>Per einde van de betaalperiode</dd></div></dl>
         </div>
         <div className="studio-shell"><StartCta compact /><PageProvenance updatedAt={content.updatedAt} /></div>
@@ -23,7 +23,7 @@ export default function WebsiteCostsPage() {
 
       <section className="seo-section seo-light" data-analytics-view="pricing_view">
         <div className="studio-shell"><div className="section-heading"><p className="overline">Volledige berekening</p><h2>Wat betaal je bij de start en daarna?</h2><p>Stripe toont vóór bevestiging de factuurgegevens en het terugkerende bedrag. Onderstaande bedragen komen uit dezelfde centrale configuratie als de checkout.</p></div>
-          <div className="seo-price-table-wrap"><table className="seo-price-table"><caption className="sr-only">Bouwprijs, eerste beheermaand, btw en maandbedrag per pakket</caption><thead><tr><th scope="col">Pakket</th><th scope="col">Bouw</th><th scope="col">Eerste maand beheer</th><th scope="col">Eerste betaling excl. btw</th><th scope="col">Btw</th><th scope="col">Vandaag incl. btw</th><th scope="col">Daarna</th></tr></thead><tbody>{entries.map(([id, item]) => { const initial = packageFirstPayment(id); return <tr key={id}><th scope="row">{item.name}</th><td data-label="Bouw">{euro(item.oneTimePrice)}</td><td data-label="Eerste maand beheer">{euro(commercialConfig.management.monthlyPrice)}</td><td data-label="Eerste betaling excl. btw"><strong>{euro(initial)}</strong></td><td data-label="Btw">{euro(vatFor(initial), 2)}</td><td data-label="Vandaag incl. btw">{euro(amountIncludingVat(initial), 2)}</td><td data-label="Daarna">{euro(commercialConfig.management.monthlyPrice)} p/m excl. btw</td></tr> })}</tbody></table></div>
+          <div className="seo-price-table-wrap"><table className="seo-price-table"><caption className="sr-only">Bouwprijs, eerste beheermaand, inbegrepen btw en maandbedrag per pakket</caption><thead><tr><th scope="col">Pakket</th><th scope="col">Bouw incl. btw</th><th scope="col">Eerste maand beheer incl. btw</th><th scope="col">Eerste betaling incl. btw</th><th scope="col">Waarvan btw</th><th scope="col">Excl. btw</th><th scope="col">Daarna</th></tr></thead><tbody>{entries.map(([id, item]) => { const initial = packageFirstPayment(id); return <tr key={id}><th scope="row">{item.name}</th><td data-label="Bouw incl. btw">{euro(item.oneTimePrice)}</td><td data-label="Eerste maand beheer incl. btw">{euro(commercialConfig.management.monthlyPrice)}</td><td data-label="Eerste betaling incl. btw"><strong>{euro(initial)}</strong></td><td data-label="Waarvan btw">{euro(vatFor(initial), 2)}</td><td data-label="Excl. btw">{euro(amountExcludingVat(initial), 2)}</td><td data-label="Daarna">{euro(commercialConfig.management.monthlyPrice)} p/m incl. btw</td></tr> })}</tbody></table></div>
         </div>
       </section>
 

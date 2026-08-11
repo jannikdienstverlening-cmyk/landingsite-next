@@ -6,6 +6,8 @@ const claims = JSON.parse(await readFile(new URL('../config/banned-public-claims
 const htmlRoutes = [
   { path: '/', canonical: 'https://www.landingsite.nl' },
   { path: '/werk', canonical: 'https://www.landingsite.nl/werk' },
+  { path: '/blog', canonical: 'https://www.landingsite.nl/blog' },
+  { path: '/blog/wat-moet-er-bovenaan-je-website-staan', canonical: 'https://www.landingsite.nl/blog/wat-moet-er-bovenaan-je-website-staan' },
   { path: '/start', noindex: true },
   { path: '/partner', noindex: true },
   { path: '/partnervoorwaarden', noindex: true },
@@ -57,7 +59,7 @@ console.log('OK /robots.txt')
 const sitemapResponse = await fetch(`${baseUrl}/sitemap.xml`)
 if (!sitemapResponse.ok) throw new Error(`/sitemap.xml antwoordt met ${sitemapResponse.status}.`)
 const sitemap = await sitemapResponse.text()
-for (const expected of ['https://www.landingsite.nl', 'https://www.landingsite.nl/werk']) {
+for (const expected of ['https://www.landingsite.nl', 'https://www.landingsite.nl/werk', 'https://www.landingsite.nl/blog', 'https://www.landingsite.nl/blog/wat-moet-er-bovenaan-je-website-staan']) {
   if (!sitemap.includes(`<loc>${expected}</loc>`)) throw new Error(`/sitemap.xml mist ${expected}.`)
 }
 for (const excluded of ['/start', '/partner', '/intake', '/beheer']) {

@@ -7,7 +7,7 @@ export type VerifiedClaim<T> = {
   evidence: string | null
 }
 
-const verifiedAt = '2026-08-09'
+const verifiedAt = '2026-08-10'
 
 export const verifiedClaims = {
   prices: {
@@ -16,6 +16,7 @@ export const verifiedClaims = {
       pro: commercialConfig.packages.pro.oneTimePrice,
       premium: commercialConfig.packages.premium.oneTimePrice,
       management: commercialConfig.management.monthlyPrice,
+      pricesIncludeVat: commercialConfig.pricesIncludeVat,
       firstPayments: {
         starter: packageFirstPayment('starter'),
         pro: packageFirstPayment('pro'),

@@ -25,7 +25,8 @@
 ## Catalogus en configuratie
 
 - `config/commercial.ts` is de enige commerciële bron voor €299, €499, €899 en €79 per maand.
-- `npm run stripe:validate` leest de actieve Price IDs en wijzigt niets. De controle vereist EUR, `tax_behavior=exclusive`, drie `one_time`-prijzen en één maandelijkse recurring prijs van €79.
+- `npm run stripe:validate` leest de actieve Price IDs en wijzigt niets. De controle vereist EUR, `tax_behavior=inclusive`, drie `one_time`-prijzen en één maandelijkse recurring prijs van €79.
+- `npm run stripe:sync` maakt ontbrekende inclusieve testprijzen aan en laat bestaande prijzen actief. Gebruik `--archive-old` pas nadat de nieuwe Price IDs zijn gekoppeld en de checkout is gecontroleerd.
 - `npm run stripe:sync` wijzigt de catalogus. Live wijzigen kan alleen bewust met `--allow-live`.
 - Productie weigert bij serverstart ontbrekende of syntactisch ongeldige Price IDs.
 

@@ -40,7 +40,7 @@ test('Stripe-catalogus verwacht drie eenmalige prijzen en één maandprijs', () 
       active: true,
       currency: 'eur',
       unit_amount: entry.amount * 100,
-      tax_behavior: 'exclusive',
+      tax_behavior: 'inclusive',
       type: entry.recurring ? 'recurring' : 'one_time',
       recurring: entry.recurring ? { interval: 'month', interval_count: 1 } : null,
     } as never))
@@ -48,7 +48,7 @@ test('Stripe-catalogus verwacht drie eenmalige prijzen en één maandprijs', () 
   const management = expectedStripeCatalog.find((entry) => entry.key === 'management')!
   assert.throws(() => validateStripeCatalogPrice(management, {
     id: 'price_wrong', active: true, currency: 'eur', unit_amount: 1500,
-    tax_behavior: 'exclusive', type: 'recurring', recurring: { interval: 'month', interval_count: 1 },
+    tax_behavior: 'inclusive', type: 'recurring', recurring: { interval: 'month', interval_count: 1 },
   } as never), /verwacht 7900 cent/)
 })
 

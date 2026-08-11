@@ -121,7 +121,7 @@ export default function ManagementPage() {
               <h2>Activeer Hosting &amp; Websitebeheer</h2>
               <div className="management-activation-price">
                 <strong>€{pricingConfig.websiteManagement.monthlyPrice}</strong>
-                <span>per maand · exclusief btw</span>
+                <span>per maand · inclusief btw</span>
               </div>
               <p>Deze bestelling is gedaan vóór de gecombineerde checkout. Je bouwprijs is al betaald; via de knop hieronder activeer je het maandelijkse beheer.</p>
               <label className="management-consent-check">

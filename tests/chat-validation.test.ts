@@ -5,7 +5,7 @@ import { chatSchema } from '../lib/validation'
 test('chat accepteert een korte afwisselende conversatie', () => {
   const parsed = chatSchema.safeParse({ messages: [
     { role: 'user', content: 'Wat kost een landingspagina?' },
-    { role: 'assistant', content: 'De bouwprijs start bij 299 euro exclusief btw.' },
+    { role: 'assistant', content: 'De bouwprijs start bij 299 euro inclusief btw.' },
     { role: 'user', content: 'Wanneer is de eerste versie klaar?' },
   ] })
   assert.equal(parsed.success, true)

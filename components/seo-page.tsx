@@ -53,7 +53,7 @@ export function PackageStrip() {
           <h3>{item.name}</h3>
           <p>{item.audience}</p>
           <strong>{euro(item.oneTimePrice)}</strong>
-          <p>Eerste betaling {euro(packageFirstPayment(id))} excl. btw. Daarna {euro(commercialConfig.management.monthlyPrice)} per maand.</p>
+          <p>Eerste betaling {euro(packageFirstPayment(id))} incl. btw. Daarna {euro(commercialConfig.management.monthlyPrice)} per maand incl. btw.</p>
           <Link className={`button ${item.recommended ? 'button--primary' : 'button--outline'} button--full`} href={`/start?pakket=${id}`} data-analytics-event="package_select" data-analytics-package={id}>Kies {item.name}</Link>
         </article>
       ))}

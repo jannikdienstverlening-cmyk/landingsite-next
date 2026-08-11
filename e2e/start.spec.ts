@@ -23,9 +23,10 @@ for (const item of packages) {
     await expect(summary.getByText('Eenmalige bouwprijs').locator('..')).toContainText(
       new RegExp(`\\u20ac\\s*${item.build}`),
     )
-    await expect(summary.getByText('Totaal excl. btw').locator('..')).toContainText(
+    await expect(summary.getByText('Vandaag incl. btw').locator('..')).toContainText(
       new RegExp(`\\u20ac\\s*${item.initial}`),
     )
+    await expect(summary.getByText('Btw inbegrepen (21%)')).toBeVisible()
     await expect(summary.getByText('Eerste maand beheer').locator('..')).toContainText(/\u20ac\s*79/)
     await expect(page.getByRole('checkbox')).not.toBeChecked()
     await expect(page.getByRole('button', { name: 'Betaal veilig via Stripe' })).toBeDisabled()
