@@ -1,6 +1,6 @@
 import type Stripe from 'stripe'
 import { NextRequest } from 'next/server'
-import { cents, commercialConfig, packageFirstPayment } from '@/config/commercial'
+import { activePromotion, cents, commercialConfig, effectiveBuildPrice, effectiveFirstPayment } from '@/config/commercial'
 import { clientIp, checkRateLimit, rateLimitResponse } from '@/lib/rate-limit'
 import { invalidJsonResponse, readJsonBody } from '@/lib/request'
 import { referralAttributionId, referralCookie, rejectCrossOriginMutation } from '@/lib/security'
@@ -75,6 +75,11 @@ export async function POST(request: NextRequest) {
   if (!baseUrl) return Response.json({ error: 'Basis-URL ontbreekt.' }, { status: 500 })
 
   const info = PAKKETTEN[parsed.data.pakket]
+  const checkoutTime = new Date()
+  const promotion = activePromotion(checkoutTime)
+  const promotionApplies = promotion?.packageId === parsed.data.pakket
+  const buildPrice = effectiveBuildPrice(parsed.data.pakket, checkoutTime)
+  const initialPayment = effectiveFirstPayment(parsed.data.pakket, checkoutTime)
   const supabase = getSupabase()
   const attributionId = referralAttributionId(request.cookies.get(referralCookie.name)?.value)
   let validAttributionId: string | null = null
@@ -97,9 +102,14 @@ export async function POST(request: NextRequest) {
       referral_attribution_id: validAttributionId ?? '',
       terms_accepted: 'true',
       terms_version: TERMS_VERSION,
+      promotion_code: promotionApplies ? promotion.code : '',
+      build_price_including_vat: String(buildPrice),
+      initial_payment_including_vat: String(initialPayment),
     }
+    const lineItems = [managementLineItem()]
+    if (buildPrice > 0) lineItems.unshift(buildLineItem(parsed.data.pakket))
     const session = await getStripe().checkout.sessions.create({
-      line_items: [buildLineItem(parsed.data.pakket), managementLineItem()],
+      line_items: lineItems,
       mode: 'subscription',
       payment_method_types: stripePaymentMethods(STRIPE_COMBINED_PAYMENT_METHODS),
       wallet_options: { link: { display: 'never' } },
@@ -125,7 +135,9 @@ export async function POST(request: NextRequest) {
       }],
       custom_text: {
         submit: {
-          message: `${info.naam}: ${info.prijs_label} inclusief btw plus de eerste maand beheer van €${commercialConfig.management.monthlyPrice} inclusief btw. Eerste betaling €${packageFirstPayment(parsed.data.pakket)} inclusief btw; daarna €${commercialConfig.management.monthlyPrice} per maand inclusief btw.`,
+          message: promotionApplies
+            ? `${promotion.name}: de bouwprijs voor Starter is €0. Je betaalt nu €${initialPayment} inclusief btw voor de eerste maand Hosting & Websitebeheer en daarna €${commercialConfig.management.monthlyPrice} per maand inclusief btw. Je bekijkt de eerste versie vóór publicatie.`
+            : `${info.naam}: ${info.prijs_label} inclusief btw plus de eerste maand beheer van €${commercialConfig.management.monthlyPrice} inclusief btw. Eerste betaling €${initialPayment} inclusief btw; daarna €${commercialConfig.management.monthlyPrice} per maand inclusief btw.`,
         },
         after_submit: {
           message: 'Na de betaling ga je direct door naar de beveiligde intake. De 48 uur starten zodra die intake compleet is.',

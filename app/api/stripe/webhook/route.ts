@@ -143,6 +143,10 @@ async function markCombinedCheckoutPaid(session: Stripe.Checkout.Session, eventI
   const kvkNumber = session.custom_fields?.find((field) => field.key === 'kvk')?.numeric?.value ?? ''
   const businessName = session.customer_details?.business_name ?? session.customer_details?.name ?? ''
   const attributionId = session.metadata?.referral_attribution_id || null
+  const promotionCode = session.metadata?.promotion_code || null
+  const buildPrice = Number(session.metadata?.build_price_including_vat ?? PAKKETTEN[pakket].prijs / 100)
+  const initialPayment = Number(session.metadata?.initial_payment_including_vat ?? packageFirstPayment(pakket))
+  if (!Number.isFinite(buildPrice) || !Number.isFinite(initialPayment)) throw new Error(`Checkout ${session.id} bevat ongeldige prijsmetadata.`)
   const now = new Date().toISOString()
   const supabase = getSupabase()
   const { data: existing } = await supabase.from('orders')
@@ -207,7 +211,9 @@ async function markCombinedCheckoutPaid(session: Stripe.Checkout.Session, eventI
     checkout_session_id: session.id,
     subscription_id: subscriptionId,
     pakket,
-    initial_payment_including_vat: packageFirstPayment(pakket),
+    promotion_code: promotionCode,
+    build_price_including_vat: buildPrice,
+    initial_payment_including_vat: initialPayment,
   })
 
   const baseUrl = process.env.NEXT_PUBLIC_BASE_URL ?? 'https://www.landingsite.nl'
@@ -218,15 +224,15 @@ async function markCombinedCheckoutPaid(session: Stripe.Checkout.Session, eventI
       from: process.env.RESEND_FROM ?? 'Landingsite.nl <noreply@landingsite.nl>',
       to: adminRecipient(),
       replyTo: email || undefined,
-      subject: `Nieuwe aankoop - ${PAKKETTEN[pakket].naam} + Websitebeheer`,
-      html: `<div style="font-family:Arial,sans-serif;line-height:1.6;color:#121315;max-width:620px;margin:auto;padding:32px"><p style="color:#245cff;font-weight:800">Betaling bevestigd door Stripe</p><h1 style="font-size:26px">Nieuwe websiteopdracht</h1><p><strong>Pakket:</strong> ${escapeHtml(PAKKETTEN[pakket].naam)}<br><strong>Eerste betaling:</strong> €${packageFirstPayment(pakket)} incl. btw<br><strong>Daarna:</strong> €${commercialConfig.management.monthlyPrice} per maand incl. btw<br><strong>Bedrijf:</strong> ${escapeHtml(businessName || 'Onbekend')}<br><strong>KvK:</strong> ${escapeHtml(kvkNumber || 'Niet beschikbaar')}<br><strong>E-mail:</strong> ${escapeHtml(email || 'Niet beschikbaar')}</p></div>`,
+      subject: `Nieuwe aankoop - ${PAKKETTEN[pakket].naam} + Websitebeheer${promotionCode ? ' (zomeractie)' : ''}`,
+      html: `<div style="font-family:Arial,sans-serif;line-height:1.6;color:#121315;max-width:620px;margin:auto;padding:32px"><p style="color:#245cff;font-weight:800">Betaling bevestigd door Stripe</p><h1 style="font-size:26px">Nieuwe websiteopdracht</h1><p><strong>Pakket:</strong> ${escapeHtml(PAKKETTEN[pakket].naam)}${promotionCode ? '<br><strong>Actie:</strong> Zomeractie 2026' : ''}<br><strong>Bouwprijs:</strong> €${buildPrice} incl. btw<br><strong>Eerste betaling:</strong> €${initialPayment} incl. btw<br><strong>Daarna:</strong> €${commercialConfig.management.monthlyPrice} per maand incl. btw<br><strong>Bedrijf:</strong> ${escapeHtml(businessName || 'Onbekend')}<br><strong>KvK:</strong> ${escapeHtml(kvkNumber || 'Niet beschikbaar')}<br><strong>E-mail:</strong> ${escapeHtml(email || 'Niet beschikbaar')}</p></div>`,
     }, `combined-purchase-${session.id}`)
     if (email) {
       await sendCheckedEmail({
         from: process.env.RESEND_FROM ?? 'Landingsite.nl <noreply@landingsite.nl>',
         to: email,
         subject: 'Je websiteopdracht is gestart',
-        html: `<div style="font-family:Arial,sans-serif;line-height:1.6;color:#121315;max-width:620px;margin:auto;padding:32px"><h1 style="font-size:26px">Betaling ontvangen</h1><p>Je ${escapeHtml(PAKKETTEN[pakket].naam)}-pakket en de eerste maand Hosting & Websitebeheer zijn bevestigd. Vul nu de intake volledig in; vanaf dat moment start de termijn voor de eerste werkende versie.</p><p><a href="${escapeHtml(`${baseUrl}/intake/${session.id}`)}" style="display:inline-block;background:#245cff;color:#fff;padding:13px 19px;text-decoration:none;font-weight:700">Ga naar de intake</a></p><p>Facturen, betaalgegevens en opzegging beheer je via je beveiligde klantpagina: <a href="${escapeHtml(customerUrl)}">open klantpagina</a>.</p></div>`,
+        html: `<div style="font-family:Arial,sans-serif;line-height:1.6;color:#121315;max-width:620px;margin:auto;padding:32px"><h1 style="font-size:26px">Betaling ontvangen</h1><p>Je ${escapeHtml(PAKKETTEN[pakket].naam)}-pakket en de eerste maand Hosting & Websitebeheer zijn bevestigd.${promotionCode ? ' De eenmalige bouwprijs is binnen de zomeractie vervallen.' : ''} Vul nu de intake volledig in; vanaf dat moment start de termijn voor de eerste werkende versie.</p><p>Je ontvangt eerst een preview. We publiceren de website pas nadat je hem hebt bekeken en akkoord hebt gegeven.</p><p><a href="${escapeHtml(`${baseUrl}/intake/${session.id}`)}" style="display:inline-block;background:#245cff;color:#fff;padding:13px 19px;text-decoration:none;font-weight:700">Ga naar de intake</a></p><p>Facturen, betaalgegevens en opzegging beheer je via je beveiligde klantpagina: <a href="${escapeHtml(customerUrl)}">open klantpagina</a>.</p></div>`,
       }, `combined-customer-${session.id}`)
     }
     await audit(order.id, eventId, notificationAction, null, 'sent', { checkout_session_id: session.id, subscription_id: subscriptionId })

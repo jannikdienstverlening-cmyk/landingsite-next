@@ -1,9 +1,10 @@
 import { expect, test } from '@playwright/test'
+import { effectiveBuildPrice, effectiveFirstPayment } from '../config/commercial'
 
 const packages = [
-  { code: 'starter', name: 'Starter', build: 299, initial: 378 },
-  { code: 'pro', name: 'Pro', build: 499, initial: 578 },
-  { code: 'premium', name: 'Premium', build: 899, initial: 978 },
+  { code: 'starter' as const, name: 'Starter' },
+  { code: 'pro' as const, name: 'Pro' },
+  { code: 'premium' as const, name: 'Premium' },
 ]
 
 test('/start forceert geen pakketkeuze', async ({ page }) => {
@@ -15,27 +16,29 @@ test('/start forceert geen pakketkeuze', async ({ page }) => {
 
 for (const item of packages) {
   test(`/start toont de serverprijs van ${item.name}`, async ({ page }) => {
+    const build = effectiveBuildPrice(item.code)
+    const initial = effectiveFirstPayment(item.code)
     await page.goto(`/start?pakket=${item.code}`)
     await expect(page.locator('meta[name="robots"]')).toHaveAttribute('content', /noindex/i)
     await expect(page.locator('.start-package-tabs a.is-active')).toContainText(item.name)
 
     const summary = page.locator('.order-summary')
-    await expect(summary.getByText('Eenmalige bouwprijs').locator('..')).toContainText(
-      new RegExp(`\\u20ac\\s*${item.build}`),
+    await expect(summary.locator('dl > div').first()).toContainText(
+      new RegExp(`\\u20ac\\s*${build}`),
     )
     await expect(summary.getByText('Vandaag incl. btw').locator('..')).toContainText(
-      new RegExp(`\\u20ac\\s*${item.initial}`),
+      new RegExp(`\\u20ac\\s*${initial}`),
     )
     await expect(summary.getByText('Btw inbegrepen (21%)')).toBeVisible()
     await expect(summary.getByText('Eerste maand beheer').locator('..')).toContainText(/\u20ac\s*79/)
     await expect(page.getByRole('checkbox')).not.toBeChecked()
-    await expect(page.getByRole('button', { name: 'Betaal veilig via Stripe' })).toBeDisabled()
+    await expect(page.getByRole('button', { name: /Betaal veilig via Stripe|Start voor €79 via Stripe/ })).toBeDisabled()
   })
 }
 
 test('pakketkeuze blijft behouden in de URL', async ({ page }) => {
   await page.goto('/start?pakket=starter')
-  await page.getByRole('link', { name: /Premium \u20ac\s*899/ }).click()
+  await page.getByRole('link', { name: /Premium.*€\s*899/ }).click()
   await expect(page).toHaveURL(/pakket=premium/)
   await expect(page.locator('.start-package-tabs a.is-active')).toContainText('Premium')
 })

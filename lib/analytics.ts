@@ -9,6 +9,7 @@ export type MarketingEvent =
   | 'pricing_view'
   | 'package_compare'
   | 'package_select'
+  | 'promotion_select'
   | 'checkout_view'
   | 'checkout_start'
   | 'checkout_cancel'

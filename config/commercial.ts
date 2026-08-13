@@ -7,6 +7,17 @@ export const commercialConfig = {
     hours: 48,
     startsAfter: 'payment-and-complete-intake',
   },
+  promotion: {
+    code: 'zomeractie-2026',
+    name: 'Zomeractie',
+    startsAt: '2026-08-13T00:00:00+02:00',
+    endsAt: '2026-10-02T00:00:00+02:00',
+    displayStartsAt: '13 augustus 2026',
+    displayEndsAt: '1 oktober 2026',
+    packageId: 'starter',
+    buildPrice: 0,
+    previewBeforePublication: true,
+  },
   management: {
     name: 'Hosting & Websitebeheer',
     shortName: 'Websitebeheer',
@@ -96,6 +107,27 @@ export const commercialConfig = {
 } as const
 
 export type CommercialPackageId = keyof typeof commercialConfig.packages
+
+export type ActivePromotion = typeof commercialConfig.promotion
+
+export function activePromotion(now = new Date()): ActivePromotion | null {
+  const promotion = commercialConfig.promotion
+  const timestamp = now.getTime()
+  return timestamp >= Date.parse(promotion.startsAt) && timestamp < Date.parse(promotion.endsAt)
+    ? promotion
+    : null
+}
+
+export function effectiveBuildPrice(packageId: CommercialPackageId, now = new Date()) {
+  const promotion = activePromotion(now)
+  return promotion?.packageId === packageId
+    ? promotion.buildPrice
+    : commercialConfig.packages[packageId].oneTimePrice
+}
+
+export function effectiveFirstPayment(packageId: CommercialPackageId, now = new Date()) {
+  return effectiveBuildPrice(packageId, now) + commercialConfig.management.monthlyPrice
+}
 
 export function euro(amount: number, decimals = 0) {
   return new Intl.NumberFormat('nl-NL', {

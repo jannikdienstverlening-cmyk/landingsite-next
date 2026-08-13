@@ -1,7 +1,7 @@
 import 'server-only'
 
 import Anthropic from '@anthropic-ai/sdk'
-import { packageFirstPayment } from '@/config/commercial'
+import { activePromotion, effectiveFirstPayment, packageFirstPayment } from '@/config/commercial'
 import { pricingConfig } from '@/config/pricing'
 import type { z } from 'zod'
 import type { chatMessageSchema } from './validation'
@@ -19,6 +19,7 @@ function getClient() {
 
 function knowledgeBase() {
   const { buildPackages, websiteManagement } = pricingConfig
+  const promotion = activePromotion()
   return `
 Feiten over Landingsite.nl:
 - Doelgroep: zzp'ers en kleine bedrijven die een professionele landingspagina willen.
@@ -30,6 +31,7 @@ Feiten over Landingsite.nl:
 - Websitebeheer bevat managed hosting, SSL, back-ups, beveiligings- en technische updates, monitoring, controle van formulieren, ondersteuning, domeinkoppeling en maximaal ${websiteManagement.includedChangeMinutes} minuten kleine wijzigingen per kalendermaand.
 - De eerste betaling bestaat uit de eenmalige bouwprijs plus EUR ${websiteManagement.monthlyPrice} voor de eerste beheermaand. Daarna volgt maandelijks EUR ${websiteManagement.monthlyPrice} inclusief btw.
 - Websitebeheer is per maand opzegbaar volgens de voorwaarden.
+${promotion ? `- Tijdelijke zomeractie tot en met ${promotion.displayEndsAt}: bij Starter vervalt de eenmalige bouwprijs van EUR ${buildPackages.starter.oneTimePrice}. De eerste betaling is EUR ${effectiveFirstPayment('starter')} inclusief btw voor de eerste maand Hosting & Websitebeheer. De klant bekijkt de eerste versie voordat deze wordt gepubliceerd.` : ''}
 - Live voorbeelden: Ontwikkelbegeleiding RH, WIA Management en AIbouwers.nl.
 - Contact: bezoekers kunnen het contactformulier onderaan de homepage gebruiken. Er wordt doorgaans binnen een werkdag gereageerd.
 `
@@ -38,6 +40,7 @@ Feiten over Landingsite.nl:
 function automaticAnswer(question: string) {
   const normalized = question.toLocaleLowerCase('nl-NL')
   const { buildPackages, websiteManagement } = pricingConfig
+  const promotion = activePromotion()
   const answers: string[] = []
   const asksAboutManagement = /websitebeheer|beheer|hosting|ssl|back-?up|onderhoud|79/.test(normalized)
   const asksAboutPackages = /pakket|starter|pro|premium/.test(normalized)
@@ -47,13 +50,17 @@ function automaticAnswer(question: string) {
 
   if (asksAboutPackages) {
     if (/starter/.test(normalized)) {
-      answers.push(`Voor Starter betaal je bij de start €${packageFirstPayment('starter')} inclusief btw: €${buildPackages.starter.oneTimePrice} voor de bouw en €${websiteManagement.monthlyPrice} voor de eerste maand Hosting & Websitebeheer. Daarna betaal je €${websiteManagement.monthlyPrice} per maand inclusief btw.`)
+      answers.push(promotion
+        ? `Tijdens de zomeractie vervalt de Starter-bouwprijs van €${buildPackages.starter.oneTimePrice}. Je betaalt bij de start €${effectiveFirstPayment('starter')} inclusief btw voor de eerste maand Hosting & Websitebeheer en daarna €${websiteManagement.monthlyPrice} per maand. Je bekijkt de eerste versie voordat we hem publiceren.`
+        : `Voor Starter betaal je bij de start €${packageFirstPayment('starter')} inclusief btw: €${buildPackages.starter.oneTimePrice} voor de bouw en €${websiteManagement.monthlyPrice} voor de eerste maand Hosting & Websitebeheer. Daarna betaal je €${websiteManagement.monthlyPrice} per maand inclusief btw.`)
     } else if (/\bpro\b/.test(normalized)) {
       answers.push(`Voor Pro betaal je bij de start €${packageFirstPayment('pro')} inclusief btw: €${buildPackages.pro.oneTimePrice} voor de bouw en €${websiteManagement.monthlyPrice} voor de eerste maand Hosting & Websitebeheer. Daarna betaal je €${websiteManagement.monthlyPrice} per maand inclusief btw.`)
     } else if (/premium/.test(normalized)) {
       answers.push(`Voor Premium betaal je bij de start €${packageFirstPayment('premium')} inclusief btw: €${buildPackages.premium.oneTimePrice} voor de bouw en €${websiteManagement.monthlyPrice} voor de eerste maand Hosting & Websitebeheer. Daarna betaal je €${websiteManagement.monthlyPrice} per maand inclusief btw.`)
     } else {
-      answers.push(`Starter kost €${buildPackages.starter.oneTimePrice}, Pro €${buildPackages.pro.oneTimePrice} en Premium €${buildPackages.premium.oneTimePrice} eenmalig inclusief btw. Bij de start komt daar voor ieder pakket €${websiteManagement.monthlyPrice} voor de eerste beheermaand bij. Daarna betaal je alleen €${websiteManagement.monthlyPrice} per maand inclusief btw.`)
+      answers.push(promotion
+        ? `Tijdens de zomeractie is de Starter-bouwprijs €0 en betaal je bij de start alleen €${websiteManagement.monthlyPrice} voor de eerste beheermaand. Pro kost €${buildPackages.pro.oneTimePrice} en Premium €${buildPackages.premium.oneTimePrice} aan bouw, plus de eerste beheermaand. Daarna betaal je €${websiteManagement.monthlyPrice} per maand inclusief btw.`
+        : `Starter kost €${buildPackages.starter.oneTimePrice}, Pro €${buildPackages.pro.oneTimePrice} en Premium €${buildPackages.premium.oneTimePrice} eenmalig inclusief btw. Bij de start komt daar voor ieder pakket €${websiteManagement.monthlyPrice} voor de eerste beheermaand bij. Daarna betaal je alleen €${websiteManagement.monthlyPrice} per maand inclusief btw.`)
     }
   }
 
