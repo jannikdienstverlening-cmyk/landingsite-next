@@ -3,7 +3,10 @@ import Link from 'next/link'
 import {
   type ActivePromotion,
   commercialConfig,
+  effectiveBuildPrice,
+  effectiveFirstPayment,
   packageFirstPayment,
+  promotionDiscount,
   packageSpecs,
   type CommercialPackageId,
 } from '@/config/commercial'
@@ -130,8 +133,8 @@ export function StudioHero({ promotion }: { promotion: ActivePromotion | null })
       {promotion && <div className="studio-promotion" role="region" aria-label="Tijdelijke zomeractie">
         <div className="studio-shell studio-promotion__inner">
           <strong>Zomeractie · t/m {promotion.displayEndsAt}</strong>
-          <span>€{commercialConfig.packages.starter.oneTimePrice} bouwkosten vervallen bij Websitebeheer.</span>
-          <Link href="/start?pakket=starter" data-analytics-event="promotion_select">Pak €{commercialConfig.packages.starter.oneTimePrice} voordeel <span aria-hidden="true">→</span></Link>
+          <span>Starter gratis gebouwd · €300 korting op Pro en Premium.</span>
+          <Link href="#pakketten" data-analytics-event="promotion_select">Bekijk alle actieprijzen <span aria-hidden="true">→</span></Link>
         </div>
       </div>}
       <div className="studio-shell studio-hero__grid">
@@ -150,7 +153,7 @@ export function StudioHero({ promotion }: { promotion: ActivePromotion | null })
           {promotion && <div className="studio-promo-offer" aria-label="Actieprijs Starter">
             <div className="studio-promo-offer__price">
               <span><s>€{commercialConfig.packages.starter.oneTimePrice}</s> bouwkosten</span>
-              <strong>€{promotion.buildPrice}</strong>
+              <strong>€{promotion.buildPrices.starter}</strong>
             </div>
             <div className="studio-promo-offer__terms">
               <strong>Je start voor €{commercialConfig.management.monthlyPrice} incl. btw</strong>
@@ -255,13 +258,14 @@ export function Pricing({ promotion }: { promotion: ActivePromotion | null }) {
     <section className="studio-section studio-pricing" id="pakketten" data-analytics-view="pricing_view">
       <div className="studio-shell section-heading section-heading--row">
         <div><p className="overline">Pakketten</p><h2>Eerst bouwen. Daarna zorgen we dat alles blijft werken.</h2></div>
-        <p>{promotion ? <>Tijdens de zomeractie vervalt de Starter-bouwprijs. Je betaalt €{commercialConfig.management.monthlyPrice} bij de start en daarna per maand voor Hosting &amp; Websitebeheer.</> : <>Je betaalt eenmalig voor de bouw en daarna €{commercialConfig.management.monthlyPrice} per maand voor Hosting &amp; Websitebeheer.</>}</p>
+        <p>{promotion ? <>Starter wordt gratis gebouwd; op Pro en Premium krijg je €300 korting. De eerste maand Hosting &amp; Websitebeheer van €{commercialConfig.management.monthlyPrice} wordt bij de start afgerekend.</> : <>Je betaalt eenmalig voor de bouw en daarna €{commercialConfig.management.monthlyPrice} per maand voor Hosting &amp; Websitebeheer.</>}</p>
       </div>
       <div className="studio-shell pricing-grid">
         {entries.map(([id, item]) => {
-          const promotionalPackage = promotion?.packageId === id
-          const buildPrice = promotionalPackage ? promotion.buildPrice : item.oneTimePrice
-          const firstPayment = promotionalPackage ? buildPrice + commercialConfig.management.monthlyPrice : packageFirstPayment(id)
+          const promotionalPackage = Boolean(promotion)
+          const buildPrice = promotionalPackage ? effectiveBuildPrice(id) : item.oneTimePrice
+          const firstPayment = promotionalPackage ? effectiveFirstPayment(id) : packageFirstPayment(id)
+          const discount = promotionalPackage ? promotionDiscount(id) : 0
           return (
           <article className={`pricing-option${item.recommended ? ' pricing-option--focus' : ''}${promotionalPackage ? ' pricing-option--promotion' : ''}`} key={id}>
             <header>
@@ -269,9 +273,9 @@ export function Pricing({ promotion }: { promotion: ActivePromotion | null }) {
               <p>{item.audience}</p>
             </header>
             <div className={`pricing-option__price${promotionalPackage ? ' pricing-option__price--promotion' : ''}`}>
-              {promotionalPackage && <span className="promotion-label">Zomeractie t/m {promotion.displayEndsAt}</span>}
+              {promotionalPackage && <span className="promotion-label">Zomeractie · €{discount} korting · t/m {promotion?.displayEndsAt}</span>}
               <strong>{promotionalPackage && <s>€{item.oneTimePrice}</s>} €{buildPrice}</strong>
-              <span>{promotionalPackage ? 'eenmalige bouwprijs tijdelijk vervallen · incl. btw' : 'eenmalige bouwprijs · incl. btw'}</span>
+              <span>{promotionalPackage ? 'tijdelijke actieprijs · incl. btw' : 'eenmalige bouwprijs · incl. btw'}</span>
             </div>
             <div className="pricing-option__today">
               <span>+ €{commercialConfig.management.monthlyPrice} eerste maand beheer</span>
@@ -284,7 +288,7 @@ export function Pricing({ promotion }: { promotion: ActivePromotion | null }) {
           </article>
         )})}
       </div>
-      <div className="studio-shell pricing-after"><strong>{promotion ? 'Bij Starter zie je de eerste versie vóór publicatie. Daarna loopt alleen Websitebeheer door.' : `Daarna wordt alleen €${commercialConfig.management.monthlyPrice} per maand voor Hosting & Websitebeheer geïncasseerd.`}</strong><span>€{commercialConfig.management.monthlyPrice} inclusief btw · maandelijks opzegbaar tegen het einde van de lopende betaalperiode.</span></div>
+      <div className="studio-shell pricing-after"><strong>{promotion ? 'Bij ieder actiepakket zie je de eerste versie vóór publicatie. Daarna loopt alleen Websitebeheer door.' : `Daarna wordt alleen €${commercialConfig.management.monthlyPrice} per maand voor Hosting & Websitebeheer geïncasseerd.`}</strong><span>€{commercialConfig.management.monthlyPrice} inclusief btw · maandelijks opzegbaar tegen het einde van de lopende betaalperiode.</span></div>
     </section>
   )
 }

@@ -14,8 +14,11 @@ export const commercialConfig = {
     endsAt: '2026-10-02T00:00:00+02:00',
     displayStartsAt: '13 augustus 2026',
     displayEndsAt: '1 oktober 2026',
-    packageId: 'starter',
-    buildPrice: 0,
+    buildPrices: {
+      starter: 0,
+      pro: 199,
+      premium: 599,
+    },
     previewBeforePublication: true,
   },
   management: {
@@ -120,9 +123,13 @@ export function activePromotion(now = new Date()): ActivePromotion | null {
 
 export function effectiveBuildPrice(packageId: CommercialPackageId, now = new Date()) {
   const promotion = activePromotion(now)
-  return promotion?.packageId === packageId
-    ? promotion.buildPrice
+  return promotion
+    ? promotion.buildPrices[packageId]
     : commercialConfig.packages[packageId].oneTimePrice
+}
+
+export function promotionDiscount(packageId: CommercialPackageId, now = new Date()) {
+  return commercialConfig.packages[packageId].oneTimePrice - effectiveBuildPrice(packageId, now)
 }
 
 export function effectiveFirstPayment(packageId: CommercialPackageId, now = new Date()) {

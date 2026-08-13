@@ -19,7 +19,7 @@ test('eerste betalingen combineren bouw en eerste beheermaand', () => {
   assert.equal(packageFirstPayment('premium'), 978)
 })
 
-test('zomeractie geldt alleen voor Starter tot en met 1 oktober 2026', () => {
+test('zomeractie geldt voor alle pakketten tot en met 1 oktober 2026', () => {
   const before = new Date('2026-08-12T21:59:59Z')
   const starts = new Date('2026-08-12T22:00:00Z')
   const finalMinute = new Date('2026-10-01T21:59:59Z')
@@ -31,8 +31,10 @@ test('zomeractie geldt alleen voor Starter tot en met 1 oktober 2026', () => {
   assert.equal(activePromotion(expired), null)
   assert.equal(effectiveBuildPrice('starter', starts), 0)
   assert.equal(effectiveFirstPayment('starter', starts), 79)
-  assert.equal(effectiveBuildPrice('pro', starts), 499)
-  assert.equal(effectiveFirstPayment('pro', starts), 578)
+  assert.equal(effectiveBuildPrice('pro', starts), 199)
+  assert.equal(effectiveFirstPayment('pro', starts), 278)
+  assert.equal(effectiveBuildPrice('premium', starts), 599)
+  assert.equal(effectiveFirstPayment('premium', starts), 678)
   assert.equal(effectiveBuildPrice('starter', expired), 299)
   assert.equal(effectiveFirstPayment('starter', expired), 378)
 })
@@ -49,7 +51,7 @@ test('primaire Stripe-checkout gebruikt subscription mode en laat alleen bij een
   const source = await readFile(new URL('../app/api/stripe/checkout/route.ts', import.meta.url), 'utf8')
   assert.match(source, /mode:\s*'subscription'/)
   assert.match(source, /const lineItems = \[managementLineItem\(\)\]/)
-  assert.match(source, /if \(buildPrice > 0\) lineItems\.unshift\(buildLineItem\(parsed\.data\.pakket\)\)/)
+  assert.match(source, /if \(buildPrice > 0\) lineItems\.unshift\(buildLineItem\(parsed\.data\.pakket, buildPrice\)\)/)
   assert.match(source, /line_items:\s*lineItems/)
   assert.doesNotMatch(source, /mode:\s*'payment'/)
 })

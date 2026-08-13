@@ -99,4 +99,4 @@ export function configuredManagementPriceId() {
 }
 
 export const SUBSCRIPTION_INTERVAL = 'month' as const
-export const TERMS_VERSION = '2026-08-13-zomeractie'
+export const TERMS_VERSION = '2026-08-13-zomeractie-v2'

@@ -12,7 +12,7 @@ import {
   StudioHero,
   type StudioFaq,
 } from '@/components/studio-site'
-import { activePromotion, commercialConfig, type ActivePromotion } from '@/config/commercial'
+import { activePromotion, commercialConfig, effectiveFirstPayment, promotionDiscount, type ActivePromotion } from '@/config/commercial'
 import { ReferralCapture } from '@/components/referral-capture'
 import { SocialFeedSection } from '@/components/social-feed'
 import { seoPage } from '@/content/seo-pages'
@@ -24,10 +24,10 @@ export const metadata: Metadata = seoMetadata(homepageContent)
 
 function homepageFaqs(promotion: ActivePromotion | null): StudioFaq[] {
   return [
-    ...(promotion ? [{ question: 'Hoe werkt de zomeractie?', answer: `Bij Starter vervalt tot en met ${promotion.displayEndsAt} de eenmalige bouwprijs van €${commercialConfig.packages.starter.oneTimePrice}. Je betaalt bij de start alleen de eerste maand Hosting & Websitebeheer van €${commercialConfig.management.monthlyPrice} inclusief btw. Na een complete intake ontvang je de eerste werkende versie. We publiceren pas nadat jij de preview hebt bekeken en akkoord hebt gegeven.` }] : []),
+    ...(promotion ? [{ question: 'Hoe werkt de zomeractie?', answer: `Tot en met ${promotion.displayEndsAt} kost de Starter-bouw €0 en krijg je €300 korting op de bouw van Pro en Premium. De eerste betaling is €${effectiveFirstPayment('starter')}, €${effectiveFirstPayment('pro')} of €${effectiveFirstPayment('premium')} inclusief de eerste maand Hosting & Websitebeheer. Daarna betaal je €${commercialConfig.management.monthlyPrice} per maand. Je bekijkt de eerste versie vóór publicatie.` }] : []),
     { question: 'Wanneer begint de termijn van 48 uur?', answer: 'De termijn start zodra de betaling is bevestigd en je intake compleet en bruikbaar is. Ontbrekende teksten, beelden of informatie schuiven de start op.' },
     { question: 'Is de website binnen 48 uur definitief live?', answer: 'Nee. Binnen 48 uur ontvang je de eerste werkende versie. Correcties, jouw reactietijd en de domeinkoppeling kunnen daarna extra tijd vragen.' },
-    { question: 'Wat betaal ik bij de start?', answer: promotion ? `Tijdens de zomeractie betaal je voor Starter €${commercialConfig.management.monthlyPrice} inclusief btw: €${promotion.buildPrice} bouwprijs en €${commercialConfig.management.monthlyPrice} voor de eerste maand Hosting & Websitebeheer. Pro kost bij de start €578 en Premium €978 inclusief btw.` : 'Je betaalt de eenmalige bouwprijs plus de eerste maand Hosting & Websitebeheer. Dat is €378 voor Starter, €578 voor Pro of €978 voor Premium, telkens inclusief btw.' },
+    { question: 'Wat betaal ik bij de start?', answer: promotion ? `Tijdens de zomeractie betaal je bij de start €${effectiveFirstPayment('starter')} voor Starter, €${effectiveFirstPayment('pro')} voor Pro of €${effectiveFirstPayment('premium')} voor Premium. Deze bedragen zijn inclusief btw en de eerste maand Hosting & Websitebeheer.` : 'Je betaalt de eenmalige bouwprijs plus de eerste maand Hosting & Websitebeheer. Dat is €378 voor Starter, €578 voor Pro of €978 voor Premium, telkens inclusief btw.' },
     { question: 'Wat zit er in €79 per maand?', answer: 'Managed hosting, SSL, back-ups, beveiligings- en technische updates, monitoring, formuliercontrole, e-mailondersteuning en maximaal 20 minuten kleine wijzigingen per maand.' },
     { question: 'Wat valt onder de 20 minuten wijzigingen?', answer: 'Kleine aanpassingen binnen de bestaande website, zoals een tekst wijzigen, een afbeelding vervangen of een knop aanpassen. Nieuwe pagina’s, functies en redesigns vallen er niet onder.' },
     { question: 'Worden ongebruikte minuten meegenomen?', answer: 'Nee. Niet-gebruikte wijzigingstijd wordt niet opgespaard of meegenomen naar een volgende maand.' },
@@ -42,11 +42,11 @@ export default async function HomePage() {
   const packages = Object.entries(commercialConfig.packages).map(([id, item]) => ({
     '@type': 'Offer',
     name: item.name,
-    price: promotion?.packageId === id ? promotion.buildPrice : item.oneTimePrice,
+    price: promotion ? promotion.buildPrices[id as keyof typeof promotion.buildPrices] : item.oneTimePrice,
     priceCurrency: 'EUR',
     url: `https://www.landingsite.nl/start?pakket=${id}`,
     availability: 'https://schema.org/InStock',
-    ...(promotion?.packageId === id ? { priceValidUntil: '2026-10-01', description: 'Tijdelijk €0 bouwprijs bij verplicht Hosting & Websitebeheer van €79 per maand inclusief btw.' } : {}),
+    ...(promotion ? { priceValidUntil: '2026-10-01', description: `Tijdelijke zomeractie met €${promotionDiscount(id as keyof typeof commercialConfig.packages)} korting op de bouwprijs, bij Hosting & Websitebeheer van €79 per maand inclusief btw.` } : {}),
   }))
   const structuredData = {
     '@context': 'https://schema.org',

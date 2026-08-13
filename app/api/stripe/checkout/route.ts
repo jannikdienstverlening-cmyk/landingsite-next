@@ -18,19 +18,20 @@ import {
 import { getSupabase } from '@/lib/supabase'
 import { checkoutSchema, validationMessage } from '@/lib/validation'
 
-function buildLineItem(pakket: PakketId): Stripe.Checkout.SessionCreateParams.LineItem {
+function buildLineItem(pakket: PakketId, buildPrice = PAKKETTEN[pakket].prijs / 100): Stripe.Checkout.SessionCreateParams.LineItem {
   const info = PAKKETTEN[pakket]
   const priceId = configuredBuildPriceId(pakket)
-  if (priceId) return { price: priceId, quantity: 1 }
+  const regularPrice = info.prijs / 100
+  if (priceId && buildPrice === regularPrice) return { price: priceId, quantity: 1 }
 
   return {
     price_data: {
       currency: 'eur',
       product_data: {
         name: `Landingsite.nl ${info.naam}`,
-        description: 'Eenmalige bouwprijs voor het gekozen websitepakket.',
+        description: buildPrice === regularPrice ? 'Eenmalige bouwprijs voor het gekozen websitepakket.' : 'Tijdelijke zomeractie voor het gekozen websitepakket.',
       },
-      unit_amount: info.prijs,
+      unit_amount: cents(buildPrice),
       tax_behavior: commercialConfig.stripeTaxBehavior,
     },
     quantity: 1,
@@ -77,7 +78,6 @@ export async function POST(request: NextRequest) {
   const info = PAKKETTEN[parsed.data.pakket]
   const checkoutTime = new Date()
   const promotion = activePromotion(checkoutTime)
-  const promotionApplies = promotion?.packageId === parsed.data.pakket
   const buildPrice = effectiveBuildPrice(parsed.data.pakket, checkoutTime)
   const initialPayment = effectiveFirstPayment(parsed.data.pakket, checkoutTime)
   const supabase = getSupabase()
@@ -102,12 +102,12 @@ export async function POST(request: NextRequest) {
       referral_attribution_id: validAttributionId ?? '',
       terms_accepted: 'true',
       terms_version: TERMS_VERSION,
-      promotion_code: promotionApplies ? promotion.code : '',
+      promotion_code: promotion?.code ?? '',
       build_price_including_vat: String(buildPrice),
       initial_payment_including_vat: String(initialPayment),
     }
     const lineItems = [managementLineItem()]
-    if (buildPrice > 0) lineItems.unshift(buildLineItem(parsed.data.pakket))
+    if (buildPrice > 0) lineItems.unshift(buildLineItem(parsed.data.pakket, buildPrice))
     const session = await getStripe().checkout.sessions.create({
       line_items: lineItems,
       mode: 'subscription',
@@ -135,8 +135,8 @@ export async function POST(request: NextRequest) {
       }],
       custom_text: {
         submit: {
-          message: promotionApplies
-            ? `${promotion.name}: de bouwprijs voor Starter is €0. Je betaalt nu €${initialPayment} inclusief btw voor de eerste maand Hosting & Websitebeheer en daarna €${commercialConfig.management.monthlyPrice} per maand inclusief btw. Je bekijkt de eerste versie vóór publicatie.`
+          message: promotion
+            ? `${promotion.name}: voor ${info.naam} geldt tijdelijk een bouwprijs van €${buildPrice}. Je betaalt nu in totaal €${initialPayment} inclusief btw, inclusief de eerste maand Hosting & Websitebeheer. Daarna betaal je €${commercialConfig.management.monthlyPrice} per maand inclusief btw. Je bekijkt de eerste versie vóór publicatie.`
             : `${info.naam}: ${info.prijs_label} inclusief btw plus de eerste maand beheer van €${commercialConfig.management.monthlyPrice} inclusief btw. Eerste betaling €${initialPayment} inclusief btw; daarna €${commercialConfig.management.monthlyPrice} per maand inclusief btw.`,
         },
         after_submit: {

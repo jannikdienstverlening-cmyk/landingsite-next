@@ -32,13 +32,13 @@ for (const item of packages) {
     await expect(summary.getByText('Btw inbegrepen (21%)')).toBeVisible()
     await expect(summary.getByText('Eerste maand beheer').locator('..')).toContainText(/\u20ac\s*79/)
     await expect(page.getByRole('checkbox')).not.toBeChecked()
-    await expect(page.getByRole('button', { name: /Betaal veilig via Stripe|Start voor €79 via Stripe/ })).toBeDisabled()
+    await expect(page.getByRole('button', { name: /Betaal veilig via Stripe|Start voor €\d+ via Stripe/ })).toBeDisabled()
   })
 }
 
 test('pakketkeuze blijft behouden in de URL', async ({ page }) => {
   await page.goto('/start?pakket=starter')
-  await page.getByRole('link', { name: /Premium.*€\s*899/ }).click()
+  await page.getByRole('link', { name: new RegExp(`Premium.*€\\s*${effectiveBuildPrice('premium')}`) }).click()
   await expect(page).toHaveURL(/pakket=premium/)
   await expect(page.locator('.start-package-tabs a.is-active')).toContainText('Premium')
 })
