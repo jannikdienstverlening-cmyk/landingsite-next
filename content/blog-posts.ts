@@ -30,6 +30,90 @@ const baseUrl = 'https://www.landingsite.nl'
 
 export const blogPosts: BlogPost[] = [
   {
+    slug: 'welke-velden-heeft-een-contactformulier-nodig',
+    status: 'published',
+    title: 'Welke velden heeft een contactformulier nodig?',
+    description: 'Kies welke velden je contactformulier echt nodig heeft en maak duidelijk wat verplicht is, waarom je de informatie vraagt en wat er na verzenden gebeurt.',
+    excerpt: 'Een bruikbaar contactformulier vraagt genoeg informatie om te kunnen reageren, maar niet meer dan daarvoor nodig is. Met deze aanpak kies je ieder veld bewust.',
+    category: 'Formulieren',
+    primaryKeyword: 'welke velden heeft een contactformulier nodig',
+    secondaryKeywords: ['velden contactformulier', 'contactformulier maken', 'contactformulier website inhoud'],
+    searchIntent: 'Bepalen welke velden een zakelijk contactformulier nodig heeft',
+    publishedAt: '2026-08-14',
+    updatedAt: '2026-08-14',
+    author: 'Jannik',
+    reviewer: 'Jannik',
+    readingTime: '5 minuten',
+    sources: [
+      'https://eur-lex.europa.eu/legal-content/NL/TXT/?uri=CELEX:32016R0679',
+      'https://www.w3.org/WAI/tutorials/forms/',
+      'https://www.w3.org/WAI/tutorials/forms/labels/',
+      'https://www.w3.org/WAI/tutorials/forms/validation/',
+      'app/verwerkersovereenkomst/page.tsx',
+    ],
+    sections: [
+      {
+        heading: 'Begin bij wat je na de aanvraag moet doen',
+        paragraphs: [
+          'Schrijf eerst op welke informatie je nodig hebt om de vraag te begrijpen en via het gewenste kanaal te beantwoorden. Maak pas daarna het formulier. Zo krijgt ieder veld een duidelijke taak.',
+          'Voor een algemene contactvraag zijn een naam, een e-mailadres en een open vraag vaak een bruikbare basis. Een telefoonnummer, bedrijfsnaam of voorkeursdatum voeg je alleen toe wanneer je die informatie in deze eerste stap werkelijk gebruikt.',
+        ],
+      },
+      {
+        heading: 'Vraag niet alvast alles voor een mogelijke opdracht',
+        paragraphs: [
+          'Artikel 5 van de Algemene verordening gegevensbescherming noemt gegevensminimalisatie als beginsel: persoonsgegevens moeten toereikend, relevant en beperkt zijn tot wat noodzakelijk is voor het doel van de verwerking.',
+          'Een eerste contactformulier hoeft daarom niet automatisch alle gegevens voor een offerte, overeenkomst of factuur te verzamelen. Informatie die pas later nodig is, kun je ook later en in de juiste context vragen.',
+        ],
+        bullets: [
+          'Vraag geen adres wanneer je alleen per e-mail reageert.',
+          'Maak een telefoonnummer optioneel als bellen geen noodzakelijke vervolgstap is.',
+          'Vraag geen bijzondere persoonsgegevens, BSN, medische gegevens of betaalgegevens via een standaardformulier.',
+          'Leg kort uit waarvoor je de ingevulde gegevens gebruikt.',
+        ],
+      },
+      {
+        heading: 'Maak verplicht en optioneel zichtbaar',
+        paragraphs: [
+          'Een bezoeker moet voor het invullen kunnen zien welke velden verplicht zijn. Zet daarom bijvoorbeeld “verplicht” in het label of leg boven het formulier uit hoe verplichte velden zijn gemarkeerd.',
+          'Gebruik bij ieder invoerveld een zichtbaar, beschrijvend label. W3C adviseert om labels technisch aan de juiste velden te koppelen, zodat ook hulptechnologie de relatie kan herkennen. Een placeholder is geen volwaardige vervanging voor zo\'n label.',
+        ],
+      },
+      {
+        heading: 'Geef ruimte voor de echte vraag',
+        paragraphs: [
+          'Keuzevelden kunnen helpen om aanvragen te ordenen, maar dwingen niet iedere vraag in vooraf bedachte categorieën. Voeg daarom een open tekstveld toe waarin iemand de situatie of vraag in eigen woorden kan beschrijven.',
+          'Maak de instructie concreet. “Waar kunnen we mee helpen?” geeft meer richting dan “Bericht”. Vraag alleen om details die nodig zijn om een eerste inhoudelijke reactie te geven.',
+        ],
+      },
+      {
+        heading: 'Vertel wat er na verzenden gebeurt',
+        paragraphs: [
+          'Een duidelijke verzendknop beschrijft de actie, bijvoorbeeld “Stuur mijn vraag”. Laat na verzending zichtbaar weten of de aanvraag is ontvangen. Als iets ontbreekt of ongeldig is, benoem dan bij het betreffende veld wat de bezoeker moet aanpassen.',
+          'W3C adviseert invoer te valideren en gebruikers begrijpelijke feedback te geven. Controleer de werking daarom niet alleen in de code, maar verstuur zelf een test op mobiel en desktop en controleer of de aanvraag op de afgesproken plek aankomt.',
+        ],
+      },
+      {
+        heading: 'Gebruik deze korte controlelijst',
+        paragraphs: [
+          'Loop het formulier veld voor veld na. Kun je niet uitleggen waarom je een gegeven nu nodig hebt, laat het dan weg of maak het optioneel.',
+        ],
+        bullets: [
+          'Ieder veld ondersteunt de eerste reactie op de aanvraag.',
+          'Verplichte en optionele velden zijn herkenbaar.',
+          'Ieder veld heeft een zichtbaar en technisch gekoppeld label.',
+          'De bezoeker weet waarvoor de gegevens worden gebruikt.',
+          'Fouten en een geslaagde verzending worden duidelijk gemeld.',
+          'De volledige route is getest op mobiel en desktop.',
+        ],
+      },
+    ],
+    relatedLinks: [
+      { label: 'Lees hoe Landingsite.nl met gegevens omgaat', href: '/privacybeleid' },
+      { label: 'Bekijk een websitepakket voor zzp', href: '/website-laten-maken-zzp' },
+    ],
+  },
+  {
     slug: 'hoeveel-paginas-heeft-een-zakelijke-website-nodig',
     status: 'published',
     title: 'Hoeveel pagina\'s heeft een zakelijke website nodig?',
