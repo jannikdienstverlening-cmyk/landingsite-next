@@ -127,27 +127,28 @@ export function MobileProjectFrame({ project, priority = false }: { project: Por
 
 export function StudioHero({ promotion }: { promotion: ActivePromotion | null }) {
   const featured = portfolioProjects[0]
+  const additionalProjects = portfolioProjects.slice(1)
   const homepage = seoPage('/')
   return (
     <section className="studio-hero">
       {promotion && <div className="studio-promotion" role="region" aria-label="Tijdelijke zomeractie">
         <div className="studio-shell studio-promotion__inner">
           <strong>Zomeractie · t/m {promotion.displayEndsAt}</strong>
-          <span>Starter gratis gebouwd · €300 korting op Pro en Premium.</span>
+          <span>Eerst je ontwerp bekijken · Starter gratis gebouwd · €300 korting op Pro en Premium.</span>
           <Link href="#pakketten" data-analytics-event="promotion_select">Bekijk alle actieprijzen <span aria-hidden="true">→</span></Link>
         </div>
       </div>}
       <div className="studio-shell studio-hero__grid">
         <div className="studio-hero__copy">
-          <p className="overline">{promotion ? `Tijdelijke zomeractie voor zzp en mkb` : 'Websites voor zzp en mkb'}</p>
-          <h1>{promotion ? <>Je Starter website. <span className="studio-hero__accent">Gratis gebouwd.</span></> : homepage.h1}</h1>
+          <p className="overline">{promotion ? `Zomeractie tot en met ${promotion.displayEndsAt}` : 'Websites voor zzp en mkb'}</p>
+          <h1>{promotion ? <>Eerst zien wat we bouwen. <span className="studio-hero__accent">Daarna pas live.</span></> : homepage.h1}</h1>
           <p className="studio-hero__intro">
             {promotion
-              ? <>Sluit Hosting &amp; Websitebeheer af voor €{commercialConfig.management.monthlyPrice} per maand en betaal tijdelijk geen €{commercialConfig.packages.starter.oneTimePrice} bouwkosten. Na betaling en een complete intake ontvang je binnen 48 uur de eerste werkende versie. Jij bekijkt hem voordat we publiceren.</>
+              ? <>Tijdens de zomeractie bouwen we Starter zonder bouwkosten. Je start met Hosting &amp; Websitebeheer voor €{commercialConfig.management.monthlyPrice} per maand. Na betaling en een complete intake ontvang je binnen 48 uur de eerste werkende versie. Jij beoordeelt die versie voordat we publiceren.</>
               : <>Wil je een website laten maken voor je bedrijf? Landingsite bouwt websites en landingspagina’s waarop bezoekers snel begrijpen wat je aanbiedt en hoe ze contact opnemen. Je ontvangt de eerste werkende versie binnen 48 uur na betaling en een complete intake.</>}
           </p>
           <div className="studio-actions">
-            <Link className="button button--primary" href={promotion ? '/start?pakket=starter' : '/start'} data-analytics-event={promotion ? 'promotion_select' : 'hero_start_click'} data-analytics-location="hero">{promotion ? 'Start voor €79' : 'Start mijn website'}</Link>
+            <Link className="button button--primary" href={promotion ? '/start?pakket=starter' : '/start'} data-analytics-event={promotion ? 'promotion_select' : 'hero_start_click'} data-analytics-location="hero">Start mijn website</Link>
             <a className="button button--text" href="#werk" data-analytics-event="hero_work_click">Bekijk live werk <span aria-hidden="true">↘</span></a>
           </div>
           {promotion && <div className="studio-promo-offer" aria-label="Actieprijs Starter">
@@ -156,7 +157,8 @@ export function StudioHero({ promotion }: { promotion: ActivePromotion | null })
               <strong>€{promotion.buildPrices.starter}</strong>
             </div>
             <div className="studio-promo-offer__terms">
-              <strong>Je start voor €{commercialConfig.management.monthlyPrice} incl. btw</strong>
+              <strong>Eerste versie bekijken voor €{commercialConfig.management.monthlyPrice} incl. btw</strong>
+              <span>Niets gaat live voordat jij de eerste versie hebt beoordeeld</span>
               <span>Daarna €{commercialConfig.management.monthlyPrice} p/m · maandelijks opzegbaar</span>
               <span>Actie geldig t/m {promotion.displayEndsAt}</span>
             </div>
@@ -185,12 +187,12 @@ export function StudioHero({ promotion }: { promotion: ActivePromotion | null })
         <span role="listitem">Direct persoonlijk contact</span>
       </div>
       <div className="studio-shell project-proof" id="werk">
-        <div className="project-proof__intro"><p className="overline">Gebouwd en live</p><h2>Drie websites die je zelf kunt openen.</h2></div>
+        <div className="project-proof__intro"><p className="overline">Meer gebouwd werk</p><h2>Nog twee websites die daadwerkelijk online staan.</h2></div>
         <div className="project-proof__list">
-          {portfolioProjects.map((project, index) => (
+          {additionalProjects.map((project, index) => (
             <a href={project.url} target="_blank" rel="noopener noreferrer" key={project.slug} data-analytics-event="case_outbound_click" data-analytics-project={project.slug}>
-              <span>{String(index + 1).padStart(2, '0')}</span>
-              <Image src={project.image} alt="" width={128} height={80} sizes="128px" loading={index === 0 ? 'eager' : 'lazy'} />
+              <span>{String(index + 2).padStart(2, '0')}</span>
+              <Image src={project.image} alt="" width={128} height={80} sizes="128px" loading="lazy" />
               <span className={`project-proof__name${project.name.length > 20 ? ' project-proof__name--long' : ''}`}>
                 <strong>{project.name}</strong>
                 <small>{project.industry}</small>
@@ -312,6 +314,39 @@ export function ManagementSection() {
             <div><dt>Domein</dt><dd>Blijft eigendom van jou</dd></div>
           </dl>
           <p className="management-note">Nieuwe pagina’s, functies, koppelingen, uitgebreide copy of een redesign vallen niet onder de maandelijkse wijzigingstijd. Grotere uitbreidingen prijzen we vooraf.</p>
+        </div>
+      </div>
+    </section>
+  )
+}
+
+export function FounderSection() {
+  return (
+    <section className="studio-section studio-founder" aria-labelledby="founder-title">
+      <div className="studio-shell studio-founder__grid">
+        <figure className="studio-founder__portrait">
+          <Image
+            src="/images/jannik-founder.jpg"
+            alt="Jannik, oprichter van Landingsite.nl"
+            fill
+            sizes="(max-width: 520px) 42vw, (max-width: 820px) 220px, 300px"
+          />
+          <figcaption>Jannik · oprichter en bouwer</figcaption>
+        </figure>
+        <div className="studio-founder__copy">
+          <p className="overline">Eén aanspreekpunt</p>
+          <h2 id="founder-title">Je spreekt met degene die je website bouwt.</h2>
+          <p>Ik ben Jannik, oprichter van Landingsite.nl. Ik breng je aanbod terug tot een heldere website, bouw de pagina’s en controleer de aanvraagroute voordat je de eerste versie ontvangt.</p>
+          <p>Geen overdracht via een accountmanager. Van intake tot livegang en beheer heb je rechtstreeks contact met mij.</p>
+          <dl className="studio-founder__facts">
+            <div><dt>Intake</dt><dd>Rechtstreeks besproken</dd></div>
+            <div><dt>Bouw</dt><dd>Eén aanspreekpunt</dd></div>
+            <div><dt>Na livegang</dt><dd>Beheer blijft geregeld</dd></div>
+          </dl>
+          <div className="studio-founder__actions">
+            <Link className="button button--primary" href="/start" data-analytics-event="hero_start_click" data-analytics-location="founder">Start mijn website</Link>
+            <Link href="/over-landingsite">Meer over Landingsite.nl <span aria-hidden="true">→</span></Link>
+          </div>
         </div>
       </div>
     </section>
