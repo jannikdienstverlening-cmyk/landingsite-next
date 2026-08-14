@@ -16,8 +16,8 @@ test('homepage toont echte projecten en een consistente hoofdactie', async ({ pa
   await page.goto('/')
 
   await expect(page.locator('h1')).toHaveCount(1)
-  await expect(page.getByRole('heading', { level: 1 })).toContainText(/Een website laten maken die direct duidelijk maakt|Je Starter website\. Gratis gebouwd\./)
-  await expect(page.getByRole('link', { name: /Start mijn website|Start voor €79/ }).first()).toBeVisible()
+  await expect(page.getByRole('heading', { level: 1 })).toContainText(/Een website laten maken die direct duidelijk maakt|Eerst zien wat we bouwen\. Daarna pas live\./)
+  await expect(page.getByRole('link', { name: 'Start mijn website' }).first()).toBeVisible()
   await expect(page.getByRole('link', { name: /Bekijk live werk/ }).first()).toBeVisible()
   await expect(page.getByText('Ontwikkelbegeleiding.nl', { exact: true }).first()).toBeVisible()
   await expect(page.locator('footer')).toContainText('Jannik Dienstverlening')

@@ -4,6 +4,7 @@ import { AnalyticsLayer } from '@/components/site-interactions'
 import {
   DeliveryAndProcess,
   FAQAndClose,
+  FounderSection,
   ManagementSection,
   Pricing,
   ProblemSection,
@@ -96,6 +97,7 @@ export default async function HomePage() {
         <DeliveryAndProcess promotion={promotion} />
         <Pricing promotion={promotion} />
         <ManagementSection />
+        <FounderSection />
         <FAQAndClose faqs={homepageFaqs(promotion)} promotion={promotion} />
         <SocialFeedSection />
       </main>

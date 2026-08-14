@@ -203,6 +203,23 @@
 .management-details dd { margin: 0; font-weight: 800; }
 .management-note { font-size: .82rem; }
 
+.studio-founder { background: var(--studio-paper); color: var(--studio-ink); }
+.studio-founder .overline { color: var(--studio-blue-dark); }
+.studio-founder__grid { display: grid; grid-template-columns: minmax(220px, .55fr) minmax(0, 1.45fr); gap: clamp(56px, 8vw, 120px); align-items: center; }
+.studio-founder__portrait { position: relative; width: min(100%, 310px); aspect-ratio: 4 / 5; margin: 0; overflow: hidden; border-left: 7px solid var(--studio-orange); background: #d8d6cf; }
+.studio-founder__portrait img { object-fit: cover; object-position: 50% 38%; }
+.studio-founder__portrait figcaption { position: absolute; right: 0; bottom: 0; left: 0; padding: 14px 16px; background: rgba(11,18,32,.92); color: #fff; font-family: var(--font-dm-mono), monospace; font-size: .68rem; text-transform: uppercase; }
+.studio .studio-founder__copy h2 { max-width: 760px; margin-bottom: 26px; font-size: clamp(2.7rem, 4.6vw, 4.5rem); }
+.studio-founder__copy > p:not(.overline) { max-width: 720px; margin-bottom: 14px; color: #53544f; font-size: 1.02rem; line-height: 1.7; }
+.studio-founder__facts { display: grid; grid-template-columns: repeat(3, 1fr); margin: 36px 0 0; border-block: 1px solid var(--studio-line-light); }
+.studio-founder__facts > div { min-width: 0; border-right: 1px solid var(--studio-line-light); padding: 18px 18px 18px 0; }
+.studio-founder__facts > div + div { padding-left: 18px; }
+.studio-founder__facts > div:last-child { border-right: 0; }
+.studio-founder__facts dt { margin-bottom: 7px; color: #777873; font-family: var(--font-dm-mono), monospace; font-size: .66rem; text-transform: uppercase; }
+.studio-founder__facts dd { margin: 0; font-size: .84rem; font-weight: 800; }
+.studio-founder__actions { display: flex; gap: 26px; align-items: center; margin-top: 32px; }
+.studio-founder__actions > a:not(.button) { color: var(--studio-ink); font-size: .82rem; font-weight: 800; }
+
 .studio-faq { background: var(--studio-black); }
 .studio-faq__grid { display: grid; grid-template-columns: minmax(0, .8fr) minmax(440px, 1.2fr); gap: 100px; }
 .studio-faq-list { border-top: 1px solid var(--studio-line-dark); }
@@ -450,6 +467,11 @@
   .trust-line span:nth-child(2) { border-right: 0; }
   .trust-line span:nth-child(n+3) { border-top: 1px solid var(--studio-line-dark); }
   .section-heading--row, .studio-problem__grid, .studio-delivery__grid, .studio-management__grid, .studio-faq__grid, .studio-close__inner, .studio-contact__grid { grid-template-columns: 1fr; gap: 38px; }
+  .studio-founder__grid { grid-template-columns: 200px minmax(0, 1fr); gap: 42px; }
+  .studio .studio-founder__copy h2 { font-size: 2.75rem; }
+  .studio-founder__facts { grid-template-columns: 1fr; }
+  .studio-founder__facts > div, .studio-founder__facts > div + div { border-right: 0; border-bottom: 1px solid var(--studio-line-light); padding: 14px 0; }
+  .studio-founder__facts > div:last-child { border-bottom: 0; }
   .process-steps { grid-template-columns: 1fr 1fr; }
   .process-steps li { min-height: 260px; border-bottom: 1px solid var(--studio-line-dark); }
   .process-steps li:nth-child(2) { border-right: 0; }
@@ -531,6 +553,13 @@
   .studio .studio-management h2 { font-size: 1.9rem; line-height: 1.06; }
   .management-details dl > div { grid-template-columns: 1fr; gap: 5px; }
   .management-details > ul { grid-template-columns: 1fr; }
+  .studio-founder__grid { grid-template-columns: 1fr; gap: 30px; }
+  .studio-founder__portrait { width: 152px; aspect-ratio: 1 / 1.18; }
+  .studio-founder__portrait figcaption { padding: 10px; font-size: .58rem; }
+  .studio .studio-founder__copy h2 { font-size: 2.25rem; }
+  .studio-founder__copy > p:not(.overline) { font-size: .95rem; }
+  .studio-founder__actions { align-items: stretch; flex-direction: column; gap: 16px; }
+  .studio-founder__actions .button { width: 100%; }
   .studio-faq-list summary { min-height: 64px; font-size: .9rem; }
   .studio-faq-list p { padding-right: 0; }
   .form-row { grid-template-columns: 1fr; gap: 0; }
