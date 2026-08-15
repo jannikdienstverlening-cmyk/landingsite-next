@@ -326,10 +326,10 @@ export function FounderSection() {
       <div className="studio-shell studio-founder__grid">
         <figure className="studio-founder__portrait">
           <Image
-            src="/images/jannik-founder-illustrated.webp"
-            alt="Geïllustreerd portret van Jannik, oprichter van Landingsite.nl"
+            src="/images/jannik-founder-studio.webp"
+            alt="Jannik, oprichter en bouwer van Landingsite.nl"
             fill
-            sizes="(max-width: 520px) 42vw, (max-width: 820px) 220px, 300px"
+            sizes="(max-width: 520px) 44vw, (max-width: 820px) 220px, 310px"
           />
           <figcaption>Jannik · oprichter en bouwer</figcaption>
         </figure>

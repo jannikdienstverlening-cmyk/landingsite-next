@@ -554,7 +554,7 @@
   .management-details dl > div { grid-template-columns: 1fr; gap: 5px; }
   .management-details > ul { grid-template-columns: 1fr; }
   .studio-founder__grid { grid-template-columns: 1fr; gap: 30px; }
-  .studio-founder__portrait { width: 152px; aspect-ratio: 1 / 1.18; }
+  .studio-founder__portrait { width: 158px; aspect-ratio: 1 / 1.18; }
   .studio-founder__portrait figcaption { padding: 10px; font-size: .58rem; }
   .studio .studio-founder__copy h2 { font-size: 2.25rem; }
   .studio-founder__copy > p:not(.overline) { font-size: .95rem; }
