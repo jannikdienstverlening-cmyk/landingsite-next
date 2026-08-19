@@ -36,6 +36,6 @@
   "exclude": [
     "node_modules",
     "public/social/**/_remotion/**",
-    "tools/**/build/**"
+    "tools/**"
   ]
 }
