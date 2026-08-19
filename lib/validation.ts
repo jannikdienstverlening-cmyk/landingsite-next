@@ -11,10 +11,31 @@ const optionalCustomerAsset = z.union([
 const optionalShort = z.string().trim().max(160).default('')
 const optionalText = z.string().trim().max(2_000).default('')
 
+export const checkoutAttributionSchema = z.object({
+  consentVersion: z.string().trim().max(40),
+  analyticsConsent: z.boolean(),
+  marketingConsent: z.boolean(),
+  landing_page: z.string().trim().startsWith('/').max(500).refine((value) => !value.startsWith('//'), 'Gebruik een intern pad.').optional(),
+  first_visit_at: z.iso.datetime({ offset: true }).optional(),
+  utm_source: z.string().trim().max(160).optional(),
+  utm_medium: z.string().trim().max(160).optional(),
+  utm_campaign: z.string().trim().max(160).optional(),
+  utm_content: z.string().trim().max(160).optional(),
+  utm_term: z.string().trim().max(160).optional(),
+  gclid: z.string().trim().max(160).optional(),
+  gbraid: z.string().trim().max(160).optional(),
+  wbraid: z.string().trim().max(160).optional(),
+  fbclid: z.string().trim().max(160).optional(),
+  ga_client_id: z.string().trim().max(100).optional(),
+  fbp: z.string().trim().max(200).optional(),
+  fbc: z.string().trim().max(200).optional(),
+}).strict()
+
 export const checkoutSchema = z.object({
   pakket: packageSchema,
   requestId: z.uuid(),
   termsAccepted: z.literal(true),
+  attribution: checkoutAttributionSchema.optional(),
 }).strict()
 
 export const intakeFormSchema = z.object({

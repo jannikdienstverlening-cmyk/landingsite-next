@@ -9,6 +9,26 @@ test('checkout vereist pakket, idempotency-id en expliciete voorwaardenacceptati
     termsAccepted: true,
   })
   assert.equal(valid.success, true)
+  assert.equal(checkoutSchema.safeParse({
+    pakket: 'starter',
+    requestId: '9c8cf9f6-dbf0-4ffc-a09c-5553a95b38ae',
+    termsAccepted: true,
+    attribution: {
+      consentVersion: 'consent-v2',
+      analyticsConsent: true,
+      marketingConsent: false,
+      landing_page: '/?utm_source=google',
+      first_visit_at: '2026-08-19T10:00:00.000Z',
+      utm_source: 'google',
+      ga_client_id: '123456789.987654321',
+    },
+  }).success, true)
+  assert.equal(checkoutSchema.safeParse({
+    pakket: 'starter',
+    requestId: '9c8cf9f6-dbf0-4ffc-a09c-5553a95b38ae',
+    termsAccepted: true,
+    attribution: { consentVersion: 'consent-v2', analyticsConsent: true, marketingConsent: true, landing_page: 'https://malicious.test/' },
+  }).success, false)
   assert.equal(checkoutSchema.safeParse({ pakket: 'pro' }).success, false)
   assert.equal(checkoutSchema.safeParse({
     pakket: 'pro',

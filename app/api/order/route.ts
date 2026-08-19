@@ -1,5 +1,6 @@
 import { NextRequest } from 'next/server'
 import { checkRateLimit, clientIp, rateLimitResponse } from '@/lib/rate-limit'
+import { getStripe } from '@/lib/stripe'
 import { getSupabase } from '@/lib/supabase'
 
 export async function GET(req: NextRequest) {
@@ -25,5 +26,18 @@ export async function GET(req: NextRequest) {
     return Response.json({ error: 'Order niet gevonden.' }, { status: 404 })
   }
 
-  return Response.json({ order: data })
+  let purchase: { eventId: string; value: number; currency: 'EUR' } | null = null
+  if (data.status === 'paid') {
+    try {
+      const session = await getStripe().checkout.sessions.retrieve(sessionId)
+      const value = Number(session.metadata?.initial_payment_including_vat)
+      if (session.payment_status === 'paid' && Number.isFinite(value) && value >= 0) {
+        purchase = { eventId: session.id, value, currency: 'EUR' }
+      }
+    } catch {
+      // De intake blijft beschikbaar wanneer alleen de optionele meetinformatie tijdelijk niet kan worden geladen.
+    }
+  }
+
+  return Response.json({ order: { ...data, purchase } })
 }

@@ -56,6 +56,22 @@ export const vendorRegister: VendorRecord[] = [
     active: true,
     transferSafeguard: 'Leveranciersvoorwaarden en passende doorgiftewaarborg waar nodig',
   },
+  {
+    name: 'Google',
+    purpose: 'Toestemmingsgestuurde gebruiks- en campagnemeting',
+    data: 'Pagina, apparaatcategorie en campagnegegevens; geen vrije formulierinhoud',
+    customerSubprocessor: false,
+    active: process.env.NEXT_PUBLIC_ANALYTICS_ENABLED === 'true' && Boolean(process.env.NEXT_PUBLIC_GOOGLE_MEASUREMENT_ID || process.env.NEXT_PUBLIC_GOOGLE_ADS_ID),
+    transferSafeguard: 'Alleen geladen na passende toestemming; leveranciersvoorwaarden en passende doorgiftewaarborg waar nodig',
+  },
+  {
+    name: 'Meta',
+    purpose: 'Toestemmingsgestuurde campagnemeting',
+    data: 'Pagina en beperkte campagnegebeurtenissen; geen vrije formulierinhoud',
+    customerSubprocessor: false,
+    active: process.env.NEXT_PUBLIC_ANALYTICS_ENABLED === 'true' && Boolean(process.env.NEXT_PUBLIC_META_PIXEL_ID),
+    transferSafeguard: 'Alleen geladen na marketingtoestemming; leveranciersvoorwaarden en passende doorgiftewaarborg waar nodig',
+  },
 ]
 
 export const activeVendors = vendorRegister.filter((vendor) => vendor.active)

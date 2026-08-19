@@ -1,6 +1,8 @@
 import type Stripe from 'stripe'
 import { NextRequest } from 'next/server'
 import { activePromotion, cents, commercialConfig, effectiveBuildPrice, effectiveFirstPayment } from '@/config/commercial'
+import { consentConfig } from '@/config/consent'
+import type { ConsentChoice } from '@/config/tracking'
 import { clientIp, checkRateLimit, rateLimitResponse } from '@/lib/rate-limit'
 import { invalidJsonResponse, readJsonBody } from '@/lib/request'
 import { referralAttributionId, referralCookie, rejectCrossOriginMutation } from '@/lib/security'
@@ -17,6 +19,43 @@ import {
 } from '@/lib/stripe'
 import { getSupabase } from '@/lib/supabase'
 import { checkoutSchema, validationMessage } from '@/lib/validation'
+
+function consentChoice(request: NextRequest) {
+  const raw = request.cookies.get(consentConfig.analytics.consentCookie)?.value
+  if (!raw) return null
+  try {
+    const parsed = JSON.parse(decodeURIComponent(raw)) as ConsentChoice
+    return parsed.version === consentConfig.analytics.consentVersion ? parsed : null
+  } catch {
+    return null
+  }
+}
+
+function checkoutAttributionMetadata(request: NextRequest, attribution: typeof checkoutSchema._output.attribution) {
+  const choice = consentChoice(request)
+  if (!choice || !attribution || attribution.consentVersion !== choice.version) return {}
+  const analyticsConsent = choice.analytics && attribution.analyticsConsent
+  const marketingConsent = choice.marketing && attribution.marketingConsent
+  if (!analyticsConsent && !marketingConsent) return {}
+
+  const shared = Object.fromEntries([
+    'landing_page', 'first_visit_at', 'utm_source', 'utm_medium', 'utm_campaign',
+    'utm_content', 'utm_term', 'gclid', 'gbraid', 'wbraid', 'fbclid',
+  ].flatMap((key) => {
+    const value = attribution[key as keyof typeof attribution]
+    return typeof value === 'string' && value ? [[key, value]] : []
+  }))
+
+  return {
+    tracking_consent_version: choice.version,
+    analytics_consent: String(analyticsConsent),
+    marketing_consent: String(marketingConsent),
+    ...shared,
+    ...(analyticsConsent && attribution.ga_client_id ? { ga_client_id: attribution.ga_client_id } : {}),
+    ...(marketingConsent && attribution.fbp ? { fbp: attribution.fbp } : {}),
+    ...(marketingConsent && attribution.fbc ? { fbc: attribution.fbc } : {}),
+  }
+}
 
 function buildLineItem(pakket: PakketId, buildPrice = PAKKETTEN[pakket].prijs / 100): Stripe.Checkout.SessionCreateParams.LineItem {
   const info = PAKKETTEN[pakket]
@@ -105,6 +144,7 @@ export async function POST(request: NextRequest) {
       promotion_code: promotion?.code ?? '',
       build_price_including_vat: String(buildPrice),
       initial_payment_including_vat: String(initialPayment),
+      ...checkoutAttributionMetadata(request, parsed.data.attribution),
     }
     const lineItems = [managementLineItem()]
     if (buildPrice > 0) lineItems.unshift(buildLineItem(parsed.data.pakket, buildPrice))

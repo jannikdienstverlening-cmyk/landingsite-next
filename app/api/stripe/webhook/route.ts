@@ -1,12 +1,14 @@
 import type Stripe from 'stripe'
 import { NextRequest } from 'next/server'
 import { commercialConfig, packageFirstPayment } from '@/config/commercial'
+import { consentConfig } from '@/config/consent'
 import { partnerProgramConfig } from '@/config/partner-program'
 import { pricingConfig } from '@/config/pricing'
 import { escapeHtml } from '@/lib/html'
 import { commissionForLevel } from '@/lib/partner'
 import { getResend } from '@/lib/resend'
 import { createCustomerToken } from '@/lib/security'
+import { sendGooglePurchase, sendMetaPurchase } from '@/lib/server-conversions'
 import { adminRecipient } from '@/lib/server-email'
 import { isFullManagementInvoiceLine } from '@/lib/stripe-billing'
 import { configuredManagementPriceId, getStripe, PAKKETTEN, TERMS_VERSION } from '@/lib/stripe'
@@ -57,6 +59,47 @@ async function notificationWasSent(orderId: string, action: string) {
     .maybeSingle()
   if (error) throw new Error(`Meldingsstatus controleren mislukt: ${error.message}`)
   return Boolean(data)
+}
+
+async function recordConfirmedPurchaseConversions(
+  orderId: string,
+  session: Stripe.Checkout.Session,
+  pakket: Pakket,
+  initialPayment: number,
+  email: string,
+  eventId: string,
+) {
+  const metadata = session.metadata ?? {}
+  if (metadata.tracking_consent_version !== consentConfig.analytics.consentVersion) return
+  const baseUrl = (process.env.NEXT_PUBLIC_BASE_URL ?? 'https://www.landingsite.nl').replace(/\/$/, '')
+  const landingPath = metadata.landing_page?.startsWith('/') && !metadata.landing_page.startsWith('//') ? metadata.landing_page : '/'
+  const purchase = {
+    eventId: session.id,
+    packageId: pakket,
+    packageName: PAKKETTEN[pakket].naam,
+    value: initialPayment,
+    currency: 'EUR' as const,
+    email,
+    clientId: metadata.ga_client_id || undefined,
+    fbp: metadata.fbp || undefined,
+    fbc: metadata.fbc || undefined,
+    eventSourceUrl: new URL(landingPath, baseUrl).toString(),
+    eventTime: Math.floor(Date.now() / 1_000),
+  }
+
+  const googleAction = 'server_purchase_google_sent'
+  if (metadata.analytics_consent === 'true' && !(await notificationWasSent(orderId, googleAction))) {
+    if (await sendGooglePurchase(purchase)) {
+      await audit(orderId, eventId, googleAction, null, 'sent', { checkout_session_id: session.id })
+    }
+  }
+
+  const metaAction = 'server_purchase_meta_sent'
+  if (metadata.marketing_consent === 'true' && !(await notificationWasSent(orderId, metaAction))) {
+    if (await sendMetaPurchase(purchase)) {
+      await audit(orderId, eventId, metaAction, null, 'sent', { checkout_session_id: session.id })
+    }
+  }
 }
 
 async function sendCheckedEmail(
@@ -215,6 +258,8 @@ async function markCombinedCheckoutPaid(session: Stripe.Checkout.Session, eventI
     build_price_including_vat: buildPrice,
     initial_payment_including_vat: initialPayment,
   })
+
+  await recordConfirmedPurchaseConversions(order.id, session, pakket, initialPayment, email, eventId)
 
   const baseUrl = process.env.NEXT_PUBLIC_BASE_URL ?? 'https://www.landingsite.nl'
   const customerUrl = `${baseUrl}/beheer/${order.id}?token=${encodeURIComponent(createCustomerToken(order.id))}`

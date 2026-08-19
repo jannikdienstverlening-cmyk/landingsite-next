@@ -8,9 +8,16 @@ export const consentConfig = {
     consentText: 'Ik ontvang per e-mail praktische informatie en aanbiedingen van Landingsite.nl. Afmelden kan altijd.',
   },
   analytics: {
-    externalCollectionEnabled: false,
-    consentCookie: '__Host-landingsite_analytics',
-    consentVersion: 'analytics-v1',
+    externalCollectionEnabled: process.env.NEXT_PUBLIC_ANALYTICS_ENABLED === 'true',
+    consentCookie: 'landingsite_consent',
+    consentVersion: 'consent-v2',
+    maxAgeDays: 180,
+  },
+  categories: {
+    necessary: true,
+    analytics: false,
+    marketing: false,
+    preferences: false,
   },
   referral: {
     persistenceVersion: 'referral-30d-v1',

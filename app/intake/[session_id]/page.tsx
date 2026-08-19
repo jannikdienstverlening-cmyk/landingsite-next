@@ -64,6 +64,19 @@ export default function IntakePage() {
         }
         if (data.order.status !== 'paid') throw new Error('Deze order vraagt aandacht. Gebruik het contactformulier en vermeld je betaalreferentie.')
         setPakket(data.order.pakket as Pakket)
+        if (data.order.purchase?.eventId && Number.isFinite(data.order.purchase.value)) {
+          const purchaseKey = `purchase:${data.order.purchase.eventId}`
+          if (!window.sessionStorage.getItem(purchaseKey)) {
+            trackMarketingEvent('purchase', {
+              package: data.order.pakket as string,
+              event_id: data.order.purchase.eventId,
+              transaction_id: data.order.purchase.eventId,
+              value: String(data.order.purchase.value),
+              currency: data.order.purchase.currency,
+            })
+            window.sessionStorage.setItem(purchaseKey, 'sent')
+          }
+        }
         trackMarketingEvent('checkout_complete', { package: data.order.pakket as string })
         trackMarketingEvent('intake_start', { package: data.order.pakket as string })
         setLoading(false)

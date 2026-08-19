@@ -1,5 +1,7 @@
 import type { Metadata } from 'next'
+import Script from 'next/script'
 import { DM_Mono, Syne } from 'next/font/google'
+import { ConsentManager } from '@/components/consent-manager'
 import { commercialConfig } from '@/config/commercial'
 import './globals.css'
 import './homepage.css'
@@ -46,5 +48,21 @@ export const metadata: Metadata = {
 }
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
-  return <html lang="nl" className={`${syne.variable} ${dmMono.variable}`}><body>{children}</body></html>
+  return <html lang="nl" data-scroll-behavior="smooth" className={`${syne.variable} ${dmMono.variable}`}><body>
+    <Script id="consent-mode-default" strategy="beforeInteractive">{`
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments)}
+      gtag('consent', 'default', {
+        analytics_storage: 'denied',
+        ad_storage: 'denied',
+        ad_user_data: 'denied',
+        ad_personalization: 'denied',
+        functionality_storage: 'denied',
+        security_storage: 'granted',
+        wait_for_update: 500
+      });
+    `}</Script>
+    {children}
+    <ConsentManager />
+  </body></html>
 }

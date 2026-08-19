@@ -11,11 +11,11 @@ const supabaseOrigin = (() => {
 })()
 const csp = [
   "default-src 'self'",
-  `script-src 'self' 'unsafe-inline'${isDev ? " 'unsafe-eval'" : ''}`,
+  `script-src 'self' 'unsafe-inline' https://www.googletagmanager.com https://connect.facebook.net${isDev ? " 'unsafe-eval'" : ''}`,
   "style-src 'self' 'unsafe-inline'",
-  `img-src 'self' data: blob:${supabaseOrigin ? ` ${supabaseOrigin}` : ''}`,
+  `img-src 'self' data: blob: https://www.facebook.com https://www.google-analytics.com${supabaseOrigin ? ` ${supabaseOrigin}` : ''}`,
   "font-src 'self' data:",
-  "connect-src 'self'",
+  `connect-src 'self' https://www.google-analytics.com https://region1.google-analytics.com https://www.googleadservices.com https://connect.facebook.net${supabaseOrigin ? ` ${supabaseOrigin}` : ''}`,
   "object-src 'none'",
   "base-uri 'self'",
   "form-action 'self' https://checkout.stripe.com",

@@ -4,14 +4,14 @@ import type { FormEvent } from 'react'
 import { useEffect, useRef, useState } from 'react'
 import Link from 'next/link'
 import type { CommercialPackageId } from '@/config/commercial'
-import { trackMarketingEvent, type MarketingEvent } from '@/lib/analytics'
+import { captureCampaignContext, checkoutAttributionContext, trackMarketingEvent, type MarketingEvent } from '@/lib/analytics'
 
 const navigation = [
   ['Werk', '/#werk'],
   ['Aanpak', '/#aanpak'],
   ['Pakketten', '/#pakketten'],
-  ['Beheer', '/#beheer'],
-  ['FAQ', '/#faq'],
+  ['Over', '/#over'],
+  ['Blog', '/blog'],
 ]
 
 export function MobileNavigation() {
@@ -20,6 +20,7 @@ export function MobileNavigation() {
   const menu = useRef<HTMLElement>(null)
 
   useEffect(() => {
+    captureCampaignContext()
     if (!open) return
     const previousOverflow = document.body.style.overflow
     document.body.style.overflow = 'hidden'
@@ -61,8 +62,6 @@ export function MobileNavigation() {
       </button>
       <nav ref={menu} className={`studio-mobile-nav${open ? ' is-open' : ''}`} id="studio-mobile-nav" aria-label="Mobiele navigatie" aria-hidden={!open}>
         {navigation.map(([label, href]) => <Link href={href} key={href} onClick={() => setOpen(false)}>{label}</Link>)}
-        <Link href="/partner" onClick={() => setOpen(false)}>Partner</Link>
-        <Link href="/blog" onClick={() => setOpen(false)}>Blog</Link>
         <Link className="button button--primary" href="/start" onClick={() => setOpen(false)} data-analytics-event="hero_start_click">Start mijn website</Link>
       </nav>
     </>
@@ -129,12 +128,17 @@ export function CheckoutButton({ packageId, label }: { packageId: CommercialPack
     if (!accepted) return setError('Accepteer eerst de zakelijke voorwaarden.')
     setLoading(true)
     setError('')
-    trackMarketingEvent('checkout_start', { package: packageId })
+    trackMarketingEvent('begin_checkout', { package: packageId })
     try {
       const response = await fetch('/api/stripe/checkout', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ pakket: packageId, requestId: crypto.randomUUID(), termsAccepted: true }),
+        body: JSON.stringify({
+          pakket: packageId,
+          requestId: crypto.randomUUID(),
+          termsAccepted: true,
+          attribution: checkoutAttributionContext(),
+        }),
       })
       const data = await response.json()
       if (!response.ok || !data.url) throw new Error(data.error || 'De checkout kan nu niet worden geopend.')
