@@ -38,7 +38,7 @@ test('publieke funnel gebruikt de vaste hoofdacties', async () => {
 test('homepage gebruikt een statische echte hoofdcase zonder FAQ reviewschema', async () => {
   const homepage = await readFile('components/studio-site.tsx', 'utf8')
   const page = await readFile('app/page.tsx', 'utf8')
-  assert.match(homepage, /Actuele hoofdcase/)
+  assert.match(homepage, /Opleverproef \/ echte website/)
   assert.match(homepage, /portfolioProjects\[0\]/)
   assert.doesNotMatch(homepage, /ProjectShowcase/)
   assert.doesNotMatch(page, /FAQPage/)

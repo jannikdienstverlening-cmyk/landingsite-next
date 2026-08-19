@@ -11,6 +11,7 @@ test('commerciële configuratie bevat de definitieve bedragen', () => {
   assert.equal(commercialConfig.management.includedChangeMinutes, 20)
   assert.equal(commercialConfig.pricesIncludeVat, true)
   assert.equal(commercialConfig.stripeTaxBehavior, 'inclusive')
+  assert.equal(commercialConfig.promotion.priceValidUntil, '2026-10-01')
 })
 
 test('eerste betalingen combineren bouw en eerste beheermaand', () => {

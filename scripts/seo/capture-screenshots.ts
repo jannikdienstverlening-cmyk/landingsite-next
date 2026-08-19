@@ -1,6 +1,7 @@
 import { mkdir } from 'node:fs/promises'
 import path from 'node:path'
 import { chromium } from '@playwright/test'
+import { consentConfig } from '../../config/consent'
 
 const baseUrl = process.env.SEO_SCREENSHOT_BASE_URL || 'http://127.0.0.1:3001'
 const outputDir = path.join(process.cwd(), 'reports', 'seo', 'screenshots')
@@ -27,12 +28,43 @@ async function main() {
   try {
     for (const viewport of viewports) {
       const context = await browser.newContext({ viewport })
+      const target = new URL(baseUrl)
+      await context.addCookies([{
+        name: consentConfig.analytics.consentCookie,
+        value: encodeURIComponent(JSON.stringify({
+          analytics: false,
+          marketing: false,
+          preferences: false,
+          version: consentConfig.analytics.consentVersion,
+        })),
+        domain: target.hostname,
+        path: '/',
+        sameSite: 'Lax',
+        secure: target.protocol === 'https:',
+      }])
       const page = await context.newPage()
       await page.emulateMedia({ reducedMotion: 'reduce' })
 
       for (const route of routes) {
-        await page.goto(new URL(route.path, baseUrl).toString(), { waitUntil: 'networkidle' })
+        await page.goto(new URL(route.path, baseUrl).toString(), { waitUntil: 'domcontentloaded' })
+        await page.waitForLoadState('load')
         await page.evaluate(() => document.fonts.ready)
+        await page.evaluate(async () => {
+          const pageHeight = document.documentElement.scrollHeight
+          for (let y = 0; y < pageHeight; y += window.innerHeight) {
+            window.scrollTo(0, y)
+            await new Promise((resolve) => window.setTimeout(resolve, 35))
+          }
+          const images = Array.from(document.images)
+          await Promise.race([
+            Promise.all(images.map((image) => image.complete ? Promise.resolve() : new Promise((resolve) => {
+              image.addEventListener('load', resolve, { once: true })
+              image.addEventListener('error', resolve, { once: true })
+            }))),
+            new Promise((resolve) => window.setTimeout(resolve, 5_000)),
+          ])
+          window.scrollTo(0, 0)
+        })
         const horizontalOverflow = await page.evaluate(() => document.documentElement.scrollWidth > document.documentElement.clientWidth)
         if (horizontalOverflow) throw new Error(`Horizontale overflow op ${route.path} bij ${viewport.width}px`)
 
@@ -41,6 +73,7 @@ async function main() {
           fullPage: true,
           animations: 'disabled',
         })
+        console.log(`Screenshot: ${route.path} @ ${viewport.width}px`)
       }
 
       await context.close()

@@ -13,8 +13,10 @@ const ignore = new Set([
   'config/banned-public-claims.json',
   'scripts/content-lint.mjs',
 ])
+const ignoredDirectoryParts = new Set(['.git', '.next', 'node_modules', '_remotion'])
 
 async function collect(directory) {
+  if (directory.split(/[\\/]/).some((part) => ignoredDirectoryParts.has(part))) return []
   const entries = await readdir(join(root, directory), { withFileTypes: true }).catch(() => [])
   const files = []
   for (const entry of entries) {

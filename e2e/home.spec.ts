@@ -16,7 +16,7 @@ test('homepage toont echte projecten en een consistente hoofdactie', async ({ pa
   await page.goto('/')
 
   await expect(page.locator('h1')).toHaveCount(1)
-  await expect(page.getByRole('heading', { level: 1 })).toContainText(/Een website laten maken die direct duidelijk maakt|Eerst zien wat we bouwen\. Daarna pas live\./)
+  await expect(page.getByRole('heading', { level: 1 })).toContainText('Website laten maken? Bekijk binnen 48 uur eerst de werkende versie.')
   await expect(page.getByRole('link', { name: 'Start mijn website' }).first()).toBeVisible()
   await expect(page.getByRole('link', { name: /Bekijk live werk/ }).first()).toBeVisible()
   await expect(page.getByText('Ontwikkelbegeleiding.nl', { exact: true }).first()).toBeVisible()
@@ -29,8 +29,11 @@ test('homepage toont echte projecten en een consistente hoofdactie', async ({ pa
 })
 
 for (const viewport of [
+  { width: 320, height: 800 },
   { width: 360, height: 800 },
+  { width: 375, height: 812 },
   { width: 390, height: 844 },
+  { width: 412, height: 915 },
   { width: 768, height: 1024 },
   { width: 1024, height: 768 },
   { width: 1440, height: 1000 },

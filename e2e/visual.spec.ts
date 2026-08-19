@@ -1,6 +1,13 @@
 import { expect, test } from '@playwright/test'
 
 async function settle(page: import('@playwright/test').Page, imageScope: string) {
+  const dialog = page.getByRole('dialog', { name: 'Alleen meten met jouw toestemming.' })
+  const reject = page.getByRole('button', { name: 'Alles weigeren' })
+  const promptAppeared = await dialog.waitFor({ state: 'visible', timeout: 2_000 }).then(() => true).catch(() => false)
+  if (promptAppeared) {
+    await reject.click()
+    await expect(dialog).toBeHidden()
+  }
   await page.addStyleTag({ content: 'nextjs-portal { display: none !important; }' })
   await page.evaluate(async (scope) => {
     await document.fonts.ready
