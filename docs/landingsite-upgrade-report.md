@@ -152,7 +152,15 @@ De algemene voorwaarden beschrijven een redelijke overdracht van domeininstellin
 
 De funnel, consent, deduplicatie, server-side purchase, SEO-landingsroutes en tests zijn gereed. De status wordt pas `GEREED VOOR KLEINE TESTCAMPAGNE` nadat de zes externe Google/Meta-waarden zijn ingevuld en één veilige testconversie in beide platforms is gecontroleerd.
 
-## 11. Belangrijkste gewijzigde bestanden
+## 11. Previewdeployment
+
+De gevalideerde branch is als Vercel-preview gepubliceerd op:
+
+`https://landingsite-next-3qbki74tw-jannikdienstverlening-1219s-projects.vercel.app`
+
+Status: `Ready`. Homepage, `/start`, `/werk`, `robots.txt` en `sitemap.xml` reageren met HTTP 200. De preview krijgt vanuit Vercel bewust `X-Robots-Tag: noindex` en is niet naar het productiedomein gepromoveerd. De bestaande Next.js-, Stripe-, Supabase- en webhookarchitectuur is op Vercel behouden; er is geen tweede Sites-hostingproject naast de betaalomgeving aangemaakt.
+
+## 12. Belangrijkste gewijzigde bestanden
 
 - Homepage en design: `app/page.tsx`, `app/homepage.css`, `components/studio-site.tsx`, `components/site-interactions.tsx`
 - Prijzen en startflow: `config/commercial.ts`, `app/start/page.tsx`, `app/api/stripe/checkout/route.ts`
