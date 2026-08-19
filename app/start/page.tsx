@@ -42,14 +42,14 @@ export default async function StartPage({ searchParams }: { searchParams: Promis
               {(Object.entries(commercialConfig.packages) as Array<[CommercialPackageId, typeof commercialConfig.packages[CommercialPackageId]]>).map(([id, option]) => {
                 const promotionalOption = Boolean(promotion)
                 const optionPrice = promotionalOption ? effectiveBuildPrice(id) : option.oneTimePrice
-                return <Link className={id === selected ? 'is-active' : ''} aria-current={id === selected ? 'true' : undefined} href={`/start?pakket=${id}`} key={id} data-analytics-event="package_select" data-analytics-package={id}><span>{option.name}{promotionalOption ? ' · zomeractie' : ''}</span><strong>€{optionPrice} bouw</strong></Link>
+                return <Link className={id === selected ? 'is-active' : ''} aria-current={id === selected ? 'true' : undefined} href={`/start?pakket=${id}`} key={id} data-analytics-event="select_item" data-analytics-package={id}><span>{option.name}{promotionalOption ? ' · zomeractie' : ''}</span><strong>€{optionPrice} bouw</strong></Link>
               })}
             </nav>
             {item ? <div className="start-scope"><h2>{item.name}</h2>{promotionApplies && selected && <p className="start-promotion-note"><strong>Zomeractie:</strong> je krijgt €{promotionDiscount(selected)} korting op de bouwprijs. Je betaalt daarnaast €{commercialConfig.management.monthlyPrice} voor de eerste maand Websitebeheer en bekijkt de eerste versie voordat we hem publiceren.</p>}<p>{item.audience}</p><ul>{item.features.map((feature) => <li key={feature}>{feature}</li>)}</ul></div> : <div className="start-scope start-scope--empty"><h2>Nog geen pakket gekozen</h2><p>Starter is voor één landingspagina, Pro voor maximaal vier kernpagina’s en Premium voor maximaal acht kernpagina’s. Je keuze wordt pas bij de checkout vastgelegd.</p><p><Link href="/kosten-website-laten-maken">Bekijk eerst de volledige prijsvergelijking</Link>.</p></div>}
           </section>
 
           {item && selected && initialPayment !== null ? (
-            <aside className="order-summary" aria-label={`Bestelsamenvatting voor ${item.name}`} data-analytics-view="checkout_view">
+            <aside className="order-summary" aria-label={`Bestelsamenvatting voor ${item.name}`} data-analytics-view="view_item">
               <p className="overline">Bestelsamenvatting</p>
               <h2>{item.name}</h2>
               <dl>

@@ -12,6 +12,7 @@ export const commercialConfig = {
     name: 'Zomeractie',
     startsAt: '2026-08-13T00:00:00+02:00',
     endsAt: '2026-10-02T00:00:00+02:00',
+    priceValidUntil: '2026-10-01',
     displayStartsAt: '13 augustus 2026',
     displayEndsAt: '1 oktober 2026',
     buildPrices: {
