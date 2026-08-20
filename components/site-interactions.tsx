@@ -8,9 +8,10 @@ import { captureCampaignContext, checkoutAttributionContext, trackMarketingEvent
 
 const navigation = [
   ['Werk', '/#werk'],
-  ['Aanpak', '/#aanpak'],
   ['Pakketten', '/#pakketten'],
-  ['Over', '/#over'],
+  ['Aanpak', '/#aanpak'],
+  ['Beheer', '/#beheer'],
+  ['FAQ', '/#faq'],
   ['Blog', '/blog'],
 ]
 

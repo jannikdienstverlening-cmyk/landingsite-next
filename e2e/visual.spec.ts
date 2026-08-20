@@ -11,6 +11,11 @@ async function settle(page: import('@playwright/test').Page, imageScope: string)
   await page.addStyleTag({ content: 'nextjs-portal { display: none !important; }' })
   await page.evaluate(async (scope) => {
     await document.fonts.ready
+    document.querySelectorAll<HTMLVideoElement>(`${scope} video`).forEach((video) => {
+      video.pause()
+      video.removeAttribute('src')
+      video.load()
+    })
     const images = Array.from(document.querySelectorAll<HTMLImageElement>(`${scope} img`))
     await Promise.all(images.map((image) => image.complete ? Promise.resolve() : new Promise((resolve) => {
       image.addEventListener('load', resolve, { once: true })
@@ -44,6 +49,20 @@ test('pakketvergelijking visuele regressie desktop', async ({ page }) => {
   await page.goto('/#pakketten')
   await settle(page, '.studio-pricing')
   await expect(page.locator('.studio-pricing')).toHaveScreenshot('home-pricing-desktop.png')
+})
+
+test('beslissingsroute visuele regressie desktop', async ({ page }) => {
+  await page.setViewportSize({ width: 1440, height: 1000 })
+  await page.goto('/')
+  await settle(page, '.studio-case-note')
+  await expect(page.locator('.studio-case-note')).toHaveScreenshot('home-decision-desktop.png')
+})
+
+test('planning visuele regressie mobiel', async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 })
+  await page.goto('/#aanpak')
+  await settle(page, '.studio-process')
+  await expect(page.locator('.studio-process')).toHaveScreenshot('home-process-mobile.png')
 })
 
 test('beheerblok visuele regressie mobiel', async ({ page }) => {

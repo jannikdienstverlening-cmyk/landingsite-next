@@ -29,7 +29,7 @@ for (const item of packages) {
     await expect(summary.getByText('Vandaag incl. btw').locator('..')).toContainText(
       new RegExp(`\\u20ac\\s*${initial}`),
     )
-    await expect(summary.getByText('Btw inbegrepen (21%)')).toBeVisible()
+    await expect(summary.getByText('Btw (21%)')).toBeVisible()
     await expect(summary.getByText('Eerste maand beheer').locator('..')).toContainText(/\u20ac\s*79/)
     await expect(page.getByRole('checkbox')).not.toBeChecked()
     await expect(page.getByRole('button', { name: /Betaal veilig via Stripe|Start voor €\d+ via Stripe/ })).toBeDisabled()

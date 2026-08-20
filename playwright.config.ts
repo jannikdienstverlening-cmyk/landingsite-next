@@ -40,6 +40,7 @@ export default defineConfig({
       STRIPE_BUILD_PRICE_PRO: 'price_test_pro',
       STRIPE_BUILD_PRICE_PREMIUM: 'price_test_premium',
       STRIPE_PRICE_WEBSITE_MANAGEMENT: 'price_test_management',
+      WHATSAPP_NUMBER: '31612345678',
     },
   },
 })

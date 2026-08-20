@@ -2,7 +2,7 @@ import type { Metadata } from 'next'
 import Link from 'next/link'
 import { AnalyticsLayer, CheckoutButton } from '@/components/site-interactions'
 import { StudioFooter, StudioHeader } from '@/components/studio-site'
-import { activePromotion, amountExcludingVat, amountIncludingVat, commercialConfig, effectiveBuildPrice, effectiveFirstPayment, euro, promotionDiscount, vatFor, type CommercialPackageId } from '@/config/commercial'
+import { activePromotion, commercialConfig, effectiveBuildPrice, effectiveFirstPayment, euro, orderPriceBreakdown, promotionDiscount, type CommercialPackageId } from '@/config/commercial'
 
 export const metadata: Metadata = {
   title: 'Start je website',
@@ -24,6 +24,7 @@ export default async function StartPage({ searchParams }: { searchParams: Promis
   const promotionApplies = Boolean(selected && promotion)
   const buildPrice = selected ? effectiveBuildPrice(selected) : null
   const initialPayment = selected ? effectiveFirstPayment(selected) : null
+  const breakdown = selected ? orderPriceBreakdown(selected) : null
   const cancelled = params.status === 'geannuleerd'
 
   return (
@@ -48,16 +49,16 @@ export default async function StartPage({ searchParams }: { searchParams: Promis
             {item ? <div className="start-scope"><h2>{item.name}</h2>{promotionApplies && selected && <p className="start-promotion-note"><strong>Zomeractie:</strong> je krijgt €{promotionDiscount(selected)} korting op de bouwprijs. Je betaalt daarnaast €{commercialConfig.management.monthlyPrice} voor de eerste maand Websitebeheer en bekijkt de eerste versie voordat we hem publiceren.</p>}<p>{item.audience}</p><ul>{item.features.map((feature) => <li key={feature}>{feature}</li>)}</ul></div> : <div className="start-scope start-scope--empty"><h2>Nog geen pakket gekozen</h2><p>Starter is voor één landingspagina, Pro voor maximaal vier kernpagina’s en Premium voor maximaal acht kernpagina’s. Je keuze wordt pas bij de checkout vastgelegd.</p><p><Link href="/kosten-website-laten-maken">Bekijk eerst de volledige prijsvergelijking</Link>.</p></div>}
           </section>
 
-          {item && selected && initialPayment !== null ? (
+          {item && selected && initialPayment !== null && breakdown ? (
             <aside className="order-summary" aria-label={`Bestelsamenvatting voor ${item.name}`} data-analytics-view="view_item">
               <p className="overline">Bestelsamenvatting</p>
               <h2>{item.name}</h2>
               <dl>
-                <div><dt>{promotionApplies ? 'Bouwprijs zomeractie' : 'Eenmalige bouwprijs'}</dt><dd>{promotionApplies ? <><s>{euro(item.oneTimePrice)}</s> {euro(buildPrice ?? item.oneTimePrice)}</> : euro(buildPrice ?? item.oneTimePrice)}</dd></div>
-                <div><dt>Eerste maand beheer</dt><dd>{euro(commercialConfig.management.monthlyPrice)}</dd></div>
-                <div className="order-summary__subtotal"><dt>Totaal excl. btw</dt><dd>{euro(amountExcludingVat(initialPayment), 2)}</dd></div>
-                <div><dt>Btw inbegrepen (21%)</dt><dd>{euro(vatFor(initialPayment), 2)}</dd></div>
-                <div className="order-summary__total"><dt>Vandaag incl. btw</dt><dd>{euro(amountIncludingVat(initialPayment), 2)}</dd></div>
+                <div><dt>{promotionApplies ? 'Bouwprijs zomeractie' : 'Eenmalige bouwprijs'} <small>incl. btw</small></dt><dd>{promotionApplies ? <><s>{euro(item.oneTimePrice)}</s> {euro(buildPrice ?? item.oneTimePrice)}</> : euro(buildPrice ?? item.oneTimePrice)}</dd></div>
+                <div><dt>Eerste maand beheer <small>incl. btw</small></dt><dd>{euro(commercialConfig.management.monthlyPrice)}</dd></div>
+                <div className="order-summary__subtotal"><dt>Totaal excl. btw</dt><dd>{euro(breakdown.total.excludingVat, 2)}</dd></div>
+                <div><dt>Btw (21%)</dt><dd>{euro(breakdown.total.vat, 2)}</dd></div>
+                <div className="order-summary__total"><dt>Vandaag incl. btw</dt><dd>{euro(breakdown.total.includingVat, 2)}</dd></div>
               </dl>
               <div className="order-summary__recurring"><span>Daarna maandelijks</span><strong>€{commercialConfig.management.monthlyPrice} incl. btw</strong><p>De volgende incasso volgt één maand na de eerste betaling. Stripe toont de exacte datum vóór bevestiging.</p></div>
               <ul className="order-summary__facts"><li>Maandelijks opzegbaar aan het einde van de betaalperiode</li><li>Domein blijft van jou</li><li>Intake opent direct na betaling</li><li>Eerste versie binnen 48 uur na complete intake</li>{promotionApplies && <li>Je bekijkt en beoordeelt de preview vóór publicatie</li>}</ul>

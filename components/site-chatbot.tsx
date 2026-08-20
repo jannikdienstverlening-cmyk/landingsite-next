@@ -2,6 +2,7 @@
 
 import Link from 'next/link'
 import { type FormEvent, useEffect, useRef, useState } from 'react'
+import { buildWhatsAppHandoffMessage, createWhatsAppUrl } from '@/lib/whatsapp'
 
 type ChatMessage = {
   id: string
@@ -21,7 +22,7 @@ const suggestions = [
   'Wanneer is mijn pagina klaar?',
 ]
 
-export function SiteChatbot() {
+export function SiteChatbot({ whatsappNumber }: { whatsappNumber: string | null }) {
   const [open, setOpen] = useState(false)
   const [messages, setMessages] = useState<ChatMessage[]>([welcomeMessage])
   const [input, setInput] = useState('')
@@ -30,6 +31,7 @@ export function SiteChatbot() {
   const inputRef = useRef<HTMLInputElement>(null)
   const messageEndRef = useRef<HTMLDivElement>(null)
   const launcherRef = useRef<HTMLButtonElement>(null)
+  const whatsappUrl = createWhatsAppUrl(whatsappNumber, buildWhatsAppHandoffMessage(messages))
 
   useEffect(() => {
     if (open) window.setTimeout(() => inputRef.current?.focus(), 50)
@@ -89,7 +91,7 @@ export function SiteChatbot() {
           <header className="chat-header">
             <div>
               <span className="chat-status-dot" aria-hidden="true" />
-              <div><strong>Landingsite Assistent</strong><span>Direct antwoord</span></div>
+              <div><strong>Landingsite Assistent</strong><span>{whatsappUrl ? 'Direct antwoord · Jannik via WhatsApp' : 'Direct antwoord'}</span></div>
             </div>
             <button type="button" className="chat-close" onClick={closeChat} aria-label="Chat sluiten" title="Chat sluiten">×</button>
           </header>
@@ -104,16 +106,32 @@ export function SiteChatbot() {
               </div>
             )}
             {sending && <div className="chat-typing" role="status"><span /><span /><span /><span className="sr-only">De assistent schrijft</span></div>}
-            {error && <p className="chat-error" role="alert">{error} <Link href="/#contact" onClick={() => setOpen(false)}>Naar contact</Link></p>}
+            {error && <p className="chat-error" role="alert">{error} {whatsappUrl
+              ? <a href={whatsappUrl} target="_blank" rel="noopener noreferrer" data-analytics-event="chat_whatsapp_open">Vraag via WhatsApp</a>
+              : <Link href="/#contact" onClick={() => setOpen(false)}>Naar contact</Link>}
+            </p>}
             <div ref={messageEndRef} />
           </div>
+
+          {whatsappUrl && (
+            <a
+              className="chat-whatsapp"
+              href={whatsappUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              data-analytics-event="chat_whatsapp_open"
+            >
+              <span><strong>Verder via WhatsApp</strong><small>Je bericht staat alvast klaar</small></span>
+              <span aria-hidden="true">↗</span>
+            </a>
+          )}
 
           <form className="chat-form" onSubmit={submit}>
             <label className="sr-only" htmlFor="chat-question">Stel je vraag</label>
             <input id="chat-question" ref={inputRef} value={input} onChange={(event) => setInput(event.target.value)} maxLength={800} autoComplete="off" placeholder="Stel je vraag..." disabled={sending} />
             <button type="submit" disabled={sending || !input.trim()} aria-label="Vraag versturen" title="Vraag versturen">→</button>
           </form>
-          <p className="chat-privacy">Deel geen gevoelige gegevens. <a href="/privacybeleid">Privacy</a></p>
+          <p className="chat-privacy">Deel geen gevoelige gegevens. WhatsApp opent buiten deze site. <a href="/privacybeleid">Privacy</a></p>
         </section>
       )}
 

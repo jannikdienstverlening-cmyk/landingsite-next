@@ -20,12 +20,35 @@ test('homepage toont echte projecten en een consistente hoofdactie', async ({ pa
   await expect(page.getByRole('link', { name: 'Start mijn website' }).first()).toBeVisible()
   await expect(page.getByRole('link', { name: /Bekijk live werk/ }).first()).toBeVisible()
   await expect(page.getByText('Ontwikkelbegeleiding.nl', { exact: true }).first()).toBeVisible()
+  await expect(page.getByRole('heading', { name: 'De bezoeker krijgt eerst antwoord.' })).toBeVisible()
+  await expect(page.locator('.pricing-row')).toHaveCount(3)
+  await expect(page.locator('.launch-schedule')).toContainText('Binnen 48 uur')
   await expect(page.locator('footer')).toContainText('Jannik Dienstverlening')
 
   const body = await page.locator('body').innerText()
   for (const claim of forbidden) expect(body).not.toContain(claim)
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= document.documentElement.clientWidth)).toBe(true)
   expect(consoleErrors).toEqual([])
+})
+
+test('chat kan het gesprek veilig overdragen naar WhatsApp', async ({ page }) => {
+  await page.goto('/')
+
+  const consentDialog = page.getByRole('dialog', { name: 'Alleen meten met jouw toestemming.' })
+  const consentVisible = await consentDialog.waitFor({ state: 'visible', timeout: 2_000 })
+    .then(() => true)
+    .catch(() => false)
+  if (consentVisible) {
+    await page.getByRole('button', { name: 'Alles weigeren' }).click()
+    await expect(consentDialog).toBeHidden()
+  }
+
+  await page.getByRole('button', { name: 'Chat met de digitale assistent openen' }).click()
+
+  const whatsappLink = page.getByRole('link', { name: /Verder via WhatsApp/ })
+  await expect(whatsappLink).toBeVisible()
+  await expect(whatsappLink).toHaveAttribute('href', /https:\/\/wa\.me\/31612345678\?text=/)
+  await expect(whatsappLink).not.toHaveAttribute('data-analytics-message')
 })
 
 for (const viewport of [

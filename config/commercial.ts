@@ -40,6 +40,20 @@ export const commercialConfig = {
       'Ondersteuning per e-mail',
       'Maximaal 20 minuten kleine tekst- of beeldwijzigingen per maand',
     ],
+    areas: [
+      {
+        title: 'Online en bereikbaar',
+        description: 'Managed hosting, SSL, uptime-monitoring en controle van het aanvraagformulier.',
+      },
+      {
+        title: 'Herstelbaar en actueel',
+        description: 'Back-ups, herstelmogelijkheden en technische en beveiligingsupdates.',
+      },
+      {
+        title: 'Hulp bij kleine aanpassingen',
+        description: 'E-mailondersteuning en maximaal 20 minuten voor een kleine tekst- of beeldwijziging per maand.',
+      },
+    ],
   },
   packages: {
     starter: {
@@ -179,4 +193,35 @@ export function amountExcludingVat(amount: number) {
 export function amountIncludingVat(amount: number) {
   if (commercialConfig.pricesIncludeVat) return Math.round(amount * 100) / 100
   return Math.round((amount + vatFor(amount)) * 100) / 100
+}
+
+export type PriceBreakdown = {
+  includingVat: number
+  excludingVat: number
+  vat: number
+}
+
+export function priceBreakdown(amount: number): PriceBreakdown {
+  return {
+    includingVat: amountIncludingVat(amount),
+    excludingVat: amountExcludingVat(amount),
+    vat: vatFor(amount),
+  }
+}
+
+export function orderPriceBreakdown(packageId: CommercialPackageId, now = new Date()) {
+  const build = priceBreakdown(effectiveBuildPrice(packageId, now))
+  const management = priceBreakdown(commercialConfig.management.monthlyPrice)
+
+  // Stripe rekent btw per factuurregel. Tel daarom de afgeronde regels op in
+  // plaats van de btw opnieuw over het gecombineerde brutobedrag te berekenen.
+  return {
+    build,
+    management,
+    total: {
+      includingVat: Math.round((build.includingVat + management.includingVat) * 100) / 100,
+      excludingVat: Math.round((build.excludingVat + management.excludingVat) * 100) / 100,
+      vat: Math.round((build.vat + management.vat) * 100) / 100,
+    },
+  }
 }

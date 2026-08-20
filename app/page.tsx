@@ -2,12 +2,12 @@ import type { Metadata } from 'next'
 import { connection } from 'next/server'
 import { AnalyticsLayer } from '@/components/site-interactions'
 import {
-  DeliveryAndProcess,
+  DecisionSection,
   FAQAndClose,
   FounderSection,
   ManagementSection,
   Pricing,
-  ProblemSection,
+  ProcessSection,
   StudioFooter,
   StudioHeader,
   StudioHero,
@@ -98,9 +98,9 @@ export default async function HomePage() {
       <StudioHeader />
       <main id="main-content">
         <StudioHero promotion={promotion} />
-        <ProblemSection />
-        <DeliveryAndProcess promotion={promotion} />
+        <DecisionSection />
         <Pricing promotion={promotion} />
+        <ProcessSection promotion={promotion} />
         <ManagementSection />
         <FounderSection />
         <FAQAndClose faqs={homepageFaqs(promotion)} promotion={promotion} />

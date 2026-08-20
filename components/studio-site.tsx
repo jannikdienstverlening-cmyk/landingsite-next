@@ -7,6 +7,7 @@ import {
   effectiveBuildPrice,
   effectiveFirstPayment,
   euro,
+  orderPriceBreakdown,
   packageFirstPayment,
   promotionDiscount,
   packageSpecs,
@@ -16,10 +17,12 @@ import type { PortfolioProject } from '@/data/portfolio'
 import { portfolioProjects } from '@/data/portfolio'
 import { siteCopy } from '@/content/site'
 import { BUSINESS } from '@/lib/business'
+import { normalizeWhatsAppNumber } from '@/lib/whatsapp'
 import { ContactForm, FAQList, MobileNavigation } from './site-interactions'
 import { ConsentSettingsButton } from './consent-manager'
 import { Logo } from './logo'
 import { SiteChatbot } from './site-chatbot'
+import { ProjectTourVideo } from './project-tour-video'
 
 export type StudioFaq = { question: string; answer: string }
 
@@ -30,9 +33,10 @@ export function StudioHeader() {
         <Logo />
         <nav className="studio-nav" aria-label="Hoofdnavigatie">
           <Link href="/#werk">Werk</Link>
-          <Link href="/#aanpak">Aanpak</Link>
           <Link href="/#pakketten">Pakketten</Link>
-          <Link href="/#over">Over</Link>
+          <Link href="/#aanpak">Aanpak</Link>
+          <Link href="/#beheer">Beheer</Link>
+          <Link href="/#faq">FAQ</Link>
           <Link href="/blog">Blog</Link>
         </nav>
         <Link className="button button--primary studio-header__cta" href="/start" data-analytics-event="hero_start_click" data-analytics-location="header">
@@ -45,6 +49,8 @@ export function StudioHeader() {
 }
 
 export function StudioFooter() {
+  const whatsappNumber = normalizeWhatsAppNumber(process.env.WHATSAPP_NUMBER)
+
   return (
     <>
       <footer className="studio-footer">
@@ -86,7 +92,7 @@ export function StudioFooter() {
           <span>Jannik Dienstverlening · KvK {BUSINESS.chamberOfCommerceNumber}</span>
         </div>
       </footer>
-      <SiteChatbot />
+      <SiteChatbot whatsappNumber={whatsappNumber} />
     </>
   )
 }
@@ -140,21 +146,21 @@ export function StudioHero({ promotion }: { promotion: ActivePromotion | null })
             Kies een vast pakket, rond de intake online af en ontvang binnen 48 uur de eerste werkende versie. Geen verplichte belafspraak en geen verrassingen achteraf.
           </p>
           <div className="studio-actions">
-            <a className="button button--primary" href="#pakketten" data-analytics-event="hero_start_click" data-analytics-location="hero">Bekijk de pakketten</a>
-            <a className="button button--text" href="#werk" data-analytics-event="hero_work_click">Bekijk 3 live websites <span aria-hidden="true">↘</span></a>
+            <Link className="button button--primary" href="/start" data-analytics-event="hero_start_click" data-analytics-location="hero">Start mijn website</Link>
+            <a className="button button--text" href="#werk" data-analytics-event="hero_work_click">Bekijk live werk <span aria-hidden="true">↘</span></a>
           </div>
-          <p className="studio-hero__micro">{promotion ? <>Zomeractie t/m {promotion.displayEndsAt}: Starter €{promotion.buildPrices.starter} bouwkosten · Pro en Premium €{promotionDiscount('pro')} korting · beheer €{commercialConfig.management.monthlyPrice} p/m</> : <>Bouw vanaf €{commercialConfig.packages.starter.oneTimePrice} · daarna €{commercialConfig.management.monthlyPrice} p/m voor Hosting &amp; Websitebeheer · incl. btw</>}</p>
+          <p className="studio-hero__micro">{promotion ? <>Zomeractie t/m {promotion.displayEndsAt}: Starter €{promotion.buildPrices.starter} bouwkosten · Pro en Premium €{promotionDiscount('pro')} korting · beheer €{commercialConfig.management.monthlyPrice} p/m · bedragen incl. btw</> : <>Bouw vanaf €{commercialConfig.packages.starter.oneTimePrice} · daarna €{commercialConfig.management.monthlyPrice} p/m voor Hosting &amp; Websitebeheer · incl. btw</>}</p>
           <p className="studio-hero__trust">Vaste prijzen · maandelijks opzegbaar · domein blijft van jou · persoonlijk aanspreekpunt</p>
         </div>
 
         <article className="hero-case" aria-labelledby="hero-case-title">
-          <a className="hero-case__desktop" href={featured.url} target="_blank" rel="noopener noreferrer" data-analytics-event="case_outbound_click" data-analytics-project={featured.slug}>
-            <BrowserFrame project={featured} priority />
-          </a>
-          <div className="hero-case__mobile" aria-hidden="true"><MobileProjectFrame project={featured} priority /></div>
+          <ProjectTourVideo
+            src="/videos/ontwikkelbegeleiding-site-tour.webm"
+            poster={featured.image}
+            title="Korte rondleiding door de live website van Ontwikkelbegeleiding.nl"
+          />
           <div className="hero-case__caption">
-            <div><span>Opleverproef / echte website</span><h2 id="hero-case-title">{featured.name}</h2></div>
-            <ul>{featured.features.slice(0, 3).map((feature) => <li key={feature}>{feature}</li>)}</ul>
+            <div><span>Opname van de live website</span><h2 id="hero-case-title">{featured.name}</h2><p>{featured.description}</p></div>
             <a href={featured.url} target="_blank" rel="noopener noreferrer" data-analytics-event="case_outbound_click" data-analytics-project={featured.slug}>Open {featured.domain} <span aria-hidden="true">↗</span></a>
           </div>
         </article>
@@ -187,50 +193,45 @@ export function StudioHero({ promotion }: { promotion: ActivePromotion | null })
   )
 }
 
-export function ProblemSection() {
-  const observations = [
-    ['Het is niet direct duidelijk wat je verkoopt.', 'Bezoekers moeten zoeken naar je aanbod, doelgroep en de reden om verder te lezen. Daardoor ontstaat twijfel voordat je verhaal op gang komt.'],
-    ['Je bewijs staat te laat of ontbreekt.', 'Werk, uitleg en concrete details moeten zichtbaar zijn op het moment dat iemand je geloofwaardigheid beoordeelt.'],
-    ['Contact opnemen vraagt te veel moeite.', 'Een onduidelijke vervolgstap of een te lang formulier maakt interesse onnodig zwaar.'],
-  ]
+export function DecisionSection() {
+  const project = portfolioProjects[0]
+
   return (
-    <section className="studio-section studio-problem">
-      <div className="studio-shell studio-problem__grid">
-        <div><p className="overline">Waar bezoekers afhaken</p><h2>Waarom veel websites weinig opleveren.</h2></div>
-        <div className="problem-observations">
-          {observations.map(([title, text]) => <article key={title}><h3>{title}</h3><p>{text}</p></article>)}
+    <section className="studio-section studio-case-note">
+      <div className="studio-shell case-note">
+        <figure>
+          <blockquote>Meer rust en houvast voor je kind, thuis én op school.</blockquote>
+          <figcaption>
+            <span>Openingszin op</span>
+            <a href={project.url} target="_blank" rel="noopener noreferrer" data-analytics-event="case_outbound_click" data-analytics-project={project.slug}>{project.domain} ↗</a>
+          </figcaption>
+        </figure>
+        <div className="case-note__explanation">
+          <h2>De bezoeker krijgt eerst antwoord.</h2>
+          <p>De homepage opent met de situatie van ouders. Daarna volgt pas de uitleg over de begeleiding en de trajecten.</p>
+          <p>De kennismakingsknop staat meteen in beeld. Op mobiel blijft dezelfde volgorde overeind, zonder dat belangrijke informatie wordt weggestopt.</p>
+          <Link href={`/werk#${project.slug}`} data-analytics-event="case_view" data-analytics-project={project.slug}>Bekijk hoe deze website is opgebouwd <span aria-hidden="true">↘</span></Link>
         </div>
       </div>
     </section>
   )
 }
 
-export function DeliveryAndProcess({ promotion }: { promotion: ActivePromotion | null }) {
-  const delivery = [
-    ['Aanbod en structuur', 'We brengen terug wat je verkoopt, voor wie het bedoeld is en welke volgorde bezoekers nodig hebben.'],
-    ['Tekst en ontwerp', 'De inhoud wordt aangescherpt en vormgegeven voor mobiel, tablet en desktop.'],
-    ['Formulier en basis-SEO', 'Je krijgt een werkende aanvraagroute, metadata en een technische basiscontrole.'],
-    ['Livegang en beheer', 'We helpen met de domeinkoppeling en blijven daarna verantwoordelijk voor hosting en techniek.'],
-  ]
+export function ProcessSection({ promotion }: { promotion: ActivePromotion | null }) {
   const process = [
-    ['01', 'Kies je pakket', 'Je ziet vooraf wat is inbegrepen en wat je bij de start betaalt.'],
-    ['02', 'Betaal veilig', promotion ? `Voor Starter betaal je tijdens de actie alleen de eerste maand Hosting & Websitebeheer van €${commercialConfig.management.monthlyPrice}.` : 'De bouwprijs en de eerste maand Hosting & Websitebeheer worden samen afgerekend.'],
-    ['03', 'Vul de intake in', 'Je levert je aanbod, doelgroep, logo, teksten en beschikbare beelden aan. De termijn start zodra de intake compleet is.'],
-    ['04', 'Bekijk de eerste versie', 'Binnen 48 uur ontvang je de eerste werkende versie. Daarna verwerken we de correctieronde die bij je pakket hoort.'],
+    ['Start', 'Kies je pakket', 'Je ziet vooraf wat inbegrepen is en welk bedrag je bij de start betaalt.'],
+    ['Bevestigd', 'Betaal veilig', promotion ? `Je rekent de tijdelijke bouwprijs en €${commercialConfig.management.monthlyPrice} voor de eerste maand beheer samen af.` : 'De bouwprijs en de eerste maand Hosting & Websitebeheer worden samen afgerekend.'],
+    ['0 uur', 'Intake compleet', 'De klok start zodra je aanbod, doelgroep, logo, teksten en beschikbare beelden bruikbaar zijn aangeleverd.'],
+    ['Binnen 48 uur', 'Eerste versie', 'Je ontvangt een werkende versie om te bekijken. Daarna volgt de correctieronde die bij je pakket hoort.'],
   ]
   return (
-    <>
-      <section className="studio-section studio-delivery">
-        <div className="studio-shell studio-delivery__grid">
-          <div><p className="overline">Wat je ontvangt</p><h2>Van positionering tot een werkend formulier.</h2><p>De onderdelen worden als één website gebouwd, niet als een verzameling losse toevoegingen.</p></div>
-          <div className="delivery-list">{delivery.map(([title, text]) => <article key={title}><h3>{title}</h3><p>{text}</p></article>)}</div>
-        </div>
-      </section>
-      <section className="studio-section studio-process" id="aanpak">
-        <div className="studio-shell section-heading section-heading--row"><div><p className="overline">Werkwijze</p><h2>Van pakketkeuze naar eerste versie.</h2></div><p>Na akkoord koppelen we je domein en blijft Landingsite de website technisch beheren.</p></div>
-        <ol className="process-steps studio-shell">{process.map(([number, title, text]) => <li key={number}><span>{number}</span><h3>{title}</h3><p>{text}</p></li>)}</ol>
-      </section>
-    </>
+    <section className="studio-section studio-process" id="aanpak">
+      <div className="studio-shell process-intro"><p>Planning</p><h2>Van betaling naar eerste versie.</h2><p>De termijn begint niet bij je eerste klik, maar zodra betaling en intake compleet zijn.</p></div>
+      <div className="studio-shell launch-schedule">
+        <ol>{process.map(([time, title, text]) => <li key={time}><span>{time}</span><i aria-hidden="true" /><div><h3>{title}</h3><p>{text}</p></div></li>)}</ol>
+        <p className="launch-schedule__after"><strong>Na je feedback</strong> Na akkoord koppelen we je domein en blijft Landingsite de hosting en techniek verzorgen.</p>
+      </div>
+    </section>
   )
 }
 
@@ -242,35 +243,38 @@ export function Pricing({ promotion }: { promotion: ActivePromotion | null }) {
         <div><p className="overline">Pakketten</p><h2>Eerst bouwen. Daarna zorgen we dat alles blijft werken.</h2></div>
         <p>{promotion ? <>Starter wordt gratis gebouwd; op Pro en Premium krijg je €{promotionDiscount('pro')} korting. De eerste maand Hosting &amp; Websitebeheer van €{commercialConfig.management.monthlyPrice} wordt bij de start afgerekend.</> : <>Je betaalt eenmalig voor de bouw en daarna €{commercialConfig.management.monthlyPrice} per maand voor Hosting &amp; Websitebeheer.</>}</p>
       </div>
-      <div className="studio-shell pricing-grid">
-        {entries.map(([id, item]) => {
+      <div className="studio-shell pricing-ledger">
+        {entries.map(([id, item], index) => {
           const promotionalPackage = Boolean(promotion)
           const buildPrice = promotionalPackage ? effectiveBuildPrice(id) : item.oneTimePrice
           const firstPayment = promotionalPackage ? effectiveFirstPayment(id) : packageFirstPayment(id)
+          const breakdown = orderPriceBreakdown(id)
           const discount = promotionalPackage ? promotionDiscount(id) : 0
           return (
-          <article className={`pricing-option${item.recommended ? ' pricing-option--focus' : ''}${promotionalPackage ? ' pricing-option--promotion' : ''}`} key={id}>
-            <header>
-              <div>{item.recommended && <span>Aanbevolen</span>}<h3>{item.name}</h3></div>
+          <article className={`pricing-row${item.recommended ? ' pricing-row--focus' : ''}${promotionalPackage ? ' pricing-row--promotion' : ''}`} key={id}>
+            <header className="pricing-row__identity">
+              <div><span>{String(index + 1).padStart(2, '0')}</span><h3>{item.name}</h3>{item.recommended && <em>Aanbevolen</em>}</div>
               <p>{item.audience}</p>
             </header>
-            <div className={`pricing-option__price${promotionalPackage ? ' pricing-option__price--promotion' : ''}`}>
-              {promotionalPackage && <span className="promotion-label">Zomeractie · €{discount} korting · t/m {promotion?.displayEndsAt}</span>}
+            <div className={`pricing-row__price${promotionalPackage ? ' pricing-row__price--promotion' : ''}`}>
+              {promotionalPackage && <span className="promotion-label">Actie · €{discount} korting · t/m {promotion?.displayEndsAt}</span>}
               <strong>{promotionalPackage && <s>€{item.oneTimePrice}</s>} €{buildPrice}</strong>
               <span>{promotionalPackage ? 'tijdelijke bouwprijs' : 'eenmalige bouwprijs'} · incl. btw</span>
               <small>{euro(amountExcludingVat(buildPrice), 2)} excl. btw</small>
             </div>
-            <div className="pricing-option__today">
-              <span>+ €{commercialConfig.management.monthlyPrice} eerste maand beheer</span>
-              <strong>Eerste betaling: €{firstPayment} incl. btw</strong>
-              <small>{euro(amountExcludingVat(firstPayment), 2)} excl. btw · daarna €{commercialConfig.management.monthlyPrice} p/m incl. btw</small>
-            </div>
             <dl className="pricing-specs">{packageSpecs(id).map((spec) => <div key={spec.label}><dt>{spec.label}</dt><dd>{spec.value}</dd></div>)}</dl>
-            <details className="pricing-option__details">
-              <summary>Bekijk alles in {item.name}</summary>
+            <div className="pricing-row__checkout">
+              <span>Bouw + eerste maand beheer</span>
+              <strong>€{firstPayment}</strong>
+              <small>incl. btw bij de start</small>
+              <small>{euro(breakdown.total.excludingVat, 2)} excl. + {euro(breakdown.total.vat, 2)} btw</small>
+              <small>Daarna €{commercialConfig.management.monthlyPrice} p/m incl. btw</small>
+              <Link className={`button ${item.recommended ? 'button--primary' : 'button--outline'} button--full`} href={item.ctaHref} data-analytics-event="select_item" data-analytics-package={id}>Kies {item.name}</Link>
+            </div>
+            <details className="pricing-row__details">
+              <summary>Alles in {item.name}</summary>
               <ul>{item.features.map((feature) => <li key={feature}>{feature}</li>)}</ul>
             </details>
-            <Link className={`button ${item.recommended ? 'button--primary' : 'button--outline'} button--full`} href={item.ctaHref} data-analytics-event="select_item" data-analytics-package={id}>Kies {item.name}</Link>
           </article>
         )})}
       </div>
@@ -291,7 +295,7 @@ export function ManagementSection() {
           <div className="management-price"><strong>€{management.monthlyPrice}</strong><span>per maand · incl. btw</span></div>
         </div>
         <div className="management-details">
-          <ul>{management.features.map((feature) => <li key={feature}>{feature}</li>)}</ul>
+          <div className="management-areas">{management.areas.map((area) => <article key={area.title}><h3>{area.title}</h3><p>{area.description}</p></article>)}</div>
           <dl>
             <div><dt>Ongebruikte tijd</dt><dd>Wordt niet opgespaard of overgedragen</dd></div>
             <div><dt>Opzegging</dt><dd>Maandelijks, aan het einde van de betaalperiode</dd></div>
@@ -313,6 +317,8 @@ export function FounderSection() {
             src="/images/jannik-founder-studio.webp"
             alt="Jannik, oprichter en bouwer van Landingsite.nl"
             fill
+            loading="eager"
+            unoptimized
             sizes="(max-width: 520px) 44vw, (max-width: 820px) 220px, 310px"
           />
           <figcaption>Jannik · oprichter en bouwer</figcaption>

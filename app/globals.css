@@ -2372,7 +2372,7 @@ button, input, textarea, select { font: inherit; }
   display: grid;
   width: min(390px, calc(100vw - 32px));
   height: min(610px, calc(100dvh - 120px));
-  grid-template-rows: auto minmax(0, 1fr) auto auto;
+  grid-template-rows: auto minmax(0, 1fr) auto auto auto;
   overflow: hidden;
   border: 1px solid rgba(11, 33, 25, .14);
   border-radius: 20px;
@@ -2554,6 +2554,54 @@ button, input, textarea, select { font: inherit; }
 .chat-error a {
   color: inherit;
   font-weight: 800;
+}
+
+.chat-whatsapp {
+  display: flex;
+  min-height: 54px;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin: 10px 12px 0;
+  padding: 10px 14px;
+  border-radius: 10px;
+  background: #0b806d;
+  color: #fff;
+  text-decoration: none;
+  transition: background-color 160ms ease, transform 160ms ease;
+}
+
+.chat-whatsapp > span:first-child {
+  display: grid;
+  gap: 1px;
+}
+
+.chat-whatsapp strong {
+  font-family: var(--font-syne), ui-sans-serif, system-ui, sans-serif;
+  font-size: .84rem;
+}
+
+.chat-whatsapp small {
+  color: rgba(255, 255, 255, .82);
+  font-size: .68rem;
+}
+
+.chat-whatsapp > span:last-child {
+  font-size: 1.05rem;
+}
+
+.chat-whatsapp:hover {
+  background: #086b5b;
+  transform: translateY(-1px);
+}
+
+.chat-whatsapp:focus-visible {
+  outline: 3px solid rgba(18, 140, 126, .25);
+  outline-offset: 2px;
+}
+
+.chat-whatsapp + .chat-form {
+  border-top: 0;
 }
 
 .chat-form {
@@ -3295,11 +3343,16 @@ button, input, textarea, select { font: inherit; }
 @media (max-width: 900px) {
   .site-chat {
     right: 15px;
-    bottom: 82px;
+    bottom: 16px;
+  }
+
+  .chat-launcher {
+    width: 50px;
+    height: 50px;
   }
 
   .chat-panel {
-    bottom: 68px;
+    bottom: 60px;
     width: calc(100vw - 30px);
     height: min(560px, calc(100dvh - 180px));
   }

@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict'
 import { readFile } from 'node:fs/promises'
 import test from 'node:test'
-import { activePromotion, amountExcludingVat, amountIncludingVat, commercialConfig, effectiveBuildPrice, effectiveFirstPayment, packageFirstPayment, vatFor } from '../config/commercial'
+import { activePromotion, amountExcludingVat, amountIncludingVat, commercialConfig, effectiveBuildPrice, effectiveFirstPayment, orderPriceBreakdown, packageFirstPayment, vatFor } from '../config/commercial'
 
 test('commerciële configuratie bevat de definitieve bedragen', () => {
   assert.equal(commercialConfig.packages.starter.oneTimePrice, 299)
@@ -46,6 +46,16 @@ test('btw zit in de getoonde en af te schrijven bedragen', () => {
   assert.equal(vatFor(378), 65.6)
   assert.equal(amountIncludingVat(79), 79)
   assert.equal(vatFor(79), 13.71)
+})
+
+test('orderoverzicht telt btw per Stripe-factuurregel op', () => {
+  const starter = orderPriceBreakdown('starter', new Date('2026-10-02T01:00:00Z'))
+  const premium = orderPriceBreakdown('premium', new Date('2026-10-02T01:00:00Z'))
+  const promotedPro = orderPriceBreakdown('pro', new Date('2026-08-19T10:00:00Z'))
+
+  assert.deepEqual(starter.total, { includingVat: 378, excludingVat: 312.4, vat: 65.6 })
+  assert.deepEqual(premium.total, { includingVat: 978, excludingVat: 808.27, vat: 169.73 })
+  assert.deepEqual(promotedPro.total, { includingVat: 278, excludingVat: 229.75, vat: 48.25 })
 })
 
 test('primaire Stripe-checkout gebruikt subscription mode en laat alleen bij een betaalde bouwprijs de bouwregel toe', async () => {

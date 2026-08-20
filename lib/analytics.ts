@@ -37,6 +37,7 @@ export type MarketingEvent =
   | 'social_post_open'
   | 'partner_page_view'
   | 'blog_open'
+  | 'chat_whatsapp_open'
   | 'customer_portal_open'
 
 declare global {
