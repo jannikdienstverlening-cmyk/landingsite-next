@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-08-14T07:09:21.449Z",
+  "generatedAt": "2026-08-21T07:11:26.241Z",
   "indexableRoutes": [
     {
       "slug": "/",
@@ -54,6 +54,12 @@
       "title": "Privacybeleid voor klanten en bezoekers | Landingsite.nl",
       "primaryKeyword": "privacybeleid Landingsite.nl",
       "canonical": "https://www.landingsite.nl/privacybeleid"
+    },
+    {
+      "slug": "/blog/welke-informatie-hoort-op-een-dienstenpagina",
+      "title": "Wat zet je op een pagina voor je dienst? | Landingsite.nl",
+      "primaryKeyword": "welke informatie hoort op een dienstenpagina",
+      "canonical": "https://www.landingsite.nl/blog/welke-informatie-hoort-op-een-dienstenpagina"
     },
     {
       "slug": "/blog/welke-velden-heeft-een-contactformulier-nodig",

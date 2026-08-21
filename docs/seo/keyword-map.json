@@ -1,5 +1,5 @@
 {
-  "version": "2026-08-14",
+  "version": "2026-08-21",
   "rules": {
     "onePrimaryIntentPerPage": true,
     "doorwayPagesAllowed": false,
@@ -12,6 +12,7 @@
     { "path": "/kosten-website-laten-maken", "primaryKeyword": "wat kost een website laten maken", "intent": "prijsopbouw en terugkerende kosten begrijpen" },
     { "path": "/werk", "primaryKeyword": "voorbeelden websites laten maken", "intent": "echt opgeleverd werk controleren" },
     { "path": "/blog", "primaryKeyword": "webdesign blog voor ondernemers", "intent": "praktische informatie over website-inhoud, ontwerp en beheer lezen" },
+    { "path": "/blog/welke-informatie-hoort-op-een-dienstenpagina", "primaryKeyword": "welke informatie hoort op een dienstenpagina", "intent": "bepalen welke informatie een zakelijke dienstenpagina nodig heeft" },
     { "path": "/blog/hoeveel-paginas-heeft-een-zakelijke-website-nodig", "primaryKeyword": "hoeveel pagina's heeft een zakelijke website nodig", "intent": "bepalen hoeveel pagina's een zakelijke website nodig heeft" },
     { "path": "/blog/wat-moet-er-bovenaan-je-website-staan", "primaryKeyword": "wat moet er bovenaan een website staan", "intent": "begrijpen welke informatie bovenaan een zakelijke website hoort" },
     { "path": "/blog/welke-velden-heeft-een-contactformulier-nodig", "primaryKeyword": "welke velden heeft een contactformulier nodig", "intent": "bepalen welke velden een zakelijk contactformulier nodig heeft" },

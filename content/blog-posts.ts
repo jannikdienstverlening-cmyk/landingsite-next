@@ -30,6 +30,96 @@ const baseUrl = 'https://www.landingsite.nl'
 
 export const blogPosts: BlogPost[] = [
   {
+    slug: 'welke-informatie-hoort-op-een-dienstenpagina',
+    status: 'published',
+    title: 'Wat zet je op een pagina voor je dienst?',
+    description: 'Bouw een duidelijke dienstenpagina met een afgebakend aanbod, herkenbare situaties, een concrete werkwijze, controleerbaar bewijs en een passende vervolgstap.',
+    excerpt: 'Een dienstenpagina helpt een bezoeker bepalen wat je precies doet, wanneer de dienst past en wat een logische volgende stap is. Deze opbouw houdt de uitleg concreet.',
+    category: 'Website-inhoud',
+    primaryKeyword: 'welke informatie hoort op een dienstenpagina',
+    secondaryKeywords: ['dienstenpagina schrijven', 'inhoud dienstenpagina', 'opbouw dienstenpagina'],
+    searchIntent: 'Bepalen welke informatie een zakelijke dienstenpagina nodig heeft',
+    publishedAt: '2026-08-21',
+    updatedAt: '2026-08-21',
+    author: 'Jannik',
+    reviewer: 'Jannik',
+    readingTime: '6 minuten',
+    sources: [
+      'https://developers.google.com/search/docs/fundamentals/creating-helpful-content',
+      'https://www.w3.org/WAI/tutorials/page-structure/headings/',
+      'https://www.w3.org/WAI/tips/writing/',
+    ],
+    sections: [
+      {
+        heading: 'Begin met de situatie die je oplost',
+        paragraphs: [
+          'Open niet met een lange beschrijving van je bedrijf. Benoem eerst de dienst en de situatie waarin iemand die nodig kan hebben. Zo kan een bezoeker bepalen of de pagina over de eigen vraag gaat.',
+          'Gebruik de woorden die klanten zelf gebruiken. “Hulp bij een arbeidsconflict” is bijvoorbeeld concreter dan “strategische ondersteuning voor mens en organisatie”. Leg vaktaal uit wanneer je die toch nodig hebt.',
+        ],
+      },
+      {
+        heading: 'Baken af wat wel en niet bij de dienst hoort',
+        paragraphs: [
+          'Beschrijf welke werkzaamheden binnen de dienst vallen en welk resultaat je oplevert, zonder een uitkomst te garanderen. Denk aan een advies, ontwerp, rapport, uitvoering of overdracht. Noem ook relevante grenzen, zodat een bezoeker geen andere dienstverlening verwacht dan je aanbiedt.',
+          'Heb je meerdere diensten met een wezenlijk andere vraag of aanpak? Geef iedere dienst dan een eigen uitleg. Maak geen bijna gelijke pagina\'s waarin alleen een doelgroep of plaatsnaam verandert.',
+        ],
+        bullets: [
+          'Welke concrete vraag pakt deze dienst aan?',
+          'Welke werkzaamheden voer je uit?',
+          'Wat ontvangt de klant aan het einde?',
+          'Wat valt buiten deze dienst?',
+        ],
+      },
+      {
+        heading: 'Maak de werkwijze voorspelbaar',
+        paragraphs: [
+          'Zet de belangrijkste stappen in de volgorde waarin de klant ze ervaart. Benoem wat je eerst nodig hebt, wat jij daarna doet en wanneer de klant iets moet beoordelen of aanleveren.',
+          'Schrijf alleen termijnen op die je kunt onderbouwen en leg voorwaarden direct uit. Een werkwijze van drie heldere stappen is nuttiger dan een precieze planning die niet voor iedere opdracht geldt.',
+        ],
+      },
+      {
+        heading: 'Beantwoord vragen die de keuze bepalen',
+        paragraphs: [
+          'Inventariseer welke informatie iemand nodig heeft voordat contact logisch voelt. Dat kan gaan over geschiktheid, voorbereiding, samenwerking, oplevering of nazorg. Geef het antwoord op de pagina in plaats van alleen de vraag in een lijst te herhalen.',
+          'Google adviseert content te maken die een bedoeld publiek daadwerkelijk helpt en na het lezen genoeg informatie geeft om het doel te bereiken. Kies vragen daarom op basis van echte dienstverlening en niet alleen omdat een zoekterm vaak wordt gebruikt.',
+        ],
+      },
+      {
+        heading: 'Gebruik alleen bewijs dat controleerbaar is',
+        paragraphs: [
+          'Ondersteun je uitleg met echt werk, een relevante certificering, aantoonbare ervaring of een klantreactie waarvoor publicatietoestemming bestaat. Vermeld genoeg context om duidelijk te maken wat het bewijs laat zien.',
+          'Heb je nog geen passend bewijs, laat het onderdeel dan weg. Een concrete uitleg van je proces is geloofwaardiger dan sterren, aantallen of resultaten zonder herleidbare bron.',
+        ],
+      },
+      {
+        heading: 'Geef iedere sectie een duidelijke kop',
+        paragraphs: [
+          'Verdeel langere uitleg in onderdelen met beschrijvende tussenkoppen. W3C legt uit dat koppen de inhoudsstructuur communiceren en door hulptechnologie kunnen worden gebruikt voor navigatie. Gebruik daarom echte kopniveaus in een logische volgorde, niet alleen vetgedrukte tekst.',
+          'Maak ook link- en knopteksten betekenisvol. W3C adviseert dat de tekst het doel van de link beschrijft. “Vraag een kennismaking aan” vertelt meer dan “Klik hier”.',
+        ],
+      },
+      {
+        heading: 'Sluit af met een passende volgende stap',
+        paragraphs: [
+          'Kies een actie die past bij de hoeveelheid informatie die een bezoeker nu heeft. Bij een afgebakende dienst kan dat een aanvraag zijn. Bij maatwerk past een korte kennismaking of gerichte vraag vaak beter.',
+          'Controleer de volledige pagina tenslotte op mobiel en desktop. Lees alleen de koppen om te zien of de hoofdlijn duidelijk blijft en test iedere link, knop en formulierstap zelf.',
+        ],
+        bullets: [
+          'De titel benoemt de dienst of klantvraag.',
+          'Omvang en grenzen van de dienst zijn concreet.',
+          'De werkwijze staat in een logische volgorde.',
+          'Claims en bewijs zijn herleidbaar.',
+          'Koppen en links beschrijven hun doel.',
+          'De vervolgstap past bij de dienst.',
+        ],
+      },
+    ],
+    relatedLinks: [
+      { label: 'Lees hoeveel pagina\'s je zakelijke website nodig heeft', href: '/blog/hoeveel-paginas-heeft-een-zakelijke-website-nodig' },
+      { label: 'Bekijk een websitepakket voor zzp', href: '/website-laten-maken-zzp' },
+    ],
+  },
+  {
     slug: 'welke-velden-heeft-een-contactformulier-nodig',
     status: 'published',
     title: 'Welke velden heeft een contactformulier nodig?',
