@@ -30,6 +30,96 @@ const baseUrl = 'https://www.landingsite.nl'
 
 export const blogPosts: BlogPost[] = [
   {
+    slug: 'wanneer-heeft-een-afbeelding-alt-tekst-nodig',
+    status: 'published',
+    title: 'Wanneer heeft een afbeelding alt-tekst nodig?',
+    description: 'Bepaal per websiteafbeelding of de alt-tekst de inhoud, de actie of niets moet beschrijven, met voorbeelden voor foto\'s, iconen, logo\'s en grafieken.',
+    excerpt: 'Goede alt-tekst beschrijft niet automatisch alles wat je ziet. De juiste keuze hangt af van wat de afbeelding op die plek toevoegt of doet.',
+    category: 'Toegankelijkheid',
+    primaryKeyword: 'wanneer heeft een afbeelding alt-tekst nodig',
+    secondaryKeywords: ['alt-tekst schrijven', 'alt-tekst afbeelding', 'afbeeldingen toegankelijk maken'],
+    searchIntent: 'Bepalen welke alt-tekst een websiteafbeelding nodig heeft',
+    publishedAt: '2026-08-28',
+    updatedAt: '2026-08-28',
+    author: 'Jannik',
+    reviewer: 'Jannik',
+    readingTime: '6 minuten',
+    sources: [
+      'https://www.w3.org/WAI/tutorials/images/',
+      'https://www.w3.org/WAI/tutorials/images/decision-tree/',
+      'https://www.w3.org/WAI/tutorials/images/functional/',
+      'https://www.w3.org/WAI/tutorials/images/complex/',
+    ],
+    sections: [
+      {
+        heading: 'Begin bij de taak van de afbeelding',
+        paragraphs: [
+          'Schrijf alt-tekst niet los van de pagina. Dezelfde foto kan op de ene plek belangrijke informatie geven en op een andere plek alleen sfeer toevoegen. Vraag daarom eerst wat een bezoeker mist wanneer de afbeelding niet zichtbaar is.',
+          'W3C onderscheidt onder meer informatieve, decoratieve, functionele en complexe afbeeldingen. Die functie bepaalt of de alt-tekst de inhoud beschrijft, een actie benoemt of leeg blijft.',
+        ],
+      },
+      {
+        heading: 'Beschrijf bij een informatieve afbeelding wat ertoe doet',
+        paragraphs: [
+          'Een informatieve foto, illustratie of eenvoudig schema krijgt een korte beschrijving van de informatie die relevant is voor de pagina. Beschrijf dus niet ieder zichtbaar detail, maar wel wat de afbeelding aan de tekst toevoegt.',
+          'Bij een projectfoto kan “Mobiele homepage met één blauwe aanvraagknop onder de introductie” nuttig zijn wanneer juist die opbouw wordt besproken. “Screenshot website” zegt dan te weinig. Formuleer de tekst zo dat hij de afbeelding op deze plek kan vervangen zonder de betekenis van de pagina te veranderen.',
+        ],
+      },
+      {
+        heading: 'Laat de alt-tekst leeg bij decoratie en herhaling',
+        paragraphs: [
+          'Een puur decoratieve afbeelding heeft geen inhoudelijke taak. Gebruik daarvoor een leeg alt-attribuut. Zo kan hulptechnologie de afbeelding overslaan zonder dat de afbeelding technisch ontbreekt.',
+          'Hetzelfde geldt wanneer zichtbare tekst direct naast de afbeelding al precies dezelfde informatie geeft. Nogmaals dezelfde woorden laten voorlezen voegt dan niets toe. Laat het alt-attribuut wel aanwezig; leeg is een bewuste keuze en iets anders dan een ontbrekend attribuut.',
+        ],
+        bullets: [
+          'Een achtergrondvorm die alleen kleur toevoegt.',
+          'Een sfeerfoto zonder nieuwe informatie.',
+          'Een pictogram naast tekst die dezelfde actie al volledig benoemt.',
+          'Een afbeelding waarvan de inhoud direct ernaast als gewone tekst staat.',
+        ],
+      },
+      {
+        heading: 'Benoem bij een klikbare afbeelding de actie',
+        paragraphs: [
+          'Staat een afbeelding alleen in een link of knop, beschrijf dan het doel in plaats van het uiterlijk. “Zoeken” is duidelijker dan “vergrootglas” en “Naar de homepage” duidelijker dan “bedrijfslogo”.',
+          'Staat naast het pictogram al een volledige knoptekst, dan kan het pictogram meestal een lege alt-tekst krijgen. De toegankelijke naam van de knop staat dan al in de gewone tekst en hoeft niet te worden herhaald.',
+        ],
+      },
+      {
+        heading: 'Zet tekst liever niet vast in een afbeelding',
+        paragraphs: [
+          'Gewone webtekst is beter aanpasbaar dan tekst die in een afbeelding is ingebakken. W3C adviseert afbeeldingen van tekst te vermijden, behalve in situaties zoals een logo. Moet de afbeelding toch woorden overbrengen die nergens anders staan, neem die woorden dan op in de alt-tekst.',
+          'Controleer ook of een logo informatie toevoegt of een functie heeft. Een los logo kan de organisatienaam nodig hebben. Een logo dat als enige inhoud naar de homepage linkt, heeft een tekstalternatief nodig dat die bestemming duidelijk maakt.',
+        ],
+      },
+      {
+        heading: 'Geef een grafiek ook een volledige tekstuele uitleg',
+        paragraphs: [
+          'Een grafiek, infographic of uitgebreid diagram bevat vaak te veel informatie voor één korte alt-tekst. Geef de afbeelding een korte identificatie en zet de gegevens, conclusies of stappen ook als gewone tekst op de pagina.',
+          'De tekstuele uitleg moet dezelfde inhoudelijke taak mogelijk maken. Alleen “grafiek van de resultaten” is niet genoeg wanneer de lezer juist waarden, verhoudingen of een proces uit de afbeelding nodig heeft.',
+        ],
+      },
+      {
+        heading: 'Controleer iedere afbeelding in haar context',
+        paragraphs: [
+          'Loop de pagina afbeelding voor afbeelding na. Kijk daarbij niet alleen of een alt-attribuut aanwezig is, maar vooral of de gekozen tekst past bij de taak van de afbeelding op die specifieke plek.',
+        ],
+        bullets: [
+          'Voegt de afbeelding informatie toe? Beschrijf de relevante betekenis kort.',
+          'Is de afbeelding decoratief of volledig redundant? Gebruik een leeg alt-attribuut.',
+          'Is de afbeelding een link of knop? Benoem de actie of bestemming.',
+          'Bevat de afbeelding tekst die nergens anders staat? Neem die woorden over.',
+          'Is de afbeelding complex? Geef de volledige informatie ook als gewone tekst.',
+          'Lees de pagina zonder afbeeldingen en controleer of de bedoeling behouden blijft.',
+        ],
+      },
+    ],
+    relatedLinks: [
+      { label: 'Lees welke informatie op een dienstenpagina hoort', href: '/blog/welke-informatie-hoort-op-een-dienstenpagina' },
+      { label: 'Lees welke velden een contactformulier nodig heeft', href: '/blog/welke-velden-heeft-een-contactformulier-nodig' },
+    ],
+  },
+  {
     slug: 'welke-informatie-hoort-op-een-dienstenpagina',
     status: 'published',
     title: 'Wat zet je op een pagina voor je dienst?',

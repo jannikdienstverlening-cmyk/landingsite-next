@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-08-21T07:11:26.241Z",
+  "generatedAt": "2026-08-28T07:05:31.954Z",
   "indexableRoutes": [
     {
       "slug": "/",
@@ -54,6 +54,12 @@
       "title": "Privacybeleid voor klanten en bezoekers | Landingsite.nl",
       "primaryKeyword": "privacybeleid Landingsite.nl",
       "canonical": "https://www.landingsite.nl/privacybeleid"
+    },
+    {
+      "slug": "/blog/wanneer-heeft-een-afbeelding-alt-tekst-nodig",
+      "title": "Wanneer heeft een afbeelding alt-tekst nodig? | Landingsite.nl",
+      "primaryKeyword": "wanneer heeft een afbeelding alt-tekst nodig",
+      "canonical": "https://www.landingsite.nl/blog/wanneer-heeft-een-afbeelding-alt-tekst-nodig"
     },
     {
       "slug": "/blog/welke-informatie-hoort-op-een-dienstenpagina",
