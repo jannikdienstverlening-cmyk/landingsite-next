@@ -30,6 +30,98 @@ const baseUrl = 'https://www.landingsite.nl'
 
 export const blogPosts: BlogPost[] = [
   {
+    slug: 'hoe-schrijf-je-duidelijke-link-en-knopteksten',
+    status: 'published',
+    title: 'Hoe schrijf je duidelijke link- en knopteksten?',
+    description: 'Schrijf link- en knopteksten die vooraf duidelijk maken waar een bezoeker terechtkomt of welke actie er wordt uitgevoerd, met concrete voorbeelden en een controlelijst.',
+    excerpt: 'Een goede link of knop vertelt vóór de klik wat er daarna gebeurt. Met een paar gerichte keuzes maak je iedere vervolgstap duidelijker en beter te controleren.',
+    category: 'Website-inhoud',
+    primaryKeyword: 'hoe schrijf je goede linkteksten',
+    secondaryKeywords: ['duidelijke knoptekst', 'linktekst schrijven', 'call-to-action tekst'],
+    searchIntent: 'Duidelijke link- en knopteksten voor een zakelijke website schrijven',
+    publishedAt: '2026-09-04',
+    updatedAt: '2026-09-04',
+    author: 'Jannik',
+    reviewer: 'Jannik',
+    readingTime: '6 minuten',
+    sources: [
+      'https://www.w3.org/WAI/WCAG22/Understanding/link-purpose-in-context.html',
+      'https://www.w3.org/WAI/tips/writing/',
+      'https://www.w3.org/WAI/ARIA/apg/patterns/link/',
+      'https://www.w3.org/WAI/ARIA/apg/patterns/button/',
+      'https://developers.google.com/search/docs/crawling-indexing/links-crawlable',
+    ],
+    sections: [
+      {
+        heading: 'Begin met wat er na de klik gebeurt',
+        paragraphs: [
+          'Schrijf niet eerst een aantrekkelijke kreet en zoek daar later een bestemming bij. Bepaal eerst wat een bezoeker na de klik ziet of doet. Benoem daarna die uitkomst zo direct mogelijk in de zichtbare tekst.',
+          '“Bekijk de websitepakketten” vertelt bijvoorbeeld welke informatie volgt. “Ontdek meer” laat dat open. W3C adviseert dat het doel van een link uit de linktekst zelf of uit de direct samenhangende context kan worden bepaald. Een zelfstandige, beschrijvende tekst is daarom een praktisch uitgangspunt.',
+        ],
+      },
+      {
+        heading: 'Gebruik een link voor een bestemming en een knop voor een actie',
+        paragraphs: [
+          'Een link verwijst naar een bron of plek, binnen of buiten de huidige pagina. Een knop start een actie of gebeurtenis, zoals een formulier verzenden, een dialoog openen of een menu sluiten. W3C maakt dit onderscheid expliciet in de patronen voor links en knoppen.',
+          'De vormgeving mag bij elkaar passen, maar de technische functie moet kloppen. Gebruik dus een echte link met een bestemming voor “Bekijk ons werk” en een knop voor “Verstuur aanvraag”. Dat geeft browsers en hulptechnologie de juiste betekenis en het verwachte toetsenbordgedrag.',
+        ],
+        bullets: [
+          'Naar een andere pagina of sectie: gebruik een link.',
+          'Een formulier versturen of een onderdeel openen: gebruik een knop.',
+          'Een bestand openen: gebruik een link en benoem zo nodig het bestandstype.',
+          'Een menu openen of sluiten: gebruik een knop en laat de status technisch herkennen.',
+        ],
+      },
+      {
+        heading: 'Vervang algemene woorden door een concrete bestemming',
+        paragraphs: [
+          'Teksten als “klik hier”, “lees meer” en “bekijk” zijn op zichzelf niet duidelijk. Voeg het onderwerp of de bestemming toe: “Lees hoe de intake werkt”, “Bekijk het Starter-pakket” of “Download de projectbriefing als pdf”.',
+          'Dit helpt ook wanneer iemand alleen de links op een pagina doorloopt. W3C beschrijft dat hulptechnologie een losse lijst met links kan aanbieden. Google adviseert bovendien beschrijvende, beknopte linktekst die relevant is voor de huidige pagina en de doelpagina.',
+        ],
+      },
+      {
+        heading: 'Laat een knop beginnen met een herkenbare handeling',
+        paragraphs: [
+          'Een knoptekst werkt meestal goed wanneer hij met een werkwoord begint en het directe gevolg benoemt. Denk aan “Plan een kennismaking”, “Stuur mijn vraag” of “Open het menu”. De bezoeker hoeft dan niet uit kleur, positie of omringende tekst af te leiden wat de knop doet.',
+          'Stem de woorden af op het werkelijke moment in het proces. Een knop die alleen een formulier opent, belooft nog geen afspraak. Schrijf dan bijvoorbeeld “Open het aanvraagformulier” in plaats van “Afspraak bevestigd”.',
+        ],
+      },
+      {
+        heading: 'Houd dezelfde bestemming herkenbaar',
+        paragraphs: [
+          'Links die op dezelfde pagina dezelfde bestemming hebben, geef je bij voorkeur een herkenbare, consistente beschrijving. Links met verschillende bestemmingen moeten juist niet allemaal dezelfde algemene tekst krijgen. W3C noemt beide keuzes als goede praktijk.',
+          'Je hoeft niet iedere herhaling woordelijk gelijk te maken. “Bekijk de websitepakketten” en “Vergelijk de pakketten” kunnen allebei duidelijk naar hetzelfde overzicht wijzen. Controleer vooral of de bezoeker dezelfde verwachting krijgt en of twee identieke teksten niet onverwacht naar verschillende pagina’s leiden.',
+        ],
+      },
+      {
+        heading: 'Schrijf voor de zichtbare tekst, niet alleen voor techniek',
+        paragraphs: [
+          'Verstop de echte betekenis niet uitsluitend in een title-attribuut of andere extra techniek. Zorg dat de zichtbare link- of knoptekst zelf bruikbaar is. Dat helpt bezoekers die de pagina lezen, scannen, voorlezen of met het toetsenbord bedienen.',
+          'Is een pictogram de enige inhoud van een knop, dan heeft die knop een toegankelijke naam nodig. Staat er al zichtbare tekst naast het pictogram, voorkom dan dat dezelfde naam onnodig dubbel wordt voorgelezen. Het eerdere artikel over alt-tekst legt die keuze voor functionele afbeeldingen verder uit.',
+        ],
+      },
+      {
+        heading: 'Controleer de teksten los van het ontwerp',
+        paragraphs: [
+          'Maak een lijst van alle links en knoppen op de pagina en lees alleen die teksten. Kun je bij ieder item voorspellen waar je terechtkomt of welke actie begint? Pas algemene of misleidende woorden aan en test daarna de echte werking.',
+        ],
+        bullets: [
+          'De tekst benoemt een bestemming of handeling.',
+          'Een link heeft een echte, werkende bestemming.',
+          'Een knop voert de beschreven actie uit.',
+          'De formulering past bij de fase van de bezoeker.',
+          'Dezelfde tekst leidt niet naar verschillende bestemmingen.',
+          'De tekst blijft op mobiel leesbaar zonder betekenisvolle woorden weg te laten.',
+          'Toetsenbord- en schermlezergebruik geven dezelfde verwachting als de zichtbare tekst.',
+        ],
+      },
+    ],
+    relatedLinks: [
+      { label: 'Lees welke informatie op een dienstenpagina hoort', href: '/blog/welke-informatie-hoort-op-een-dienstenpagina' },
+      { label: 'Lees wanneer een afbeelding alt-tekst nodig heeft', href: '/blog/wanneer-heeft-een-afbeelding-alt-tekst-nodig' },
+    ],
+  },
+  {
     slug: 'wanneer-heeft-een-afbeelding-alt-tekst-nodig',
     status: 'published',
     title: 'Wanneer heeft een afbeelding alt-tekst nodig?',

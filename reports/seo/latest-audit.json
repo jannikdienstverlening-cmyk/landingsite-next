@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-08-28T07:05:31.954Z",
+  "generatedAt": "2026-09-04T07:10:35.695Z",
   "indexableRoutes": [
     {
       "slug": "/",
@@ -54,6 +54,12 @@
       "title": "Privacybeleid voor klanten en bezoekers | Landingsite.nl",
       "primaryKeyword": "privacybeleid Landingsite.nl",
       "canonical": "https://www.landingsite.nl/privacybeleid"
+    },
+    {
+      "slug": "/blog/hoe-schrijf-je-duidelijke-link-en-knopteksten",
+      "title": "Hoe schrijf je duidelijke link- en knopteksten? | Landingsite.nl",
+      "primaryKeyword": "hoe schrijf je goede linkteksten",
+      "canonical": "https://www.landingsite.nl/blog/hoe-schrijf-je-duidelijke-link-en-knopteksten"
     },
     {
       "slug": "/blog/wanneer-heeft-een-afbeelding-alt-tekst-nodig",
