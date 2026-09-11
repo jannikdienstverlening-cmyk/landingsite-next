@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-09-04T07:10:35.695Z",
+  "generatedAt": "2026-09-11T07:08:45.127Z",
   "indexableRoutes": [
     {
       "slug": "/",
@@ -54,6 +54,12 @@
       "title": "Privacybeleid voor klanten en bezoekers | Landingsite.nl",
       "primaryKeyword": "privacybeleid Landingsite.nl",
       "canonical": "https://www.landingsite.nl/privacybeleid"
+    },
+    {
+      "slug": "/blog/hoe-maak-je-foutmeldingen-in-een-formulier-duidelijk",
+      "title": "Hoe maak je foutmeldingen in een formulier duidelijk? | Landingsite.nl",
+      "primaryKeyword": "duidelijke foutmeldingen formulier",
+      "canonical": "https://www.landingsite.nl/blog/hoe-maak-je-foutmeldingen-in-een-formulier-duidelijk"
     },
     {
       "slug": "/blog/hoe-schrijf-je-duidelijke-link-en-knopteksten",

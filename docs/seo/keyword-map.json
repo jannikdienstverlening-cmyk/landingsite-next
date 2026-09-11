@@ -1,5 +1,5 @@
 {
-  "version": "2026-09-04",
+  "version": "2026-09-11",
   "rules": {
     "onePrimaryIntentPerPage": true,
     "doorwayPagesAllowed": false,
@@ -12,6 +12,7 @@
     { "path": "/kosten-website-laten-maken", "primaryKeyword": "wat kost een website laten maken", "intent": "prijsopbouw en terugkerende kosten begrijpen" },
     { "path": "/werk", "primaryKeyword": "voorbeelden websites laten maken", "intent": "echt opgeleverd werk controleren" },
     { "path": "/blog", "primaryKeyword": "webdesign blog voor ondernemers", "intent": "praktische informatie over website-inhoud, ontwerp en beheer lezen" },
+    { "path": "/blog/hoe-maak-je-foutmeldingen-in-een-formulier-duidelijk", "primaryKeyword": "duidelijke foutmeldingen formulier", "intent": "duidelijke en herstelbare foutmeldingen voor een webformulier maken" },
     { "path": "/blog/hoe-schrijf-je-duidelijke-link-en-knopteksten", "primaryKeyword": "hoe schrijf je goede linkteksten", "intent": "duidelijke link- en knopteksten voor een zakelijke website schrijven" },
     { "path": "/blog/wanneer-heeft-een-afbeelding-alt-tekst-nodig", "primaryKeyword": "wanneer heeft een afbeelding alt-tekst nodig", "intent": "bepalen welke alt-tekst een websiteafbeelding nodig heeft" },
     { "path": "/blog/welke-informatie-hoort-op-een-dienstenpagina", "primaryKeyword": "welke informatie hoort op een dienstenpagina", "intent": "bepalen welke informatie een zakelijke dienstenpagina nodig heeft" },

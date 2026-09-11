@@ -30,6 +30,98 @@ const baseUrl = 'https://www.landingsite.nl'
 
 export const blogPosts: BlogPost[] = [
   {
+    slug: 'hoe-maak-je-foutmeldingen-in-een-formulier-duidelijk',
+    status: 'published',
+    title: 'Hoe maak je foutmeldingen in een formulier duidelijk?',
+    description: 'Schrijf en plaats formulierfouten zo dat bezoekers zien welk veld niet klopt, waarom de invoer is geweigerd en hoe zij het probleem kunnen herstellen.',
+    excerpt: 'Een melding als “Er ging iets mis” helpt niemand verder. Een bruikbare foutmelding wijst het juiste veld aan, beschrijft het probleem en geeft een concrete oplossing.',
+    category: 'Toegankelijkheid',
+    primaryKeyword: 'duidelijke foutmeldingen formulier',
+    secondaryKeywords: ['foutmelding formulier schrijven', 'formulierfouten tonen', 'toegankelijk formulier foutmelding'],
+    searchIntent: 'Duidelijke en herstelbare foutmeldingen voor een webformulier maken',
+    publishedAt: '2026-09-11',
+    updatedAt: '2026-09-11',
+    author: 'Jannik',
+    reviewer: 'Jannik',
+    readingTime: '6 minuten',
+    sources: [
+      'https://www.w3.org/WAI/WCAG22/Understanding/error-identification.html',
+      'https://www.w3.org/WAI/WCAG22/Understanding/labels-or-instructions.html',
+      'https://www.w3.org/WAI/WCAG22/Understanding/error-suggestion.html',
+      'https://www.w3.org/WAI/WCAG22/Understanding/status-messages.html',
+    ],
+    sections: [
+      {
+        heading: 'Voorkom fouten met duidelijke labels en instructies',
+        paragraphs: [
+          'Een goede foutmelding begint vóór iemand op verzenden klikt. Geef ieder veld een zichtbaar, beschrijvend label en zet afwijkende invoerregels bij het veld. Denk aan een verplicht bestandsformaat, een maximale bestandsgrootte of de manier waarop een datum moet worden ingevuld.',
+          'W3C schrijft voor dat labels of instructies beschikbaar moeten zijn wanneer een formulier invoer verwacht. Geef alleen uitleg die nodig is om de taak uit te voeren. Een lange algemene handleiding boven het formulier is minder bruikbaar dan een korte aanwijzing op de plek waar die geldt.',
+        ],
+      },
+      {
+        heading: 'Benoem het veld en het concrete probleem',
+        paragraphs: [
+          'Schrijf niet alleen “Ongeldige invoer” of “Er ging iets mis”. Noem welk veld aandacht nodig heeft en wat er niet klopt. “Vul je e-mailadres in” en “Het e-mailadres mist een @-teken” geven veel meer richting.',
+          'Volgens W3C moet een automatisch gevonden invoerfout in tekst worden beschreven en moet duidelijk zijn bij welk onderdeel de fout hoort. Kleur, een rand of een pictogram kan extra opvallen, maar mag niet de enige aanwijzing zijn.',
+        ],
+        bullets: [
+          'Te algemeen: “Dit veld is ongeldig.”',
+          'Concreet: “Vul je telefoonnummer in met alleen cijfers.”',
+          'Te algemeen: “Verzenden mislukt.”',
+          'Concreet: “Kies eerst een onderwerp voordat je het formulier verstuurt.”',
+        ],
+      },
+      {
+        heading: 'Vertel hoe de bezoeker de fout kan herstellen',
+        paragraphs: [
+          'Een fout beschrijven is niet altijd genoeg. Als de juiste oplossing bekend is, zet die dan in dezelfde melding. Noem bijvoorbeeld het verwachte formaat, de toegestane waarden of de ontbrekende stap.',
+          'W3C vraagt om een herstelsuggestie wanneer een invoerfout automatisch wordt gevonden en een passende oplossing bekend is, behalve wanneer zo’n suggestie de beveiliging of het doel van de inhoud zou schaden. Geef dus gerichte hulp zonder gevoelige controles of beveiligingsregels prijs te geven.',
+        ],
+      },
+      {
+        heading: 'Plaats de melding bij het veld en geef een overzicht',
+        paragraphs: [
+          'Zet een fouttekst direct bij het betreffende veld, zodat de relatie zichtbaar blijft. Bij een langer formulier kan een overzicht bovenaan daarnaast handig zijn. Laat ieder item in dat overzicht naar het foutieve veld verwijzen, zodat een bezoeker niet opnieuw het hele formulier hoeft te doorzoeken.',
+          'W3C schrijft geen vaste visuele plaats voor: fouten mogen bij velden, vóór het formulier, in een melding of in een dialoog staan. Kies een opzet die het probleem in tekst beschrijft en de route naar het veld kort houdt.',
+        ],
+      },
+      {
+        heading: 'Bewaar correcte invoer na een mislukte poging',
+        paragraphs: [
+          'Wis geen correct ingevulde velden wanneer één onderdeel niet klopt. Laat de bezoeker alleen herstellen wat nodig is. Wees extra voorzichtig met wachtwoorden en andere gevoelige invoer: bepaal daarvoor bewust wat veilig kan worden bewaard of opnieuw moet worden gevraagd.',
+          'Controleer ook wat er gebeurt bij een technische storing. Maak onderscheid tussen een invoerfout en een probleem aan de kant van de website. Bij een storing is “Probeer het later opnieuw” eerlijker dan een willekeurig veld als fout aanwijzen.',
+        ],
+      },
+      {
+        heading: 'Maak dynamische meldingen merkbaar zonder onverwachte sprong',
+        paragraphs: [
+          'Verschijnt een foutmelding zonder dat de pagina opnieuw laadt of de focus verandert, zorg dan dat hulptechnologie die wijziging kan herkennen. W3C beschrijft dat statusmeldingen via een passende rol of eigenschap beschikbaar moeten zijn, zodat ze zonder focusverplaatsing kunnen worden aangekondigd.',
+          'Verplaats de toetsenbordfocus alleen doelgericht. Bij een volledig foutenoverzicht kan focus naar dat overzicht logisch zijn; bij controle tijdens het typen kan een aangekondigde melding voldoende zijn. Voorkom dat de cursor na iedere kleine fout onverwacht uit het veld springt.',
+        ],
+      },
+      {
+        heading: 'Test het hele herstelpad',
+        paragraphs: [
+          'Test niet alleen of het formulier verzendt. Probeer elk verplicht veld leeg te laten, gebruik ongeldige formaten en veroorzaak meerdere fouten tegelijk. Herhaal dit met toetsenbordbediening en controleer op mobiel of meldingen, velden en herstelacties samen in beeld blijven.',
+        ],
+        bullets: [
+          'Ieder veld heeft een zichtbaar en duidelijk label.',
+          'Invoerregels staan vóór de fout al bij het veld.',
+          'Elke fout benoemt het veld en het concrete probleem.',
+          'Een bekende oplossing staat in de melding.',
+          'Kleur is niet de enige manier waarop een fout herkenbaar is.',
+          'Correcte invoer blijft staan na een mislukte verzending.',
+          'Dynamische meldingen zijn ook voor hulptechnologie merkbaar.',
+          'De succesmelding bevestigt duidelijk dat het formulier is verzonden.',
+        ],
+      },
+    ],
+    relatedLinks: [
+      { label: 'Lees welke velden een contactformulier nodig heeft', href: '/blog/welke-velden-heeft-een-contactformulier-nodig' },
+      { label: 'Lees hoe je duidelijke link- en knopteksten schrijft', href: '/blog/hoe-schrijf-je-duidelijke-link-en-knopteksten' },
+    ],
+  },
+  {
     slug: 'hoe-schrijf-je-duidelijke-link-en-knopteksten',
     status: 'published',
     title: 'Hoe schrijf je duidelijke link- en knopteksten?',
