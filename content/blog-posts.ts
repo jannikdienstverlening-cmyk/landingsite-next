@@ -30,6 +30,91 @@ const baseUrl = 'https://www.landingsite.nl'
 
 export const blogPosts: BlogPost[] = [
   {
+    slug: 'hoe-schrijf-je-een-goede-paginatitel-en-metabeschrijving',
+    status: 'published',
+    title: 'Hoe schrijf je een paginatitel en meta description?',
+    description: 'Schrijf per webpagina een duidelijke titel en metabeschrijving die het onderwerp, de doelgroep en de inhoud eerlijk samenvatten, met voorbeelden en een controlelijst.',
+    excerpt: 'Een paginatitel en metabeschrijving helpen mensen een zoekresultaat te beoordelen. Schrijf ze per pagina, concreet en in lijn met wat de bezoeker werkelijk aantreft.',
+    category: 'SEO',
+    primaryKeyword: 'paginatitel en metabeschrijving schrijven',
+    secondaryKeywords: ['goede SEO-titel schrijven', 'meta description schrijven', 'titel en description website'],
+    searchIntent: 'Een duidelijke paginatitel en metabeschrijving voor een zakelijke webpagina schrijven',
+    publishedAt: '2026-09-25',
+    updatedAt: '2026-09-25',
+    author: 'Jannik',
+    reviewer: 'Jannik',
+    readingTime: '6 minuten',
+    sources: [
+      'https://developers.google.com/search/docs/appearance/title-link',
+      'https://developers.google.com/search/docs/appearance/snippet',
+      'https://www.w3.org/WAI/WCAG22/Understanding/page-titled.html',
+    ],
+    sections: [
+      {
+        heading: 'Ken de taak van beide teksten',
+        paragraphs: [
+          'De paginatitel staat in het title-element van de pagina. Browsers gebruiken die tekst onder meer voor het tabblad. Google kan hem als basis gebruiken voor de klikbare titel van een zoekresultaat. De metabeschrijving is een korte samenvatting in de paginacode en kan als beschrijvende tekst onder die titel verschijnen.',
+          'Zie beide teksten als een voorstel, niet als een vaste advertentie. Google bepaalt title-links en snippets automatisch en gebruikt daarvoor meerdere bronnen. De uiteindelijke tekst kan dus afwijken van wat je invult. Zorg daarom dat ook de zichtbare kop en de gewone pagina-inhoud duidelijk zijn.',
+        ],
+      },
+      {
+        heading: 'Bepaal eerst de ene taak van de pagina',
+        paragraphs: [
+          'Vat vóór het schrijven in één zin samen waarvoor de pagina bestaat. Een dienstenpagina moet bijvoorbeeld één concrete dienst uitleggen, terwijl een contactpagina vooral moet vertellen hoe iemand contact opneemt. Die taak vormt de kern van de titel en de beschrijving.',
+          'Probeer niet al je diensten en zoekwoorden in iedere titel te stoppen. Google adviseert beschrijvende, beknopte en onderscheidende titels per pagina. Met een eigen onderwerp per pagina voorkom je bovendien dat verschillende resultaten uit je site nauwelijks van elkaar te onderscheiden zijn.',
+        ],
+      },
+      {
+        heading: 'Schrijf de paginatitel specifiek en herkenbaar',
+        paragraphs: [
+          'Zet het onderscheidende onderwerp vooraan en voeg alleen context toe die iemand nodig heeft om de pagina te herkennen. “Arbeidsrechtelijk advies voor werkgevers | Bedrijfsnaam” zegt bijvoorbeeld meer dan “Diensten | Bedrijfsnaam”. Voor een contactpagina kan “Contact opnemen met Bedrijfsnaam” al voldoende zijn.',
+          'Gebruik de bedrijfsnaam consequent en beknopt, meestal aan het begin of einde met een duidelijk scheidingsteken. Vermijd herhaalde varianten van hetzelfde zoekwoord. Zo blijft de titel leesbaar en hoeft de belangrijkste informatie niet tussen losse trefwoorden te worden gezocht.',
+        ],
+      },
+      {
+        heading: 'Laat titel, hoofdkop en inhoud hetzelfde verhaal vertellen',
+        paragraphs: [
+          'De title-tag en de zichtbare hoofdkop hoeven niet woordelijk gelijk te zijn, maar ze moeten wel dezelfde verwachting geven. Een titel over onderhoudskosten hoort niet uit te komen op een algemene verkooppagina zonder uitleg over die kosten.',
+          'Google gebruikt naast het title-element ook de zichtbare hoofdtitel, koppen, prominente tekst en links bij het bepalen van een title-link. Een duidelijke, opvallende hoofdkop helpt daarom om het hoofdonderwerp van de pagina herkenbaar te houden. W3C adviseert daarnaast dat een paginatitel het onderwerp of doel van de pagina beschrijft, zodat bezoekers pagina’s kunnen herkennen en onderscheiden.',
+        ],
+      },
+      {
+        heading: 'Vat in de metabeschrijving samen wat iemand krijgt',
+        paragraphs: [
+          'Schrijf één of twee natuurlijke zinnen die de specifieke pagina samenvatten. Noem het onderwerp, voor wie de informatie bedoeld is en welke inhoud of vervolgstap op de pagina staat. Gebruik alleen eigenschappen, prijzen of voorwaarden die op de pagina zelf kloppen en actueel zijn.',
+          'Vermijd een rij losse zoekwoorden en algemene teksten die op iedere pagina passen. Google adviseert unieke beschrijvingen die de betreffende pagina nauwkeurig beschrijven. Een bruikbare opzet is: “Lees hoe [onderwerp] werkt, welke keuzes je maakt en wat je nodig hebt om [concrete taak] uit te voeren.”',
+        ],
+      },
+      {
+        heading: 'Werk niet met een gegarandeerde tekenlimiet',
+        paragraphs: [
+          'Er is geen vaste lengte waarmee je volledige weergave kunt garanderen. Google geeft aan dat title-links en snippets waar nodig worden ingekort, doorgaans om binnen de beschikbare breedte van het apparaat te passen. Een snippet kan bovendien per zoekopdracht verschillen.',
+          'Schrijf daarom eerst de belangrijkste informatie en schrap woorden die niets toevoegen. Controleer of de titel en beschrijving ook begrijpelijk blijven wanneer het laatste deel niet wordt getoond. Maak een tekst niet kunstmatig langer om een teller te vullen en stop hem niet vol met synoniemen.',
+        ],
+      },
+      {
+        heading: 'Controleer iedere pagina afzonderlijk',
+        paragraphs: [
+          'Loop de belangrijkste pagina’s één voor één na. Bekijk niet alleen het invoerveld in je beheersysteem, maar ook de uiteindelijke paginacode, het browsertabblad en de zichtbare hoofdkop. Na een wijziging kan het enige tijd duren voordat een zoekmachine de pagina opnieuw heeft verwerkt.',
+        ],
+        bullets: [
+          'Iedere indexeerbare pagina heeft een eigen, beschrijvende paginatitel.',
+          'Het onderscheidende onderwerp staat vroeg in de titel.',
+          'De bedrijfsnaam is kort en consequent toegevoegd waar dat nuttig is.',
+          'Titel, hoofdkop en pagina-inhoud geven dezelfde verwachting.',
+          'De metabeschrijving vat deze specifieke pagina eerlijk samen.',
+          'De tekst bevat geen onbewezen voordeel, verouderde prijs of loze belofte.',
+          'Titel en beschrijving blijven duidelijk als het einde wordt afgekapt.',
+          'De uiteindelijke HTML bevat de bedoelde title-tag en metabeschrijving.',
+        ],
+      },
+    ],
+    relatedLinks: [
+      { label: 'Lees welke informatie op een dienstenpagina hoort', href: '/blog/welke-informatie-hoort-op-een-dienstenpagina' },
+      { label: 'Lees hoe je duidelijke link- en knopteksten schrijft', href: '/blog/hoe-schrijf-je-duidelijke-link-en-knopteksten' },
+    ],
+  },
+  {
     slug: 'hoe-maak-je-foutmeldingen-in-een-formulier-duidelijk',
     status: 'published',
     title: 'Hoe maak je foutmeldingen in een formulier duidelijk?',

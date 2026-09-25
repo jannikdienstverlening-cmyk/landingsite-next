@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-09-11T07:08:45.127Z",
+  "generatedAt": "2026-09-25T07:10:47.356Z",
   "indexableRoutes": [
     {
       "slug": "/",
@@ -54,6 +54,12 @@
       "title": "Privacybeleid voor klanten en bezoekers | Landingsite.nl",
       "primaryKeyword": "privacybeleid Landingsite.nl",
       "canonical": "https://www.landingsite.nl/privacybeleid"
+    },
+    {
+      "slug": "/blog/hoe-schrijf-je-een-goede-paginatitel-en-metabeschrijving",
+      "title": "Hoe schrijf je een paginatitel en meta description? | Landingsite.nl",
+      "primaryKeyword": "paginatitel en metabeschrijving schrijven",
+      "canonical": "https://www.landingsite.nl/blog/hoe-schrijf-je-een-goede-paginatitel-en-metabeschrijving"
     },
     {
       "slug": "/blog/hoe-maak-je-foutmeldingen-in-een-formulier-duidelijk",
