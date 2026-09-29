@@ -3,6 +3,7 @@ import { DM_Mono, Syne } from 'next/font/google'
 import { commercialConfig } from '@/config/commercial'
 import './globals.css'
 import './homepage.css'
+import './founder-portrait.css'
 import './seo-pages.css'
 
 const syne = Syne({ subsets: ['latin'], weight: ['400', '700', '800'], variable: '--font-syne', display: 'swap' })

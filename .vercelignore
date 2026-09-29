@@ -1,4 +1,14 @@
 .codex-remote-attachments/
+.next/
+node_modules/
+.git/
+.vercel/
+.env*
+artifacts/
+test-results/
+playwright-report/
+reports/
+*.tsbuildinfo
 remotion-social/
 public/linkedin-banner-v2.jpg
 public/linkedin-banner.jpg

@@ -18,6 +18,7 @@ import { BUSINESS } from '@/lib/business'
 import { ContactForm, FAQList, MobileNavigation } from './site-interactions'
 import { Logo } from './logo'
 import { SiteChatbot } from './site-chatbot'
+import { FounderPortrait } from './founder-portrait'
 
 export type StudioFaq = { question: string; answer: string }
 
@@ -322,17 +323,9 @@ export function ManagementSection() {
 
 export function FounderSection() {
   return (
-    <section className="studio-section studio-founder" aria-labelledby="founder-title">
+    <section className="studio-section studio-founder" id="over" aria-labelledby="founder-title">
       <div className="studio-shell studio-founder__grid">
-        <figure className="studio-founder__portrait">
-          <Image
-            src="/images/jannik-founder-studio.webp"
-            alt="Jannik, oprichter en bouwer van Landingsite.nl"
-            fill
-            sizes="(max-width: 520px) 44vw, (max-width: 820px) 220px, 310px"
-          />
-          <figcaption>Jannik · oprichter en bouwer</figcaption>
-        </figure>
+        <FounderPortrait />
         <div className="studio-founder__copy">
           <p className="overline">Eén aanspreekpunt</p>
           <h2 id="founder-title">Je spreekt met degene die je website bouwt.</h2>
