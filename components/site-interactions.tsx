@@ -124,9 +124,14 @@ export function CheckoutButton({ packageId, label }: { packageId: CommercialPack
   const [accepted, setAccepted] = useState(false)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
+  const requestId = useRef<string | null>(null)
+  const inFlight = useRef(false)
 
   async function checkout() {
+    if (inFlight.current) return
     if (!accepted) return setError('Accepteer eerst de zakelijke voorwaarden.')
+    inFlight.current = true
+    requestId.current ??= crypto.randomUUID()
     setLoading(true)
     setError('')
     trackMarketingEvent('checkout_start', { package: packageId })
@@ -134,14 +139,18 @@ export function CheckoutButton({ packageId, label }: { packageId: CommercialPack
       const response = await fetch('/api/stripe/checkout', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ pakket: packageId, requestId: crypto.randomUUID(), termsAccepted: true }),
+        body: JSON.stringify({ pakket: packageId, requestId: requestId.current, termsAccepted: true }),
+        signal: AbortSignal.timeout(25_000),
       })
       const data = await response.json()
       if (!response.ok || !data.url) throw new Error(data.error || 'De checkout kan nu niet worden geopend.')
       window.location.assign(data.url)
     } catch (caught) {
-      setError(caught instanceof Error ? caught.message : 'De checkout kan nu niet worden geopend.')
+      setError(caught instanceof Error && caught.name === 'TimeoutError'
+        ? 'Het openen duurt langer dan verwacht. Probeer opnieuw; we gebruiken dezelfde betaalpoging.'
+        : caught instanceof Error ? caught.message : 'De checkout kan nu niet worden geopend.')
       setLoading(false)
+      inFlight.current = false
     }
   }
 

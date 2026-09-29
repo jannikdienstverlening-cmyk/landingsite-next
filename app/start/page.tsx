@@ -13,7 +13,7 @@ export const metadata: Metadata = {
 
 function packageId(value: string | string[] | undefined): CommercialPackageId | null {
   const candidate = Array.isArray(value) ? value[0] : value
-  return candidate && candidate in commercialConfig.packages ? candidate as CommercialPackageId : null
+  return candidate && Object.hasOwn(commercialConfig.packages, candidate) ? candidate as CommercialPackageId : null
 }
 
 export default async function StartPage({ searchParams }: { searchParams: Promise<Record<string, string | string[] | undefined>> }) {
@@ -61,7 +61,7 @@ export default async function StartPage({ searchParams }: { searchParams: Promis
               </dl>
               <div className="order-summary__recurring"><span>Daarna maandelijks</span><strong>€{commercialConfig.management.monthlyPrice} incl. btw</strong><p>De volgende incasso volgt één maand na de eerste betaling. Stripe toont de exacte datum vóór bevestiging.</p></div>
               <ul className="order-summary__facts"><li>Maandelijks opzegbaar aan het einde van de betaalperiode</li><li>Domein blijft van jou</li><li>Intake opent direct na betaling</li><li>Eerste versie binnen 48 uur na complete intake</li>{promotionApplies && <li>Je bekijkt en beoordeelt de preview vóór publicatie</li>}</ul>
-              <CheckoutButton packageId={selected} label={promotionApplies ? `Start voor €${initialPayment} via Stripe` : 'Betaal veilig via Stripe'} />
+              <CheckoutButton key={selected} packageId={selected} label={promotionApplies ? `Start voor €${initialPayment} via Stripe` : 'Betaal veilig via Stripe'} />
               <p className="order-summary__help">Nog niet zeker? <Link href="/#contact">Stel eerst een vraag</Link>.</p>
             </aside>
           ) : (

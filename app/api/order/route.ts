@@ -1,13 +1,14 @@
 import { NextRequest } from 'next/server'
 import { checkRateLimit, clientIp, rateLimitResponse } from '@/lib/rate-limit'
 import { getSupabase } from '@/lib/supabase'
+import { safePaymentError } from '@/lib/stripe'
 
 export async function GET(req: NextRequest) {
   const limit = checkRateLimit(`order:${clientIp(req)}`, 30, 10 * 60_000)
   if (!limit.allowed) return rateLimitResponse(limit.retryAfter)
   const sessionId = req.nextUrl.searchParams.get('session_id')
 
-  if (!sessionId || sessionId.length > 300) {
+  if (!sessionId || sessionId.length > 300 || !/^cs_(live|test)_[A-Za-z0-9]+$/.test(sessionId)) {
     return Response.json({ error: 'Session ID ontbreekt.' }, { status: 400 })
   }
 
@@ -18,7 +19,7 @@ export async function GET(req: NextRequest) {
     .maybeSingle()
 
   if (error) {
-    console.error('Orderstatus ophalen mislukt', { sessionId, error })
+    console.error('Orderstatus ophalen mislukt', safePaymentError(error))
     return Response.json({ error: 'Ordercontrole is tijdelijk niet beschikbaar.' }, { status: 503 })
   }
   if (!data) {

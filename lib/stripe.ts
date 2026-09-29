@@ -2,16 +2,29 @@ import Stripe from 'stripe'
 import { cents, commercialConfig, type CommercialPackageId } from '@/config/commercial'
 
 let stripe: Stripe | null = null
+let cachedSecret: string | null = null
+
+export function normalizeStripeSecretKey(value: string | undefined) {
+  const secret = value?.trim()
+  if (!secret || !/^(sk|rk)_(live|test)_[A-Za-z0-9]+$/.test(secret)) {
+    throw new Error('STRIPE_SECRET_KEY ontbreekt of heeft een ongeldig formaat.')
+  }
+  return secret
+}
+
+// Never log provider error objects: they can contain customer data and request headers.
+export function safePaymentError(error: unknown) {
+  const source = error && typeof error === 'object' ? error as Record<string, unknown> : {}
+  const code = typeof source.code === 'string' && /^[a-zA-Z_]{1,64}$/.test(source.code) ? source.code : 'payment_error'
+  const type = typeof source.type === 'string' && /^Stripe[A-Za-z]+Error$/.test(source.type) ? source.type : 'Error'
+  return { code, type }
+}
 
 export function getStripe() {
-  const secretKey = process.env.STRIPE_SECRET_KEY
-
-  if (!secretKey) {
-    throw new Error('STRIPE_SECRET_KEY is missing.')
-  }
-
-  if (!stripe) {
+  const secretKey = normalizeStripeSecretKey(process.env.STRIPE_SECRET_KEY)
+  if (!stripe || cachedSecret !== secretKey) {
     stripe = new Stripe(secretKey)
+    cachedSecret = secretKey
   }
 
   return stripe

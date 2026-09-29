@@ -9,7 +9,7 @@ import { getResend } from '@/lib/resend'
 import { createCustomerToken } from '@/lib/security'
 import { adminRecipient } from '@/lib/server-email'
 import { isFullManagementInvoiceLine } from '@/lib/stripe-billing'
-import { configuredManagementPriceId, getStripe, PAKKETTEN, TERMS_VERSION } from '@/lib/stripe'
+import { configuredManagementPriceId, getStripe, safePaymentError, PAKKETTEN, TERMS_VERSION } from '@/lib/stripe'
 import { shouldApplyStripeEvent } from '@/lib/stripe-event-order'
 import { getSupabase, type ManagementStatus, type Pakket } from '@/lib/supabase'
 
@@ -22,7 +22,7 @@ function objectId(value: string | { id: string } | null | undefined) {
 }
 
 function isPackage(value: string | undefined): value is Pakket {
-  return Boolean(value && value in PAKKETTEN)
+  return Boolean(value && Object.hasOwn(PAKKETTEN, value))
 }
 
 function invoiceSubscriptionId(invoice: Stripe.Invoice) {
@@ -428,10 +428,12 @@ async function handleEvent(event: Stripe.Event) {
       // Het Stripe-account kan meerdere projecten bedienen; onbekende sessies horen niet bij Landingsite.nl.
       return
     }
+    case 'checkout.session.async_payment_failed':
     case 'checkout.session.expired': {
       const session = event.data.object
       if (session.metadata?.checkout_type === 'build' || session.metadata?.checkout_type === 'combined') {
-        await getSupabase().from('orders').update({ status: 'failed', last_error: 'Bouwcheckout verlopen zonder betaling.', updated_at: new Date().toISOString() }).eq('stripe_session_id', session.id).eq('status', 'pending')
+        const { error } = await getSupabase().from('orders').update({ status: 'failed', last_error: event.type === 'checkout.session.expired' ? 'Bouwcheckout verlopen zonder betaling.' : 'De betaling is niet geslaagd.', updated_at: new Date().toISOString() }).eq('stripe_session_id', session.id).eq('status', 'pending')
+        if (error) throw error
       } else if (session.metadata?.checkout_type === 'management' && session.metadata.order_id) {
         await getSupabase().from('orders').update({ management_checkout_session_id: null, updated_at: new Date().toISOString() }).eq('id', session.metadata.order_id).eq('management_status', 'awaiting_go_live')
         await audit(session.metadata.order_id, event.id, 'management_checkout_expired', 'awaiting_go_live', 'awaiting_go_live', { checkout_session_id: session.id })
@@ -505,8 +507,13 @@ async function claimEvent(event: Stripe.Event) {
   if (existing?.status === 'processing' && Date.now() - new Date(existing.updated_at).getTime() < 5 * 60_000) return 'processing' as const
 
   if (existing) {
-    const { error } = await supabase.from('stripe_webhook_events').update({ status: 'processing', attempts: existing.attempts + 1, last_error: null, updated_at: new Date().toISOString() }).eq('event_id', event.id)
+    // Compare-and-set prevents concurrent retries from both claiming the same event.
+    const { data: claimed, error } = await supabase.from('stripe_webhook_events')
+      .update({ status: 'processing', attempts: existing.attempts + 1, last_error: null, updated_at: new Date().toISOString() })
+      .eq('event_id', event.id).eq('status', existing.status).eq('updated_at', existing.updated_at)
+      .select('event_id').maybeSingle()
     if (error) throw new Error(`Webhookretry claimen mislukt: ${error.message}`)
+    if (!claimed) return 'processing' as const
   } else {
     const { error } = await supabase.from('stripe_webhook_events').insert({ event_id: event.id, event_type: event.type, status: 'processing', attempts: 1, processed_at: new Date().toISOString(), updated_at: new Date().toISOString() })
     if (error?.code === '23505') return 'processing' as const
@@ -517,7 +524,7 @@ async function claimEvent(event: Stripe.Event) {
 
 export async function POST(request: NextRequest) {
   const signature = request.headers.get('stripe-signature')
-  const secret = process.env.STRIPE_WEBHOOK_SECRET
+  const secret = process.env.STRIPE_WEBHOOK_SECRET?.trim()
   if (!signature || !secret) return Response.json({ error: 'Webhookconfiguratie ontbreekt.' }, { status: 400 })
   const declaredLength = Number(request.headers.get('content-length') ?? 0)
   if (Number.isFinite(declaredLength) && declaredLength > 1_000_000) return Response.json({ error: 'Webhookpayload is te groot.' }, { status: 413 })
@@ -529,7 +536,7 @@ export async function POST(request: NextRequest) {
   let claim: 'processed' | 'processing' | 'claimed'
   try { claim = await claimEvent(event) }
   catch (error) {
-    console.error('Stripe-webhook claimen mislukt', { eventId: event.id, error })
+    console.error('Stripe-webhook claimen mislukt', safePaymentError(error))
     return Response.json({ error: 'Webhookverwerking tijdelijk niet beschikbaar.' }, { status: 503 })
   }
   if (claim === 'processed') return Response.json({ received: true, duplicate: true })
@@ -541,9 +548,9 @@ export async function POST(request: NextRequest) {
     if (error) throw error
     return Response.json({ received: true })
   } catch (error) {
-    const message = error instanceof Error ? error.message : 'Onbekende webhookfout.'
-    console.error('Stripe-webhook verwerken mislukt', { eventId: event.id, eventType: event.type, error })
-    await getSupabase().from('stripe_webhook_events').update({ status: 'failed', last_error: message.slice(0, 2_000), updated_at: new Date().toISOString() }).eq('event_id', event.id)
+    const safeError = safePaymentError(error)
+    console.error('Stripe-webhook verwerken mislukt', { eventType: event.type, ...safeError })
+    await getSupabase().from('stripe_webhook_events').update({ status: 'failed', last_error: safeError.code, updated_at: new Date().toISOString() }).eq('event_id', event.id)
     return Response.json({ error: 'Webhookverwerking mislukt.' }, { status: 500 })
   }
 }

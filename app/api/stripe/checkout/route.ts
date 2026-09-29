@@ -8,6 +8,7 @@ import {
   configuredBuildPriceId,
   configuredManagementPriceId,
   getStripe,
+  safePaymentError,
   PAKKETTEN,
   STRIPE_COMBINED_PAYMENT_METHODS,
   stripeCheckoutBranding,
@@ -72,7 +73,7 @@ export async function POST(request: NextRequest) {
   const parsed = checkoutSchema.safeParse(body)
   if (!parsed.success) return Response.json({ error: validationMessage(parsed.error) }, { status: 400 })
 
-  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL?.replace(/\/$/, '')
+  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL?.trim().replace(/\/$/, '')
   if (!baseUrl) return Response.json({ error: 'Basis-URL ontbreekt.' }, { status: 500 })
 
   const info = PAKKETTEN[parsed.data.pakket]
@@ -162,18 +163,18 @@ export async function POST(request: NextRequest) {
     }, { onConflict: 'stripe_session_id', ignoreDuplicates: true })
 
     if (error) {
-      console.error('Pending order opslaan mislukt', { sessionId: session.id, error })
+      console.error('Pending order opslaan mislukt', safePaymentError(error))
       try {
         await getStripe().checkout.sessions.expire(session.id)
       } catch (expireError) {
-        console.error('Niet-opgeslagen Stripe-sessie kon niet worden gesloten', { sessionId: session.id, expireError })
+        console.error('Niet-opgeslagen Stripe-sessie kon niet worden gesloten', safePaymentError(expireError))
       }
       return Response.json({ error: 'Bestellen is tijdelijk niet beschikbaar. Er is niets afgeschreven.' }, { status: 503 })
     }
 
     return Response.json({ url: session.url })
   } catch (error) {
-    console.error('Checkout voorbereiden mislukt', error)
-    return Response.json({ error: 'Checkout kon niet worden geopend.' }, { status: 500 })
+    console.error('Checkout voorbereiden mislukt', safePaymentError(error))
+    return Response.json({ error: 'Betalen is tijdelijk niet beschikbaar. Probeer het opnieuw of neem contact met ons op. Er is niets afgeschreven.' }, { status: 503 })
   }
 }

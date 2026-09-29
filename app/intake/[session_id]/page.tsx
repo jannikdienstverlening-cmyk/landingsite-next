@@ -37,6 +37,8 @@ export default function IntakePage() {
   const [pakket, setPakket] = useState<Pakket>('starter')
   const [step, setStep] = useState(0)
   const [loading, setLoading] = useState(true)
+  const [authorized, setAuthorized] = useState(false)
+  const [checkAttempt, setCheckAttempt] = useState(0)
   const [submitting, setSubmitting] = useState(false)
   const [uploading, setUploading] = useState<AssetKey | null>(null)
   const [error, setError] = useState('')
@@ -44,42 +46,56 @@ export default function IntakePage() {
   const [previews, setPreviews] = useState<Record<AssetKey, string>>({ logo_url: '', hero_image_url: '' })
 
   useEffect(() => {
-    const saved = window.sessionStorage.getItem(`intake:${session_id}`)
-    if (saved) try { setForm({ ...initialForm, ...JSON.parse(saved) }) } catch { /* beschadigde conceptdata negeren */ }
+    try {
+      const saved = window.sessionStorage.getItem(`intake:${session_id}`)
+      if (saved) setForm({ ...initialForm, ...JSON.parse(saved) })
+    } catch { /* Intake remains usable when browser storage is unavailable. */ }
     let cancelled = false
     let attempts = 0
+    let timer: number | undefined
     async function loadOrder() {
       try {
         const response = await fetch(`/api/order?session_id=${encodeURIComponent(session_id)}`, { cache: 'no-store' })
         const data = await response.json()
         if (cancelled) return
-        if (!response.ok || !data.order) throw new Error('Order niet gevonden. Controleer de link in je betaalbevestiging.')
-        if (data.order.status === 'pending' && attempts++ < 15) return window.setTimeout(loadOrder, 2_000)
-        if (data.order.status === 'pending') throw new Error('Je betaling wordt nog verwerkt. Ververs de pagina over een minuut.')
+        if (!response.ok || !data.order) throw new Error(response.status === 404 || response.status === 400
+          ? 'Order niet gevonden. Controleer de link in je betaalbevestiging.'
+          : 'We kunnen je betaling nu niet controleren. Probeer het later opnieuw; betaal niet opnieuw.')
+        if (data.order.status === 'pending' && attempts++ < 18) {
+          timer = window.setTimeout(loadOrder, Math.min(2_000 + attempts * 1_000, 12_000))
+          return
+        }
+        if (data.order.status === 'pending') throw new Error('Je betaling wordt nog bevestigd. Bij een bankincasso kan dit langer duren. Je hoeft niet opnieuw te betalen. Via de link in je bevestigingsmail kun je later verder.')
         if (data.order.status === 'generating' || data.order.status === 'completed') {
           const statusResponse = await fetch('/api/generate', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ session_id }) })
           const statusData = await statusResponse.json()
-          if (statusData.status_token) router.replace(`/genereren/${data.order.id}?token=${encodeURIComponent(statusData.status_token)}`)
+          if (!statusResponse.ok || !statusData.status_token) throw new Error('Je projectstatus kan nu niet worden geopend. Probeer het later opnieuw.')
+          if (!cancelled) router.replace(`/genereren/${data.order.id}?token=${encodeURIComponent(statusData.status_token)}`)
           return
         }
         if (data.order.status !== 'paid') throw new Error('Deze order vraagt aandacht. Gebruik het contactformulier en vermeld je betaalreferentie.')
         setPakket(data.order.pakket as Pakket)
+        setAuthorized(true)
         trackMarketingEvent('checkout_complete', { package: data.order.pakket as string })
         trackMarketingEvent('intake_start', { package: data.order.pakket as string })
         setLoading(false)
       } catch (caught) {
+        if (cancelled) return
         setError(caught instanceof Error ? caught.message : 'Order controleren mislukt.')
         setLoading(false)
       }
     }
     loadOrder()
-    return () => { cancelled = true }
-  }, [router, session_id])
+    return () => {
+      cancelled = true
+      if (timer !== undefined) window.clearTimeout(timer)
+    }
+  }, [router, session_id, checkAttempt])
 
   function set(key: keyof FormState, value: string) {
     setForm(current => {
       const next = { ...current, [key]: value }
-      window.sessionStorage.setItem(`intake:${session_id}`, JSON.stringify(next))
+      try { window.sessionStorage.setItem(`intake:${session_id}`, JSON.stringify(next)) } catch { /* Saving is optional. */ }
       return next
     })
   }
@@ -123,7 +139,7 @@ export default function IntakePage() {
       const response = await fetch('/api/generate', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ session_id }) })
       const data = await response.json()
       if (!response.ok) throw new Error(data.error || 'Generatie starten mislukt.')
-      window.sessionStorage.removeItem(`intake:${session_id}`)
+      try { window.sessionStorage.removeItem(`intake:${session_id}`) } catch { /* Storage may be unavailable. */ }
       trackMarketingEvent('intake_step_complete', { package: pakket, step: '5' })
       trackMarketingEvent('intake_complete', { package: pakket })
       router.push(`/genereren/${intakeData.order_id}?token=${encodeURIComponent(data.status_token)}`)
@@ -134,6 +150,17 @@ export default function IntakePage() {
   }
 
   if (loading) return <><style>{css}</style><div className="intake-shell"><div className="loading"><div><div className="loading-dot" /><p>Betaling veilig controleren…</p></div></div></div></>
+
+  if (!authorized) return <><style>{css}</style><div className="intake-shell"><main className="intake-wrap">
+    <h1>Je betaalbevestiging</h1>
+    <p role="status">{error}</p>
+    <div className="step-actions"><button className="next" type="button" onClick={() => {
+      setLoading(true)
+      setError('')
+      setCheckAttempt(current => current + 1)
+    }}>Opnieuw controleren</button></div>
+    <p><Link href="/#contact">Hulp bij je betaling</Link></p>
+  </main></div></>
 
   const field = (id: keyof FormState, label: string, options: Partial<React.ComponentProps<typeof Field>> = {}) => <Field id={id} label={label} value={form[id]} onChange={value => set(id, value)} {...options} />
   const richPackage = pakket === 'pro' || pakket === 'premium'
