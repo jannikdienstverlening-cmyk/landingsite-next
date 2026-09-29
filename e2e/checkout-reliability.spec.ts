@@ -31,6 +31,23 @@ test('changing packages resets consent and rejects inherited object keys', async
   await expect(page.getByRole('heading', { name: 'Nog geen pakket gekozen' })).toBeVisible()
 })
 
+test('only a confirmed expired checkout starts a fresh attempt', async ({ page }) => {
+  const requestIds: string[] = []
+  await page.route('**/api/stripe/checkout', route => {
+    requestIds.push(route.request().postDataJSON().requestId)
+    return route.fulfill({ status: 409, json: { code: 'checkout_expired', error: 'Betaalpoging verlopen.' } })
+  })
+  await page.goto('/start?pakket=pro')
+  await page.getByRole('checkbox').check()
+  const button = page.locator('.start-checkout button')
+  await button.click()
+  await expect(page.locator('.start-checkout [role="alert"]')).toHaveText('Betaalpoging verlopen.')
+  await button.click()
+  await expect(button).toBeEnabled()
+  expect(requestIds).toHaveLength(2)
+  expect(requestIds[0]).not.toBe(requestIds[1])
+})
+
 test('intake stays locked after an unavailable payment and can retry', async ({ page }) => {
   let paid = false
   await page.route('**/api/order?*', route => route.fulfill(paid

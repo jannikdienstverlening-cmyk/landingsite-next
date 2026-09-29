@@ -150,7 +150,13 @@ export async function POST(request: NextRequest) {
       locale: 'nl',
     }, { idempotencyKey: `checkout-${parsed.data.requestId}` })
 
-    if (!session.url) return Response.json({ error: 'Checkout kon niet worden geopend.' }, { status: 500 })
+    // Stripe replays the original response for retries, even if that session has since expired.
+    const currentSession = await getStripe().checkout.sessions.retrieve(session.id)
+    if (currentSession.status === 'complete') return Response.json({ url: `${baseUrl}/intake/${session.id}` })
+    if (currentSession.status === 'expired') {
+      return Response.json({ code: 'checkout_expired', error: 'Deze betaalpoging is verlopen. Klik opnieuw om een nieuw betaalscherm te openen.' }, { status: 409 })
+    }
+    if (currentSession.status !== 'open' || !currentSession.url) return Response.json({ error: 'Checkout kon niet worden geopend.' }, { status: 503 })
 
     const { error } = await supabase.from('orders').upsert({
       stripe_session_id: session.id,
@@ -172,7 +178,7 @@ export async function POST(request: NextRequest) {
       return Response.json({ error: 'Bestellen is tijdelijk niet beschikbaar. Er is niets afgeschreven.' }, { status: 503 })
     }
 
-    return Response.json({ url: session.url })
+    return Response.json({ url: currentSession.url })
   } catch (error) {
     console.error('Checkout voorbereiden mislukt', safePaymentError(error))
     return Response.json({ error: 'Betalen is tijdelijk niet beschikbaar. Probeer het opnieuw of neem contact met ons op. Er is niets afgeschreven.' }, { status: 503 })

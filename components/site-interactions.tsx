@@ -143,6 +143,7 @@ export function CheckoutButton({ packageId, label }: { packageId: CommercialPack
         signal: AbortSignal.timeout(25_000),
       })
       const data = await response.json()
+      if (data.code === 'checkout_expired') requestId.current = null
       if (!response.ok || !data.url) throw new Error(data.error || 'De checkout kan nu niet worden geopend.')
       window.location.assign(data.url)
     } catch (caught) {

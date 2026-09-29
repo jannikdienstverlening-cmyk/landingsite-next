@@ -33,6 +33,7 @@ function request(body: unknown, origin = 'https://www.landingsite.nl') {
 
 test('each checkout adds only the server build price and recurring management item', async context => {
   const create = context.mock.method(getStripe().checkout.sessions, 'create', async () => ({ id: 'cs_test_mock', url: 'https://checkout.stripe.com/c/pay/cs_test_mock' }) as never)
+  context.mock.method(getStripe().checkout.sessions, 'retrieve', async () => ({ status: 'open', url: 'https://checkout.stripe.com/c/pay/cs_test_mock' }) as never)
   context.mock.method(getSupabase(), 'from', (() => ({ upsert: async () => ({ error: null }) })) as never)
   for (const pakket of ['starter', 'pro', 'premium'] as const) {
     const requestId = randomUUID()
@@ -67,6 +68,7 @@ test('checkout rejects price injection and cross-origin requests before contacti
 
 test('a checkout whose pending order cannot be stored is expired and not returned', async context => {
   context.mock.method(getStripe().checkout.sessions, 'create', async () => ({ id: 'cs_test_mock', url: 'https://checkout.stripe.com/c/pay/cs_test_mock' }) as never)
+  context.mock.method(getStripe().checkout.sessions, 'retrieve', async () => ({ status: 'open', url: 'https://checkout.stripe.com/c/pay/cs_test_mock' }) as never)
   const expire = context.mock.method(getStripe().checkout.sessions, 'expire', async () => ({}) as never)
   context.mock.method(getSupabase(), 'from', (() => ({ upsert: async () => ({ error: { code: 'db_error', message: 'private customer detail' } }) })) as never)
   const log = context.mock.method(console, 'error', () => {})
@@ -87,6 +89,9 @@ function signedEvent(type = 'checkout.session.completed', signature = true, obje
 test('webhook requires a valid signature before any database access', async context => {
   const from = context.mock.method(getSupabase(), 'from', () => { throw new Error('Unexpected database call') })
   assert.equal((await webhook(signedEvent('checkout.session.completed', false))).status, 400)
+  const invalid = signedEvent()
+  invalid.headers.set('stripe-signature', 't=1,v1=invalid')
+  assert.equal((await webhook(invalid)).status, 400)
   assert.equal(from.mock.callCount(), 0)
 })
 
@@ -129,6 +134,19 @@ test('a concurrent webhook retry that loses its claim cannot fulfill the order',
 
 test('Stripe readiness is private', async () => {
   assert.equal((await health(new NextRequest('https://www.landingsite.nl/api/admin/stripe-health'))).status, 401)
+})
+
+test('cached checkout retries never redirect to expired or already completed payment sessions', async context => {
+  let status = 'expired'
+  context.mock.method(getStripe().checkout.sessions, 'create', async () => ({ id: 'cs_test_mock', url: 'https://checkout.stripe.com/c/pay/cs_test_mock', status: 'open' }) as never)
+  context.mock.method(getStripe().checkout.sessions, 'retrieve', async () => ({ status }) as never)
+  const expired = await checkout(request({ pakket: 'pro', requestId: randomUUID(), termsAccepted: true }))
+  assert.equal(expired.status, 409)
+  assert.equal((await expired.json()).code, 'checkout_expired')
+  status = 'complete'
+  const complete = await checkout(request({ pakket: 'pro', requestId: randomUUID(), termsAccepted: true }))
+  assert.equal(complete.status, 200)
+  assert.deepEqual(await complete.json(), { url: 'https://www.landingsite.nl/intake/cs_test_mock' })
 })
 
 test('paid checkout creates one order and sends the intake confirmation only once', async context => {
