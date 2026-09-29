@@ -3,7 +3,7 @@ import { adminCookie, rejectCrossOriginMutation, verifyAdminSession } from '@/li
 import { checkRateLimit, clientIp, rateLimitResponse } from '@/lib/rate-limit'
 import { getStripe, normalizeStripeSecretKey, safePaymentError } from '@/lib/stripe'
 import { expectedStripeCatalog, validateStripeCatalogPrice } from '@/lib/stripe-catalog'
-import { isSiteWebhook, portalFeaturesReady, requiredStripeEvents, sitePortalConfiguration, verifyStripeWebhookDelivery } from '@/lib/stripe-support'
+import { dutchTaxRegistrationReady, isSiteWebhook, portalFeaturesReady, requiredStripeEvents, sitePortalConfiguration, verifyStripeWebhookDelivery } from '@/lib/stripe-support'
 import { invalidJsonResponse, readJsonBody } from '@/lib/request'
 import { z } from 'zod'
 
@@ -43,7 +43,7 @@ export async function GET(request: NextRequest) {
     return active.some(endpoint => endpoint.enabled_events.includes('*') || requiredStripeEvents.every(event => (endpoint.enabled_events as string[]).includes(event)))
   })
   await check('automaticTax', async () => (await getStripe().tax.settings.retrieve()).status === 'active')
-  await check('dutchTaxRegistration', async () => (await getStripe().tax.registrations.list({ status: 'active', limit: 100 })).data.some(registration => registration.country === 'NL'))
+  await check('dutchTaxRegistration', dutchTaxRegistrationReady)
   await check('customerPortal', async () => {
     if (!process.env.CUSTOMER_PORTAL_SECRET?.trim()) return false
     const config = await sitePortalConfiguration()

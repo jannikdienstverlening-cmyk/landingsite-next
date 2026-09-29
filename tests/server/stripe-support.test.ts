@@ -7,6 +7,7 @@ import { POST as portal } from '../../app/api/stripe/portal/route'
 import { createAdminSession, createCustomerToken } from '../../lib/security'
 import { getStripe } from '../../lib/stripe'
 import { getSupabase } from '../../lib/supabase'
+import { createOrReuseManagementCheckout } from '../../lib/management-checkout'
 import { isSiteWebhook, portalFeaturesReady, requiredStripeEvents, sitePortalConfiguration, verifyStripeWebhookDelivery } from '../../lib/stripe-support'
 
 process.env.STRIPE_SECRET_KEY = 'sk_test_localmock'
@@ -120,4 +121,15 @@ test('delivery verification refuses to alter a checkout with customer or payment
   const expire = context.mock.method(getStripe().checkout.sessions, 'expire', () => { throw new Error('Unexpected expiration') })
   await assert.rejects(verifyStripeWebhookDelivery(randomUUID()), /geen klantbetaling wijzigen/)
   assert.equal(expire.mock.callCount(), 0)
+})
+
+test('legacy management checkout also blocks new subscriptions without configured VAT', async context => {
+  context.mock.method(getStripe().tax.registrations, 'list', async () => ({ data: [] }) as never)
+  const create = context.mock.method(getStripe().checkout.sessions, 'create', () => { throw new Error('Unexpected payment creation') })
+  await assert.rejects(createOrReuseManagementCheckout({
+    id: randomUUID(), email: 'buyer@example.com', status: 'completed', stripe_customer_id: null,
+    management_status: 'awaiting_go_live', management_subscription_id: null,
+    management_checkout_session_id: null, went_live_at: '2026-09-29T12:00:00Z',
+  }, 'unused', randomUUID(), { termsAccepted: true, markGoLive: false }), /betaalinstellingen controleren/)
+  assert.equal(create.mock.callCount(), 0)
 })

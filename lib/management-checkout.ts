@@ -1,4 +1,6 @@
 import { cents, pricingConfig } from '@/config/pricing'
+import { commercialConfig } from '@/config/commercial'
+import { dutchTaxRegistrationReady } from '@/lib/stripe-support'
 import {
   configuredManagementPriceId,
   getStripe,
@@ -38,6 +40,9 @@ export async function createOrReuseManagementCheckout(
   }
   if (order.management_subscription_id || order.management_status === 'active') {
     throw new ManagementCheckoutError('Websitebeheer is al actief; er is geen tweede abonnement aangemaakt.', 409)
+  }
+  if (commercialConfig.vatRate > 0 && !(await dutchTaxRegistrationReady())) {
+    throw new ManagementCheckoutError('Online betalen is tijdelijk niet beschikbaar terwijl we de betaalinstellingen controleren. Er is niets afgeschreven.', 503)
   }
 
   if (order.management_checkout_session_id) {

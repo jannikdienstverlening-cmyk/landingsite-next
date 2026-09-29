@@ -23,6 +23,11 @@ export function portalFeaturesReady(config: Stripe.BillingPortal.Configuration) 
     && config.features.subscription_cancel.enabled && config.features.subscription_cancel.mode === 'at_period_end'
 }
 
+export async function dutchTaxRegistrationReady() {
+  const registrations = await getStripe().tax.registrations.list({ status: 'active', limit: 100 })
+  return registrations.data.some(registration => registration.country === 'NL')
+}
+
 export async function sitePortalConfiguration(createIfMissing = false) {
   const stripe = getStripe()
   const configurations = await stripe.billingPortal.configurations.list({ active: true, limit: 100 })

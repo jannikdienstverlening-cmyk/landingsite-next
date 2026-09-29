@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict'
 import { randomUUID } from 'node:crypto'
-import test from 'node:test'
+import test, { beforeEach } from 'node:test'
 import { NextRequest } from 'next/server'
 import { POST as checkout } from '../../app/api/stripe/checkout/route'
 import { POST as webhook } from '../../app/api/stripe/webhook/route'
@@ -24,6 +24,11 @@ process.env.ADMIN_SESSION_SECRET = 'local-mock-secret'
 process.env.CUSTOMER_PORTAL_SECRET = 'local-mock-customer-secret'
 process.env.RESEND_API_KEY = 're_localmock'
 process.env.ADMIN_EMAIL = 'admin@example.com'
+
+beforeEach(context => {
+  assert.ok('mock' in context)
+  context.mock.method(getStripe().tax.registrations, 'list', async () => ({ data: [{ country: 'NL' }] }) as never)
+})
 
 function request(body: unknown, origin = 'https://www.landingsite.nl') {
   return new NextRequest('https://www.landingsite.nl/api/stripe/checkout', {
@@ -63,6 +68,15 @@ test('checkout rejects price injection and cross-origin requests before contacti
   assert.equal((await checkout(request({ ...body, price: 1 }))).status, 400)
   assert.equal((await checkout(request(body, 'https://evil.example'))).status, 403)
   assert.equal((await checkout(request({ ...body, termsAccepted: false }))).status, 400)
+  assert.equal(create.mock.callCount(), 0)
+})
+
+test('checkout cannot create a payment with missing Dutch VAT registration', async context => {
+  context.mock.method(getStripe().tax.registrations, 'list', async () => ({ data: [] }) as never)
+  const create = context.mock.method(getStripe().checkout.sessions, 'create', () => { throw new Error('Unexpected payment creation') })
+  const response = await checkout(request({ pakket: 'pro', requestId: randomUUID(), termsAccepted: true }))
+  assert.equal(response.status, 503)
+  assert.equal((await response.json()).url, undefined)
   assert.equal(create.mock.callCount(), 0)
 })
 

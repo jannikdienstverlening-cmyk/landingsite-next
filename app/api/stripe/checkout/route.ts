@@ -17,6 +17,7 @@ import {
   type PakketId,
 } from '@/lib/stripe'
 import { getSupabase } from '@/lib/supabase'
+import { dutchTaxRegistrationReady } from '@/lib/stripe-support'
 import { checkoutSchema, validationMessage } from '@/lib/validation'
 
 function buildLineItem(pakket: PakketId, buildPrice = PAKKETTEN[pakket].prijs / 100): Stripe.Checkout.SessionCreateParams.LineItem {
@@ -96,6 +97,9 @@ export async function POST(request: NextRequest) {
   }
 
   try {
+    if (commercialConfig.vatRate > 0 && !(await dutchTaxRegistrationReady())) {
+      return Response.json({ error: 'Online betalen is tijdelijk niet beschikbaar terwijl we de betaalinstellingen controleren. Neem contact met ons op; er is niets afgeschreven.' }, { status: 503 })
+    }
     const metadata = {
       checkout_type: 'combined',
       pakket: parsed.data.pakket,
