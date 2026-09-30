@@ -4,7 +4,7 @@ async function settle(page: import('@playwright/test').Page, imageScope: string)
   await page.addStyleTag({ content: 'nextjs-portal { display: none !important; }' })
   await page.evaluate(async (scope) => {
     await document.fonts.ready
-    const images = Array.from(document.querySelectorAll<HTMLImageElement>(`${scope} img`))
+    const images = Array.from(document.querySelectorAll<HTMLImageElement>(`${scope} img`)).filter(image => image.getClientRects().length > 0)
     await Promise.all(images.map((image) => image.complete ? Promise.resolve() : new Promise((resolve) => {
       image.addEventListener('load', resolve, { once: true })
       image.addEventListener('error', resolve, { once: true })

@@ -47,5 +47,5 @@ export const metadata: Metadata = {
 }
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
-  return <html lang="nl" className={`${syne.variable} ${dmMono.variable}`}><body>{children}</body></html>
+  return <html lang="nl" data-scroll-behavior="smooth" className={`${syne.variable} ${dmMono.variable}`}><body>{children}</body></html>
 }
