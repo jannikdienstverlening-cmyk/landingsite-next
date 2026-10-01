@@ -37,6 +37,10 @@ test('zomeractie geldt voor alle pakketten tot en met 1 oktober 2026', () => {
   assert.equal(effectiveFirstPayment('premium', starts), 678)
   assert.equal(effectiveBuildPrice('starter', expired), 299)
   assert.equal(effectiveFirstPayment('starter', expired), 378)
+  assert.equal(effectiveBuildPrice('pro', expired), 499)
+  assert.equal(effectiveFirstPayment('pro', expired), 578)
+  assert.equal(effectiveBuildPrice('premium', expired), 899)
+  assert.equal(effectiveFirstPayment('premium', expired), 978)
 })
 
 test('btw zit in de getoonde en af te schrijven bedragen', () => {

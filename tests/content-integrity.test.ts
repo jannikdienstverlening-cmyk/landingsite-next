@@ -1,6 +1,7 @@
 import assert from 'node:assert/strict'
 import { readFile } from 'node:fs/promises'
 import test from 'node:test'
+import { portfolioProjects } from '../data/portfolio'
 
 const publicSources = [
   'app/page.tsx',
@@ -12,6 +13,7 @@ const publicSources = [
   'app/kosten-website-laten-maken/page.tsx',
   'app/over-landingsite/page.tsx',
   'components/studio-site.tsx',
+  'components/project-preview.tsx',
   'components/site-interactions.tsx',
   'config/commercial.ts',
   'data/portfolio.ts',
@@ -35,11 +37,14 @@ test('publieke funnel gebruikt de vaste hoofdacties', async () => {
   assert.match(source, /Kies \{item\.name\}/)
 })
 
-test('homepage gebruikt een statische echte hoofdcase zonder FAQ reviewschema', async () => {
+test('homepage begint met de echte hoofdcase en wisselt niet automatisch', async () => {
   const homepage = await readFile('components/studio-site.tsx', 'utf8')
+  const preview = await readFile('components/project-preview.tsx', 'utf8')
   const page = await readFile('app/page.tsx', 'utf8')
-  assert.match(homepage, /Actuele hoofdcase/)
-  assert.match(homepage, /portfolioProjects\[0\]/)
+  assert.match(homepage, /ProjectPreview projects=\{portfolioProjects\}/)
+  assert.equal(portfolioProjects[0].domain, 'ontwikkelbegeleiding.nl')
+  assert.match(preview, /useState\(0\)/)
+  assert.doesNotMatch(preview, /setInterval|setTimeout|requestAnimationFrame/)
   assert.doesNotMatch(homepage, /ProjectShowcase/)
   assert.doesNotMatch(page, /FAQPage/)
 })

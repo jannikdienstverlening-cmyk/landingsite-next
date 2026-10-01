@@ -18,6 +18,7 @@ import { ContactForm, FAQList, MobileNavigation } from './site-interactions'
 import { Logo } from './logo'
 import { SiteChatbot } from './site-chatbot'
 import { FounderPortrait } from './founder-portrait'
+import { ProjectPreview } from './project-preview'
 
 export type StudioFaq = { question: string; answer: string }
 
@@ -126,7 +127,6 @@ export function MobileProjectFrame({ project, priority = false }: { project: Por
 }
 
 export function StudioHero({ promotion }: { promotion: ActivePromotion | null }) {
-  const featured = portfolioProjects[0]
   const additionalProjects = portfolioProjects.slice(1)
   const homepage = seoPage('/')
   return (
@@ -145,7 +145,7 @@ export function StudioHero({ promotion }: { promotion: ActivePromotion | null })
           <p className="studio-hero__intro">
             {promotion
               ? <>Een website voor je bedrijf, door Jannik gebouwd. Binnen {commercialConfig.firstVersion.hours} uur na betaling en een complete intake krijg je de eerste werkende versie. Jij kijkt mee en geeft akkoord voor de livegang.</>
-              : <>Wil je een website laten maken voor je bedrijf? Landingsite bouwt websites en landingspagina’s waarop bezoekers snel begrijpen wat je aanbiedt en hoe ze contact opnemen. Je ontvangt de eerste werkende versie binnen 48 uur na betaling en een complete intake.</>}
+              : <>Een website voor je bedrijf, door Jannik gebouwd. Je aanbod, je werk en een duidelijke contactmogelijkheid bij elkaar. Binnen {commercialConfig.firstVersion.hours} uur na betaling en een complete intake krijg je de eerste werkende versie.</>}
           </p>
           <div className="studio-actions">
             <Link className="button button--primary" href={promotion ? '/start?pakket=starter' : '/start'} data-analytics-event={promotion ? 'promotion_select' : 'hero_start_click'} data-analytics-location="hero">Start mijn website</Link>
@@ -167,17 +167,7 @@ export function StudioHero({ promotion }: { promotion: ActivePromotion | null })
           <p className="studio-hero__trust">{promotion ? 'Je bekijkt de eerste versie vóór publicatie · domein blijft van jou · beheer maandelijks opzegbaar' : 'Vaste prijzen · domein blijft van jou · maandelijks opzegbaar beheer'}</p>
         </div>
 
-        <article className="hero-case" aria-labelledby="hero-case-title">
-          <a className="hero-case__desktop" href={featured.url} target="_blank" rel="noopener noreferrer" data-analytics-event="case_outbound_click" data-analytics-project={featured.slug}>
-            <BrowserFrame project={featured} priority sizes="(max-width: 820px) calc(100vw - 28px), (max-width: 1080px) calc(100vw - 64px), 640px" />
-          </a>
-          <div className="hero-case__mobile" aria-hidden="true"><MobileProjectFrame project={featured} /></div>
-          <div className="hero-case__caption">
-            <div><span>Actuele hoofdcase</span><h2 id="hero-case-title">{featured.name}</h2></div>
-            <ul>{featured.features.slice(0, 3).map((feature) => <li key={feature}>{feature}</li>)}</ul>
-            <a href={featured.url} target="_blank" rel="noopener noreferrer" data-analytics-event="case_outbound_click" data-analytics-project={featured.slug}>Open {featured.domain} <span aria-hidden="true">↗</span></a>
-          </div>
-        </article>
+        <ProjectPreview projects={portfolioProjects} />
       </div>
 
       <div className="studio-shell trust-line" role="list" aria-label="Belangrijkste zekerheden">
@@ -323,12 +313,12 @@ export function FAQAndClose({ faqs, promotion }: { faqs: StudioFaq[]; promotion:
       </section>
       <section className="studio-section studio-close">
         <div className="studio-shell studio-close__inner">
-          <div><p className="overline">Klaar om te starten?</p><h2>Zet je website eindelijk goed neer.</h2><p>Kies je pakket, rond de betaling af en vul de intake in. Binnen 48 uur ontvang je de eerste werkende versie.</p></div>
+          <div><h2>Laat je website bouwen.</h2><p>Kies je pakket en lever je informatie aan. Binnen {commercialConfig.firstVersion.hours} uur na betaling en een complete intake ontvang je de eerste werkende versie.</p></div>
           <div><Link className="button button--primary" href={promotion ? '/start?pakket=starter' : '/start'} data-analytics-event="hero_start_click" data-analytics-location="closing">Start mijn website</Link><a href="/werk" data-analytics-event="hero_work_click">Bekijk live werk</a><span>{promotion ? `Starter: €${promotion.buildPrices.starter} bouw · start voor €${commercialConfig.management.monthlyPrice} · incl. btw` : `Vanaf €${commercialConfig.packages.starter.oneTimePrice} eenmalig · daarna €${commercialConfig.management.monthlyPrice} p/m · incl. btw`}</span></div>
         </div>
       </section>
       <section className="studio-section studio-contact" id="contact">
-        <div className="studio-shell studio-contact__grid"><div><p className="overline">Eerst een vraag?</p><h2>Stel je vraag rechtstreeks aan Jannik.</h2><p>Voor pakketkeuze en betaling gebruik je de startflow. Met dit korte formulier kun je eerst iets praktisch navragen.</p></div><ContactForm /></div>
+        <div className="studio-shell studio-contact__grid"><div><h2>Eerst iets vragen?</h2><p>Over je pakket, een bestaande website of een extra pagina. Jannik leest je bericht.</p></div><ContactForm /></div>
       </section>
     </>
   )
