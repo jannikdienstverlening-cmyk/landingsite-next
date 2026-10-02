@@ -30,6 +30,86 @@ const baseUrl = 'https://www.landingsite.nl'
 
 export const blogPosts: BlogPost[] = [
   {
+    slug: 'hoe-maak-je-een-logische-koppenstructuur',
+    status: 'published',
+    title: 'Hoe gebruik je koppen op een webpagina?',
+    description: 'Bouw een zakelijke webpagina op met een duidelijke H1, logische H2- en H3-koppen en semantische HTML die de inhoud begrijpelijk en navigeerbaar maakt.',
+    excerpt: 'Een goede koppenstructuur laat in één oogopslag zien waar een pagina over gaat en hoe de onderdelen bij elkaar horen. Met deze aanpak zet je H1, H2 en H3 logisch in.',
+    category: 'Toegankelijkheid',
+    primaryKeyword: 'koppenstructuur website',
+    secondaryKeywords: ['H1 H2 H3 website', 'koppen website gebruiken', 'heading structuur website'],
+    searchIntent: 'Een logische en toegankelijke koppenstructuur voor een zakelijke webpagina maken',
+    publishedAt: '2026-10-02',
+    updatedAt: '2026-10-02',
+    author: 'Jannik',
+    reviewer: 'Jannik',
+    readingTime: '6 minuten',
+    sources: [
+      'https://www.w3.org/WAI/tutorials/page-structure/headings/',
+      'https://www.w3.org/WAI/WCAG22/Understanding/info-and-relationships.html',
+      'https://www.w3.org/WAI/WCAG22/Techniques/general/G141.html',
+      'https://www.w3.org/WAI/tips/writing/',
+    ],
+    sections: [
+      {
+        heading: 'Begin met de hoofdtaak van de pagina',
+        paragraphs: [
+          'Schrijf eerst in één zin op waarvoor de pagina bestaat. Die ene hoofdtaak bepaalt de hoofdkop. Een dienstenpagina kan bijvoorbeeld beginnen met “Arbeidsrechtelijk advies voor werkgevers”, terwijl een contactpagina genoeg kan hebben aan “Contact opnemen met Bedrijfsnaam”.',
+          'Gebruik als praktische basis één H1 voor het hoofdonderwerp van de pagina. Dat is een heldere redactionele afspraak, geen algemene regel dat HTML of WCAG nooit meer dan één H1 toestaat. Het belangrijkste is dat de hoofdkop de pagina herkenbaar samenvat en dat de rest van de koppen daar logisch onder valt.',
+        ],
+      },
+      {
+        heading: 'Gebruik H2 voor de hoofdonderdelen',
+        paragraphs: [
+          'Verdeel de inhoud daarna in een klein aantal hoofdonderdelen. Ieder zelfstandig onderdeel krijgt een H2. Op een dienstenpagina kunnen dat bijvoorbeeld “Voor wie is de dienst?”, “Wat krijg je?” en “Hoe werkt de aanvraag?” zijn.',
+          'W3C adviseert korte koppen die de bijbehorende sectie beschrijven. Schrijf daarom niet alleen “Meer informatie” of “Lees verder”, maar benoem wat iemand in het volgende stuk kan vinden. De koppen vormen zo samen een beknopte inhoudsopgave van de pagina.',
+        ],
+      },
+      {
+        heading: 'Voeg H3 alleen toe voor een onderdeel van een H2',
+        paragraphs: [
+          'Gebruik een H3 wanneer een H2-sectie echt uit meerdere herkenbare subonderdelen bestaat. Onder de H2 “Hoe werkt de aanvraag?” kunnen bijvoorbeeld de H3-koppen “Kennismaking”, “Voorstel” en “Start” staan. Komt er maar één kort tekstblok onder een H2, dan is een extra H3 meestal niet nodig.',
+          'Laat de niveaus de inhoudelijke relatie volgen. W3C beschrijft een logische nesting waarbij een H1 wordt gevolgd door H2, en een onderdeel binnen een H2 door H3. Sla dus niet van H2 naar H4 omdat de H4 toevallig kleiner is opgemaakt; pas de vormgeving aan zonder de inhoudelijke hiërarchie te veranderen.',
+        ],
+      },
+      {
+        heading: 'Gebruik koppen niet als vormgevingstruc',
+        paragraphs: [
+          'Een grote, vetgedrukte regel is niet automatisch een kop. Markeer tekst die als sectiekop werkt met het passende HTML-headingelement. Anders is de visuele structuur niet vanzelf beschikbaar voor software die de pagina anders presenteert, zoals een schermlezer.',
+          'Het omgekeerde geldt ook: maak geen gewone slogan, prijs of losse call-to-action tot H2 alleen om grotere letters te krijgen. Gebruik CSS voor het uiterlijk en headingelementen voor de structuur. Zo blijven opmaak en betekenis twee afzonderlijke keuzes.',
+        ],
+      },
+      {
+        heading: 'Schrijf koppen die ook los duidelijk zijn',
+        paragraphs: [
+          'Bezoekers lezen een pagina niet altijd van boven naar beneden. Een lijst met koppen moet daarom al genoeg context geven om een relevant onderdeel te herkennen. “Wat kost onderhoud?” is duidelijker dan “Kosten”, en “Welke documenten heb je nodig?” zegt meer dan “Voorbereiding”.',
+          'Houd een kop wel beknopt. Zet uitleg, voorwaarden en uitzonderingen in de alinea eronder. Controleer bovendien of meerdere koppen op dezelfde pagina niet allemaal “Onze aanpak” of “Voordelen” heten, want dan is het onderscheid tussen de secties alsnog klein.',
+        ],
+      },
+      {
+        heading: 'Controleer de structuur zonder naar het ontwerp te kijken',
+        paragraphs: [
+          'Lees alleen de koppen in volgorde, bijvoorbeeld via de toegankelijkheidsweergave van je browser of een heading-overzicht. Je moet het onderwerp, de hoofdonderdelen en eventuele subonderdelen kunnen herkennen zonder de tussenliggende tekst te lezen.',
+          'Bekijk daarna de pagina op mobiel en desktop. De betekenisvolle volgorde hoort gelijk te blijven, ook wanneer onderdelen visueel naast elkaar of onder elkaar worden gezet. Pas een kop aan als hij afbreekt op een onduidelijke plek, maar verander het niveau alleen wanneer de inhoudelijke relatie verandert.',
+        ],
+        bullets: [
+          'De H1 vat het hoofdonderwerp van de pagina samen.',
+          'Iedere H2 introduceert een zelfstandig hoofdonderdeel.',
+          'Een H3 hoort inhoudelijk bij de H2 erboven.',
+          'De niveaus worden niet gekozen op basis van lettergrootte.',
+          'Tekst die eruitziet als een kop is ook als kop gemarkeerd.',
+          'Iedere kop beschrijft concreet wat erop volgt.',
+          'De lijst met koppen vormt een begrijpelijke paginaopbouw.',
+          'De structuur blijft logisch op mobiel en desktop.',
+        ],
+      },
+    ],
+    relatedLinks: [
+      { label: 'Lees wat je op een pagina voor je dienst zet', href: '/blog/welke-informatie-hoort-op-een-dienstenpagina' },
+      { label: 'Lees hoe je een paginatitel en metabeschrijving schrijft', href: '/blog/hoe-schrijf-je-een-goede-paginatitel-en-metabeschrijving' },
+    ],
+  },
+  {
     slug: 'hoe-schrijf-je-een-goede-paginatitel-en-metabeschrijving',
     status: 'published',
     title: 'Hoe schrijf je een paginatitel en meta description?',

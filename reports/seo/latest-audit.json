@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-09-25T07:10:47.356Z",
+  "generatedAt": "2026-10-02T07:08:47.234Z",
   "indexableRoutes": [
     {
       "slug": "/",
@@ -54,6 +54,12 @@
       "title": "Privacybeleid voor klanten en bezoekers | Landingsite.nl",
       "primaryKeyword": "privacybeleid Landingsite.nl",
       "canonical": "https://www.landingsite.nl/privacybeleid"
+    },
+    {
+      "slug": "/blog/hoe-maak-je-een-logische-koppenstructuur",
+      "title": "Hoe gebruik je koppen op een webpagina? | Landingsite.nl",
+      "primaryKeyword": "koppenstructuur website",
+      "canonical": "https://www.landingsite.nl/blog/hoe-maak-je-een-logische-koppenstructuur"
     },
     {
       "slug": "/blog/hoe-schrijf-je-een-goede-paginatitel-en-metabeschrijving",
