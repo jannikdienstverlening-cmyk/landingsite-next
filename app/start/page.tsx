@@ -2,6 +2,7 @@ import type { Metadata } from 'next'
 import Link from 'next/link'
 import { AnalyticsLayer, CheckoutButton } from '@/components/site-interactions'
 import { StudioFooter, StudioHeader } from '@/components/studio-site'
+import { packagePresentation } from '@/content/package-presentation'
 import { activePromotion, amountExcludingVat, amountIncludingVat, commercialConfig, effectiveBuildPrice, effectiveFirstPayment, euro, promotionDiscount, vatFor, type CommercialPackageId } from '@/config/commercial'
 
 export const metadata: Metadata = {
@@ -27,16 +28,16 @@ export default async function StartPage({ searchParams }: { searchParams: Promis
   const cancelled = params.status === 'geannuleerd'
 
   return (
-    <div className="studio studio-page">
+    <div className="studio studio-page studio--sales">
       <a className="skip-link" href="#main-content">Ga naar de inhoud</a>
       <AnalyticsLayer />
-      <StudioHeader />
+      <StudioHeader light />
       <main id="main-content" className="start-page">
         <div className="studio-shell start-page__grid">
           <section className="start-choice">
             <p className="overline">Start mijn website</p>
-            <h1>Kies wat we voor je bouwen.</h1>
-            <p>{promotion ? `Tot en met ${promotion.displayEndsAt} is Starter gratis gebouwd en krijg je €300 korting op Pro en Premium. Kies een pakket om de volledige betaling en vervolgincasso te bekijken.` : 'Er is nog niets vooraf geselecteerd. Kies een pakket om de bouwprijs, eerste beheermaand, btw en vervolgincasso te bekijken.'}</p>
+            <h1>{item ? `Dit wordt jouw ${item.name}-website.` : 'Welk pakket past bij jou?'}</h1>
+            <p>{promotion ? `Tot en met ${promotion.displayEndsAt} is Starter gratis gebouwd en krijg je €300 korting op Pro en Premium. Kies een pakket om de volledige betaling en vervolgincasso te bekijken.` : item ? 'Dit krijg je, dit betaal je nu en dit kost het daarna per maand. Je kunt je keuze hieronder nog veranderen.' : 'Kies het pakket dat bij je bedrijf past. Je ziet het volledige bedrag voordat je naar de betaling gaat.'}</p>
             {cancelled && <p id="checkout-cancelled" className="form-message form-message--error" role="status" data-analytics-view="checkout_cancel">De checkout is geannuleerd. Er is niets afgeschreven.</p>}
             <nav className="start-package-tabs" aria-label="Kies pakket" data-analytics-view="package_compare">
               {(Object.entries(commercialConfig.packages) as Array<[CommercialPackageId, typeof commercialConfig.packages[CommercialPackageId]]>).map(([id, option]) => {
@@ -45,16 +46,16 @@ export default async function StartPage({ searchParams }: { searchParams: Promis
                 return <Link className={id === selected ? 'is-active' : ''} aria-current={id === selected ? 'true' : undefined} href={`/start?pakket=${id}`} key={id} data-analytics-event="package_select" data-analytics-package={id}><span>{option.name}{promotionalOption ? ' · zomeractie' : ''}</span><strong>€{optionPrice} bouw</strong></Link>
               })}
             </nav>
-            {item ? <div className="start-scope"><h2>{item.name}</h2>{promotionApplies && selected && <p className="start-promotion-note"><strong>Zomeractie:</strong> je krijgt €{promotionDiscount(selected)} korting op de bouwprijs. Je betaalt daarnaast €{commercialConfig.management.monthlyPrice} voor de eerste maand Websitebeheer en bekijkt de eerste versie voordat we hem publiceren.</p>}<p>{item.audience}</p><ul>{item.features.map((feature) => <li key={feature}>{feature}</li>)}</ul></div> : <div className="start-scope start-scope--empty"><h2>Nog geen pakket gekozen</h2><p>Starter is voor één landingspagina, Pro voor maximaal vier kernpagina’s en Premium voor maximaal acht kernpagina’s. Je keuze wordt pas bij de checkout vastgelegd.</p><p><Link href="/kosten-website-laten-maken">Bekijk eerst de volledige prijsvergelijking</Link>.</p></div>}
+            {item && selected ? <div className="start-scope"><h2>Dit krijg je met {item.name}</h2>{promotionApplies && <p className="start-promotion-note"><strong>Zomeractie:</strong> je krijgt €{promotionDiscount(selected)} korting op de bouwprijs. Je betaalt daarnaast €{commercialConfig.management.monthlyPrice} voor de eerste maand Websitebeheer en bekijkt de eerste versie voordat we hem publiceren.</p>}<p>{packagePresentation(selected).audience}</p><dl className="start-simple-specs">{packagePresentation(selected).specs.map(spec => <div key={spec.label}><dt>{spec.label}</dt><dd>{spec.value}</dd></div>)}</dl><details><summary>Alle onderdelen van {item.name}</summary><ul>{item.features.map((feature) => <li key={feature}>{feature}</li>)}</ul></details></div> : <div className="start-scope start-scope--empty"><h2>Wat wil je laten zien?</h2><p>Starter geeft je ruimte voor één aanbod op één pagina. Pro heeft tot {commercialConfig.packages.pro.pages} pagina’s voor je bedrijf en diensten. Met Premium laat je tot {commercialConfig.packages.premium.pages} pagina’s en alle teksten uitwerken.</p><p><Link href="/#pakketten">Vergelijk de pakketten</Link>.</p></div>}
           </section>
 
           {item && selected && initialPayment !== null ? (
             <aside className="order-summary" aria-label={`Bestelsamenvatting voor ${item.name}`} data-analytics-view="checkout_view">
-              <p className="overline">Bestelsamenvatting</p>
+              <p className="overline">Dit betaal je</p>
               <h2>{item.name}</h2>
               <dl>
-                <div><dt>{promotionApplies ? 'Bouwprijs zomeractie' : 'Eenmalige bouwprijs'}</dt><dd>{promotionApplies ? <><s>{euro(item.oneTimePrice)}</s> {euro(buildPrice ?? item.oneTimePrice)}</> : euro(buildPrice ?? item.oneTimePrice)}</dd></div>
-                <div><dt>Eerste maand beheer</dt><dd>{euro(commercialConfig.management.monthlyPrice)}</dd></div>
+                <div><dt>{promotionApplies ? 'Bouwprijs zomeractie' : 'Eenmalige bouwprijs'} (incl. btw)</dt><dd>{promotionApplies ? <><s>{euro(item.oneTimePrice)}</s> {euro(buildPrice ?? item.oneTimePrice)}</> : euro(buildPrice ?? item.oneTimePrice)}</dd></div>
+                <div><dt>Eerste maand beheer (incl. btw)</dt><dd>{euro(commercialConfig.management.monthlyPrice)}</dd></div>
                 <div className="order-summary__subtotal"><dt>Totaal excl. btw</dt><dd>{euro(amountExcludingVat(initialPayment), 2)}</dd></div>
                 <div><dt>Btw inbegrepen (21%)</dt><dd>{euro(vatFor(initialPayment), 2)}</dd></div>
                 <div className="order-summary__total"><dt>Vandaag incl. btw</dt><dd>{euro(amountIncludingVat(initialPayment), 2)}</dd></div>
@@ -67,9 +68,9 @@ export default async function StartPage({ searchParams }: { searchParams: Promis
           ) : (
             <aside className="order-summary order-summary--empty" aria-label="Bestelsamenvatting">
               <p className="overline">Bestelsamenvatting</p>
-              <h2>Kies links een pakket.</h2>
-              <p>Daarna zie je hier de complete eerste betaling en het maandbedrag. De server bepaalt de prijs; een bedrag uit de browser wordt nooit vertrouwd.</p>
-              <ul className="order-summary__facts"><li>Bouw vanaf €{commercialConfig.packages.starter.oneTimePrice} incl. btw</li><li>Eerste beheermaand direct inbegrepen</li><li>Daarna €{commercialConfig.management.monthlyPrice} per maand incl. btw</li><li>Geen betaalactie zonder gekozen pakket</li></ul>
+              <h2>Kies een pakket.</h2>
+              <p>Kies je pakket. Hier verschijnt het totaal voor de bouw en de eerste maand beheer, inclusief btw.</p>
+              <ul className="order-summary__facts"><li>Bouw vanaf €{commercialConfig.packages.starter.oneTimePrice} incl. btw</li><li>Bij de start betaal je ook de eerste maand beheer</li><li>Daarna €{commercialConfig.management.monthlyPrice} per maand incl. btw</li></ul>
             </aside>
           )}
         </div>

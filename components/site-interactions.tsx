@@ -11,7 +11,7 @@ const navigation = [
   ['Pakketten', '/#pakketten'],
   ['Aanpak', '/#aanpak'],
   ['Beheer', '/#beheer'],
-  ['FAQ', '/#faq'],
+  ['Vragen', '/#faq'],
 ]
 
 export function MobileNavigation() {

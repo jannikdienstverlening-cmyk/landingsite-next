@@ -10,7 +10,7 @@ const packages = [
 test('/start forceert geen pakketkeuze', async ({ page }) => {
   await page.goto('/start')
   await expect(page.locator('.start-package-tabs a.is-active')).toHaveCount(0)
-  await expect(page.getByRole('heading', { name: 'Nog geen pakket gekozen' })).toBeVisible()
+  await expect(page.getByRole('heading', { name: 'Wat wil je laten zien?' })).toBeVisible()
   await expect(page.getByRole('button', { name: 'Betaal veilig via Stripe' })).toHaveCount(0)
 })
 

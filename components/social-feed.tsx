@@ -10,9 +10,9 @@ export function SocialFeedSection() {
         <header className="social-feed__head">
           <div>
             <p className="overline">Volg Landingsite</p>
-            <h2 id="social-feed-title">Korte checks. Nieuw werk. Achter de schermen.</h2>
+            <h2 id="social-feed-title">Een kijkje achter de schermen.</h2>
           </div>
-          <p>Bekijk de nieuwste publicatie of volg Landingsite.nl op het kanaal dat je zelf gebruikt.</p>
+          <p>Nieuw werk en korte tips. Kijk mee op TikTok, Instagram of LinkedIn.</p>
         </header>
 
         <div className="social-feed__viewport">
@@ -40,7 +40,7 @@ export function SocialFeedSection() {
                 <span className="social-feed__platform">Nieuw op {featured.platform}</span>
                 <strong>{featured.title}</strong>
                 <span>{featured.description}</span>
-                <b>Bekijk de video <span aria-hidden="true">↗</span></b>
+                <b>Bekijk de video</b>
               </span>
             </a>
 
@@ -57,7 +57,7 @@ export function SocialFeedSection() {
                 <span className="social-feed__platform">{item.platform}</span>
                 <strong>{item.title}</strong>
                 <span>{item.description}</span>
-                <b>Open profiel <span aria-hidden="true">↗</span></b>
+                <b>Open profiel</b>
               </a>
             ))}
           </div>

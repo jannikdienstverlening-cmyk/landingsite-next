@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import Image from 'next/image'
-import { ArrowUpRight, Monitor, Smartphone } from 'lucide-react'
+import { Monitor, Smartphone } from 'lucide-react'
 import type { PortfolioProject } from '@/data/portfolio'
 import { trackMarketingEvent } from '@/lib/analytics'
 
@@ -51,7 +51,7 @@ export function ProjectPreview({ projects }: { projects: PortfolioProject[] }) {
             src={view === 'mobile' ? project.mobileImage : project.image}
             alt={view === 'mobile' ? project.mobileImageAlt : project.imageAlt}
             fill
-            sizes={view === 'mobile' ? '210px' : '(max-width: 820px) calc(100vw - 28px), (max-width: 1080px) calc(100vw - 64px), 640px'}
+            sizes={view === 'mobile' ? '210px' : '(max-width: 600px) calc(100vw - 40px), (max-width: 1280px) calc(100vw - 64px), 1216px'}
             preload={selected === 0 && view === 'desktop'}
             loading="eager"
           />
@@ -63,7 +63,7 @@ export function ProjectPreview({ projects }: { projects: PortfolioProject[] }) {
           <h2 id="hero-case-title">{project.name}</h2>
         </div>
         <a href={project.url} target="_blank" rel="noopener noreferrer" onClick={() => trackMarketingEvent('case_outbound_click', { project: project.slug, location: 'hero-preview' })}>
-          Bekijk live <ArrowUpRight size={17} aria-hidden="true" />
+          Bekijk live
           <span className="sr-only">: {project.name}, in een nieuw tabblad</span>
         </a>
         <p className="project-preview__description">{project.description}</p>

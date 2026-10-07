@@ -25,23 +25,23 @@ const structuredData = {
 
 export default function WorkPage() {
   return (
-    <div className="studio studio-page">
+    <div className="studio studio-page studio--sales">
       <a className="skip-link" href="#main-content">Ga naar de inhoud</a>
       <AnalyticsLayer />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData).replace(/</g, '\\u003c') }} />
-      <StudioHeader />
+      <StudioHeader light />
       <Breadcrumbs items={[{ label: 'Werk', href: '/werk' }]} />
       <main id="main-content">
         <header className="studio-page-hero studio-shell">
           <p className="overline">Live werk</p>
           <h1>{content.h1}</h1>
-          <p>Geen conceptbeelden of niet-gemeten claims. Drie echte projecten, met per website de oorspronkelijke vraag en de gekozen oplossing.</p>
+          <p>Deze websites kun je zelf bekijken. Lees wat de klant nodig had en welke onderdelen ik heb gebouwd.</p>
           <PageProvenance updatedAt={content.updatedAt} />
         </header>
         <section className="work-index studio-shell" aria-label="Projectoverzicht">
           {portfolioProjects.map((project, index) => (
             <article className="work-detail" id={project.slug} key={project.slug}>
-              <div className="work-detail__meta"><p>{project.industry}</p><h2>{project.name}</h2><a href={project.url} target="_blank" rel="noopener noreferrer" data-analytics-event="case_outbound_click" data-analytics-project={project.slug}>Bekijk live website ↗</a></div>
+              <div className="work-detail__meta"><p>{project.industry}</p><h2>{project.name}</h2><a href={project.url} target="_blank" rel="noopener noreferrer" data-analytics-event="case_outbound_click" data-analytics-project={project.slug}>Bekijk live website</a></div>
               <div className="work-detail__media">
                 <a href={project.url} target="_blank" rel="noopener noreferrer" aria-label={`Open ${project.name}`} data-analytics-event="case_outbound_click" data-analytics-project={project.slug}>
                   <BrowserFrame project={project} priority={index === 0} />

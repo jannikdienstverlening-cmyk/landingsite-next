@@ -2,6 +2,8 @@
 
 import Link from 'next/link'
 import { type FormEvent, useEffect, useRef, useState } from 'react'
+import { MessageCircle } from 'lucide-react'
+import { BUSINESS } from '@/lib/business'
 
 type ChatMessage = {
   id: string
@@ -113,6 +115,10 @@ export function SiteChatbot() {
             <input id="chat-question" ref={inputRef} value={input} onChange={(event) => setInput(event.target.value)} maxLength={800} autoComplete="off" placeholder="Stel je vraag..." disabled={sending} />
             <button type="submit" disabled={sending || !input.trim()} aria-label="Vraag versturen" title="Vraag versturen">→</button>
           </form>
+          <a className="chat-whatsapp" href={BUSINESS.whatsappUrl} target="_blank" rel="noopener noreferrer" data-analytics-event="chat_whatsapp_open">
+            <MessageCircle size={18} aria-hidden="true" />
+            App Jannik via WhatsApp<span className="sr-only">, buiten deze website</span>
+          </a>
           <p className="chat-privacy">Deel geen gevoelige gegevens. <a href="/privacybeleid">Privacy</a></p>
         </section>
       )}

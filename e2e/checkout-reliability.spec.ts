@@ -28,7 +28,8 @@ test('changing packages resets consent and rejects inherited object keys', async
   await expect(page.locator('.start-checkout button')).toBeDisabled()
   const response = await page.goto('/start?pakket=constructor')
   expect(response?.status()).toBe(200)
-  await expect(page.getByRole('heading', { name: 'Nog geen pakket gekozen' })).toBeVisible()
+  await expect(page.getByRole('heading', { name: 'Wat wil je laten zien?' })).toBeVisible()
+  await expect(page.locator('.start-checkout')).toHaveCount(0)
 })
 
 test('only a confirmed expired checkout starts a fresh attempt', async ({ page }) => {

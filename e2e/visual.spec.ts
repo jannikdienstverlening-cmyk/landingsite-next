@@ -17,10 +17,11 @@ for (const viewport of [
   { width: 768, height: 1024, name: 'tablet' },
   { width: 1440, height: 1000, name: 'desktop' },
 ]) {
-  test(`hero visuele regressie ${viewport.name}`, async ({ page }) => {
+  test(`hero visuele regressie ${viewport.name}`, async ({ page }, testInfo) => {
     await page.setViewportSize(viewport)
     await page.goto('/')
     await settle(page, '.studio-hero')
+    await page.screenshot({ path: testInfo.outputPath(`home-viewport-${viewport.name}.png`) })
     await expect(page.locator('.studio-hero')).toHaveScreenshot(`home-hero-${viewport.name}.png`)
   })
 }

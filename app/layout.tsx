@@ -5,6 +5,7 @@ import './globals.css'
 import './homepage.css'
 import './founder-portrait.css'
 import './seo-pages.css'
+import './sales-design.css'
 
 const syne = Syne({ subsets: ['latin'], weight: ['400', '700', '800'], variable: '--font-syne', display: 'swap' })
 const dmMono = DM_Mono({ subsets: ['latin'], weight: ['400', '500'], variable: '--font-dm-mono', display: 'swap' })

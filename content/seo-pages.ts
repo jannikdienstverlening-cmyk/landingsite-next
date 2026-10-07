@@ -39,7 +39,7 @@ const coreSeoPages: SeoPageEntry[] = [
     title: 'Website laten maken vanaf €299 | Landingsite.nl',
     description: 'Laat een professionele website bouwen voor een vaste prijs. Eerste werkende versie binnen 48 uur na complete intake. Bouw vanaf €299 en beheer voor €79 per maand.',
     canonical: `${baseUrl}/`,
-    h1: 'Een website laten maken die direct duidelijk maakt wat je doet.',
+    h1: 'Een website voor jouw bedrijf.',
     author: 'Jannik', reviewer: 'Jannik', verifiedAt, updatedAt: verifiedAt,
     indexable: true, includedInSitemap: true,
     sources: ['config/commercial.ts', 'data/portfolio.ts', 'config/verified-claims.ts'],

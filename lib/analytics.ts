@@ -25,6 +25,7 @@ export type MarketingEvent =
   | 'partner_page_view'
   | 'blog_open'
   | 'customer_portal_open'
+  | 'chat_whatsapp_open'
 
 declare global {
   interface Window {

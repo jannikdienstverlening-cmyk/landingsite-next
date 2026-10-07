@@ -34,7 +34,7 @@ test('cartoon moves, pauses, finishes once and can replay with a keyboard', asyn
   await page.keyboard.press('Enter')
   await expect(portrait).toHaveAttribute('data-finished', 'false')
   await expect(tile).toHaveCSS('animation-play-state', 'running')
-  await page.locator('.studio-header').scrollIntoViewIfNeeded()
+  await page.locator('.studio-hero__copy').scrollIntoViewIfNeeded()
   await expect(portrait).toHaveAttribute('data-running', 'false')
   await expect(tile).toHaveCSS('animation-play-state', 'paused')
   expect(errors).toEqual([])

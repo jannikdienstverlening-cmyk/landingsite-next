@@ -30,16 +30,16 @@ export default defineConfig({
     },
   }],
   webServer: process.env.PLAYWRIGHT_BASE_URL ? undefined : {
-    command: `npm run dev -- --hostname 127.0.0.1 --port ${port}`,
+    command: `npm run ${process.env.PLAYWRIGHT_PRODUCTION ? 'start' : 'dev'} -- --hostname 127.0.0.1 --port ${port}`,
     url: baseURL,
     reuseExistingServer: !process.env.CI,
     timeout: 120_000,
     env: {
       NEXT_PUBLIC_BASE_URL: baseURL,
-      STRIPE_BUILD_PRICE_STARTER: 'price_test_starter',
-      STRIPE_BUILD_PRICE_PRO: 'price_test_pro',
-      STRIPE_BUILD_PRICE_PREMIUM: 'price_test_premium',
-      STRIPE_PRICE_WEBSITE_MANAGEMENT: 'price_test_management',
+      STRIPE_BUILD_PRICE_STARTER: 'price_teststarter',
+      STRIPE_BUILD_PRICE_PRO: 'price_testpro',
+      STRIPE_BUILD_PRICE_PREMIUM: 'price_testpremium',
+      STRIPE_PRICE_WEBSITE_MANAGEMENT: 'price_testmanagement',
     },
   },
 })

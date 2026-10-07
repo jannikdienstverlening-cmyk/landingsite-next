@@ -5,6 +5,7 @@ export const BUSINESS = {
   vatId: 'NL001557133B48',
   website: 'https://www.landingsite.nl',
   contactPath: '/#contact',
+  whatsappUrl: 'https://wa.me/31653928832',
   termsUrl: 'https://www.landingsite.nl/algemene-voorwaarden',
   privacyUrl: 'https://www.landingsite.nl/privacybeleid',
   social: {
