@@ -1,4 +1,5 @@
 import { blogPostCanonical, blogPosts } from './blog-posts'
+import { portfolioProjects } from '../data/portfolio'
 
 export type SeoPageStatus = 'draft' | 'awaiting-review' | 'approved' | 'published' | 'archived'
 
@@ -97,12 +98,12 @@ const coreSeoPages: SeoPageEntry[] = [
     secondaryKeywords: ['website portfolio', 'webdesign voorbeelden'],
     searchIntent: 'Echte opgeleverde websites bekijken',
     title: 'Live voorbeelden van websites | Landingsite.nl',
-    description: 'Bekijk echte websites van Ontwikkelbegeleiding.nl, WIA Management en AIbouwers.nl, inclusief de oorspronkelijke vraag en gemaakte keuzes.',
+    description: `Bekijk ${portfolioProjects.map(project => project.name).join(', ')}: echte websites met desktop- en mobiele screenshots, toelichting en live links.`,
     canonical: `${baseUrl}/werk`,
     h1: 'Websites die je zelf kunt openen.',
     author: 'Jannik', reviewer: 'Jannik', verifiedAt, updatedAt: verifiedAt,
     indexable: true, includedInSitemap: true,
-    sources: ['data/portfolio.ts', 'lokale projectscreenshots'],
+    sources: ['data/portfolio.ts', 'lokale projectscreenshots', 'docs/portfolio/2026-10-07.md'],
     relatedPages: ['/', '/landingspagina-laten-maken', '/website-laten-maken-zzp', '/over-landingsite', '/start'],
   },
   {

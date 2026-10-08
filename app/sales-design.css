@@ -179,7 +179,7 @@ body:has(> .studio--sales) { overflow-x: clip; }
 .studio--sales .seo-provenance { color: #53675b !important; }
 .studio--sales .studio-page-hero { padding: 64px 0 48px; }
 .studio--sales .studio-page-hero h1 { font-size: 3.75rem; }
-.studio--sales .work-detail__meta h2 { white-space: normal; overflow-wrap: anywhere; }
+.studio--sales .work-detail__meta h2 { font-size: 1.5rem; line-height: 1.2; white-space: normal; overflow-wrap: anywhere; }
 .studio--sales .work-detail__meta a, .studio--sales .work-detail__story p strong { color: #122d27; }
 .studio--sales .work-detail__story ul { color: #485d55; }
 

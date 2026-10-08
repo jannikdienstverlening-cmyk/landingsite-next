@@ -3,6 +3,7 @@ import 'server-only'
 import Anthropic from '@anthropic-ai/sdk'
 import { activePromotion, effectiveBuildPrice, effectiveFirstPayment, packageFirstPayment, promotionDiscount } from '@/config/commercial'
 import { pricingConfig } from '@/config/pricing'
+import { portfolioProjects } from '@/data/portfolio'
 import type { z } from 'zod'
 import type { chatMessageSchema } from './validation'
 
@@ -32,7 +33,7 @@ Feiten over Landingsite.nl:
 - De eerste betaling bestaat uit de eenmalige bouwprijs plus EUR ${websiteManagement.monthlyPrice} voor de eerste beheermaand. Daarna volgt maandelijks EUR ${websiteManagement.monthlyPrice} inclusief btw.
 - Websitebeheer is per maand opzegbaar volgens de voorwaarden.
 ${promotion ? `- Tijdelijke zomeractie tot en met ${promotion.displayEndsAt}: Starter heeft EUR ${promotionDiscount('starter')} korting en een bouwprijs van EUR ${effectiveBuildPrice('starter')}; Pro en Premium hebben ieder EUR 300 korting en bouwprijzen van EUR ${effectiveBuildPrice('pro')} en EUR ${effectiveBuildPrice('premium')}. De eerste betalingen inclusief de eerste beheermaand zijn EUR ${effectiveFirstPayment('starter')}, EUR ${effectiveFirstPayment('pro')} en EUR ${effectiveFirstPayment('premium')}. De klant bekijkt de eerste versie voordat deze wordt gepubliceerd.` : ''}
-- Live voorbeelden: Ontwikkelbegeleiding RH, WIA Management en AIbouwers.nl.
+- Live voorbeelden: ${portfolioProjects.map(project => `${project.name} (${project.url})`).join(', ')}.
 - Contact: bezoekers kunnen het contactformulier onderaan de homepage gebruiken. Er wordt doorgaans binnen een werkdag gereageerd.
 `
 }
@@ -77,7 +78,7 @@ function automaticAnswer(question: string) {
   }
 
   if (/voorbeeld|portfolio|referentie|eerder gemaakt|werk/.test(normalized)) {
-    answers.push('Je kunt op de homepage echte live voorbeelden bekijken van Ontwikkelbegeleiding.nl, WIA Management en AIbouwers.nl. Ontwikkelbegeleiding.nl staat als hoofdreferentie bovenaan.')
+    answers.push(`Je kunt op de homepage en op /werk de live websites bekijken van ${portfolioProjects.map(project => project.name).join(', ')}. ${portfolioProjects[0].name} staat als hoofdreferentie bovenaan.`)
   }
 
   if (/partner|commissie|aanbreng/.test(normalized)) {

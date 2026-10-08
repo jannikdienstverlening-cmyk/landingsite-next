@@ -21,7 +21,7 @@ const faqs = [
 ]
 
 export default function LandingPageServicePage() {
-  const example = portfolioProjects[1]
+  const example = portfolioProjects[0]
   const schema = {
     '@graph': [
       breadcrumbSchema([{ name: 'Home', path: '/' }, { name: 'Landingspagina laten maken', path: content.slug }]),
@@ -61,7 +61,7 @@ export default function LandingPageServicePage() {
 
       <section className="seo-section seo-light">
         <div className="studio-shell seo-section__split">
-          <div><p className="overline">Echt project</p><h2>Een duidelijke intake begint met begrijpelijke informatie.</h2><p>Bij {example.name} is een complex onderwerp teruggebracht tot herkenbare vragen, een uitlegbare route en een concrete vervolgstap. We claimen geen niet-gemeten bedrijfsresultaten.</p><p><Link href="/werk#wia-management" data-analytics-event="case_view" data-analytics-project={example.slug}>Bekijk de uitgewerkte case</Link></p></div>
+          <div><p className="overline">Echt project</p><h2>Een duidelijke pagina voor aanbod en contact.</h2><p>{example.description}</p><p><Link href={`/werk#${example.slug}`} data-analytics-event="case_view" data-analytics-project={example.slug}>Bekijk de uitgewerkte case</Link></p></div>
           <BrowserFrame project={example} />
         </div>
       </section>
