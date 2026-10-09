@@ -30,6 +30,91 @@ const baseUrl = 'https://www.landingsite.nl'
 
 export const blogPosts: BlogPost[] = [
   {
+    slug: 'hoe-kies-je-een-goede-url-voor-een-webpagina',
+    status: 'published',
+    title: 'Hoe kies je een goede URL voor een webpagina?',
+    description: 'Kies een korte, beschrijvende en stabiele URL voor iedere zakelijke webpagina, met leesbare woorden, koppeltekens en één vaste voorkeursversie.',
+    excerpt: 'Een goede URL maakt duidelijk welke pagina iemand opent en blijft bruikbaar wanneer je de inhoud bijwerkt. Met deze stappen kies je per pagina een leesbaar en stabiel adres.',
+    category: 'SEO',
+    primaryKeyword: 'goede URL voor webpagina',
+    secondaryKeywords: ['URL structuur website', 'SEO-vriendelijke URL', 'URL naam kiezen'],
+    searchIntent: 'Een duidelijke, stabiele URL voor een zakelijke webpagina kiezen',
+    publishedAt: '2026-10-09',
+    updatedAt: '2026-10-09',
+    author: 'Jannik',
+    reviewer: 'Jannik',
+    readingTime: '6 minuten',
+    sources: [
+      'https://developers.google.com/search/docs/crawling-indexing/url-structure',
+      'https://developers.google.com/search/docs/crawling-indexing/consolidate-duplicate-urls',
+      'https://developers.google.com/search/docs/crawling-indexing/links-crawlable',
+    ],
+    sections: [
+      {
+        heading: 'Begin met het onderwerp van de pagina',
+        paragraphs: [
+          'Bepaal eerst welke ene taak de pagina heeft. De URL hoeft niet de volledige paginatitel te herhalen, maar moet wel genoeg zeggen om het onderwerp te herkennen. Voor een pagina over onderhoud van een zakelijke website is “/website-onderhoud” bijvoorbeeld duidelijker dan “/dienst-3” of “/pagina?id=27”.',
+          'Google adviseert een eenvoudige, logisch opgebouwde URL met leesbare woorden in de taal van je doelgroep. Kies daarom gewone Nederlandse woorden die passen bij de inhoud. Voeg geen losse zoekwoordvarianten toe die de URL langer maken zonder het onderwerp preciezer te beschrijven.',
+        ],
+      },
+      {
+        heading: 'Houd het pad kort en beschrijvend',
+        paragraphs: [
+          'Schrap woorden die niets toevoegen aan de herkenning van de pagina. “/diensten/website-onderhoud” geeft een duidelijke plaats en onderwerp aan. Een pad als “/onze-diensten/alles-over-professioneel-website-onderhoud-voor-bedrijven” is moeilijker te lezen en later lastiger consequent te gebruiken.',
+          'Kort betekent niet dat iedere URL uit één woord moet bestaan. Laat de benodigde context staan wanneer twee pagina’s anders hetzelfde adres zouden krijgen. Gebruik bijvoorbeeld “/website-onderhoud” en “/webshop-onderhoud” als het echt om twee afzonderlijke diensten gaat.',
+        ],
+      },
+      {
+        heading: 'Scheid woorden met koppeltekens',
+        paragraphs: [
+          'Gebruik een koppelteken tussen woorden: “/online-afspraak-maken”. Google raadt koppeltekens aan in plaats van underscores en adviseert om woorden niet zonder scheiding aan elkaar te plakken. Zo blijven de afzonderlijke begrippen in het adres herkenbaar.',
+          'Kies daarnaast één vaste schrijfwijze. URL-paden zijn hoofdlettergevoelig voor Google, waardoor “/Contact” en “/contact” als verschillende adressen kunnen worden behandeld. Kleine letters voorkomen onnodige varianten en zijn eenvoudig consequent toe te passen in menu’s, knoppen en andere interne links.',
+        ],
+      },
+      {
+        heading: 'Gebruik zo min mogelijk parameters',
+        paragraphs: [
+          'Een parameter staat meestal na een vraagteken, zoals “?sortering=nieuw”. Voor filters en technische functies kan dat nuttig zijn, maar een gewone informatie- of dienstenpagina heeft meestal een vast, leesbaar pad nodig. Google adviseert onnodige parameters weg te laten, vooral wanneer ze niets aan de inhoud veranderen.',
+          'Voorkom dat trackingcodes, sessie-ID’s of verschillende sorteervolgordes blijvend als aparte paginaversies worden gebruikt. Veel URL’s met dezelfde of bijna dezelfde inhoud maken het beheer ingewikkelder en kunnen crawlers tijd laten besteden aan varianten die geen eigen pagina hoeven te zijn.',
+        ],
+      },
+      {
+        heading: 'Kies één voorkeurs-URL per pagina',
+        paragraphs: [
+          'Controleer of dezelfde inhoud via meerdere adressen bereikbaar is, bijvoorbeeld met en zonder een parameter of via twee oude paden. Wijs dan één versie aan als voorkeurs-URL. Link binnen je website steeds naar die versie en neem diezelfde URL op in de sitemap.',
+          'Voor dubbele of sterk vergelijkbare pagina’s beschrijft Google redirects en een rel="canonical"-verwijzing als sterke signalen voor de voorkeursversie. De sitemap is een zwakker signaal. Gebruik deze middelen consequent en laat ze niet naar verschillende URL’s wijzen. Een canonical is bovendien geen oplossing voor twee pagina’s die eigenlijk ieder een eigen onderwerp moeten hebben.',
+        ],
+      },
+      {
+        heading: 'Wijzig een bestaande URL alleen met een reden',
+        paragraphs: [
+          'Een URL hoeft niet mee te veranderen bij iedere aanpassing aan de titel of tekst. Kies een adres dat het blijvende onderwerp beschrijft en laat jaartallen, tijdelijke campagnes en wisselende slogans weg als ze geen vast onderdeel van de pagina zijn.',
+          'Moet een bestaand adres toch veranderen, zorg dan dat het oude adres permanent naar de passende nieuwe pagina verwijst. Werk ook je interne links en sitemap bij. Controleer na de wijziging of je website niet tegelijk naar het oude en het nieuwe adres blijft linken.',
+        ],
+      },
+      {
+        heading: 'Controleer de URL voordat je publiceert',
+        paragraphs: [
+          'Lees het volledige adres alsof je het voor het eerst in een e-mail, zoekresultaat of browser ziet. Het onderwerp moet herkenbaar zijn zonder dat je de pagina al hebt geopend. Controleer daarna de technische verwerking en de verwijzingen binnen je site.',
+        ],
+        bullets: [
+          'De URL beschrijft één duidelijk paginaonderwerp.',
+          'Het pad gebruikt gewone Nederlandse woorden.',
+          'Overbodige woorden en parameters zijn weggelaten.',
+          'Woorden zijn met koppeltekens gescheiden.',
+          'Het pad gebruikt consequent kleine letters.',
+          'Interne links verwijzen naar één voorkeursversie.',
+          'De canonical en sitemap noemen dezelfde voorkeurs-URL.',
+          'Een eventueel oud adres verwijst naar de passende nieuwe pagina.',
+        ],
+      },
+    ],
+    relatedLinks: [
+      { label: 'Lees hoe je een paginatitel en metabeschrijving schrijft', href: '/blog/hoe-schrijf-je-een-goede-paginatitel-en-metabeschrijving' },
+      { label: 'Lees hoe je duidelijke link- en knopteksten schrijft', href: '/blog/hoe-schrijf-je-duidelijke-link-en-knopteksten' },
+    ],
+  },
+  {
     slug: 'hoe-maak-je-een-logische-koppenstructuur',
     status: 'published',
     title: 'Hoe gebruik je koppen op een webpagina?',
