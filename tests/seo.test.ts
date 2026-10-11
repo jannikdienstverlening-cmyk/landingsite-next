@@ -40,7 +40,9 @@ test('schemahelper gebruikt dezelfde commerciële prijzen en geen reviewschema',
   assert.match(source, /commercialConfig\.packages/)
   assert.match(source, /commercialConfig\.currency/)
   assert.doesNotMatch(source, /AggregateRating|Review/)
-  assert.deepEqual(Object.values(commercialConfig.packages).map((item) => item.oneTimePrice), [299, 499, 899])
+  assert.deepEqual(Object.values(commercialConfig.packages).map((item) => item.oneTimePrice), [0, 0, 0])
+  assert.match(source, /commercialConfig\.management\.monthlyPrice/)
+  assert.match(source, /UnitPriceSpecification/)
 })
 
 test('snelle 48-uursroute is bewust niet gepubliceerd', () => {

@@ -6,7 +6,7 @@ export function validateCommercialRuntime(environment: NodeJS.ProcessEnv = proce
   const errors: string[] = []
   const required = [
     commercialConfig.management.stripePriceEnv,
-    ...Object.values(commercialConfig.packages).map((item) => item.stripePriceEnv),
+    ...Object.values(commercialConfig.packages).filter(item => item.oneTimePrice > 0).map((item) => item.stripePriceEnv),
   ]
 
   for (const name of required) {
@@ -16,7 +16,7 @@ export function validateCommercialRuntime(environment: NodeJS.ProcessEnv = proce
   }
 
   if (commercialConfig.management.monthlyPrice !== 79) errors.push('Websitebeheer moet €79 per maand zijn')
-  const expected: Record<CommercialPackageId, number> = { starter: 299, pro: 499, premium: 899 }
+  const expected: Record<CommercialPackageId, number> = { starter: 0, pro: 0, premium: 0 }
   for (const [packageId, amount] of Object.entries(expected) as [CommercialPackageId, number][]) {
     if (commercialConfig.packages[packageId].oneTimePrice !== amount) errors.push(`${packageId} heeft een onjuiste bouwprijs`)
   }

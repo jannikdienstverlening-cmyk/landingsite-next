@@ -1,5 +1,5 @@
 import { expect, test } from '@playwright/test'
-import { activePromotion, amountExcludingVat, commercialConfig, euro, packageFirstPayment } from '../config/commercial'
+import { commercialConfig, euro } from '../config/commercial'
 
 test('home laat werk, pakketkeuze en daarna de werkwijze zien', async ({ page }) => {
   await page.goto('/')
@@ -12,13 +12,11 @@ test('home laat werk, pakketkeuze en daarna de werkwijze zien', async ({ page })
 
 test('pakketprijzen en btw volgen dezelfde configuratie als de checkout', async ({ page }) => {
   await page.goto('/')
-  const promotion = activePromotion()
-  for (const [id, item] of Object.entries(commercialConfig.packages)) {
-    const build = promotion ? promotion.buildPrices[id as keyof typeof promotion.buildPrices] : item.oneTimePrice
-    const payment = promotion ? build + commercialConfig.management.monthlyPrice : packageFirstPayment(id as keyof typeof commercialConfig.packages)
+  await expect(page.locator('.subscription-offer')).toContainText(`€${commercialConfig.management.monthlyPrice}`)
+  await expect(page.locator('.subscription-offer')).toContainText('Geen eenmalige bouwkosten')
+  for (const item of Object.values(commercialConfig.packages)) {
     const option = page.locator('.pricing-option').filter({ has: page.getByRole('heading', { name: item.name, exact: true }) })
-    await expect(option).toContainText(`Eerste betaling: €${payment} incl. btw`)
-    await expect(option).toContainText(`${euro(amountExcludingVat(payment), 2)} excl. btw`)
+    await expect(option.locator('.pricing-option__price, .pricing-option__today')).toHaveCount(0)
     await expect(option.getByRole('link', { name: `Kies ${item.name}` })).toHaveAttribute('href', item.ctaHref)
     const details = option.locator('details')
     await expect(details).not.toHaveAttribute('open', '')
@@ -37,7 +35,7 @@ test('desktop hero blijft compact en pakketregels staan gelijk', async ({ page }
   const project = await page.locator('.hero-case').boundingBox()
   expect(project!.y).toBeLessThan(650)
   await expect(page.locator('.studio-hero__offer').getByRole('link', { name: 'Start mijn website', exact: true })).toBeInViewport()
-  for (const selector of ['.pricing-option__price', '.pricing-option__today', '.pricing-specs', '.pricing-option > .button']) {
+  for (const selector of ['.pricing-specs', '.pricing-option > .button']) {
     const positions = await page.locator(selector).evaluateAll(elements => elements.map(element => element.getBoundingClientRect().top))
     expect(Math.max(...positions) - Math.min(...positions)).toBeLessThan(2)
   }
@@ -71,8 +69,8 @@ test('de pakketknop opent dezelfde prijs en eenvoudige uitleg in de bestelpagina
   await expect(page).toHaveURL(/\/start\?pakket=pro$/)
   await expect(page.locator('h1')).toHaveText('Dit wordt jouw Pro-website.')
   await expect(page.locator('.start-simple-specs')).toContainText(`Tot ${commercialConfig.packages.pro.pages} pagina’s`)
-  const build = activePromotion()?.buildPrices.pro ?? commercialConfig.packages.pro.oneTimePrice
-  await expect(page.locator('.order-summary__total')).toContainText(euro(build + commercialConfig.management.monthlyPrice, 2))
+  await expect(page.locator('.order-summary__total')).toContainText(euro(commercialConfig.management.monthlyPrice, 2))
+  await expect(page.locator('.order-summary')).toContainText('WebsitebouwInbegrepen')
   await expect(page.locator('.start-checkout button')).toBeDisabled()
   await expect(page.getByRole('checkbox')).not.toBeChecked()
 })

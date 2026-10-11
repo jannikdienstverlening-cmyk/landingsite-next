@@ -12,7 +12,7 @@ import {
   StudioHero,
   type StudioFaq,
 } from '@/components/studio-site'
-import { activePromotion, commercialConfig, packageFirstPayment, type ActivePromotion, type CommercialPackageId } from '@/config/commercial'
+import { commercialConfig } from '@/config/commercial'
 import { ReferralCapture } from '@/components/referral-capture'
 import { SocialFeedSection } from '@/components/social-feed'
 import { seoPage } from '@/content/seo-pages'
@@ -22,32 +22,30 @@ import { seoMetadata } from '@/lib/seo'
 const homepageContent = seoPage('/')
 export const metadata: Metadata = seoMetadata(homepageContent)
 
-function homepageFaqs(promotion: ActivePromotion | null): StudioFaq[] {
-  const firstPayment = (id: CommercialPackageId) => (promotion?.buildPrices[id] ?? commercialConfig.packages[id].oneTimePrice) + commercialConfig.management.monthlyPrice
+function homepageFaqs(): StudioFaq[] {
   return [
-    ...(promotion ? [{ question: 'Hoe werkt de zomeractie?', answer: `Tot en met ${promotion.displayEndsAt} kost de Starter-bouw €${promotion.buildPrices.starter} en krijg je €${commercialConfig.packages.pro.oneTimePrice - promotion.buildPrices.pro} korting op de bouw van Pro en Premium. De eerste betaling is €${firstPayment('starter')}, €${firstPayment('pro')} of €${firstPayment('premium')}, inclusief btw en de eerste maand Hosting & Websitebeheer. Daarna betaal je €${commercialConfig.management.monthlyPrice} per maand inclusief btw. Je bekijkt de eerste versie vóór publicatie.` }] : []),
     { question: 'Wanneer krijg ik de eerste versie?', answer: 'Binnen 48 uur nadat je betaling is bevestigd en je intake compleet en bruikbaar is. De intake is de vragenlijst over je bedrijf. Ontbreken teksten, beelden of informatie? Dan begint de termijn zodra alles binnen is.' },
     { question: 'Is de website binnen 48 uur definitief live?', answer: 'Nee. Binnen 48 uur ontvang je de eerste werkende versie. Correcties, jouw reactietijd en de domeinkoppeling kunnen daarna extra tijd vragen.' },
-    { question: 'Wat betaal ik bij de start?', answer: promotion ? `Tijdens de zomeractie betaal je bij de start €${firstPayment('starter')} voor Starter, €${firstPayment('pro')} voor Pro of €${firstPayment('premium')} voor Premium. Deze bedragen zijn inclusief btw en de eerste maand Hosting & Websitebeheer.` : `Je betaalt de eenmalige bouwprijs plus de eerste maand Hosting & Websitebeheer. Dat is €${packageFirstPayment('starter')} voor Starter, €${packageFirstPayment('pro')} voor Pro of €${packageFirstPayment('premium')} voor Premium, telkens inclusief btw.` },
+    { question: 'Wat betaal ik bij de start?', answer: `Je betaalt €${commercialConfig.management.monthlyPrice} inclusief btw voor de eerste maand. De websitebouw is inbegrepen: je betaalt geen eenmalige bouwkosten. Daarna betaal je hetzelfde bedrag per maand.` },
     { question: `Wat zit er in €${commercialConfig.management.monthlyPrice} per maand?`, answer: `Hosting, een beveiligde verbinding (SSL), back-ups, updates en controle van je website en formulier. Je krijgt ook hulp per e-mail en maximaal ${commercialConfig.management.includedChangeMinutes} minuten per maand voor kleine tekst- of afbeeldingswijzigingen.` },
     { question: 'Wat valt onder de 20 minuten wijzigingen?', answer: 'Kleine aanpassingen binnen de bestaande website, zoals een tekst wijzigen, een afbeelding vervangen of een knop aanpassen. Nieuwe pagina’s, functies en redesigns vallen er niet onder.' },
     { question: 'Worden ongebruikte minuten meegenomen?', answer: 'Nee. Niet-gebruikte wijzigingstijd wordt niet opgespaard of meegenomen naar een volgende maand.' },
     { question: 'Kan ik maandelijks opzeggen?', answer: 'Ja. Opzeggen kan tegen het einde van de lopende betaalperiode. Daarna stoppen hosting, beheer, wijzigingen en ondersteuning. We spreken een redelijke overdracht van domeininstellingen en klantspecifieke content af; extra migratiewerk kan apart worden berekend.' },
-    ...(promotion ? [] : [{ question: 'Blijf ik eigenaar van mijn domein?', answer: 'Ja. Je domeinnaam blijft van jou en je houdt waar mogelijk zelf toegang tot de registrar.' }]),
+    { question: 'Blijf ik eigenaar van mijn domein?', answer: 'Ja. Je domeinnaam blijft van jou en je houdt waar mogelijk zelf toegang tot de registrar.' },
   ]
 }
 
 export default async function HomePage() {
   await connection()
-  const promotion = activePromotion()
   const packages = Object.entries(commercialConfig.packages).map(([id, item]) => ({
     '@type': 'Offer',
     name: item.name,
-    price: promotion ? promotion.buildPrices[id as keyof typeof promotion.buildPrices] : item.oneTimePrice,
+    price: commercialConfig.management.monthlyPrice,
     priceCurrency: 'EUR',
     url: `https://www.landingsite.nl/start?pakket=${id}`,
     availability: 'https://schema.org/InStock',
-    ...(promotion ? { priceValidUntil: '2026-10-01', description: `Tijdelijke zomeractie met €${item.oneTimePrice - promotion.buildPrices[id as CommercialPackageId]} korting op de bouwprijs, bij Hosting & Websitebeheer van €${commercialConfig.management.monthlyPrice} per maand inclusief btw.` } : {}),
+    description: 'Websitebouw, hosting en beheer inbegrepen. Maandelijks opzegbaar, inclusief btw.',
+    priceSpecification: { '@type': 'UnitPriceSpecification', price: commercialConfig.management.monthlyPrice, priceCurrency: commercialConfig.currency, valueAddedTaxIncluded: true, unitText: 'maand', billingDuration: 'P1M' },
   }))
   const structuredData = {
     '@context': 'https://schema.org',
@@ -78,7 +76,7 @@ export default async function HomePage() {
         areaServed: 'NL',
         hasOfferCatalog: {
           '@type': 'OfferCatalog',
-          name: 'Websitebouwpakketten',
+          name: 'Website inclusief bouw en beheer',
           itemListElement: packages,
         },
       },
@@ -92,12 +90,12 @@ export default async function HomePage() {
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData).replace(/</g, '\\u003c') }} />
       <StudioHeader light />
       <main id="main-content">
-        <StudioHero promotion={promotion} />
-        <Pricing promotion={promotion} />
+        <StudioHero />
+        <Pricing />
         <ProcessSection />
         <FounderSection />
         <ManagementSection />
-        <FAQAndClose faqs={homepageFaqs(promotion)} promotion={promotion} />
+        <FAQAndClose faqs={homepageFaqs()} />
         <SocialFeedSection />
       </main>
       <StudioFooter />

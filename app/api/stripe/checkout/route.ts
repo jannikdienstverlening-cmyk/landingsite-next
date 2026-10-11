@@ -1,11 +1,10 @@
 import type Stripe from 'stripe'
 import { NextRequest } from 'next/server'
-import { activePromotion, cents, commercialConfig, effectiveBuildPrice, effectiveFirstPayment } from '@/config/commercial'
+import { cents, commercialConfig, effectiveFirstPayment } from '@/config/commercial'
 import { clientIp, checkRateLimit, rateLimitResponse } from '@/lib/rate-limit'
 import { invalidJsonResponse, readJsonBody } from '@/lib/request'
 import { referralAttributionId, referralCookie, rejectCrossOriginMutation } from '@/lib/security'
 import {
-  configuredBuildPriceId,
   configuredManagementPriceId,
   getStripe,
   safePaymentError,
@@ -14,31 +13,10 @@ import {
   stripeCheckoutBranding,
   stripePaymentMethods,
   TERMS_VERSION,
-  type PakketId,
 } from '@/lib/stripe'
 import { getSupabase } from '@/lib/supabase'
 import { dutchTaxRegistrationReady } from '@/lib/stripe-support'
 import { checkoutSchema, validationMessage } from '@/lib/validation'
-
-function buildLineItem(pakket: PakketId, buildPrice = PAKKETTEN[pakket].prijs / 100): Stripe.Checkout.SessionCreateParams.LineItem {
-  const info = PAKKETTEN[pakket]
-  const priceId = configuredBuildPriceId(pakket)
-  const regularPrice = info.prijs / 100
-  if (priceId && buildPrice === regularPrice) return { price: priceId, quantity: 1 }
-
-  return {
-    price_data: {
-      currency: 'eur',
-      product_data: {
-        name: `Landingsite.nl ${info.naam}`,
-        description: buildPrice === regularPrice ? 'Eenmalige bouwprijs voor het gekozen websitepakket.' : 'Tijdelijke zomeractie voor het gekozen websitepakket.',
-      },
-      unit_amount: cents(buildPrice),
-      tax_behavior: commercialConfig.stripeTaxBehavior,
-    },
-    quantity: 1,
-  }
-}
 
 function managementLineItem(): Stripe.Checkout.SessionCreateParams.LineItem {
   const priceId = configuredManagementPriceId()
@@ -78,10 +56,7 @@ export async function POST(request: NextRequest) {
   if (!baseUrl) return Response.json({ error: 'Basis-URL ontbreekt.' }, { status: 500 })
 
   const info = PAKKETTEN[parsed.data.pakket]
-  const checkoutTime = new Date()
-  const promotion = activePromotion(checkoutTime)
-  const buildPrice = effectiveBuildPrice(parsed.data.pakket, checkoutTime)
-  const initialPayment = effectiveFirstPayment(parsed.data.pakket, checkoutTime)
+  const initialPayment = effectiveFirstPayment(parsed.data.pakket)
   const supabase = getSupabase()
   const attributionId = referralAttributionId(request.cookies.get(referralCookie.name)?.value)
   let validAttributionId: string | null = null
@@ -107,12 +82,13 @@ export async function POST(request: NextRequest) {
       referral_attribution_id: validAttributionId ?? '',
       terms_accepted: 'true',
       terms_version: TERMS_VERSION,
-      promotion_code: promotion?.code ?? '',
-      build_price_including_vat: String(buildPrice),
+      commercial_version: commercialConfig.version,
+      billing_model: commercialConfig.model,
+      promotion_code: '',
+      build_price_including_vat: '0',
       initial_payment_including_vat: String(initialPayment),
     }
     const lineItems = [managementLineItem()]
-    if (buildPrice > 0) lineItems.unshift(buildLineItem(parsed.data.pakket, buildPrice))
     const session = await getStripe().checkout.sessions.create({
       line_items: lineItems,
       mode: 'subscription',
@@ -140,9 +116,7 @@ export async function POST(request: NextRequest) {
       }],
       custom_text: {
         submit: {
-          message: promotion
-            ? `${promotion.name}: voor ${info.naam} geldt tijdelijk een bouwprijs van €${buildPrice}. Je betaalt nu in totaal €${initialPayment} inclusief btw, inclusief de eerste maand Hosting & Websitebeheer. Daarna betaal je €${commercialConfig.management.monthlyPrice} per maand inclusief btw. Je bekijkt de eerste versie vóór publicatie.`
-            : `${info.naam}: ${info.prijs_label} inclusief btw plus de eerste maand beheer van €${commercialConfig.management.monthlyPrice} inclusief btw. Eerste betaling €${initialPayment} inclusief btw; daarna €${commercialConfig.management.monthlyPrice} per maand inclusief btw.`,
+          message: `${info.naam}: websitebouw is inbegrepen. Je betaalt nu €${initialPayment} inclusief btw voor de eerste maand en daarna €${commercialConfig.management.monthlyPrice} per maand inclusief btw. Maandelijks opzegbaar. Je bekijkt de eerste versie vóór publicatie.`,
         },
         after_submit: {
           message: 'Na de betaling ga je direct door naar de beveiligde intake. De 48 uur starten zodra die intake compleet is.',
@@ -159,6 +133,11 @@ export async function POST(request: NextRequest) {
     if (currentSession.status === 'complete') return Response.json({ url: `${baseUrl}/intake/${session.id}` })
     if (currentSession.status === 'expired') {
       return Response.json({ code: 'checkout_expired', error: 'Deze betaalpoging is verlopen. Klik opnieuw om een nieuw betaalscherm te openen.' }, { status: 409 })
+    }
+    // Never reopen a cached checkout carrying the previous one-time building fee.
+    if (currentSession.status === 'open' && currentSession.metadata?.commercial_version !== commercialConfig.version) {
+      await getStripe().checkout.sessions.expire(session.id)
+      return Response.json({ code: 'checkout_expired', error: 'De prijsafspraken zijn bijgewerkt. Klik opnieuw om een nieuw betaalscherm te openen.' }, { status: 409 })
     }
     if (currentSession.status !== 'open' || !currentSession.url) return Response.json({ error: 'Checkout kon niet worden geopend.' }, { status: 503 })
 

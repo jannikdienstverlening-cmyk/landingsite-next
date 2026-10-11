@@ -45,8 +45,17 @@ export function serviceSchema(name: string, description: string, path: string) {
     offers: Object.entries(commercialConfig.packages).map(([id, item]) => ({
       '@type': 'Offer',
       name: item.name,
-      price: item.oneTimePrice,
+      price: commercialConfig.management.monthlyPrice,
       priceCurrency: commercialConfig.currency,
+      description: 'Websitebouw inbegrepen. Maandelijks opzegbaar, inclusief btw.',
+      priceSpecification: {
+        '@type': 'UnitPriceSpecification',
+        price: commercialConfig.management.monthlyPrice,
+        priceCurrency: commercialConfig.currency,
+        valueAddedTaxIncluded: commercialConfig.pricesIncludeVat,
+        unitText: 'maand',
+        billingDuration: 'P1M',
+      },
       url: `${BUSINESS.website}/start?pakket=${id}`,
       availability: 'https://schema.org/InStock',
     })),

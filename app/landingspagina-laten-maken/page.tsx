@@ -9,7 +9,6 @@ import { portfolioProjects } from '@/data/portfolio'
 import { breadcrumbSchema, seoMetadata, serviceSchema } from '@/lib/seo'
 
 const content = seoPage('/landingspagina-laten-maken')
-const starter = commercialConfig.packages.starter
 
 export const metadata: Metadata = seoMetadata(content)
 
@@ -34,7 +33,7 @@ export default function LandingPageServicePage() {
       <header className="seo-hero">
         <div className="studio-shell seo-hero__grid">
           <div><p className="overline">Eén pagina · één hoofdactie</p><h1>{content.h1}</h1><p className="seo-hero__intro">Een landingspagina laat bezoekers zonder omwegen zien wat je aanbiedt, voor wie het bedoeld is en hoe ze reageren. Je krijgt indexeerbare HTML, een mobiele uitwerking en een formulier dat vóór oplevering wordt gecontroleerd.</p></div>
-          <dl className="seo-hero__facts"><div><dt>Bouwprijs</dt><dd>{euro(starter.oneTimePrice)} incl. btw</dd></div><div><dt>Eerste betaling</dt><dd>{euro(packageFirstPayment('starter'))} incl. btw</dd></div><div><dt>Daarna</dt><dd>{euro(commercialConfig.management.monthlyPrice)} p/m incl. btw</dd></div></dl>
+          <dl className="seo-hero__facts"><div><dt>Bouw</dt><dd>Inbegrepen</dd></div><div><dt>Eerste betaling</dt><dd>{euro(packageFirstPayment('starter'))} incl. btw</dd></div><div><dt>Daarna</dt><dd>{euro(commercialConfig.management.monthlyPrice)} p/m incl. btw</dd></div></dl>
         </div>
         <div className="studio-shell"><StartCta compact /><PageProvenance updatedAt={content.updatedAt} /></div>
       </header>
@@ -48,7 +47,7 @@ export default function LandingPageServicePage() {
 
       <section className="seo-section">
         <div className="studio-shell seo-section__split">
-          <div className="seo-section__intro"><p className="overline">Starter</p><h2>Dit wordt voor {euro(starter.oneTimePrice)} gebouwd.</h2><p>Starter bestaat uit maximaal zeven inhoudelijke secties. De precieze volgorde volgt uit je aanbod en de vragen die een bezoeker vóór contact moet beantwoorden.</p></div>
+          <div className="seo-section__intro"><p className="overline">Starter</p><h2>Dit bouwen we voor je.</h2><p>De bouw is inbegrepen in het maandbedrag. Starter bestaat uit maximaal zeven inhoudelijke secties. De volgorde volgt uit je aanbod en de vragen die een bezoeker vóór contact moet beantwoorden.</p></div>
           <div className="seo-editorial-list">
             <article><h3>Aanbod en doelgroep</h3><p>De hero benoemt direct de dienst, de bedoelde klant en de volgende stap.</p></article>
             <article><h3>Uitleg en bewijs</h3><p>Voordelen, werkwijze, echte reviews of projecten en veelgestelde vragen krijgen een logische plek. Alleen aangeleverd en controleerbaar bewijs wordt gebruikt.</p></article>

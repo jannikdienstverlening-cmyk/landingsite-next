@@ -7,8 +7,8 @@ test('work page renders the new cases, live links and structured data on the ser
   expect(html).not.toMatch(/WIA Management|AIbouwers|wia-management|wiamanagement/i)
   for (const project of portfolioProjects.slice(1)) {
     const article = page.locator(`#${project.slug}`)
-    await expect(article.getByRole('heading', { name: project.name, exact: true })).toBeVisible()
-    await expect(article.getByRole('link', { name: 'Bekijk live website', exact: true })).toHaveAttribute('href', project.url)
+    await expect(article.getByRole('heading', { name: project.name.replace(/\.nl$/, ''), exact: true })).toBeVisible()
+    await expect(article.getByRole('link', { name: `Bekijk live website: ${project.name}`, exact: true })).toHaveAttribute('href', project.url)
     expect(html).toContain(project.url)
     const image = article.getByRole('img', { name: project.imageAlt, exact: true })
     await image.scrollIntoViewIfNeeded()
@@ -42,7 +42,7 @@ for (const width of [390, 768, 1440]) {
     for (const project of portfolioProjects.slice(1)) {
       const article = page.locator(`#${project.slug}`)
       await article.scrollIntoViewIfNeeded()
-      const title = article.getByRole('heading', { name: project.name, exact: true })
+      const title = article.getByRole('heading', { name: project.name.replace(/\.nl$/, ''), exact: true })
       expect(await title.evaluate(element => element.getBoundingClientRect().height <= parseFloat(getComputedStyle(element).lineHeight) + 1)).toBe(true)
       await expect.poll(() => article.getByRole('img', { name: project.imageAlt, exact: true }).evaluate((img: HTMLImageElement) => img.complete && img.naturalWidth > 0)).toBe(true)
       await article.screenshot({ path: testInfo.outputPath(`${project.slug}-case-${width}.png`), animations: 'disabled' })

@@ -1,13 +1,6 @@
 import Image from 'next/image'
 import Link from 'next/link'
-import {
-  type ActivePromotion,
-  amountExcludingVat,
-  commercialConfig,
-  euro,
-  packageFirstPayment,
-  type CommercialPackageId,
-} from '@/config/commercial'
+import { commercialConfig, type CommercialPackageId } from '@/config/commercial'
 import type { PortfolioProject } from '@/data/portfolio'
 import { portfolioProjects } from '@/data/portfolio'
 import { siteCopy } from '@/content/site'
@@ -126,46 +119,25 @@ export function MobileProjectFrame({ project, priority = false }: { project: Por
   )
 }
 
-export function StudioHero({ promotion }: { promotion: ActivePromotion | null }) {
+export function StudioHero() {
   const additionalProjects = portfolioProjects.slice(1)
   const homepage = seoPage('/')
   return (
     <section className="studio-hero">
-      {promotion && <div className="studio-promotion" role="region" aria-label="Tijdelijke zomeractie">
-        <div className="studio-shell studio-promotion__inner">
-          <strong>Zomeractie · t/m {promotion.displayEndsAt}</strong>
-          <span>Eerst je ontwerp bekijken · Starter gratis gebouwd · €300 korting op Pro en Premium.</span>
-          <Link href="#pakketten" data-analytics-event="promotion_select">Bekijk alle actieprijzen <span aria-hidden="true">→</span></Link>
-        </div>
-      </div>}
       <div className="studio-shell studio-hero__grid">
         <div className="studio-hero__copy">
-          <p className="overline">Voor ondernemers, door Jannik</p>
-          <h1>{promotion ? <>Eerst zien wat we bouwen. <span className="studio-hero__accent">Daarna pas live.</span></> : homepage.h1}</h1>
+          <p className="overline">Websites voor zzp’ers en kleine bedrijven</p>
+          <h1>{homepage.h1}</h1>
         </div>
         <div className="studio-hero__offer">
           <p className="studio-hero__intro">
-            {promotion
-              ? <>Een website voor je bedrijf, door Jannik gebouwd. Binnen {commercialConfig.firstVersion.hours} uur na betaling en een complete intake krijg je de eerste werkende versie. Jij kijkt mee en geeft akkoord voor de livegang.</>
-              : <>Laat zien wat je doet. Maak contact opnemen makkelijk. Ik bouw je website en houd daarna de hosting, updates en kleine wijzigingen bij.</>}
+            Wij maken een website die laat zien wat je doet en hoe klanten je bereiken. Jannik bouwt hem en verzorgt de hosting, updates en kleine wijzigingen.
           </p>
-          <p className="studio-hero__micro">Bouw vanaf <strong>€{promotion?.buildPrices.starter ?? commercialConfig.packages.starter.oneTimePrice}</strong> + <strong>€{commercialConfig.management.monthlyPrice} per maand</strong> voor hosting en beheer. Incl. btw.</p>
+          <p className="studio-hero__micro"><strong>€{commercialConfig.management.monthlyPrice} per maand</strong> inclusief btw. Websitebouw, hosting en beheer inbegrepen. Geen eenmalige bouwkosten.</p>
           <div className="studio-actions">
-            <Link className="button button--primary" href={promotion ? '/start?pakket=starter' : '/start'} data-analytics-event={promotion ? 'promotion_select' : 'hero_start_click'} data-analytics-location="hero">Start mijn website</Link>
+            <Link className="button button--primary" href="/start" data-analytics-event="hero_start_click" data-analytics-location="hero">Start mijn website</Link>
             <a className="button button--text" href="#werk" data-analytics-event="hero_work_click">Bekijk live werk</a>
           </div>
-          {promotion && <div className="studio-promo-offer" aria-label="Actieprijs Starter">
-            <div className="studio-promo-offer__price">
-              <span><s>€{commercialConfig.packages.starter.oneTimePrice}</s> bouwkosten</span>
-              <strong>€{promotion.buildPrices.starter}</strong>
-            </div>
-            <div className="studio-promo-offer__terms">
-              <strong>Start voor €{commercialConfig.management.monthlyPrice} incl. btw</strong>
-              <span>De eerste maand Hosting &amp; Websitebeheer is inbegrepen</span>
-              <span>Daarna €{commercialConfig.management.monthlyPrice} p/m incl. btw · maandelijks opzegbaar</span>
-              <span>Actie geldig t/m {promotion.displayEndsAt}</span>
-            </div>
-          </div>}
           <p className="studio-hero__trust">Eerst bekijken. Pas online na jouw akkoord.</p>
         </div>
       </div>
@@ -199,38 +171,27 @@ export function ProcessSection() {
   )
 }
 
-export function Pricing({ promotion }: { promotion: ActivePromotion | null }) {
+export function Pricing() {
   const entries = Object.entries(commercialConfig.packages) as Array<[CommercialPackageId, typeof commercialConfig.packages[CommercialPackageId]]>
   return (
     <section className="studio-section studio-pricing" id="pakketten" data-analytics-view="pricing_view">
       <div className="studio-shell section-heading section-heading--row">
-        <div><p className="overline">Een vaste prijs, vooraf duidelijk</p><h2>Klein beginnen of meer vertellen?</h2></div>
-        <p>{promotion ? <>Starter wordt gratis gebouwd; op Pro en Premium krijg je €300 korting. De eerste maand Hosting &amp; Websitebeheer van €{commercialConfig.management.monthlyPrice} wordt bij de start afgerekend.</> : <>Kies hoeveel ruimte je nodig hebt voor je bedrijf. Ontwerp, bouw en een contactformulier horen bij elk pakket. Hosting en beheer kosten daarna €{commercialConfig.management.monthlyPrice} per maand.</>}</p>
+        <div><p className="overline">Website en beheer bij één persoon</p><h2>Eén maandbedrag. Kies wat bij je bedrijf past.</h2></div>
+        <p>Een enkele pagina of meer ruimte voor je diensten? De bouw is inbegrepen. Je betaalt de eerste maand bij de start en daarna hetzelfde bedrag per maand.</p>
+      </div>
+      <div className="studio-shell subscription-offer">
+        <div><strong>€{commercialConfig.management.monthlyPrice}</strong><span>per maand, inclusief btw</span></div>
+        <p>Ontwerp, bouw, contactformulier, hosting en beheer.<br />Geen eenmalige bouwkosten. Maandelijks opzegbaar.</p>
       </div>
       <div className="studio-shell pricing-grid">
         {entries.map(([id, item]) => {
-          const promotionalPackage = Boolean(promotion)
-          const buildPrice = promotion ? promotion.buildPrices[id] : item.oneTimePrice
-          const firstPayment = promotion ? buildPrice + commercialConfig.management.monthlyPrice : packageFirstPayment(id)
-          const discount = item.oneTimePrice - buildPrice
           const presentation = packagePresentation(id)
           return (
-          <article className={`pricing-option${item.recommended ? ' pricing-option--focus' : ''}${promotionalPackage ? ' pricing-option--promotion' : ''}`} key={id}>
+          <article className={`pricing-option${item.recommended ? ' pricing-option--focus' : ''}`} key={id}>
             <header>
               <div>{item.recommended && <span>Aanbevolen</span>}<h3>{item.name}</h3></div>
               <p>{presentation.audience}</p>
             </header>
-            <div className={`pricing-option__price${promotionalPackage ? ' pricing-option__price--promotion' : ''}`}>
-              {promotionalPackage && <span className="promotion-label">Zomeractie · €{discount} korting · t/m {promotion?.displayEndsAt}</span>}
-              <strong>{promotionalPackage && <s>€{item.oneTimePrice}</s>} €{buildPrice}</strong>
-              <span>{promotionalPackage ? 'tijdelijke actieprijs · incl. btw' : 'eenmalige bouwprijs · incl. btw'}</span>
-            </div>
-            <div className="pricing-option__today">
-              <span>+ €{commercialConfig.management.monthlyPrice} eerste maand beheer</span>
-              <strong>Eerste betaling: €{firstPayment} incl. btw</strong>
-              <small>{euro(amountExcludingVat(firstPayment), 2)} excl. btw</small>
-              <small>Daarna €{commercialConfig.management.monthlyPrice} p/m incl. btw</small>
-            </div>
             <dl className="pricing-specs">{presentation.specs.map((spec) => <div key={spec.label}><dt>{spec.label}</dt><dd>{spec.value}</dd></div>)}</dl>
             <details className="pricing-option__details">
               <summary>Alles in {item.name}<span aria-hidden="true">+</span></summary>
@@ -240,7 +201,7 @@ export function Pricing({ promotion }: { promotion: ActivePromotion | null }) {
           </article>
         )})}
       </div>
-      <div className="studio-shell pricing-after"><p>Een aanpassingsronde betekent: je geeft je feedback in één keer door en ik verwerk die. De eerste versie volgt binnen {commercialConfig.firstVersion.hours} uur na betaling en een complete intake; de definitieve livegang volgt na jouw akkoord.</p><p>Alle prijzen zijn inclusief btw. De eerste maand beheer betaal je tegelijk met de bouw. Daarna €{commercialConfig.management.monthlyPrice} per maand, opzegbaar tegen het einde van de betaalperiode.</p></div>
+      <div className="studio-shell pricing-after"><p>Je geeft je feedback in één keer door, per aanpassingsronde. De eerste versie volgt binnen {commercialConfig.firstVersion.hours} uur na betaling en een complete intake. We zetten je website pas online na jouw akkoord.</p><p>Dezelfde maandprijs voor elk pakket. Webshops, grote migraties en nieuwe functies zijn niet inbegrepen. Extra werk wordt vooraf apart afgesproken.</p></div>
     </section>
   )
 }
@@ -293,7 +254,7 @@ export function FounderSection() {
   )
 }
 
-export function FAQAndClose({ faqs, promotion }: { faqs: StudioFaq[]; promotion: ActivePromotion | null }) {
+export function FAQAndClose({ faqs }: { faqs: StudioFaq[] }) {
   return (
     <>
       <section className="studio-section studio-faq" id="faq">
@@ -302,7 +263,7 @@ export function FAQAndClose({ faqs, promotion }: { faqs: StudioFaq[]; promotion:
       <section className="studio-section studio-close">
         <div className="studio-shell studio-close__inner">
           <div><h2>Maak ruimte voor je nieuwe website.</h2><p>Je kiest het pakket. Ik zorg voor de bouw. Binnen {commercialConfig.firstVersion.hours} uur na betaling en een complete intake kun je de eerste versie bekijken.</p></div>
-          <div><Link className="button button--primary" href={promotion ? '/start?pakket=starter' : '/start'} data-analytics-event="hero_start_click" data-analytics-location="closing">Start mijn website</Link><a href="/werk" data-analytics-event="hero_work_click">Bekijk live werk</a><span>{promotion ? `Starter: €${promotion.buildPrices.starter} bouw · start voor €${commercialConfig.management.monthlyPrice} · incl. btw` : `Vanaf €${commercialConfig.packages.starter.oneTimePrice} eenmalig · daarna €${commercialConfig.management.monthlyPrice} p/m · incl. btw`}</span></div>
+          <div><Link className="button button--primary" href="/start" data-analytics-event="hero_start_click" data-analytics-location="closing">Start mijn website</Link><a href="/werk" data-analytics-event="hero_work_click">Bekijk live werk</a><span>€{commercialConfig.management.monthlyPrice} per maand · incl. btw · bouw inbegrepen</span></div>
         </div>
       </section>
       <section className="studio-section studio-contact" id="contact">

@@ -1,6 +1,6 @@
 import Link from 'next/link'
 import type { ReactNode } from 'react'
-import { commercialConfig, euro, packageFirstPayment, type CommercialPackageId } from '@/config/commercial'
+import { commercialConfig, euro, type CommercialPackageId } from '@/config/commercial'
 import { AnalyticsLayer } from './site-interactions'
 import { StudioFooter, StudioHeader } from './studio-site'
 
@@ -52,8 +52,8 @@ export function PackageStrip() {
           <span>{item.recommended ? 'Aanbevolen' : `${item.pages} ${item.pages === 1 ? 'pagina' : 'pagina’s'}`}</span>
           <h3>{item.name}</h3>
           <p>{item.audience}</p>
-          <strong>{euro(item.oneTimePrice)}</strong>
-          <p>Eerste betaling {euro(packageFirstPayment(id))} incl. btw. Daarna {euro(commercialConfig.management.monthlyPrice)} per maand incl. btw.</p>
+          <strong>{euro(commercialConfig.management.monthlyPrice)} per maand</strong>
+          <p>Inclusief btw. Websitebouw, hosting en beheer inbegrepen. Maandelijks opzegbaar.</p>
           <Link className={`button ${item.recommended ? 'button--primary' : 'button--outline'} button--full`} href={`/start?pakket=${id}`} data-analytics-event="package_select" data-analytics-package={id}>Kies {item.name}</Link>
         </article>
       ))}
