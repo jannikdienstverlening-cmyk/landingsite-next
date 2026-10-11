@@ -1,7 +1,7 @@
 'use client'
 
 import Image from 'next/image'
-import { Check, Pause, Play, RotateCcw } from 'lucide-react'
+import { Pause, Play, RotateCcw } from 'lucide-react'
 import { useState } from 'react'
 import { useMotionVisibility } from './use-motion-visibility'
 
@@ -27,12 +27,10 @@ export function FounderPortrait() {
 
   return <figure ref={ref} className="experience-founder" data-motion={motionAllowed} data-running={running} data-finished={finished}>
     <div className="founder-portrait__stage">
-      <Image src="/images/jannik-cartoon-builder.webp" alt="AI-cartoon van Jannik die glimlachend een miniwebsite bouwt" width={900} height={1200} sizes="(max-width: 599px) 270px, 320px" onLoad={() => setImageReady(true)} />
-      <div key={run} className="founder-portrait__animation" aria-hidden="true">
-        <span className="founder-portrait__tile" onAnimationEnd={event => {
-          if (event.animationName === 'founder-button-flight') setFinished(true)
-        }}><Check strokeWidth={3} /></span>
-        <span className="founder-portrait__impact"><i /><i /><i /></span>
+      <div key={run} className="founder-portrait__frames">
+        <Image className="founder-portrait__story" src="/images/jannik-cartoon-story-v2.webp" alt="Cartoon van Jannik die een website bouwt, een scheef blokje opvangt en afsluit met een duim omhoog en een knipoog" width={1536} height={1024} unoptimized onLoad={() => setImageReady(true)} onAnimationEnd={event => {
+          if (event.animationName === 'founder-build-story') setFinished(true)
+        }} />
       </div>
       {motionAllowed && <button className="motion-control founder-portrait__replay" type="button" onClick={togglePlayback} aria-label={controlLabel} title={controlLabel}><ControlIcon size={18} aria-hidden="true" /></button>}
     </div>
