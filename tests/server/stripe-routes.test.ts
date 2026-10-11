@@ -8,7 +8,7 @@ import { GET as health } from '../../app/api/admin/stripe-health/route'
 import { getStripe } from '../../lib/stripe'
 import { getSupabase } from '../../lib/supabase'
 import { getResend } from '../../lib/resend'
-import { commercialConfig } from '../../config/commercial'
+import { commercialConfig, websiteOffer } from '../../config/commercial'
 
 // Provider calls are always mocked; this suite never creates payments or database rows.
 process.env.STRIPE_SECRET_KEY = 'sk_test_localmock'
@@ -48,7 +48,9 @@ test('each new checkout adds only the recurring website and management item', as
     assert.equal(params.mode, 'subscription')
     assert.equal(params.automatic_tax?.enabled, true)
     assert.equal(params.success_url, 'https://www.landingsite.nl/intake/{CHECKOUT_SESSION_ID}')
-    assert.match(params.cancel_url!, new RegExp(`pakket=${pakket}&status=geannuleerd`))
+    assert.equal(params.cancel_url, 'https://www.landingsite.nl/start?status=geannuleerd')
+    assert.equal(params.metadata?.pakket, websiteOffer.packageId)
+    assert.equal(params.metadata?.offer_name, websiteOffer.name)
     assert.equal(params.line_items!.length, 1)
     assert.deepEqual(params.line_items!.at(-1), { price: 'price_localmanagement', quantity: 1 })
     assert.equal(params.metadata?.build_price_including_vat, '0')

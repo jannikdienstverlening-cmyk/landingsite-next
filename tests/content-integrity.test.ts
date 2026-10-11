@@ -34,7 +34,9 @@ test('publieke funnel gebruikt de vaste hoofdacties', async () => {
   const source = await readFile('components/studio-site.tsx', 'utf8')
   assert.match(source, /Start mijn website/)
   assert.match(source, /Bekijk live werk/)
-  assert.match(source, /Kies \{item\.name\}/)
+  assert.match(source, /href=\{websiteOffer\.ctaHref\}/)
+  assert.match(source, /Jouw website\.<br \/>Eén vast maandbedrag\./)
+  assert.doesNotMatch(source, /pricing-grid|pricing-option|Kies \{item\.name\}/)
 })
 
 test('homepage begint met de echte hoofdcase en wisselt niet automatisch', async () => {

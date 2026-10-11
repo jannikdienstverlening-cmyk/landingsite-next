@@ -1,11 +1,10 @@
 import Image from 'next/image'
 import Link from 'next/link'
-import { commercialConfig, type CommercialPackageId } from '@/config/commercial'
+import { commercialConfig, websiteOffer } from '@/config/commercial'
 import type { PortfolioProject } from '@/data/portfolio'
 import { portfolioProjects } from '@/data/portfolio'
 import { siteCopy } from '@/content/site'
 import { seoPage } from '@/content/seo-pages'
-import { packagePresentation } from '@/content/package-presentation'
 import { BUSINESS } from '@/lib/business'
 import { ContactForm, FAQList, MobileNavigation } from './site-interactions'
 import { Logo } from './logo'
@@ -22,7 +21,7 @@ export function StudioHeader({ light = false }: { light?: boolean }) {
         <Logo variant={light ? 'dark' : 'light'} />
         <nav className="studio-nav" aria-label="Hoofdnavigatie">
           <Link href="/#werk">Werk</Link>
-          <Link href="/#pakketten">Pakketten</Link>
+          <Link href="/#pakketten">Kosten</Link>
           <Link href="/#aanpak">Aanpak</Link>
           <Link href="/#beheer">Beheer</Link>
           <Link href="/#faq">Vragen</Link>
@@ -55,7 +54,7 @@ export function StudioFooter() {
             <Link href="/kosten-website-laten-maken">Kosten</Link>
             <Link href="/over-landingsite">Over</Link>
             <Link href="/#aanpak">Aanpak</Link>
-            <Link href="/#pakketten">Pakketten</Link>
+            <Link href="/#pakketten">Kosten</Link>
             <Link href="/#beheer">Beheer</Link>
           </nav>
           <nav aria-label="Voorwaarden en contact">
@@ -159,7 +158,7 @@ export function StudioHero() {
 
 export function ProcessSection() {
   const process = [
-    ['1', 'Vertel over je bedrijf', 'Kies je pakket en betaal. Daarna vul je een vragenlijst in en stuur je je logo, teksten en foto’s mee.'],
+    ['1', 'Vertel over je bedrijf', 'Start je website en betaal de eerste maand. Daarna vul je een vragenlijst in en stuur je je logo, teksten en foto’s mee.'],
     ['2', 'Bekijk de eerste versie', `Binnen ${commercialConfig.firstVersion.hours} uur na betaling en een complete intake krijg je een werkende website om te bekijken. Je stuurt je aanpassingen in één keer door, per ronde.`],
     ['3', 'Geef akkoord', 'Tevreden? Na jouw akkoord koppelen we je domein en zetten we de website online. Ik blijf de hosting en het beheer verzorgen.'],
   ]
@@ -172,36 +171,24 @@ export function ProcessSection() {
 }
 
 export function Pricing() {
-  const entries = Object.entries(commercialConfig.packages) as Array<[CommercialPackageId, typeof commercialConfig.packages[CommercialPackageId]]>
   return (
     <section className="studio-section studio-pricing" id="pakketten" data-analytics-view="pricing_view">
-      <div className="studio-shell section-heading section-heading--row">
-        <div><p className="overline">Website en beheer bij één persoon</p><h2>Eén maandbedrag. Kies wat bij je bedrijf past.</h2></div>
-        <p>Een enkele pagina of meer ruimte voor je diensten? De bouw is inbegrepen. Je betaalt de eerste maand bij de start en daarna hetzelfde bedrag per maand.</p>
+      <div className="studio-shell website-offer">
+        <div className="website-offer__intro"><p className="overline">Website en beheer bij één persoon</p><h2>Jouw website.<br />Eén vast maandbedrag.</h2><p>Ik bouw je website en houd hem daarna bij. Jij hebt één aanspreekpunt voor je teksten, techniek en kleine wijzigingen.</p></div>
+        <div className="website-offer__purchase subscription-offer">
+          <h3>{websiteOffer.name}</h3>
+          <div><strong>€{commercialConfig.management.monthlyPrice}</strong><span>per maand, inclusief btw</span></div>
+          <p>Websitebouw, hosting en beheer inbegrepen.<br />Geen eenmalige bouwkosten. Maandelijks opzegbaar.</p>
+          <Link className="button button--primary" href={websiteOffer.ctaHref} data-analytics-event="package_select" data-analytics-package={websiteOffer.packageId}>Start mijn website</Link>
+          <small>Bij de start betaal je alleen de eerste maand.</small>
+        </div>
+        <dl className="website-offer__included">
+          <div><dt>Gebouwd voor je bedrijf</dt><dd>Tot {websiteOffer.pages} pagina’s, teksten op basis van je intake en een werkend contactformulier. Goed leesbaar op mobiel en met een SEO-basis.</dd></div>
+          <div><dt>Eerst bekijken, dan online</dt><dd>Een eerste werkende versie binnen {commercialConfig.firstVersion.hours} uur na betaling en complete intake. {websiteOffer.correctionRounds} gebundelde aanpassingsrondes; pas online na jouw akkoord.</dd></div>
+          <div><dt>Ook daarna geregeld</dt><dd>Hosting, updates, back-ups en formuliercontrole. Hulp per e-mail en {commercialConfig.management.includedChangeMinutes} minuten kleine wijzigingen per maand.</dd></div>
+        </dl>
       </div>
-      <div className="studio-shell subscription-offer">
-        <div><strong>€{commercialConfig.management.monthlyPrice}</strong><span>per maand, inclusief btw</span></div>
-        <p>Ontwerp, bouw, contactformulier, hosting en beheer.<br />Geen eenmalige bouwkosten. Maandelijks opzegbaar.</p>
-      </div>
-      <div className="studio-shell pricing-grid">
-        {entries.map(([id, item]) => {
-          const presentation = packagePresentation(id)
-          return (
-          <article className={`pricing-option${item.recommended ? ' pricing-option--focus' : ''}`} key={id}>
-            <header>
-              <div>{item.recommended && <span>Aanbevolen</span>}<h3>{item.name}</h3></div>
-              <p>{presentation.audience}</p>
-            </header>
-            <dl className="pricing-specs">{presentation.specs.map((spec) => <div key={spec.label}><dt>{spec.label}</dt><dd>{spec.value}</dd></div>)}</dl>
-            <details className="pricing-option__details">
-              <summary>Alles in {item.name}<span aria-hidden="true">+</span></summary>
-              <ul>{item.features.map((feature) => <li key={feature}>{feature}</li>)}</ul>
-            </details>
-            <Link className={`button ${item.recommended ? 'button--primary' : 'button--outline'} button--full`} href={item.ctaHref} data-analytics-event="package_select" data-analytics-package={id}>Kies {item.name}</Link>
-          </article>
-        )})}
-      </div>
-      <div className="studio-shell pricing-after"><p>Je geeft je feedback in één keer door, per aanpassingsronde. De eerste versie volgt binnen {commercialConfig.firstVersion.hours} uur na betaling en een complete intake. We zetten je website pas online na jouw akkoord.</p><p>Dezelfde maandprijs voor elk pakket. Webshops, grote migraties en nieuwe functies zijn niet inbegrepen. Extra werk wordt vooraf apart afgesproken.</p></div>
+      <div className="studio-shell pricing-after"><p>Je domeinnaam blijft van jou. Niet-gebruikte wijzigingstijd wordt niet opgespaard.</p><p>Extra pagina’s, webshops, grote migraties en nieuwe functies vallen buiten dit aanbod. Extra werk spreken we vooraf apart af.</p></div>
     </section>
   )
 }
@@ -262,12 +249,12 @@ export function FAQAndClose({ faqs }: { faqs: StudioFaq[] }) {
       </section>
       <section className="studio-section studio-close">
         <div className="studio-shell studio-close__inner">
-          <div><h2>Maak ruimte voor je nieuwe website.</h2><p>Je kiest het pakket. Ik zorg voor de bouw. Binnen {commercialConfig.firstVersion.hours} uur na betaling en een complete intake kun je de eerste versie bekijken.</p></div>
+          <div><h2>Maak ruimte voor je nieuwe website.</h2><p>Jij vertelt over je bedrijf. Ik zorg voor de bouw. Binnen {commercialConfig.firstVersion.hours} uur na betaling en een complete intake kun je de eerste versie bekijken.</p></div>
           <div><Link className="button button--primary" href="/start" data-analytics-event="hero_start_click" data-analytics-location="closing">Start mijn website</Link><a href="/werk" data-analytics-event="hero_work_click">Bekijk live werk</a><span>€{commercialConfig.management.monthlyPrice} per maand · incl. btw · bouw inbegrepen</span></div>
         </div>
       </section>
       <section className="studio-section studio-contact" id="contact">
-        <div className="studio-shell studio-contact__grid"><div><h2>Eerst iets vragen?</h2><p>Over je pakket, een bestaande website of een extra pagina. Jannik leest je bericht.</p></div><ContactForm /></div>
+        <div className="studio-shell studio-contact__grid"><div><h2>Eerst iets vragen?</h2><p>Over je nieuwe website, een bestaande site of een extra pagina. Jannik leest je bericht.</p></div><ContactForm /></div>
       </section>
     </>
   )

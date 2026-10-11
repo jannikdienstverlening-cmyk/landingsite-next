@@ -3,7 +3,7 @@ import Link from 'next/link'
 import { BrowserFrame } from '@/components/studio-site'
 import { FAQList } from '@/components/site-interactions'
 import { PackageStrip, PageProvenance, SeoPage, StartCta } from '@/components/seo-page'
-import { commercialConfig, euro, packageFirstPayment } from '@/config/commercial'
+import { commercialConfig, euro, packageFirstPayment, websiteOffer } from '@/config/commercial'
 import { seoPage } from '@/content/seo-pages'
 import { portfolioProjects } from '@/data/portfolio'
 import { breadcrumbSchema, seoMetadata, serviceSchema } from '@/lib/seo'
@@ -15,7 +15,7 @@ export const metadata: Metadata = seoMetadata(content)
 const faqs = [
   { question: 'Wat is het verschil tussen een landing page en een website?', answer: 'Een landingspagina stuurt bezoekers naar één hoofdactie op één pagina. Een website verdeelt informatie over meerdere pagina’s en is geschikter wanneer je meerdere diensten, doelgroepen of uitgebreide bedrijfsinformatie hebt.' },
   { question: 'Kan de pagina worden gebruikt voor Google Ads?', answer: 'Ja, mits de inhoud en advertentie op elkaar aansluiten. We bouwen de pagina en het formulier; advertentiebeheer en een garantie op resultaten zijn niet inbegrepen.' },
-  { question: 'Wat moet ik zelf aanleveren?', answer: 'Minimaal je aanbod, doelgroep, contactgegevens, logo, beschikbare beelden en feitelijk juiste informatie. In Starter scherpen we aangeleverde teksten aan binnen de afgesproken omvang.' },
+  { question: 'Wat moet ik zelf aanleveren?', answer: 'Minimaal je aanbod, doelgroep, contactgegevens, logo, beschikbare beelden en feitelijk juiste informatie. Ik werk je teksten uit op basis van de intake, binnen de afgesproken omvang.' },
   { question: 'Wanneer ontvang ik de eerste versie?', answer: 'Binnen 48 uur nadat de betaling is bevestigd en de intake compleet en bruikbaar is. Feedback, correcties en de domeinkoppeling kunnen daarna extra tijd vragen.' },
 ]
 
@@ -33,7 +33,7 @@ export default function LandingPageServicePage() {
       <header className="seo-hero">
         <div className="studio-shell seo-hero__grid">
           <div><p className="overline">Eén pagina · één hoofdactie</p><h1>{content.h1}</h1><p className="seo-hero__intro">Een landingspagina laat bezoekers zonder omwegen zien wat je aanbiedt, voor wie het bedoeld is en hoe ze reageren. Je krijgt indexeerbare HTML, een mobiele uitwerking en een formulier dat vóór oplevering wordt gecontroleerd.</p></div>
-          <dl className="seo-hero__facts"><div><dt>Bouw</dt><dd>Inbegrepen</dd></div><div><dt>Eerste betaling</dt><dd>{euro(packageFirstPayment('starter'))} incl. btw</dd></div><div><dt>Daarna</dt><dd>{euro(commercialConfig.management.monthlyPrice)} p/m incl. btw</dd></div></dl>
+          <dl className="seo-hero__facts"><div><dt>Bouw</dt><dd>Inbegrepen</dd></div><div><dt>Eerste betaling</dt><dd>{euro(packageFirstPayment(websiteOffer.packageId))} incl. btw</dd></div><div><dt>Daarna</dt><dd>{euro(commercialConfig.management.monthlyPrice)} p/m incl. btw</dd></div></dl>
         </div>
         <div className="studio-shell"><StartCta compact /><PageProvenance updatedAt={content.updatedAt} /></div>
       </header>
@@ -47,13 +47,13 @@ export default function LandingPageServicePage() {
 
       <section className="seo-section">
         <div className="studio-shell seo-section__split">
-          <div className="seo-section__intro"><p className="overline">Starter</p><h2>Dit bouwen we voor je.</h2><p>De bouw is inbegrepen in het maandbedrag. Starter bestaat uit maximaal zeven inhoudelijke secties. De volgorde volgt uit je aanbod en de vragen die een bezoeker vóór contact moet beantwoorden.</p></div>
+          <div className="seo-section__intro"><p className="overline">Bouw inbegrepen</p><h2>Dit bouwen we voor je.</h2><p>Een landingspagina valt binnen hetzelfde aanbod als een compacte website tot {websiteOffer.pages} pagina’s. De volgorde volgt uit je aanbod en de vragen die een bezoeker vóór contact moet beantwoorden.</p></div>
           <div className="seo-editorial-list">
             <article><h3>Aanbod en doelgroep</h3><p>De hero benoemt direct de dienst, de bedoelde klant en de volgende stap.</p></article>
             <article><h3>Uitleg en bewijs</h3><p>Voordelen, werkwijze, echte reviews of projecten en veelgestelde vragen krijgen een logische plek. Alleen aangeleverd en controleerbaar bewijs wordt gebruikt.</p></article>
             <article><h3>Formulier</h3><p>Eén contact- of leadformulier vraagt alleen informatie die nodig is om de aanvraag op te volgen.</p></article>
             <article><h3>Technische basis</h3><p>Mobiele weergave, title, meta description, headingstructuur en formulierwerking worden gecontroleerd.</p></article>
-            <article><h3>Correctie</h3><p>Starter bevat één gebundelde correctieronde binnen de afgesproken paginaopbouw.</p></article>
+            <article><h3>Correctie</h3><p>Je krijgt {websiteOffer.correctionRounds} gebundelde aanpassingsrondes binnen de afgesproken paginaopbouw.</p></article>
           </div>
         </div>
       </section>
@@ -66,7 +66,7 @@ export default function LandingPageServicePage() {
       </section>
 
       <section className="seo-section">
-        <div className="studio-shell"><div className="section-heading"><p className="overline">Ook andere omvang nodig?</p><h2>Vergelijk de drie bouwpakketten.</h2><p>Een landingspage is meestal Starter. Bij meerdere kernpagina’s, uitgebreidere teksten of meer formulieren past Pro of Premium beter.</p></div><PackageStrip /></div>
+        <div className="studio-shell"><div className="section-heading"><h2>Je website en beheer voor één maandbedrag.</h2><p>Of je één landingspagina of een compacte website nodig hebt: er is één aanbod, met bouw en beheer inbegrepen.</p></div><PackageStrip /></div>
       </section>
 
       <section className="seo-section">

@@ -12,7 +12,7 @@ import {
   StudioHero,
   type StudioFaq,
 } from '@/components/studio-site'
-import { commercialConfig } from '@/config/commercial'
+import { commercialConfig, websiteOffer } from '@/config/commercial'
 import { ReferralCapture } from '@/components/referral-capture'
 import { SocialFeedSection } from '@/components/social-feed'
 import { seoPage } from '@/content/seo-pages'
@@ -37,16 +37,16 @@ function homepageFaqs(): StudioFaq[] {
 
 export default async function HomePage() {
   await connection()
-  const packages = Object.entries(commercialConfig.packages).map(([id, item]) => ({
+  const offers = [{
     '@type': 'Offer',
-    name: item.name,
+    name: websiteOffer.name,
     price: commercialConfig.management.monthlyPrice,
     priceCurrency: 'EUR',
-    url: `https://www.landingsite.nl/start?pakket=${id}`,
+    url: `https://www.landingsite.nl${websiteOffer.ctaHref}`,
     availability: 'https://schema.org/InStock',
     description: 'Websitebouw, hosting en beheer inbegrepen. Maandelijks opzegbaar, inclusief btw.',
     priceSpecification: { '@type': 'UnitPriceSpecification', price: commercialConfig.management.monthlyPrice, priceCurrency: commercialConfig.currency, valueAddedTaxIncluded: true, unitText: 'maand', billingDuration: 'P1M' },
-  }))
+  }]
   const structuredData = {
     '@context': 'https://schema.org',
     '@graph': [
@@ -77,7 +77,7 @@ export default async function HomePage() {
         hasOfferCatalog: {
           '@type': 'OfferCatalog',
           name: 'Website inclusief bouw en beheer',
-          itemListElement: packages,
+          itemListElement: offers,
         },
       },
     ],

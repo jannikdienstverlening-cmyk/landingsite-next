@@ -1,6 +1,6 @@
 import type Stripe from 'stripe'
 import { NextRequest } from 'next/server'
-import { cents, commercialConfig, effectiveFirstPayment } from '@/config/commercial'
+import { cents, commercialConfig, effectiveFirstPayment, websiteOffer } from '@/config/commercial'
 import { clientIp, checkRateLimit, rateLimitResponse } from '@/lib/rate-limit'
 import { invalidJsonResponse, readJsonBody } from '@/lib/request'
 import { referralAttributionId, referralCookie, rejectCrossOriginMutation } from '@/lib/security'
@@ -8,7 +8,6 @@ import {
   configuredManagementPriceId,
   getStripe,
   safePaymentError,
-  PAKKETTEN,
   STRIPE_COMBINED_PAYMENT_METHODS,
   stripeCheckoutBranding,
   stripePaymentMethods,
@@ -55,8 +54,8 @@ export async function POST(request: NextRequest) {
   const baseUrl = process.env.NEXT_PUBLIC_BASE_URL?.trim().replace(/\/$/, '')
   if (!baseUrl) return Response.json({ error: 'Basis-URL ontbreekt.' }, { status: 500 })
 
-  const info = PAKKETTEN[parsed.data.pakket]
-  const initialPayment = effectiveFirstPayment(parsed.data.pakket)
+  const packageId = websiteOffer.packageId
+  const initialPayment = effectiveFirstPayment(packageId)
   const supabase = getSupabase()
   const attributionId = referralAttributionId(request.cookies.get(referralCookie.name)?.value)
   let validAttributionId: string | null = null
@@ -77,7 +76,8 @@ export async function POST(request: NextRequest) {
     }
     const metadata = {
       checkout_type: 'combined',
-      pakket: parsed.data.pakket,
+      pakket: packageId,
+      offer_name: websiteOffer.name,
       request_id: parsed.data.requestId,
       referral_attribution_id: validAttributionId ?? '',
       terms_accepted: 'true',
@@ -96,7 +96,7 @@ export async function POST(request: NextRequest) {
       wallet_options: { link: { display: 'never' } },
       branding_settings: stripeCheckoutBranding(baseUrl),
       success_url: `${baseUrl}/intake/{CHECKOUT_SESSION_ID}`,
-      cancel_url: `${baseUrl}/start?pakket=${parsed.data.pakket}&status=geannuleerd`,
+      cancel_url: `${baseUrl}/start?status=geannuleerd`,
       client_reference_id: parsed.data.requestId,
       metadata,
       subscription_data: { metadata },
@@ -116,7 +116,7 @@ export async function POST(request: NextRequest) {
       }],
       custom_text: {
         submit: {
-          message: `${info.naam}: websitebouw is inbegrepen. Je betaalt nu €${initialPayment} inclusief btw voor de eerste maand en daarna €${commercialConfig.management.monthlyPrice} per maand inclusief btw. Maandelijks opzegbaar. Je bekijkt de eerste versie vóór publicatie.`,
+          message: `${websiteOffer.name}: websitebouw is inbegrepen. Je betaalt nu €${initialPayment} inclusief btw voor de eerste maand en daarna €${commercialConfig.management.monthlyPrice} per maand inclusief btw. Maandelijks opzegbaar. Je bekijkt de eerste versie vóór publicatie.`,
         },
         after_submit: {
           message: 'Na de betaling ga je direct door naar de beveiligde intake. De 48 uur starten zodra die intake compleet is.',
@@ -144,7 +144,7 @@ export async function POST(request: NextRequest) {
     const { error } = await supabase.from('orders').upsert({
       stripe_session_id: session.id,
       email: '',
-      pakket: parsed.data.pakket,
+      pakket: packageId,
       status: 'pending',
       management_status: 'pending',
       referral_attribution_id: validAttributionId,

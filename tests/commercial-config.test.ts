@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict'
 import { readFile } from 'node:fs/promises'
 import test from 'node:test'
-import { amountExcludingVat, amountIncludingVat, commercialConfig, effectiveBuildPrice, effectiveFirstPayment, packageFirstPayment, vatFor } from '../config/commercial'
+import { amountExcludingVat, amountIncludingVat, commercialConfig, effectiveBuildPrice, effectiveFirstPayment, packageFirstPayment, vatFor, websiteOffer } from '../config/commercial'
 
 test('commerciële configuratie bevat de definitieve bedragen', () => {
   assert.equal(commercialConfig.packages.starter.oneTimePrice, 0)
@@ -23,8 +23,17 @@ test('eerste betaling is voor elk pakket alleen de eerste maand', () => {
 
 test('abonnementsmodel is vast en niet afhankelijk van een oude actie', () => {
   assert.equal(commercialConfig.model, 'subscription-only')
-  assert.equal(commercialConfig.version, '2026-10-11-subscription-only')
+  assert.equal(commercialConfig.version, '2026-10-11-single-website-offer')
   assert.equal('promotion' in commercialConfig, false)
+})
+
+test('er is één actief aanbod met de bestaande aanbevolen omvang', () => {
+  assert.equal(websiteOffer.name, 'Website en beheer')
+  assert.equal(websiteOffer.ctaHref, '/start')
+  assert.equal(websiteOffer.packageId, 'pro')
+  assert.equal(websiteOffer.pages, 4)
+  assert.equal(websiteOffer.correctionRounds, 2)
+  assert.equal(effectiveFirstPayment(websiteOffer.packageId), 79)
 })
 
 test('btw zit in de getoonde en af te schrijven bedragen', () => {

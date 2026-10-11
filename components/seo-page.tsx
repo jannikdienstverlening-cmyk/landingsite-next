@@ -1,6 +1,6 @@
 import Link from 'next/link'
 import type { ReactNode } from 'react'
-import { commercialConfig, euro, type CommercialPackageId } from '@/config/commercial'
+import { commercialConfig, euro, websiteOffer } from '@/config/commercial'
 import { AnalyticsLayer } from './site-interactions'
 import { StudioFooter, StudioHeader } from './studio-site'
 
@@ -37,26 +37,22 @@ export function PageProvenance({ updatedAt }: { updatedAt: string }) {
 export function StartCta({ compact = false }: { compact?: boolean }) {
   return (
     <div className={`seo-start-cta${compact ? ' seo-start-cta--compact' : ''}`}>
-      <div><strong>Weet je al wat je nodig hebt?</strong><span>Vergelijk de pakketten en bekijk de volledige eerste betaling vóór Stripe.</span></div>
+      <div><strong>Klaar voor je nieuwe website?</strong><span>Websitebouw, hosting en beheer voor één maandbedrag. Bekijk de eerste betaling vóór Stripe.</span></div>
       <Link className="button button--primary" href="/start" data-analytics-event="hero_start_click" data-analytics-location="seo_page">Start mijn website</Link>
     </div>
   )
 }
 
 export function PackageStrip() {
-  const entries = Object.entries(commercialConfig.packages) as Array<[CommercialPackageId, typeof commercialConfig.packages[CommercialPackageId]]>
   return (
-    <div className="seo-package-strip" data-analytics-view="package_compare">
-      {entries.map(([id, item]) => (
-        <article key={id} data-recommended={item.recommended}>
-          <span>{item.recommended ? 'Aanbevolen' : `${item.pages} ${item.pages === 1 ? 'pagina' : 'pagina’s'}`}</span>
-          <h3>{item.name}</h3>
-          <p>{item.audience}</p>
+    <div className="seo-package-strip seo-single-offer" data-analytics-view="pricing_view">
+        <article>
+          <h3>{websiteOffer.name}</h3>
+          <p>Tot {websiteOffer.pages} pagina’s, teksten op basis van je intake, een contactformulier en {websiteOffer.correctionRounds} gebundelde aanpassingsrondes.</p>
           <strong>{euro(commercialConfig.management.monthlyPrice)} per maand</strong>
           <p>Inclusief btw. Websitebouw, hosting en beheer inbegrepen. Maandelijks opzegbaar.</p>
-          <Link className={`button ${item.recommended ? 'button--primary' : 'button--outline'} button--full`} href={`/start?pakket=${id}`} data-analytics-event="package_select" data-analytics-package={id}>Kies {item.name}</Link>
+          <Link className="button button--primary" href={websiteOffer.ctaHref} data-analytics-event="package_select" data-analytics-package={websiteOffer.packageId}>Start mijn website</Link>
         </article>
-      ))}
     </div>
   )
 }

@@ -37,9 +37,11 @@ for (const viewport of [
   })
 }
 
-test('elk pakket start voor alleen de eerste maand met correcte btw', async ({ page }) => {
+test('ook oude pakketlinks openen het ene aanbod met correcte btw', async ({ page }) => {
   for (const pakket of ['starter', 'pro', 'premium']) {
     await page.goto(`/start?pakket=${pakket}`)
+    await expect(page).toHaveURL(/\/start$/)
+    await expect(page.locator('.start-package-tabs')).toHaveCount(0)
     await expect(page.locator('.order-summary__total')).toContainText('€ 79,00')
     await expect(page.locator('.order-summary__subtotal')).toContainText('€ 65,29')
     await expect(page.locator('.order-summary dl')).toContainText('€ 13,71')
@@ -54,10 +56,24 @@ test('schema noemt het maandbedrag en geen gratis totale website', async ({ page
   await page.goto('/')
   const graph = JSON.parse(await page.locator('script[type="application/ld+json"]').first().innerText())
   const service = graph['@graph'].find((item: { '@type': string }) => item['@type'] === 'Service')
+  expect(service.hasOfferCatalog.itemListElement).toHaveLength(1)
   for (const offer of service.hasOfferCatalog.itemListElement) {
     expect(offer.price).toBe(commercialConfig.management.monthlyPrice)
     expect(offer.priceSpecification.unitText).toBe('maand')
     expect(offer.priceSpecification.valueAddedTaxIncluded).toBe(true)
+  }
+})
+
+test('start, kosten en diensten bieden nergens drie pakketten aan', async ({ page }) => {
+  for (const width of [390, 1440]) {
+    await page.setViewportSize({ width, height: 1000 })
+    for (const path of ['/start', '/kosten-website-laten-maken', '/landingspagina-laten-maken', '/website-laten-maken-zzp', '/algemene-voorwaarden', '/over-landingsite']) {
+      const response = await page.goto(path)
+      expect(response?.status()).toBe(200)
+      const content = await page.locator('main').innerText()
+      expect(content).not.toMatch(/\b(?:Starter|Pro|Premium)\b|Kies je pakket|Vergelijk de pakketten/)
+      expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true)
+    }
   }
 })
 

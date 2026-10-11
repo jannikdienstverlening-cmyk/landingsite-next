@@ -4,7 +4,12 @@ export const commercialConfig = {
   pricesIncludeVat: true,
   stripeTaxBehavior: 'inclusive',
   model: 'subscription-only',
-  version: '2026-10-11-subscription-only',
+  version: '2026-10-11-single-website-offer',
+  offer: {
+    packageId: 'pro',
+    name: 'Website en beheer',
+    ctaHref: '/start',
+  },
   firstVersion: {
     hours: 48,
     startsAfter: 'payment-and-complete-intake',
@@ -98,6 +103,12 @@ export const commercialConfig = {
 } as const
 
 export type CommercialPackageId = keyof typeof commercialConfig.packages
+
+// Keep the old package codes available for existing paid orders and intakes.
+export const websiteOffer = {
+  ...commercialConfig.packages[commercialConfig.offer.packageId],
+  ...commercialConfig.offer,
+}
 
 export function effectiveBuildPrice(packageId: CommercialPackageId) {
   return commercialConfig.packages[packageId].oneTimePrice

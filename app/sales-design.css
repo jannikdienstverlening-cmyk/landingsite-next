@@ -96,6 +96,26 @@ body:has(> .studio--sales) { overflow-x: clip; }
 .studio--sales .pricing-option__details ul { color: #485d55; font-size: .86rem; }
 .studio--sales .pricing-after { display: grid; grid-template-columns: 1fr 1fr; gap: 64px; margin-top: 24px; }
 .studio--sales .pricing-after p { margin: 0; font-size: .84rem; color: #53675b; }
+.website-offer { display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr); gap: 40px 72px; align-items: start; }
+.website-offer__intro h2 { max-width: 15ch; margin: 16px 0 24px; }
+.website-offer__intro > p:last-child { max-width: 46ch; }
+.website-offer .website-offer__purchase { display: flex; flex-direction: column; align-items: stretch; gap: 20px; padding: 32px; margin: 0; }
+.website-offer__purchase h3 { margin: 0; font-size: 1.2rem; }
+.website-offer__purchase small { color: #d5e4dd; font-size: .85rem; }
+.website-offer__purchase .button--primary { background: #fff; color: #122d27; border-color: #fff; }
+.website-offer__included { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); grid-column: 1 / -1; gap: 32px; margin: 0; }
+.website-offer__included > div { padding-top: 24px; border-top: 1px solid #c5d2cb; }
+.website-offer__included dt { margin-bottom: 12px; color: #122d27; font-weight: 750; font-size: 1.1rem; }
+.website-offer__included dd { margin: 0; font-size: 1rem; line-height: 1.75; color: #53675b; }
+.seo-package-strip.seo-single-offer { grid-template-columns: 1fr; }
+.seo-single-offer > article { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 16px 40px; }
+.seo-single-offer > article > .button { justify-self: start; }
+@media (max-width: 760px) {
+  .website-offer { grid-template-columns: 1fr; gap: 28px; }
+  .website-offer__included { grid-template-columns: 1fr; gap: 24px; }
+  .website-offer .website-offer__purchase { padding: 24px; }
+  .seo-single-offer > article { grid-template-columns: 1fr; }
+}
 
 .studio--sales .studio-process { border-top: 1px solid #c5d2cb; background: #fff; }
 .studio--sales .studio-process .section-heading { display: flex; align-items: end; justify-content: space-between; gap: 40px; max-width: none; }

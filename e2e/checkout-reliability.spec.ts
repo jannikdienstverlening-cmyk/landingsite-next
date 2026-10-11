@@ -20,16 +20,16 @@ test('retrying a lost checkout response keeps the same payment attempt', async (
   await expect(button).toBeEnabled()
 })
 
-test('changing packages resets consent and rejects inherited object keys', async ({ page }) => {
+test('oude en ongeldige pakketlinks tonen geen keuzescherm of automatische toestemming', async ({ page }) => {
   await page.goto('/start?pakket=pro')
-  await page.getByRole('checkbox').check()
-  await page.locator('.start-package-tabs a[href="/start?pakket=premium"]').click()
-  await expect(page.getByRole('checkbox')).not.toBeChecked()
-  await expect(page.locator('.start-checkout button')).toBeDisabled()
-  const response = await page.goto('/start?pakket=constructor')
-  expect(response?.status()).toBe(200)
-  await expect(page.getByRole('heading', { name: 'Wat wil je laten zien?' })).toBeVisible()
-  await expect(page.locator('.start-checkout')).toHaveCount(0)
+  for (const value of ['premium', 'constructor', '__proto__']) {
+    await page.goto(`/start?pakket=${value}`)
+    await expect(page).toHaveURL(/\/start$/)
+    await expect(page.getByRole('checkbox')).not.toBeChecked()
+    await expect(page.locator('.start-checkout button')).toBeDisabled()
+    await expect(page.locator('.start-package-tabs')).toHaveCount(0)
+    await expect(page.getByRole('heading', { name: 'Dit wordt jouw nieuwe website.' })).toBeVisible()
+  }
 })
 
 test('only a confirmed expired checkout starts a fresh attempt', async ({ page }) => {

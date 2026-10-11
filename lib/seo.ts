@@ -1,5 +1,5 @@
 import type { Metadata } from 'next'
-import { commercialConfig } from '@/config/commercial'
+import { commercialConfig, websiteOffer } from '@/config/commercial'
 import type { SeoPageEntry } from '@/content/seo-pages'
 import { BUSINESS } from './business'
 
@@ -42,9 +42,9 @@ export function serviceSchema(name: string, description: string, path: string) {
     description,
     provider: { '@id': `${BUSINESS.website}/#organization` },
     areaServed: { '@type': 'Country', name: 'Nederland' },
-    offers: Object.entries(commercialConfig.packages).map(([id, item]) => ({
+    offers: [{
       '@type': 'Offer',
-      name: item.name,
+      name: websiteOffer.name,
       price: commercialConfig.management.monthlyPrice,
       priceCurrency: commercialConfig.currency,
       description: 'Websitebouw inbegrepen. Maandelijks opzegbaar, inclusief btw.',
@@ -56,8 +56,8 @@ export function serviceSchema(name: string, description: string, path: string) {
         unitText: 'maand',
         billingDuration: 'P1M',
       },
-      url: `${BUSINESS.website}/start?pakket=${id}`,
+      url: `${BUSINESS.website}${websiteOffer.ctaHref}`,
       availability: 'https://schema.org/InStock',
-    })),
+    }],
   }
 }

@@ -1,5 +1,5 @@
 import { readFile } from 'node:fs/promises'
-import { commercialConfig } from '../../config/commercial'
+import { commercialConfig, websiteOffer } from '../../config/commercial'
 
 async function main() {
   const files = ['app/page.tsx', 'app/werk/page.tsx', 'lib/seo.ts']
@@ -7,9 +7,9 @@ async function main() {
   const failures: string[] = []
   if (/(AggregateRating|Review)/.test(source)) failures.push('fictief of ongeverifieerd reviewschema gevonden')
   if (/localhost|127\.0\.0\.1|vercel\.app/.test(source)) failures.push('stagingdomein in schema gevonden')
-  if (!/commercialConfig\.packages/.test(source)) failures.push('schema gebruikt de centrale pakketconfiguratie niet')
+  if (!/websiteOffer/.test(source)) failures.push('schema gebruikt het centrale websiteaanbod niet')
   if (!/commercialConfig\.currency/.test(source)) failures.push('schemavaluta komt niet uit centrale configuratie')
-  for (const price of [commercialConfig.packages.starter.oneTimePrice, commercialConfig.packages.pro.oneTimePrice, commercialConfig.packages.premium.oneTimePrice]) {
+  for (const price of [websiteOffer.oneTimePrice, commercialConfig.management.monthlyPrice]) {
     if (!Number.isInteger(price)) failures.push(`ongeldige prijs ${price}`)
   }
   if (failures.length) {

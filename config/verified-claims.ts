@@ -25,7 +25,7 @@ export const verifiedClaims = {
     },
     publish: true,
     verifiedAt,
-    evidence: 'config/commercial.ts, tests/commercial-config.test.ts en docs/commercial/2026-10-11-subscription-only.md (expliciete goedkeuring)',
+    evidence: 'config/commercial.ts, tests/commercial-config.test.ts en docs/commercial/2026-10-11-single-offer.md (expliciete goedkeuring)',
   },
   firstVersion: {
     value: {

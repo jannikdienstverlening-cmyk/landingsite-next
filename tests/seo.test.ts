@@ -37,7 +37,7 @@ test('robots verwijst naar sitemap en sluit private funnels uit', () => {
 
 test('schemahelper gebruikt dezelfde commerciële prijzen en geen reviewschema', async () => {
   const source = await readFile('lib/seo.ts', 'utf8')
-  assert.match(source, /commercialConfig\.packages/)
+  assert.match(source, /websiteOffer/)
   assert.match(source, /commercialConfig\.currency/)
   assert.doesNotMatch(source, /AggregateRating|Review/)
   assert.deepEqual(Object.values(commercialConfig.packages).map((item) => item.oneTimePrice), [0, 0, 0])
@@ -49,9 +49,9 @@ test('snelle 48-uursroute is bewust niet gepubliceerd', () => {
   assert.equal(seoPages.some((page) => page.slug === '/website-laten-maken-binnen-48-uur'), false)
 })
 
-test('startflow forceert geen standaardpakket', async () => {
+test('startflow toont één aanbod en leidt oude pakketlinks door', async () => {
   const source = await readFile('app/start/page.tsx', 'utf8')
-  assert.match(source, /CommercialPackageId \| null/)
-  assert.match(source, /: null/)
-  assert.doesNotMatch(source, /return .*\? .*: 'pro'/)
+  assert.match(source, /websiteOffer\.packageId/)
+  assert.match(source, /params\.pakket !== undefined\) redirect/)
+  assert.doesNotMatch(source, /start-package-tabs|Welk pakket|Kies Starter|Kies Pro|Kies Premium/)
 })
