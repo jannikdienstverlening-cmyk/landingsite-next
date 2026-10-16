@@ -30,6 +30,89 @@ const baseUrl = 'https://www.landingsite.nl'
 
 export const blogPosts: BlogPost[] = [
   {
+    slug: 'hoe-maak-je-een-goede-404-pagina',
+    status: 'published',
+    title: 'Hoe maak je een goede 404-pagina?',
+    description: 'Maak een duidelijke 404-pagina die bezoekers uitlegt wat er misging, bruikbare vervolgstappen biedt en technisch de juiste HTTP-status teruggeeft.',
+    excerpt: 'Een 404-pagina is geen gewone landingspagina. Hij helpt iemand die op een niet-bestaand adres belandt om snel weer een bruikbare route door je website te vinden.',
+    category: 'Websitebeheer',
+    primaryKeyword: 'goede 404-pagina maken',
+    secondaryKeywords: ['404 pagina website', '404 foutpagina maken', 'pagina niet gevonden website'],
+    searchIntent: 'Een duidelijke en technisch correcte 404-pagina voor een zakelijke website maken',
+    publishedAt: '2026-10-16',
+    updatedAt: '2026-10-16',
+    author: 'Jannik',
+    reviewer: 'Jannik',
+    readingTime: '6 minuten',
+    sources: [
+      'https://developers.google.com/search/docs/crawling-indexing/troubleshoot-crawling-errors',
+      'https://developers.google.com/search/docs/crawling-indexing/301-redirects',
+      'https://www.rfc-editor.org/rfc/rfc9110.html#name-404-not-found',
+    ],
+    sections: [
+      {
+        heading: 'Leg eerst rustig uit wat er aan de hand is',
+        paragraphs: [
+          'Begin met een korte, gewone zin: de gevraagde pagina is niet gevonden. Een technische melding als “Error 404” mag erbij staan, maar is op zichzelf niet genoeg. De bezoeker moet direct begrijpen dat het probleem bij het adres of de verdwenen pagina ligt en niet bij een handeling die nog bezig is.',
+          'Gebruik dezelfde naam, vormgeving en hoofdnavigatie als op de rest van je website. Google adviseert dat een aangepaste 404-pagina dezelfde uitstraling en navigatie houdt. Zo blijft de omgeving herkenbaar en kan iemand zonder omweg verder.',
+        ],
+      },
+      {
+        heading: 'Bied een kleine selectie nuttige vervolgstappen',
+        paragraphs: [
+          'Geef altijd een duidelijke link naar de homepage. Voeg daarnaast alleen routes toe die voor bijna iedere bezoeker nuttig zijn, zoals je belangrijkste diensten, projecten of contactpagina. Google noemt een link naar de homepage en populaire artikelen of pagina’s als bruikbare onderdelen van een aangepaste 404-pagina.',
+          'Maak van de foutpagina geen tweede sitemap. Een lange lijst met alle pagina’s vraagt opnieuw zoekwerk. Kies liever drie of vier herkenbare opties met beschrijvende linkteksten, zoals “Bekijk onze diensten” of “Neem contact op”.',
+        ],
+        bullets: [
+          'Terug naar de homepage.',
+          'Naar het belangrijkste dienstenoverzicht.',
+          'Naar voorbeelden of recent werk.',
+          'Naar contact wanneer iemand hulp nodig heeft.',
+        ],
+      },
+      {
+        heading: 'Laat de server echt een 404-status teruggeven',
+        paragraphs: [
+          'De zichtbare tekst en de technische status hebben ieder een eigen taak. De pagina helpt de bezoeker; de HTTP-status vertelt browsers en zoekmachines dat het opgevraagde adres geen huidige pagina heeft. RFC 9110 definieert 404 als de status voor een bron waarvoor de server geen huidige representatie heeft gevonden of wil vrijgeven.',
+          'Controleer daarom niet alleen hoe de pagina eruitziet. Een foutpagina die technisch status 200 “OK” teruggeeft, is een soft 404. Google adviseert voor een niet-bestaande pagina een echte 404- of, bij een bewust permanent verwijderde bron, eventueel 410-status. Zo wordt de foutpagina niet behandeld alsof het een gewone inhoudspagina is.',
+        ],
+      },
+      {
+        heading: 'Gebruik een redirect alleen bij een echte vervanger',
+        paragraphs: [
+          'Is een pagina naar een ander adres verhuisd en bestaat er een duidelijke vervanger? Stuur het oude adres dan permanent door naar die passende nieuwe pagina. Google beschrijft een server-side 301- of 308-redirect als een permanent signaal dat de pagina is verplaatst.',
+          'Stuur niet ieder onbekend adres automatisch naar de homepage. De bezoeker verwacht daar mogelijk informatie die niet bestaat en krijgt geen uitleg over het mislukte adres. Gebruik een redirect voor een echte één-op-éénvervanger en een 404-pagina wanneer zo’n vervanger er niet is.',
+        ],
+      },
+      {
+        heading: 'Schrijf voor herstel, niet voor humor',
+        paragraphs: [
+          'Een vriendelijke zin of kleine illustratie kan passen bij je merk, zolang de uitleg en vervolgstappen voorop blijven staan. Vermijd een grap die alleen werkt als iemand de fout al begrijpt. De pagina moet ook bruikbaar zijn voor iemand die via een oude link, typefout of zoekresultaat binnenkomt.',
+          'Zet geen misleidende knop op de pagina en doe niet alsof de gezochte inhoud alsnog wordt geladen. Benoem wat er gebeurde, geef een paar echte routes en laat de normale navigatie beschikbaar. Dat is genoeg om van een doodlopend adres een herstelpunt te maken.',
+        ],
+      },
+      {
+        heading: 'Test inhoud en techniek apart',
+        paragraphs: [
+          'Open na publicatie bewust een niet-bestaand adres op mobiel en desktop. Controleer of kop, uitleg, links en navigatie leesbaar zijn en of iedere voorgestelde route werkt. Bekijk daarna met de ontwikkelaarstools van je browser of een HTTP-controle of het antwoord werkelijk status 404 heeft.',
+          'Test ook een oud adres waarvoor je wel een redirect hebt ingesteld. Dat adres moet uitkomen op de specifieke vervangende pagina, niet op de 404-pagina of de algemene homepage. Zo controleer je zowel de bezoekroute als de technische afhandeling.',
+        ],
+        bullets: [
+          'De tekst zegt duidelijk dat de pagina niet is gevonden.',
+          'De vormgeving en navigatie passen bij de rest van de website.',
+          'De homepage en enkele nuttige vervolgstappen zijn bereikbaar.',
+          'Een ontbrekend adres geeft echt HTTP-status 404 terug.',
+          'Een verhuisde pagina verwijst permanent naar de passende vervanger.',
+          'De pagina werkt zonder horizontale overflow op mobiel.',
+        ],
+      },
+    ],
+    relatedLinks: [
+      { label: 'Lees hoe je een goede URL voor een webpagina kiest', href: '/blog/hoe-kies-je-een-goede-url-voor-een-webpagina' },
+      { label: 'Lees hoe je duidelijke link- en knopteksten schrijft', href: '/blog/hoe-schrijf-je-duidelijke-link-en-knopteksten' },
+    ],
+  },
+  {
     slug: 'hoe-kies-je-een-goede-url-voor-een-webpagina',
     status: 'published',
     title: 'Hoe kies je een goede URL voor een webpagina?',

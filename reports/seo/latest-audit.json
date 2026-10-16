@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-10-09T07:05:33.228Z",
+  "generatedAt": "2026-10-16T07:03:53.702Z",
   "indexableRoutes": [
     {
       "slug": "/",
@@ -54,6 +54,12 @@
       "title": "Privacybeleid voor klanten en bezoekers | Landingsite.nl",
       "primaryKeyword": "privacybeleid Landingsite.nl",
       "canonical": "https://www.landingsite.nl/privacybeleid"
+    },
+    {
+      "slug": "/blog/hoe-maak-je-een-goede-404-pagina",
+      "title": "Hoe maak je een goede 404-pagina? | Landingsite.nl",
+      "primaryKeyword": "goede 404-pagina maken",
+      "canonical": "https://www.landingsite.nl/blog/hoe-maak-je-een-goede-404-pagina"
     },
     {
       "slug": "/blog/hoe-kies-je-een-goede-url-voor-een-webpagina",
