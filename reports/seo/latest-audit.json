@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-10-16T07:03:53.702Z",
+  "generatedAt": "2026-10-23T07:18:05.443Z",
   "indexableRoutes": [
     {
       "slug": "/",
@@ -54,6 +54,12 @@
       "title": "Privacybeleid voor klanten en bezoekers | Landingsite.nl",
       "primaryKeyword": "privacybeleid Landingsite.nl",
       "canonical": "https://www.landingsite.nl/privacybeleid"
+    },
+    {
+      "slug": "/blog/wanneer-heeft-een-website-broodkruimels-nodig",
+      "title": "Wanneer gebruik je een kruimelpad? | Landingsite.nl",
+      "primaryKeyword": "broodkruimels website",
+      "canonical": "https://www.landingsite.nl/blog/wanneer-heeft-een-website-broodkruimels-nodig"
     },
     {
       "slug": "/blog/hoe-maak-je-een-goede-404-pagina",

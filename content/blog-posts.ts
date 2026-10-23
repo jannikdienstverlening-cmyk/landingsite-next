@@ -30,6 +30,84 @@ const baseUrl = 'https://www.landingsite.nl'
 
 export const blogPosts: BlogPost[] = [
   {
+    slug: 'wanneer-heeft-een-website-broodkruimels-nodig',
+    status: 'published',
+    title: 'Wanneer gebruik je een kruimelpad?',
+    description: 'Bepaal of broodkruimelnavigatie nuttig is voor je zakelijke website en bouw een korte, logische en toegankelijke route door de paginastructuur.',
+    excerpt: 'Broodkruimels laten zien waar een pagina in je website hoort. Ze zijn vooral nuttig bij meerdere paginaniveaus; op een kleine, platte website voegen ze vaak weinig toe.',
+    category: 'Websitebeheer',
+    primaryKeyword: 'broodkruimels website',
+    secondaryKeywords: ['broodkruimelnavigatie', 'breadcrumbs website', 'breadcrumb navigatie maken'],
+    searchIntent: 'Bepalen wanneer en hoe je broodkruimelnavigatie op een zakelijke website gebruikt',
+    publishedAt: '2026-10-23',
+    updatedAt: '2026-10-23',
+    author: 'Jannik',
+    reviewer: 'Jannik',
+    readingTime: '6 minuten',
+    sources: [
+      'https://www.w3.org/WAI/ARIA/apg/patterns/breadcrumb/',
+      'https://www.w3.org/WAI/tutorials/menus/multiple-ways/',
+      'https://developers.google.com/search/docs/appearance/structured-data/breadcrumb',
+    ],
+    sections: [
+      {
+        heading: 'Gebruik broodkruimels bij een echte paginahiërarchie',
+        paragraphs: [
+          'Een broodkruimelpad is een reeks links naar de bovenliggende pagina’s van de huidige pagina. Het helpt een bezoeker herkennen waar die pagina binnen de website staat en maakt het mogelijk om stap voor stap naar een hoger niveau te gaan.',
+          'Dat is vooral nuttig wanneer je website meer dan één of twee navigatieniveaus heeft. Denk aan “Diensten → Websitebeheer → Onderhoud aanvragen” of “Kennisbank → Formulieren → Foutmeldingen”. Heeft je website alleen Home, Diensten, Over en Contact, allemaal direct bereikbaar vanuit het hoofdmenu, dan is een extra broodkruimelpad meestal niet nodig.',
+        ],
+      },
+      {
+        heading: 'Toon de websitestructuur, niet de klikgeschiedenis',
+        paragraphs: [
+          'Laat het pad de vaste relatie tussen pagina’s zien. Iemand kan via Google, een nieuwsbrief of een directe link binnenkomen; de broodkruimels moeten dan nog steeds dezelfde logische route tonen. Ze zijn dus geen overzicht van de pagina’s die deze bezoeker hiervoor heeft geopend.',
+          'Kies per niveau een echte bovenliggende overzichtspagina. Zet geen stap in het pad alleen omdat hetzelfde woord in de URL voorkomt. Google adviseert voor gestructureerde breadcrumbgegevens een gebruikelijke gebruikersroute naar de pagina te beschrijven in plaats van de URL-structuur simpelweg te kopiëren.',
+        ],
+      },
+      {
+        heading: 'Houd ieder niveau herkenbaar en klikbaar',
+        paragraphs: [
+          'Begin bij een herkenbaar hoofdniveau, voeg alleen noodzakelijke tussenstappen toe en eindig met de huidige pagina. De W3C-uitleg over broodkruimels beschrijft een hiërarchische lijst van links naar bovenliggende pagina’s. Het huidige paginaniveau staat als laatste in de reeks.',
+          'Gebruik korte, beschrijvende namen die overeenkomen met wat iemand op de doelpagina aantreft. “Diensten” en “Websitebeheer” zijn bruikbaarder dan “Overzicht” en “Meer”. Laat een tussenstap niet klikbaar lijken wanneer er geen echte pagina achter zit; maak dan eerst de informatiearchitectuur duidelijker of laat dat niveau weg.',
+        ],
+      },
+      {
+        heading: 'Maak de navigatie ook technisch herkenbaar',
+        paragraphs: [
+          'Plaats de broodkruimels in een navigatiegebied met een duidelijk label, bijvoorbeeld “Broodkruimels”. W3C adviseert een navigation landmark met aria-label of aria-labelledby. Markeer een gelinkte huidige pagina met aria-current="page"; wanneer de huidige pagina geen link is, is die markering optioneel.',
+          'Een geordende lijst past bij de vaste volgorde van de niveaus. Voeg visuele scheidingstekens, zoals een schuine streep of pijl, zo toe dat een schermlezer ze niet onnodig voorleest. Het W3C-voorbeeld gebruikt daarvoor CSS in plaats van betekenisloze tekens in de toegankelijke naam.',
+        ],
+      },
+      {
+        heading: 'Behandel zichtbare navigatie en structured data apart',
+        paragraphs: [
+          'De zichtbare broodkruimels zijn er voor bezoekers. Daarnaast kun je dezelfde hiërarchie beschrijven met BreadcrumbList-structured data. Google vereist daarvoor minimaal twee ListItem-elementen en gebruikt onder meer position en name; voor het laatste item mag item ontbreken.',
+          'Structured data vervangt de zichtbare navigatie niet en garandeert geen bijzondere weergave in zoekresultaten. Zorg dat de gemarkeerde route past bij de route die bezoekers op de pagina zien. Controleer de code na een wijziging met de Rich Results Test en los kritieke fouten op voordat je publiceert.',
+        ],
+      },
+      {
+        heading: 'Controleer het pad op mobiel en desktop',
+        paragraphs: [
+          'Een lang pad kan op een klein scherm meerdere regels innemen. Laat de reeks netjes afbreken en voorkom horizontaal scrollen. Kort liever de labels in dan dat je essentiële niveaus alleen op mobiel verbergt, want de route moet daar dezelfde betekenis houden.',
+          'Open tot slot een paar diepe pagina’s rechtstreeks, dus zonder eerst door het menu te klikken. Zo zie je of het pad ook voor een nieuwe bezoeker begrijpelijk is en of iedere bovenliggende link echt naar het bedoelde overzicht leidt.',
+        ],
+        bullets: [
+          'De website heeft genoeg niveaus om broodkruimels nuttig te maken.',
+          'Het pad toont de vaste websitestructuur en geen bezoekgeschiedenis.',
+          'Iedere tussenstap verwijst naar een echte bovenliggende pagina.',
+          'De broodkruimels staan in een gelabeld navigatiegebied.',
+          'De huidige pagina is als laatste niveau herkenbaar.',
+          'Structured data beschrijft dezelfde logische hiërarchie.',
+          'Het pad blijft zonder horizontale overflow bruikbaar op mobiel.',
+        ],
+      },
+    ],
+    relatedLinks: [
+      { label: 'Lees hoe je een goede URL voor een webpagina kiest', href: '/blog/hoe-kies-je-een-goede-url-voor-een-webpagina' },
+      { label: 'Lees hoe je duidelijke link- en knopteksten schrijft', href: '/blog/hoe-schrijf-je-duidelijke-link-en-knopteksten' },
+    ],
+  },
+  {
     slug: 'hoe-maak-je-een-goede-404-pagina',
     status: 'published',
     title: 'Hoe maak je een goede 404-pagina?',
