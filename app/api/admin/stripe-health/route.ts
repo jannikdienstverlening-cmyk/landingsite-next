@@ -3,7 +3,7 @@ import { adminCookie, rejectCrossOriginMutation, verifyAdminSession } from '@/li
 import { checkRateLimit, clientIp, rateLimitResponse } from '@/lib/rate-limit'
 import { getStripe, normalizeStripeSecretKey, safePaymentError } from '@/lib/stripe'
 import { expectedStripeCatalog, validateStripeCatalogPrice } from '@/lib/stripe-catalog'
-import { dutchTaxRegistrationReady, isSiteWebhook, portalFeaturesReady, requiredStripeEvents, sitePortalConfiguration, verifyStripeWebhookDelivery } from '@/lib/stripe-support'
+import { dutchTaxRegistrationReady, inspectAndExpireEmptyCheckout, isSiteWebhook, portalFeaturesReady, requiredStripeEvents, sitePortalConfiguration, verifyStripeWebhookDelivery } from '@/lib/stripe-support'
 import { invalidJsonResponse, readJsonBody } from '@/lib/request'
 import { z } from 'zod'
 
@@ -60,6 +60,7 @@ export async function GET(request: NextRequest) {
 const setupSchema = z.discriminatedUnion('action', [
   z.object({ action: z.literal('configure-checkout-support'), confirmed: z.literal(true) }).strict(),
   z.object({ action: z.literal('verify-webhook-delivery'), confirmed: z.literal(true), requestId: z.string().uuid() }).strict(),
+  z.object({ action: z.literal('inspect-empty-checkout'), confirmed: z.literal(true), requestId: z.string().uuid(), sessionId: z.string().max(200).regex(/^cs_live_[A-Za-z0-9]+$/) }).strict(),
 ])
 
 export async function POST(request: NextRequest) {
@@ -76,6 +77,9 @@ export async function POST(request: NextRequest) {
     return Response.json({ error: 'Beveiligingsconfiguratie ontbreekt.' }, { status: 409 })
   }
   try {
+    if (parsed.data.action === 'inspect-empty-checkout') {
+      return Response.json(await inspectAndExpireEmptyCheckout(parsed.data.sessionId, parsed.data.requestId), { headers: { 'Cache-Control': 'no-store' } })
+    }
     if (parsed.data.action === 'verify-webhook-delivery') {
       return Response.json({ deliveredAndVerified: await verifyStripeWebhookDelivery(parsed.data.requestId) }, { headers: { 'Cache-Control': 'no-store' } })
     }

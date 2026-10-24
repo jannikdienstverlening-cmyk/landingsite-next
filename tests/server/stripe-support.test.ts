@@ -8,7 +8,8 @@ import { createAdminSession, createCustomerToken } from '../../lib/security'
 import { getStripe } from '../../lib/stripe'
 import { getSupabase } from '../../lib/supabase'
 import { createOrReuseManagementCheckout } from '../../lib/management-checkout'
-import { isSiteWebhook, portalFeaturesReady, requiredStripeEvents, sitePortalConfiguration, verifyStripeWebhookDelivery } from '../../lib/stripe-support'
+import { inspectAndExpireEmptyCheckout, isSiteWebhook, portalFeaturesReady, requiredStripeEvents, sitePortalConfiguration, verifyStripeWebhookDelivery } from '../../lib/stripe-support'
+import { commercialConfig } from '../../config/commercial'
 
 process.env.STRIPE_SECRET_KEY = 'sk_test_localmock'
 process.env.STRIPE_WEBHOOK_SECRET = 'whsec_localmock'
@@ -132,4 +133,54 @@ test('legacy management checkout also blocks new subscriptions without configure
     management_checkout_session_id: null, went_live_at: '2026-09-29T12:00:00Z',
   }, 'unused', randomUUID(), { termsAccepted: true, markGoLive: false }), /betaalinstellingen controleren/)
   assert.equal(create.mock.callCount(), 0)
+})
+
+function emptyCheckout(requestId: string) {
+  return {
+    id: 'cs_live_auditmock', livemode: true, mode: 'subscription',
+    created: Math.floor(Date.now() / 1000), client_reference_id: requestId,
+    status: 'open', payment_status: 'unpaid', customer: null, customer_details: null,
+    customer_email: null, subscription: null, amount_total: 7900, currency: 'eur',
+    payment_method_types: ['ideal', 'card', 'sepa_debit'],
+    metadata: { request_id: requestId, checkout_type: 'combined', billing_model: commercialConfig.model, commercial_version: commercialConfig.version, build_price_including_vat: '0' },
+  }
+}
+
+test('private checkout inspection verifies one 79 euro item and expires only its empty session', async context => {
+  const requestId = randomUUID()
+  const session = emptyCheckout(requestId)
+  let expired = false
+  context.mock.method(getStripe().checkout.sessions, 'retrieve', async () => ({ ...session, status: expired ? 'expired' : 'open' }) as never)
+  context.mock.method(getStripe().checkout.sessions, 'listLineItems', async () => ({ has_more: false, data: [{ quantity: 1, price: { id: 'price_localmanagement', active: true, currency: 'eur', unit_amount: 7900, tax_behavior: 'inclusive', type: 'recurring', recurring: { interval: 'month', interval_count: 1 } } }] }) as never)
+  const expire = context.mock.method(getStripe().checkout.sessions, 'expire', async () => { expired = true; return {} as never })
+  context.mock.method(getStripe().events, 'list', async () => ({ data: [{ id: 'evt_auditmock', data: { object: { id: session.id } } }] }) as never)
+  context.mock.method(getSupabase(), 'from', (() => ({ select() { return this }, eq() { return this }, maybeSingle: async () => ({ data: { status: 'processed' }, error: null }) })) as never)
+  const response = await setup(request({ action: 'inspect-empty-checkout', confirmed: true, requestId, sessionId: session.id }))
+  assert.equal(response.status, 200)
+  const data = await response.json()
+  assert.equal(data.amountTotalCents, 7900)
+  assert.equal(data.monthlyAmountCents, 7900)
+  assert.equal(data.taxBehavior, 'inclusive')
+  assert.equal(data.interval, 'month')
+  assert.equal(data.lineItems, 1)
+  assert.equal(data.signedExpiryWebhookProcessed, true)
+  assert.equal(expire.mock.callCount(), 1)
+  assert.doesNotMatch(JSON.stringify(data), /cs_live|evt_|request_id|customer|secret/)
+})
+
+test('private checkout inspection refuses customer data, paid, old, and unrelated sessions', async context => {
+  const requestId = randomUUID()
+  let session: Record<string, unknown> = emptyCheckout(requestId)
+  context.mock.method(getStripe().checkout.sessions, 'retrieve', async () => session as never)
+  const expire = context.mock.method(getStripe().checkout.sessions, 'expire', () => { throw new Error('Unexpected expiration') })
+  for (const changes of [
+    { customer: 'cus_existing' }, { subscription: 'sub_existing' }, { customer_details: { email: 'private@example.com' } },
+    { customer_email: 'private@example.com' }, { payment_status: 'paid' }, { status: 'complete' },
+    { created: Math.floor(Date.now() / 1000) - 3600 }, { client_reference_id: randomUUID() },
+    { metadata: { ...emptyCheckout(requestId).metadata, commercial_version: 'old' } },
+  ]) {
+    session = { ...emptyCheckout(requestId), ...changes }
+    await assert.rejects(inspectAndExpireEmptyCheckout('cs_live_auditmock', requestId), /recente lege/)
+  }
+  assert.equal(expire.mock.callCount(), 0)
 })

@@ -36,3 +36,13 @@ brace-expansion gebruiken gecorrigeerde versies binnen hun bestaande major.
 Na installatie melden zowel de volledige npm-audit als `npm run audit:production`
 nul bekende kwetsbaarheden. De volledige project- en browsercontrole volgt
 op deze gewijzigde installatie, niet op de oude afhankelijkheden.
+
+## Afgeschermde livecontrole
+
+De beheerroute kan uitsluitend een recente, lege checkout controleren en
+afsluiten wanneer sessie-ID, verzoek-UUID en de huidige commerciele metadata
+overeenkomen. Sessies met klantgegevens, betaling of abonnement worden geweigerd.
+Het antwoord bevat alleen prijs-, interval- en afleverstatussen, geen sleutels
+of klantgegevens. Zo kan de volledige startknop worden getest terwijl
+productiesleutels op de server blijven. De controlesessie wordt niet betaald;
+de bestaande webhook moet de verlopen onbetaalde order afhandelen.
