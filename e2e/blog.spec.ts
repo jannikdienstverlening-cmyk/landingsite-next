@@ -14,7 +14,7 @@ for (const viewport of viewports) {
     })
     await page.setViewportSize(viewport)
     await page.goto('/blog')
-    await expect(page.getByRole('heading', { level: 1, name: /Vrijdagblog over websites/ })).toBeVisible()
+    await expect(page.getByRole('heading', { level: 1, name: 'Handige tips voor je website.' })).toBeVisible()
     await expect(page.getByRole('link', { name: 'Wat moet er bovenaan je website staan?', exact: true })).toBeVisible()
     expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true)
 

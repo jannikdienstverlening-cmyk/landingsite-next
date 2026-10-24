@@ -28,12 +28,12 @@ for (const viewport of [
 
 test('bestelsamenvatting visuele regressie', async ({ page }) => {
   await page.setViewportSize({ width: 768, height: 1024 })
-  await page.goto('/start?pakket=pro')
+  await page.goto('/start')
   await settle(page, '.start-page__grid')
   await expect(page.locator('.start-page__grid')).toHaveScreenshot('start-pro-tablet.png')
 })
 
-test('pakketvergelijking visuele regressie desktop', async ({ page }) => {
+test('het ene websiteaanbod visuele regressie desktop', async ({ page }) => {
   await page.setViewportSize({ width: 1440, height: 1000 })
   await page.goto('/#pakketten')
   await settle(page, '.studio-pricing')

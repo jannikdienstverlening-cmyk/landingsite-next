@@ -12,7 +12,7 @@ export type StripeCatalogEntry = {
 }
 
 export const expectedStripeCatalog: StripeCatalogEntry[] = [
-  ...Object.entries(commercialConfig.packages).map(([key, item]) => ({
+  ...Object.entries(commercialConfig.packages).filter(([, item]) => item.oneTimePrice > 0).map(([key, item]) => ({
     key: key as CommercialPackageId,
     catalogKey: `landingsite_build_${key}`,
     environmentName: item.stripePriceEnv,

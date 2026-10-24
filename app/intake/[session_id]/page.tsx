@@ -42,14 +42,16 @@ export default function IntakePage() {
   const [submitting, setSubmitting] = useState(false)
   const [uploading, setUploading] = useState<AssetKey | null>(null)
   const [error, setError] = useState('')
-  const [form, setForm] = useState<FormState>(initialForm)
+  const [form, setForm] = useState<FormState>(() => {
+    if (typeof window === 'undefined') return initialForm
+    try {
+      const saved = window.sessionStorage.getItem(`intake:${session_id}`)
+      return saved ? { ...initialForm, ...JSON.parse(saved) } : initialForm
+    } catch { return initialForm }
+  })
   const [previews, setPreviews] = useState<Record<AssetKey, string>>({ logo_url: '', hero_image_url: '' })
 
   useEffect(() => {
-    try {
-      const saved = window.sessionStorage.getItem(`intake:${session_id}`)
-      if (saved) setForm({ ...initialForm, ...JSON.parse(saved) })
-    } catch { /* Intake remains usable when browser storage is unavailable. */ }
     let cancelled = false
     let attempts = 0
     let timer: number | undefined
@@ -168,7 +170,7 @@ export default function IntakePage() {
   return <><style>{css}</style><div className="intake-shell">
     <nav className="intake-nav"><div><Link href="/" className="intake-logo">landing<span>site</span>.nl</Link><span className="secure">Beveiligde intake · concept wordt bewaard</span></div></nav>
     <main className="intake-wrap">
-      <header className="intake-head"><span className="badge">{pakket} pakket</span><p className="step">Stap {step + 1} van 5 · {stepTitles[step]}</p><h1>Vertel wat de website moet doen.</h1><p>Je ziet alleen de vragen die we voor jouw pakket nodig hebben. Je concept blijft in deze browser bewaard.</p><div className="progress" aria-label={`Voortgang: stap ${step + 1} van 5`}>{stepTitles.map((title, index) => <span className={index <= step ? 'is-active' : ''} key={title} />)}</div></header>
+      <header className="intake-head"><span className="badge">Jouw website</span><p className="step">Stap {step + 1} van 5 · {stepTitles[step]}</p><h1>Vertel wat de website moet doen.</h1><p>Deze vragen helpen ons je website te bouwen. Je concept blijft in deze browser bewaard.</p><div className="progress" aria-label={`Voortgang: stap ${step + 1} van 5`}>{stepTitles.map((title, index) => <span className={index <= step ? 'is-active' : ''} key={title} />)}</div></header>
       {error && <div className="error" role="alert">{error}</div>}
       <form className="panel" id="intake-form" onSubmit={submit}>
         {step === 0 && <><h2 className="section-title">Bedrijf en aanbod</h2>{field('bedrijfsnaam', 'Bedrijfsnaam', { required: true })}{field('niche', 'Branche of specialisme', { required: true })}{field('beschrijving', 'Wat bied je aan?', { required: true, textarea: true, hint: 'Beschrijf je aanbod, voor wie het is en wat het oplevert. We verzinnen geen resultaten of keurmerken.' })}{field('primaire_actie', 'Wat moet een bezoeker vooral doen?', { required: true, placeholder: 'Bijv. een kennismaking plannen' })}</>}

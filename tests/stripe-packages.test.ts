@@ -12,18 +12,18 @@ import {
   stripePaymentMethods,
 } from '../lib/stripe'
 
-test('Stripe checkout gebruikt de eenmalige bouwprijzen', () => {
+test('pakketconfiguratie kent geen actieve eenmalige bouwprijzen', () => {
   assert.equal(PAKKETTEN.starter.naam, 'Starter')
-  assert.equal(PAKKETTEN.starter.prijs, 29900)
-  assert.equal(PAKKETTEN.starter.prijs_label, '€299')
+  assert.equal(PAKKETTEN.starter.prijs, 0)
+  assert.equal(PAKKETTEN.starter.prijs_label, '€0')
 
   assert.equal(PAKKETTEN.pro.naam, 'Pro')
-  assert.equal(PAKKETTEN.pro.prijs, 49900)
-  assert.equal(PAKKETTEN.pro.prijs_label, '€499')
+  assert.equal(PAKKETTEN.pro.prijs, 0)
+  assert.equal(PAKKETTEN.pro.prijs_label, '€0')
 
   assert.equal(PAKKETTEN.premium.naam, 'Premium')
-  assert.equal(PAKKETTEN.premium.prijs, 89900)
-  assert.equal(PAKKETTEN.premium.prijs_label, '€899')
+  assert.equal(PAKKETTEN.premium.prijs, 0)
+  assert.equal(PAKKETTEN.premium.prijs_label, '€0')
 })
 
 test('Stripe Price ID wordt alleen uit de serverconfiguratie gelezen', () => {

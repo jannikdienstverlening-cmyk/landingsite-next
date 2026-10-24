@@ -8,7 +8,7 @@ import { GET as health } from '../../app/api/admin/stripe-health/route'
 import { getStripe } from '../../lib/stripe'
 import { getSupabase } from '../../lib/supabase'
 import { getResend } from '../../lib/resend'
-import { effectiveBuildPrice } from '../../config/commercial'
+import { commercialConfig, websiteOffer } from '../../config/commercial'
 
 // Provider calls are always mocked; this suite never creates payments or database rows.
 process.env.STRIPE_SECRET_KEY = 'sk_test_localmock'
@@ -36,9 +36,9 @@ function request(body: unknown, origin = 'https://www.landingsite.nl') {
   })
 }
 
-test('each checkout adds only the server build price and recurring management item', async context => {
+test('each new checkout adds only the recurring website and management item', async context => {
   const create = context.mock.method(getStripe().checkout.sessions, 'create', async () => ({ id: 'cs_test_mock', url: 'https://checkout.stripe.com/c/pay/cs_test_mock' }) as never)
-  context.mock.method(getStripe().checkout.sessions, 'retrieve', async () => ({ status: 'open', url: 'https://checkout.stripe.com/c/pay/cs_test_mock' }) as never)
+  context.mock.method(getStripe().checkout.sessions, 'retrieve', async () => ({ status: 'open', metadata: { commercial_version: commercialConfig.version }, url: 'https://checkout.stripe.com/c/pay/cs_test_mock' }) as never)
   context.mock.method(getSupabase(), 'from', (() => ({ upsert: async () => ({ error: null }) })) as never)
   for (const pakket of ['starter', 'pro', 'premium'] as const) {
     const requestId = randomUUID()
@@ -48,16 +48,17 @@ test('each checkout adds only the server build price and recurring management it
     assert.equal(params.mode, 'subscription')
     assert.equal(params.automatic_tax?.enabled, true)
     assert.equal(params.success_url, 'https://www.landingsite.nl/intake/{CHECKOUT_SESSION_ID}')
-    assert.match(params.cancel_url!, new RegExp(`pakket=${pakket}&status=geannuleerd`))
-    const build = effectiveBuildPrice(pakket)
-    assert.equal(params.line_items!.length, build > 0 ? 2 : 1)
+    assert.equal(params.cancel_url, 'https://www.landingsite.nl/start?status=geannuleerd')
+    assert.equal(params.metadata?.pakket, websiteOffer.packageId)
+    assert.equal(params.metadata?.offer_name, websiteOffer.name)
+    assert.equal(params.line_items!.length, 1)
     assert.deepEqual(params.line_items!.at(-1), { price: 'price_localmanagement', quantity: 1 })
-    const first = params.line_items![0]
-    if (build > 0 && first.price_data) {
-      assert.equal(first.price_data.unit_amount, build * 100)
-      assert.equal(first.price_data.tax_behavior, 'inclusive')
-      assert.equal(first.price_data.recurring, undefined)
-    }
+    assert.equal(params.metadata?.build_price_including_vat, '0')
+    assert.equal(params.metadata?.initial_payment_including_vat, '79')
+    assert.equal(params.metadata?.billing_model, 'subscription-only')
+    const submit = params.custom_text?.submit
+    assert.ok(submit && typeof submit === 'object')
+    assert.match(submit.message, /websitebouw is inbegrepen/i)
     assert.equal(args[1]?.idempotencyKey, `checkout-${requestId}`)
   }
 })
@@ -82,7 +83,7 @@ test('checkout cannot create a payment with missing Dutch VAT registration', asy
 
 test('a checkout whose pending order cannot be stored is expired and not returned', async context => {
   context.mock.method(getStripe().checkout.sessions, 'create', async () => ({ id: 'cs_test_mock', url: 'https://checkout.stripe.com/c/pay/cs_test_mock' }) as never)
-  context.mock.method(getStripe().checkout.sessions, 'retrieve', async () => ({ status: 'open', url: 'https://checkout.stripe.com/c/pay/cs_test_mock' }) as never)
+  context.mock.method(getStripe().checkout.sessions, 'retrieve', async () => ({ status: 'open', metadata: { commercial_version: commercialConfig.version }, url: 'https://checkout.stripe.com/c/pay/cs_test_mock' }) as never)
   const expire = context.mock.method(getStripe().checkout.sessions, 'expire', async () => ({}) as never)
   context.mock.method(getSupabase(), 'from', (() => ({ upsert: async () => ({ error: { code: 'db_error', message: 'private customer detail' } }) })) as never)
   const log = context.mock.method(console, 'error', () => {})
@@ -163,7 +164,11 @@ test('cached checkout retries never redirect to expired or already completed pay
   assert.deepEqual(await complete.json(), { url: 'https://www.landingsite.nl/intake/cs_test_mock' })
 })
 
-test('paid checkout creates one order and sends the intake confirmation only once', async context => {
+for (const purchase of [
+  { label: 'historical', build: '199', first: '278', version: '2026-08-13-zomeractie-v2', model: 'build-and-management' },
+  { label: 'subscription-only', build: '0', first: '79', version: commercialConfig.version, model: commercialConfig.model },
+]) {
+test(`${purchase.label} paid checkout creates one order and sends the intake confirmation only once`, async context => {
   let event: Record<string, unknown> | null = null
   let order: Record<string, unknown> | null = null
   let upserts = 0
@@ -198,15 +203,38 @@ test('paid checkout creates one order and sends the intake confirmation only onc
   const session = {
     id: 'cs_test_local', payment_status: 'paid', customer: 'cus_mock', subscription: 'sub_mock',
     customer_details: { email: 'buyer@example.com', name: 'Test buyer' },
-    metadata: { checkout_type: 'combined', pakket: 'pro', terms_accepted: 'true', build_price_including_vat: '199', initial_payment_including_vat: '278' },
+    metadata: { checkout_type: 'combined', pakket: 'pro', terms_accepted: 'true', terms_version: purchase.version, billing_model: purchase.model, build_price_including_vat: purchase.build, initial_payment_including_vat: purchase.first },
   }
   assert.equal((await webhook(signedEvent('checkout.session.completed', true, session))).status, 200)
   assert.deepEqual(await (await webhook(signedEvent('checkout.session.completed', true, session))).json(), { received: true, duplicate: true })
   assert.equal(upserts, 1)
   assert.equal(subscriptionUpdate.mock.callCount(), 1)
+  const subscriptionMetadata = subscriptionUpdate.mock.calls[0].arguments[1]!.metadata
+  assert.ok(subscriptionMetadata && typeof subscriptionMetadata === 'object')
+  assert.equal(subscriptionMetadata.terms_version, purchase.version)
+  assert.match(send.mock.calls[0].arguments[0]!.html as string, new RegExp(`€${purchase.build}`))
+  assert.match(send.mock.calls[0].arguments[0]!.html as string, new RegExp(`€${purchase.first}`))
   assert.equal(send.mock.callCount(), 2)
   assert.match(send.mock.calls[1].arguments[0]!.html as string, /\/intake\/cs_test_local/)
+  if (purchase.model === 'subscription-only') {
+    assert.match(send.mock.calls[1].arguments[0]!.html as string, /websitebouw is inbegrepen/)
+    assert.match(send.mock.calls[1].arguments[0]!.html as string, /€79 per maand inclusief btw/)
+    assert.doesNotMatch(send.mock.calls[1].arguments[0]!.html as string, /€0/)
+  }
   assert.equal(send.mock.calls[1].arguments[1]?.idempotencyKey, 'combined-customer-cs_test_local')
+})
+}
+
+test('an old cached checkout is expired instead of returning its previous building fee', async context => {
+  context.mock.method(getStripe().checkout.sessions, 'create', async () => ({ id: 'cs_test_old' }) as never)
+  context.mock.method(getStripe().checkout.sessions, 'retrieve', async () => ({ status: 'open', metadata: { build_price_including_vat: '499' }, url: 'https://checkout.stripe.com/old' }) as never)
+  const expire = context.mock.method(getStripe().checkout.sessions, 'expire', async () => ({}) as never)
+  const from = context.mock.method(getSupabase(), 'from', () => { throw new Error('No order should be saved') })
+  const response = await checkout(request({ pakket: 'pro', requestId: randomUUID(), termsAccepted: true }))
+  assert.equal(response.status, 409)
+  assert.deepEqual((await response.json()).code, 'checkout_expired')
+  assert.equal(expire.mock.callCount(), 1)
+  assert.equal(from.mock.callCount(), 0)
 })
 
 test('failed asynchronous checkout only marks a pending order as failed', async context => {

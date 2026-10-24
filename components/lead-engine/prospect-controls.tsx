@@ -1,9 +1,11 @@
 'use client'
 
 import { useState } from 'react'
+import { useRouter } from 'next/navigation'
 import { PIPELINE_STATUSES, type OutreachChannel, type PipelineStatus } from '@/lib/lead-engine/types'
 
 export function ProspectControls({ prospectId, status, channel }: { prospectId: string; status: PipelineStatus; channel: OutreachChannel }) {
+  const router = useRouter()
   const [current, setCurrent] = useState(status)
   const [message, setMessage] = useState('')
   const [busy, setBusy] = useState(false)
@@ -29,7 +31,7 @@ export function ProspectControls({ prospectId, status, channel }: { prospectId: 
   async function deleteData() {
     if (!window.confirm('Alle prospect-, audit-, concept- en CRM-data definitief verwijderen? Dit kan niet ongedaan worden gemaakt.')) return
     await post({ action: 'DELETE_DATA', confirmation: 'VERWIJDER' })
-    window.location.assign('/leads')
+    router.push('/leads')
   }
 
   async function addNote() {

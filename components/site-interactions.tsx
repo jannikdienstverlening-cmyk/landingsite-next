@@ -8,7 +8,7 @@ import { trackMarketingEvent, type MarketingEvent } from '@/lib/analytics'
 
 const navigation = [
   ['Werk', '/#werk'],
-  ['Pakketten', '/#pakketten'],
+  ['Kosten', '/#pakketten'],
   ['Aanpak', '/#aanpak'],
   ['Beheer', '/#beheer'],
   ['Vragen', '/#faq'],

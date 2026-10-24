@@ -16,12 +16,12 @@ test('portfolio keeps the main case and replaces the two additional projects', (
 })
 
 test('replacement projects have actual local desktop and mobile WebP screenshots', async () => {
-  for (const project of portfolioProjects.slice(1)) {
+  for (const project of portfolioProjects) {
     for (const [file, alt, width, height] of [
       [project.image, project.imageAlt, 1440, 1000],
       [project.mobileImage, project.mobileImageAlt, 390, 844],
     ] as const) {
-      assert.match(file, /^\/images\/portfolio\/[a-z]+-(?:desktop|mobile)-20261007\.webp$/)
+      assert.match(file, /^\/images\/portfolio\/[a-z]+-(?:desktop|mobile)-20261011\.webp$/)
       assert.ok(alt.length > 20)
       const bytes = await readFile(path.join(process.cwd(), 'public', file))
       assert.ok(bytes.length < 500_000)

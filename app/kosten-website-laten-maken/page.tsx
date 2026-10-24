@@ -1,13 +1,13 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
 import { PageProvenance, SeoPage, StartCta } from '@/components/seo-page'
-import { amountExcludingVat, commercialConfig, euro, packageFirstPayment, type CommercialPackageId, vatFor } from '@/config/commercial'
+import { amountExcludingVat, commercialConfig, euro, packageFirstPayment, websiteOffer, vatFor } from '@/config/commercial'
 import { seoPage } from '@/content/seo-pages'
 import { breadcrumbSchema, seoMetadata, serviceSchema } from '@/lib/seo'
 
 const content = seoPage('/kosten-website-laten-maken')
 export const metadata: Metadata = seoMetadata(content)
-const entries = Object.entries(commercialConfig.packages) as Array<[CommercialPackageId, typeof commercialConfig.packages[CommercialPackageId]]>
+const entries = [[websiteOffer.packageId, websiteOffer]] as const
 
 export default function WebsiteCostsPage() {
   const schema = { '@graph': [breadcrumbSchema([{ name: 'Home', path: '/' }, { name: 'Kosten website laten maken', path: content.slug }]), serviceSchema('Kosten van een website laten maken', content.description, content.slug)] }
@@ -15,22 +15,22 @@ export default function WebsiteCostsPage() {
     <SeoPage breadcrumbs={[{ label: 'Kosten website laten maken', href: content.slug }]} schema={schema}>
       <header className="seo-hero">
         <div className="studio-shell seo-hero__grid">
-          <div><p className="overline">Prijsopbouw zonder verrassingen</p><h1>{content.h1}</h1><p className="seo-hero__intro">Je betaalt één keer voor de bouw en daarna maandelijks voor Hosting & Websitebeheer. De eerste beheermaand wordt samen met de bouwprijs afgerekend. Alle getoonde verkoopprijzen zijn inclusief btw.</p></div>
-          <dl className="seo-hero__facts"><div><dt>Bouw</dt><dd>Vanaf {euro(commercialConfig.packages.starter.oneTimePrice)} eenmalig</dd></div><div><dt>Beheer</dt><dd>{euro(commercialConfig.management.monthlyPrice)} per maand</dd></div><div><dt>Opzegging</dt><dd>Per einde van de betaalperiode</dd></div></dl>
+          <div><p className="overline">Eén maandbedrag</p><h1>{content.h1}</h1><p className="seo-hero__intro">Je betaalt {euro(commercialConfig.management.monthlyPrice)} per maand inclusief btw. De bouw, hosting en het beheer zijn inbegrepen. Bij de start betaal je alleen de eerste maand. Er zijn geen eenmalige bouwkosten.</p></div>
+          <dl className="seo-hero__facts"><div><dt>Bouw</dt><dd>Inbegrepen</dd></div><div><dt>Website en beheer</dt><dd>{euro(commercialConfig.management.monthlyPrice)} per maand</dd></div><div><dt>Opzegging</dt><dd>Per einde van de betaalperiode</dd></div></dl>
         </div>
         <div className="studio-shell"><StartCta compact /><PageProvenance updatedAt={content.updatedAt} /></div>
       </header>
 
       <section className="seo-section seo-light" data-analytics-view="pricing_view">
         <div className="studio-shell"><div className="section-heading"><p className="overline">Volledige berekening</p><h2>Wat betaal je bij de start en daarna?</h2><p>Stripe toont vóór bevestiging de factuurgegevens en het terugkerende bedrag. Onderstaande bedragen komen uit dezelfde centrale configuratie als de checkout.</p></div>
-          <div className="seo-price-table-wrap"><table className="seo-price-table"><caption className="sr-only">Bouwprijs, eerste beheermaand, inbegrepen btw en maandbedrag per pakket</caption><thead><tr><th scope="col">Pakket</th><th scope="col">Bouw incl. btw</th><th scope="col">Eerste maand beheer incl. btw</th><th scope="col">Eerste betaling incl. btw</th><th scope="col">Waarvan btw</th><th scope="col">Excl. btw</th><th scope="col">Daarna</th></tr></thead><tbody>{entries.map(([id, item]) => { const initial = packageFirstPayment(id); return <tr key={id}><th scope="row">{item.name}</th><td data-label="Bouw incl. btw">{euro(item.oneTimePrice)}</td><td data-label="Eerste maand beheer incl. btw">{euro(commercialConfig.management.monthlyPrice)}</td><td data-label="Eerste betaling incl. btw"><strong>{euro(initial)}</strong></td><td data-label="Waarvan btw">{euro(vatFor(initial), 2)}</td><td data-label="Excl. btw">{euro(amountExcludingVat(initial), 2)}</td><td data-label="Daarna">{euro(commercialConfig.management.monthlyPrice)} p/m incl. btw</td></tr> })}</tbody></table></div>
+          <div className="seo-price-table-wrap"><table className="seo-price-table"><caption className="sr-only">Eerste maandbetaling, inbegrepen btw en maandbedrag voor website en beheer</caption><thead><tr><th scope="col">Aanbod</th><th scope="col">Bouw</th><th scope="col">Eerste betaling incl. btw</th><th scope="col">Waarvan btw</th><th scope="col">Excl. btw</th><th scope="col">Daarna</th></tr></thead><tbody>{entries.map(([id, item]) => { const initial = packageFirstPayment(id); return <tr key={id}><th scope="row">{item.name}</th><td data-label="Bouw">Inbegrepen</td><td data-label="Eerste betaling incl. btw"><strong>{euro(initial)}</strong></td><td data-label="Waarvan btw">{euro(vatFor(initial), 2)}</td><td data-label="Excl. btw">{euro(amountExcludingVat(initial), 2)}</td><td data-label="Daarna">{euro(commercialConfig.management.monthlyPrice)} p/m incl. btw</td></tr> })}</tbody></table></div>
         </div>
       </section>
 
       <section className="seo-section">
         <div className="studio-shell seo-section__split">
-          <div className="seo-section__intro"><p className="overline">Waar het verschil zit</p><h2>De pakketprijs volgt uit omvang en uitwerking.</h2><p>De keuze gaat niet alleen over het aantal pagina’s. Ook de hoeveelheid copy, formulierlogica en correctierondes verschilt.</p></div>
-          <div className="seo-editorial-list">{entries.map(([id, item]) => <article key={id}><h3>{item.name} · {euro(item.oneTimePrice)}</h3><p>{item.pages === 1 ? 'Eén landingspagina' : `Maximaal ${item.pages} kernpagina’s`}, {item.copyScope.toLocaleLowerCase('nl-NL')}, {item.formScope.toLocaleLowerCase('nl-NL')} en {item.correctionRounds} gebundelde correctieronde{item.correctionRounds === 1 ? '' : 's'}.</p></article>)}</div>
+          <div className="seo-section__intro"><p className="overline">Dit zit erbij</p><h2>Eén aanbod voor je bedrijf.</h2><p>Websitebouw, hosting en beheer vallen onder hetzelfde maandbedrag. Er zijn geen verschillende pakketten om uit te kiezen.</p></div>
+          <div className="seo-editorial-list"><article><h3>{websiteOffer.name}</h3><p>Maximaal {websiteOffer.pages} kernpagina’s, teksten op basis van de intake, een contactformulier en {websiteOffer.correctionRounds} gebundelde aanpassingsrondes.</p></article></div>
         </div>
       </section>
 
@@ -42,8 +42,8 @@ export default function WebsiteCostsPage() {
       </section>
 
       <section className="seo-section">
-        <div className="studio-shell seo-section__split"><div><p className="overline">Zelf aanleveren</p><h2>Goede input voorkomt extra werk.</h2><p>Je intake bevat je aanbod, doelgroep, feitelijke bedrijfsinformatie, logo en beschikbare beelden. De hoeveelheid tekstuitwerking verschilt per pakket. Materiaal moet door jou rechtmatig gebruikt mogen worden.</p></div><div className="seo-editorial-list"><article><h3>Starter</h3><p>Je levert basisteksten aan; die worden binnen de afgesproken pagina aangescherpt.</p></article><article><h3>Pro</h3><p>Teksten worden op basis van de intake uitgewerkt voor maximaal vier kernpagina’s.</p></article><article><h3>Premium</h3><p>Volledige websitecopy wordt binnen de afgesproken omvang uitgewerkt voor maximaal acht kernpagina’s.</p></article></div></div>
-        <div className="studio-shell"><p className="section-link">Lees ook <Link href="/landingspagina-laten-maken">wat één landingspagina bevat</Link> en <Link href="/website-laten-maken-zzp">welk pakket bij een zzp-website past</Link>.</p><StartCta compact /></div>
+        <div className="studio-shell seo-section__split"><div><p className="overline">Zelf aanleveren</p><h2>Goede input voorkomt extra werk.</h2><p>Je intake bevat je aanbod, doelgroep, feitelijke bedrijfsinformatie, logo en beschikbare beelden. Materiaal moet door jou rechtmatig gebruikt mogen worden.</p></div><div className="seo-editorial-list"><article><h3>Je teksten</h3><p>Ik werk je teksten uit op basis van de intake voor maximaal {websiteOffer.pages} kernpagina’s. Je controleert de inhoud en geeft je aanpassingen gebundeld door.</p></article><article><h3>Je beelden</h3><p>Lever je logo en beschikbare foto’s aan. Fotografie en betaalde externe beelden zijn niet inbegrepen.</p></article></div></div>
+        <div className="studio-shell"><p className="section-link">Lees ook <Link href="/landingspagina-laten-maken">wat een landingspagina bevat</Link> en <Link href="/website-laten-maken-zzp">wat een zzp-website nodig heeft</Link>.</p><StartCta compact /></div>
       </section>
     </SeoPage>
   )

@@ -3,23 +3,16 @@ export const commercialConfig = {
   vatRate: 0.21,
   pricesIncludeVat: true,
   stripeTaxBehavior: 'inclusive',
+  model: 'subscription-only',
+  version: '2026-10-11-single-website-offer',
+  offer: {
+    packageId: 'pro',
+    name: 'Website en beheer',
+    ctaHref: '/start',
+  },
   firstVersion: {
     hours: 48,
     startsAfter: 'payment-and-complete-intake',
-  },
-  promotion: {
-    code: 'zomeractie-2026',
-    name: 'Zomeractie',
-    startsAt: '2026-08-13T00:00:00+02:00',
-    endsAt: '2026-10-02T00:00:00+02:00',
-    displayStartsAt: '13 augustus 2026',
-    displayEndsAt: '1 oktober 2026',
-    buildPrices: {
-      starter: 0,
-      pro: 199,
-      premium: 599,
-    },
-    previewBeforePublication: true,
   },
   management: {
     name: 'Hosting & Websitebeheer',
@@ -43,7 +36,7 @@ export const commercialConfig = {
   packages: {
     starter: {
       name: 'Starter',
-      oneTimePrice: 299,
+      oneTimePrice: 0,
       audience: 'Voor één duidelijke dienst, product of aanbod.',
       pages: 1,
       sectionLimit: 7,
@@ -64,7 +57,7 @@ export const commercialConfig = {
     },
     pro: {
       name: 'Pro',
-      oneTimePrice: 499,
+      oneTimePrice: 0,
       audience: 'Voor een onderneming die meer uitleg, bewijs en inhoud nodig heeft.',
       pages: 4,
       sectionLimit: null,
@@ -86,7 +79,7 @@ export const commercialConfig = {
     },
     premium: {
       name: 'Premium',
-      oneTimePrice: 899,
+      oneTimePrice: 0,
       audience: 'Voor een onderneming die de volledige website wil laten uitwerken.',
       pages: 8,
       sectionLimit: null,
@@ -111,29 +104,18 @@ export const commercialConfig = {
 
 export type CommercialPackageId = keyof typeof commercialConfig.packages
 
-export type ActivePromotion = typeof commercialConfig.promotion
-
-export function activePromotion(now = new Date()): ActivePromotion | null {
-  const promotion = commercialConfig.promotion
-  const timestamp = now.getTime()
-  return timestamp >= Date.parse(promotion.startsAt) && timestamp < Date.parse(promotion.endsAt)
-    ? promotion
-    : null
+// Keep the old package codes available for existing paid orders and intakes.
+export const websiteOffer = {
+  ...commercialConfig.packages[commercialConfig.offer.packageId],
+  ...commercialConfig.offer,
 }
 
-export function effectiveBuildPrice(packageId: CommercialPackageId, now = new Date()) {
-  const promotion = activePromotion(now)
-  return promotion
-    ? promotion.buildPrices[packageId]
-    : commercialConfig.packages[packageId].oneTimePrice
+export function effectiveBuildPrice(packageId: CommercialPackageId) {
+  return commercialConfig.packages[packageId].oneTimePrice
 }
 
-export function promotionDiscount(packageId: CommercialPackageId, now = new Date()) {
-  return commercialConfig.packages[packageId].oneTimePrice - effectiveBuildPrice(packageId, now)
-}
-
-export function effectiveFirstPayment(packageId: CommercialPackageId, now = new Date()) {
-  return effectiveBuildPrice(packageId, now) + commercialConfig.management.monthlyPrice
+export function effectiveFirstPayment(packageId: CommercialPackageId) {
+  return effectiveBuildPrice(packageId) + commercialConfig.management.monthlyPrice
 }
 
 export function euro(amount: number, decimals = 0) {

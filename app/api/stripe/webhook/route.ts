@@ -1,6 +1,6 @@
 import type Stripe from 'stripe'
 import { NextRequest } from 'next/server'
-import { commercialConfig, packageFirstPayment } from '@/config/commercial'
+import { commercialConfig, euro } from '@/config/commercial'
 import { partnerProgramConfig } from '@/config/partner-program'
 import { pricingConfig } from '@/config/pricing'
 import { escapeHtml } from '@/lib/html'
@@ -118,7 +118,7 @@ async function markBuildPaid(session: Stripe.Checkout.Session, eventId: string) 
 
   const notificationAction = 'build_purchase_notification_sent'
   if (!(await notificationWasSent(order.id, notificationAction))) {
-    const amount = `${PAKKETTEN[pakket].prijs_label} eenmalig incl. btw`
+    const amount = typeof session.amount_total !== 'number' ? 'Zie oorspronkelijke Stripe-factuur' : `${euro(session.amount_total / 100, 2)} eenmalig incl. btw`
     await sendCheckedEmail({
       from: process.env.RESEND_FROM ?? 'Landingsite.nl <noreply@landingsite.nl>',
       to: adminRecipient(),
@@ -144,8 +144,13 @@ async function markCombinedCheckoutPaid(session: Stripe.Checkout.Session, eventI
   const businessName = session.customer_details?.business_name ?? session.customer_details?.name ?? ''
   const attributionId = session.metadata?.referral_attribution_id || null
   const promotionCode = session.metadata?.promotion_code || null
-  const buildPrice = Number(session.metadata?.build_price_including_vat ?? PAKKETTEN[pakket].prijs / 100)
-  const initialPayment = Number(session.metadata?.initial_payment_including_vat ?? packageFirstPayment(pakket))
+  // Historical amounts must come from their session, never from today's catalogue.
+  const initialPayment = Number(session.metadata?.initial_payment_including_vat ?? (typeof session.amount_total === 'number' ? session.amount_total / 100 : NaN))
+  let buildPrice = Number(session.metadata?.build_price_including_vat)
+  if (session.metadata?.build_price_including_vat === undefined) {
+    const items = await getStripe().checkout.sessions.listLineItems(session.id, { limit: 100 })
+    buildPrice = items.data.filter(item => item.price?.type === 'one_time').reduce((sum, item) => sum + item.amount_total, 0) / 100
+  }
   if (!Number.isFinite(buildPrice) || !Number.isFinite(initialPayment)) throw new Error(`Checkout ${session.id} bevat ongeldige prijsmetadata.`)
   const now = new Date().toISOString()
   const supabase = getSupabase()
@@ -185,7 +190,7 @@ async function markCombinedCheckoutPaid(session: Stripe.Checkout.Session, eventI
       order_id: order.id,
       pakket,
       terms_accepted: 'true',
-      terms_version: TERMS_VERSION,
+      terms_version: session.metadata?.terms_version ?? subscription.metadata?.terms_version ?? 'legacy',
     },
   })
 
@@ -220,6 +225,9 @@ async function markCombinedCheckoutPaid(session: Stripe.Checkout.Session, eventI
   const customerUrl = `${baseUrl}/beheer/${order.id}?token=${encodeURIComponent(createCustomerToken(order.id))}`
   const notificationAction = 'combined_purchase_notification_sent'
   if (!(await notificationWasSent(order.id, notificationAction))) {
+    const paymentDescription = session.metadata?.billing_model === 'subscription-only'
+      ? `Je eerste maand van €${initialPayment} inclusief btw is betaald. De websitebouw is inbegrepen. Daarna betaal je €${commercialConfig.management.monthlyPrice} per maand inclusief btw.`
+      : `Je ${escapeHtml(PAKKETTEN[pakket].naam)}-pakket en de eerste maand Hosting & Websitebeheer zijn bevestigd.${promotionCode ? ` De tijdelijke zomeractieprijs van €${buildPrice} is toegepast.` : ''}`
     await sendCheckedEmail({
       from: process.env.RESEND_FROM ?? 'Landingsite.nl <noreply@landingsite.nl>',
       to: adminRecipient(),
@@ -232,7 +240,7 @@ async function markCombinedCheckoutPaid(session: Stripe.Checkout.Session, eventI
         from: process.env.RESEND_FROM ?? 'Landingsite.nl <noreply@landingsite.nl>',
         to: email,
         subject: 'Je websiteopdracht is gestart',
-        html: `<div style="font-family:Arial,sans-serif;line-height:1.6;color:#121315;max-width:620px;margin:auto;padding:32px"><h1 style="font-size:26px">Betaling ontvangen</h1><p>Je ${escapeHtml(PAKKETTEN[pakket].naam)}-pakket en de eerste maand Hosting & Websitebeheer zijn bevestigd.${promotionCode ? ` De tijdelijke zomeractieprijs van €${buildPrice} is toegepast.` : ''} Vul nu de intake volledig in; vanaf dat moment start de termijn voor de eerste werkende versie.</p><p>Je ontvangt eerst een preview. We publiceren de website pas nadat je hem hebt bekeken en akkoord hebt gegeven.</p><p><a href="${escapeHtml(`${baseUrl}/intake/${session.id}`)}" style="display:inline-block;background:#245cff;color:#fff;padding:13px 19px;text-decoration:none;font-weight:700">Ga naar de intake</a></p><p>Facturen, betaalgegevens en opzegging beheer je via je beveiligde klantpagina: <a href="${escapeHtml(customerUrl)}">open klantpagina</a>.</p></div>`,
+        html: `<div style="font-family:Arial,sans-serif;line-height:1.6;color:#121315;max-width:620px;margin:auto;padding:32px"><h1 style="font-size:26px">Betaling ontvangen</h1><p>${paymentDescription} Vul nu de intake volledig in; vanaf dat moment start de termijn voor de eerste werkende versie.</p><p>Je ontvangt eerst een preview. We publiceren de website pas nadat je hem hebt bekeken en akkoord hebt gegeven.</p><p><a href="${escapeHtml(`${baseUrl}/intake/${session.id}`)}" style="display:inline-block;background:#245cff;color:#fff;padding:13px 19px;text-decoration:none;font-weight:700">Ga naar de intake</a></p><p>Facturen, betaalgegevens en opzegging beheer je via je beveiligde klantpagina: <a href="${escapeHtml(customerUrl)}">open klantpagina</a>.</p></div>`,
       }, `combined-customer-${session.id}`)
     }
     await audit(order.id, eventId, notificationAction, null, 'sent', { checkout_session_id: session.id, subscription_id: subscriptionId })

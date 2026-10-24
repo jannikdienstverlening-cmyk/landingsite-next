@@ -18,7 +18,7 @@ const welcomeMessage: ChatMessage = {
 }
 
 const suggestions = [
-  'Welk pakket past bij mij?',
+  'Wat krijg ik voor €79 per maand?',
   'Wat zit er in Websitebeheer?',
   'Wanneer is mijn pagina klaar?',
 ]

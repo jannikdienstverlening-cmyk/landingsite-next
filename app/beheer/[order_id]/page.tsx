@@ -2,7 +2,7 @@
 
 import Link from 'next/link'
 import { useParams, useSearchParams } from 'next/navigation'
-import { useCallback, useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { pricingConfig } from '@/config/pricing'
 import { trackMarketingEvent } from '@/lib/analytics'
 
@@ -35,20 +35,19 @@ export default function ManagementPage() {
   const [activating, setActivating] = useState(false)
   const [termsAccepted, setTermsAccepted] = useState(false)
 
-  const loadStatus = useCallback(async () => {
-    const response = await fetch(`/api/management/status?order_id=${encodeURIComponent(order_id)}&token=${encodeURIComponent(token)}`, { cache: 'no-store' })
-    const data = await response.json()
-    if (!response.ok) throw new Error(data.error || 'Beheerstatus ophalen lukt nu niet.')
-    setManagement(data.management)
-  }, [order_id, token])
-
   useEffect(() => {
     let active = true
-    loadStatus()
+    const controller = new AbortController()
+    void fetch(`/api/management/status?order_id=${encodeURIComponent(order_id)}&token=${encodeURIComponent(token)}`, { cache: 'no-store', signal: controller.signal })
+      .then(async response => {
+        const data = await response.json()
+        if (!response.ok) throw new Error(data.error || 'Beheerstatus ophalen lukt nu niet.')
+        if (active) setManagement(data.management)
+      })
       .catch((caught) => { if (active) setError(caught instanceof Error ? caught.message : 'Beheerstatus ophalen lukt nu niet.') })
       .finally(() => { if (active) setLoading(false) })
-    return () => { active = false }
-  }, [loadStatus])
+    return () => { active = false; controller.abort() }
+  }, [order_id, token])
 
   async function startManagement() {
     setActivating(true)

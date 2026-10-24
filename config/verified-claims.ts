@@ -7,7 +7,7 @@ export type VerifiedClaim<T> = {
   evidence: string | null
 }
 
-const verifiedAt = '2026-08-10'
+const verifiedAt = '2026-10-11'
 
 export const verifiedClaims = {
   prices: {
@@ -25,7 +25,7 @@ export const verifiedClaims = {
     },
     publish: true,
     verifiedAt,
-    evidence: 'config/commercial.ts en tests/commercial-config.test.ts',
+    evidence: 'config/commercial.ts, tests/commercial-config.test.ts en docs/commercial/2026-10-11-single-offer.md (expliciete goedkeuring)',
   },
   firstVersion: {
     value: {

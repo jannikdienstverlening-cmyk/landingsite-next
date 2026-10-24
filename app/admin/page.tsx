@@ -42,7 +42,20 @@ export default function AdminPage() {
     setOrders(data.orders); setPartners(data.partners); setCommissions(data.commissions); setAuth(true)
   }
 
-  useEffect(() => { let active = true; load().catch((caught) => { if (active) { setError(caught instanceof Error ? caught.message : 'Dashboard controleren mislukt.'); setAuth(false) } }); return () => { active = false } }, [])
+  useEffect(() => {
+    let active = true
+    const controller = new AbortController()
+    void fetch('/api/admin/orders', { cache: 'no-store', signal: controller.signal }).then(async response => {
+      const data = await response.json()
+      if (!active) return
+      if (response.status === 401) { setAuth(false); return }
+      if (!response.ok) throw new Error(data.error || 'Beheerdata ophalen mislukt.')
+      setOrders(data.orders); setPartners(data.partners); setCommissions(data.commissions); setAuth(true)
+    }).catch(caught => {
+      if (active) { setError(caught instanceof Error ? caught.message : 'Dashboard controleren mislukt.'); setAuth(false) }
+    })
+    return () => { active = false; controller.abort() }
+  }, [])
 
   async function login(event: React.FormEvent) { event.preventDefault(); setError(''); const response = await fetch('/api/admin/login', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ password }) }); const data = await response.json(); if (!response.ok) { setError(data.error); return } setPassword(''); await load() }
   async function logout() { await fetch('/api/admin/logout', { method: 'POST' }); setAuth(false) }
@@ -98,7 +111,7 @@ export default function AdminPage() {
 
     <section className="admin-section">
       <h2>Orders en Websitebeheer</h2>
-      <p className="admin-note">Nieuwe orders combineren bouwprijs en de eerste beheermaand in één Stripe-checkout. De losse activatielink hieronder blijft alleen beschikbaar voor historische orders zonder abonnement.</p>
+      <p className="admin-note">Nieuwe orders betalen alleen de eerste abonnementsmaand; websitebouw is inbegrepen. De losse activatielink hieronder blijft alleen beschikbaar voor historische orders zonder abonnement. Hieronder staat de werkwijze voor die historische orders.</p>
       <div className="management-workflow" aria-label="Werkwijze Websitebeheer activeren">
         <div><strong>1</strong><span><b>Bouw betaald</b>De klant betaalt eerst alleen Starter, Pro of Premium.</span></div>
         <div><strong>2</strong><span><b>Website live</b>Controleer de website en bevestig hieronder de livegang.</span></div>
@@ -110,7 +123,7 @@ export default function AdminPage() {
         return <tr key={order.id}>
           <td>{new Date(order.created_at).toLocaleDateString('nl-NL')}</td>
           <td>{intakeName(order)}<br /><small>{order.email}</small></td>
-          <td>{order.pakket}<br /><small>€{pricingConfig.buildPackages[order.pakket].oneTimePrice}</small></td>
+          <td>{order.pakket}</td>
           <td><span className={`status status-${order.status}`}>{order.status}</span></td>
           <td><span className={`status status-${order.management_status}`}>{managementStatusLabels[order.management_status] ?? order.management_status}</span></td>
           <td>{page?.netlify_url ? <a href={page.netlify_url} target="_blank" rel="noopener noreferrer">Open ↗</a> : '—'}</td>

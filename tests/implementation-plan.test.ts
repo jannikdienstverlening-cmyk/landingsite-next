@@ -23,15 +23,13 @@ const validPriceEnvironment: NodeJS.ProcessEnv = {
 
 test('productieconfiguratie blokkeert ontbrekende of ongeldige Stripe Price IDs', () => {
   assert.doesNotThrow(() => validateCommercialRuntime(validPriceEnvironment))
-  assert.throws(() => validateCommercialRuntime({ ...validPriceEnvironment, STRIPE_BUILD_PRICE_PRO: '' }), /STRIPE_BUILD_PRICE_PRO ontbreekt/)
+  assert.doesNotThrow(() => validateCommercialRuntime({ NODE_ENV: 'production', STRIPE_PRICE_WEBSITE_MANAGEMENT: 'price_management123' }))
+  assert.throws(() => validateCommercialRuntime({ ...validPriceEnvironment, STRIPE_PRICE_WEBSITE_MANAGEMENT: '' }), /STRIPE_PRICE_WEBSITE_MANAGEMENT ontbreekt/)
   assert.throws(() => validateCommercialRuntime({ ...validPriceEnvironment, STRIPE_PRICE_WEBSITE_MANAGEMENT: 'prod_79' }), /geen geldige Stripe Price ID/)
 })
 
-test('Stripe-catalogus verwacht drie eenmalige prijzen en één maandprijs', () => {
+test('Stripe-catalogus verwacht alleen de bestaande maandprijs', () => {
   assert.deepEqual(expectedStripeCatalog.map((entry) => [entry.key, entry.catalogKey, entry.amount, entry.recurring]), [
-    ['starter', 'landingsite_build_starter', 299, false],
-    ['pro', 'landingsite_build_pro', 499, false],
-    ['premium', 'landingsite_build_premium', 899, false],
     ['management', 'landingsite_website_management_monthly', 79, true],
   ])
   for (const entry of expectedStripeCatalog) {

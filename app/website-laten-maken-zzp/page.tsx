@@ -17,8 +17,8 @@ export default function WebsiteForSoleTraderPage() {
     <SeoPage breadcrumbs={[{ label: 'Website laten maken voor zzp', href: content.slug }]} schema={schema}>
       <header className="seo-hero">
         <div className="studio-shell seo-hero__grid">
-          <div><p className="overline">Voor zelfstandigen en kleine dienstverleners</p><h1>{content.h1}</h1><p className="seo-hero__intro">Je kiest online een pakket, ziet vooraf de eerste betaling en levert je informatie aan via de beveiligde intake. Er is geen verplichte verkoopafspraak. Als iets inhoudelijk niet duidelijk is, nemen we daar gericht contact over op.</p></div>
-          <dl className="seo-hero__facts"><div><dt>Starten</dt><dd>Pakket kiezen en veilig betalen</dd></div><div><dt>Aanleveren</dt><dd>Online intake na betaling</dd></div><div><dt>Eerste versie</dt><dd>Binnen 48 uur na complete intake</dd></div></dl>
+          <div><p className="overline">Voor zelfstandigen en kleine dienstverleners</p><h1>{content.h1}</h1><p className="seo-hero__intro">Je start online, ziet vooraf de eerste maandbetaling en levert je informatie aan via de beveiligde intake. Er is geen verplichte verkoopafspraak. Als iets inhoudelijk niet duidelijk is, nemen we daar gericht contact over op.</p></div>
+          <dl className="seo-hero__facts"><div><dt>Starten</dt><dd>Eerste maand veilig betalen</dd></div><div><dt>Aanleveren</dt><dd>Online intake na betaling</dd></div><div><dt>Eerste versie</dt><dd>Binnen 48 uur na betaling en complete intake</dd></div></dl>
         </div>
         <div className="studio-shell"><StartCta compact /><PageProvenance updatedAt={content.updatedAt} /></div>
       </header>
@@ -36,7 +36,7 @@ export default function WebsiteForSoleTraderPage() {
       </section>
 
       <section className="seo-section">
-        <div className="studio-shell"><div className="section-heading section-heading--row"><div><p className="overline">Pakketten</p><h2>Kies hoeveel pagina’s en uitwerking je nodig hebt.</h2></div><p>Starter past bij één dienst. Pro biedt maximaal vier kernpagina’s. Premium gaat tot acht kernpagina’s en bevat een uitgebreidere inhoudelijke uitwerking.</p></div><PackageStrip /></div>
+        <div className="studio-shell"><div className="section-heading"><h2>Eén aanbod, inclusief bouw en beheer.</h2><p>Een duidelijke website voor je bedrijf, diensten en contact. Je hoeft niet tussen pakketten te kiezen.</p></div><PackageStrip /></div>
       </section>
 
       <section className="seo-section seo-light">

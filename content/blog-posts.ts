@@ -801,7 +801,7 @@ export const blogPosts: BlogPost[] = [
     ],
     relatedLinks: [
       { label: 'Lees hoeveel pagina\'s je zakelijke website nodig heeft', href: '/blog/hoeveel-paginas-heeft-een-zakelijke-website-nodig' },
-      { label: 'Bekijk een websitepakket voor zzp', href: '/website-laten-maken-zzp' },
+      { label: 'Bekijk het websiteaanbod voor zzp', href: '/website-laten-maken-zzp' },
     ],
   },
   {
@@ -885,7 +885,7 @@ export const blogPosts: BlogPost[] = [
     ],
     relatedLinks: [
       { label: 'Lees hoe Landingsite.nl met gegevens omgaat', href: '/privacybeleid' },
-      { label: 'Bekijk een websitepakket voor zzp', href: '/website-laten-maken-zzp' },
+      { label: 'Bekijk het websiteaanbod voor zzp', href: '/website-laten-maken-zzp' },
     ],
   },
   {
@@ -955,7 +955,7 @@ export const blogPosts: BlogPost[] = [
       },
     ],
     relatedLinks: [
-      { label: 'Vergelijk de websitepakketten', href: '/#pakketten' },
+      { label: 'Bekijk wat is inbegrepen', href: '/#pakketten' },
       { label: 'Bekijk websites die al live staan', href: '/werk' },
     ],
   },
@@ -1020,7 +1020,7 @@ export const blogPosts: BlogPost[] = [
     ],
     relatedLinks: [
       { label: 'Bekijk live websitevoorbeelden', href: '/werk' },
-      { label: 'Bekijk de websitepakketten', href: '/#pakketten' },
+      { label: 'Bekijk wat is inbegrepen', href: '/#pakketten' },
     ],
   },
 ]

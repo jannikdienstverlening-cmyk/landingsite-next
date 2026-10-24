@@ -81,6 +81,7 @@ async function main() {
 
   for (const packageId of PACKAGE_IDS) {
     const details = pricingConfig.buildPackages[packageId]
+    if (details.oneTimePrice === 0) continue
     prices[STRIPE_BUILD_PRICE_ENV[packageId]] = await syncPrice(stripe, {
       catalogKey: `landingsite_build_${packageId}`,
       productName: `Landingsite.nl ${details.name}`,

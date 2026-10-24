@@ -12,7 +12,6 @@ export function ReferralCapture() {
     const url = new URL(window.location.href)
     const referralCode = url.searchParams.get('ref')
     if (!referralCode) return
-    setCode(referralCode)
 
     void fetch('/api/referrals/capture', {
       method: 'POST',
@@ -29,7 +28,7 @@ export function ReferralCapture() {
       keepalive: true,
     }).then(async (response) => {
       const data = await response.json().catch(() => null)
-      if (response.ok && data?.accepted) setVisible(true)
+      if (response.ok && data?.accepted) { setCode(referralCode); setVisible(true) }
     }).catch(() => undefined)
   }, [])
 
