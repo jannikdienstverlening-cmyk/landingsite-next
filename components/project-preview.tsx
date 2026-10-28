@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import Image from 'next/image'
-import { Monitor, Smartphone } from 'lucide-react'
+import { Check, ChevronRight, Monitor, Smartphone } from 'lucide-react'
 import type { PortfolioProject } from '@/data/portfolio'
 import { trackMarketingEvent } from '@/lib/analytics'
 
@@ -38,6 +38,7 @@ export function ProjectPreview({ projects }: { projects: PortfolioProject[] }) {
         </div>
       </div>
       <a
+        id="project-preview-stage"
         className={`project-preview__stage${view === 'mobile' ? ' project-preview__stage--mobile' : ''}`}
         href={project.url}
         target="_blank"
@@ -57,6 +58,20 @@ export function ProjectPreview({ projects }: { projects: PortfolioProject[] }) {
           />
         </div>
       </a>
+      <div className="project-preview__choices" role="group" aria-label="Project kiezen">
+        {projects.map((item, index) => (
+          <button key={item.slug} type="button" aria-label={item.name} aria-pressed={selected === index} aria-controls="project-preview-stage hero-case-title" onClick={() => selectProject(index)}>
+            <span className="project-preview__choice-image" aria-hidden="true">
+              <Image src={item.image} alt="" fill sizes="56px" />
+            </span>
+            <span className="project-preview__choice-content">
+              <span className="project-preview__choice-name">{item.name}</span>
+              <span className="project-preview__choice-industry">{item.industry}</span>
+            </span>
+            {selected === index ? <Check className="project-preview__choice-icon" size={18} aria-hidden="true" /> : <ChevronRight className="project-preview__choice-icon" size={18} aria-hidden="true" />}
+          </button>
+        ))}
+      </div>
       <div className="project-preview__caption">
         <div aria-live="polite" aria-atomic="true">
           <p>{project.industry}</p>
@@ -67,14 +82,6 @@ export function ProjectPreview({ projects }: { projects: PortfolioProject[] }) {
           <span className="sr-only">: {project.name}, in een nieuw tabblad</span>
         </a>
         <p className="project-preview__description">{project.description}</p>
-      </div>
-      <div className="project-preview__choices" role="group" aria-label="Project kiezen">
-        {projects.map((item, index) => (
-          <button key={item.slug} type="button" aria-pressed={selected === index} aria-controls="hero-case-title" onClick={() => selectProject(index)}>
-            <span aria-hidden="true">{String(index + 1).padStart(2, '0')}</span>
-            <span>{item.name}</span>
-          </button>
-        ))}
       </div>
       <noscript><style>{'.project-preview__devices, .project-preview__choices { display: none; }'}</style></noscript>
     </article>

@@ -1,5 +1,6 @@
 import { expect, test } from '@playwright/test'
 import { portfolioProjects } from '../data/portfolio'
+import AxeBuilder from '@axe-core/playwright'
 
 test('projectkeuze verandert beeld, naam en live link zonder navigatie', async ({ page }) => {
   const errors: string[] = []
@@ -77,4 +78,54 @@ for (const width of [360, 390, 768, 1440]) {
     expect(phone!.y + phone!.height).toBeLessThanOrEqual(stage!.y + stage!.height + 1)
     expect(await page.evaluate(() => document.documentElement.scrollWidth <= document.documentElement.clientWidth)).toBe(true)
   })
+}
+
+for (const width of [360, 390, 768, 900, 1024, 1440, 1920]) {
+  test(`projectkeuzes hebben leesbare namen en echte miniaturen op ${width}px`, async ({ page }, testInfo) => {
+    await page.setViewportSize({ width, height: 1000 })
+    await page.goto('/')
+    await page.evaluate(() => document.fonts.ready)
+    const choices = page.getByRole('group', { name: 'Project kiezen', exact: true })
+    await choices.scrollIntoViewIfNeeded()
+    for (const project of portfolioProjects) {
+      const button = choices.getByRole('button', { name: project.name, exact: true })
+      await expect(button.locator('.project-preview__choice-industry')).toHaveText(project.industry)
+      await expect.poll(() => button.locator('img').evaluate((image: HTMLImageElement) => image.complete && image.naturalWidth > 0)).toBe(true)
+      const name = button.locator('.project-preview__choice-name')
+      expect(await name.evaluate(node => node.getBoundingClientRect().height <= parseFloat(getComputedStyle(node).lineHeight) + 1)).toBe(true)
+      const box = await button.boundingBox()
+      expect(box!.height).toBeGreaterThanOrEqual(44)
+      expect(box!.x).toBeGreaterThanOrEqual(0)
+      expect(box!.x + box!.width).toBeLessThanOrEqual(width)
+    }
+    expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true)
+    if ([390, 768, 1440].includes(width)) {
+      await choices.screenshot({ path: testInfo.outputPath(`projectkeuzes-${width}.png`) })
+      await page.locator('.project-preview').screenshot({ path: testInfo.outputPath(`projectvoorbeeld-${width}.png`) })
+    }
+  })
+}
+
+for (const width of [390, 1440]) {
+test(`projectkeuze behoudt positie en toetsenbordfocus op ${width}px`, async ({ page }) => {
+  await page.setViewportSize({ width, height: 1000 })
+  await page.goto('/')
+  await page.evaluate(() => document.fonts.ready)
+  const choices = page.getByRole('group', { name: 'Project kiezen', exact: true })
+  await choices.scrollIntoViewIfNeeded()
+  const initial = (await choices.boundingBox())!
+  for (const project of portfolioProjects) {
+    const button = choices.getByRole('button', { name: project.name, exact: true })
+    await button.focus()
+    await page.keyboard.press('Space')
+    await expect(button).toBeFocused()
+    await expect(button).toHaveAttribute('aria-pressed', 'true')
+    await expect(button).toHaveCSS('outline-style', 'solid')
+    const bounds = (await choices.boundingBox())!
+    expect(bounds.height).toBeCloseTo(initial.height, 0)
+    expect(bounds.y).toBeCloseTo(initial.y, 0)
+  }
+  const audit = await new AxeBuilder({ page }).include('.project-preview').withTags(['wcag2a', 'wcag2aa', 'wcag21aa', 'wcag22aa']).analyze()
+  expect(audit.violations).toEqual([])
+})
 }

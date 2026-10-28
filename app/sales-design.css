@@ -61,10 +61,12 @@ body:has(> .studio--sales) { overflow-x: clip; }
 .studio--sales .project-preview__caption > a { grid-row: 1 / 3; color: #122d27; font-size: .92rem; }
 .studio--sales .project-preview__description { max-width: 720px; font-size: .93rem; color: #485d55; }
 .studio--sales .project-preview__choices { border-block: 1px solid #b7c9be; }
-.studio--sales .project-preview__choices button { min-height: 58px; gap: 14px; padding: 12px 20px; border-color: #b7c9be; color: #485d55; }
+.studio--sales .project-preview__choices button { border-color: #b7c9be; color: #122d27; }
 .studio--sales .project-preview__choices button:hover { background: #e0ebe3; }
-.studio--sales .project-preview__choices button[aria-pressed="true"] { background: #122d27; border-bottom-color: #122d27; color: #fff; }
-.studio--sales .project-preview__choices button > span:last-child { font-size: .9rem; }
+.studio--sales .project-preview__choices button[aria-pressed="true"] { background: #fff; color: #122d27; }
+.studio--sales .project-preview__choices button[aria-pressed="true"]::after { background: #17664d; }
+.studio--sales .project-preview__choice-industry { color: #485d55; }
+.studio--sales .project-preview__choice-icon { color: #17664d; }
 .studio--sales .project-proof { display: flex; gap: 20px; flex-wrap: wrap; padding: 16px 0 0; }
 .studio--sales .trust-line { grid-template-columns: 1.2fr 1fr 1fr; border: 0; }
 .studio--sales .trust-line span { padding: 24px 24px 24px 0; border: 0; color: #485d55; text-align: left; font-size: .83rem; }
@@ -261,7 +263,6 @@ body:has(> .studio--sales) { overflow-x: clip; }
   .studio--sales .pricing-specs > div { min-height: 60px; }
   .studio--sales .pricing-after { gap: 24px; }
   .studio--sales .project-preview__choices button { padding-inline: 12px; }
-  .studio--sales .project-preview__choices button > span:first-child { display: none; }
   .studio--sales .project-preview__phone { width: 18%; }
   .studio--sales .start-page__grid { gap: 32px; }
   .subscription-offer { flex-direction: column; align-items: start; gap: 16px; }
@@ -295,8 +296,7 @@ body:has(> .studio--sales) { overflow-x: clip; }
   .studio--sales .project-preview__caption h2 { font-size: 1.1rem; overflow-wrap: anywhere; }
   .studio--sales .project-preview__caption > a { grid-row: 3; grid-column: 1; }
   .studio--sales .project-preview__choices { grid-template-columns: 1fr; }
-  .studio--sales .project-preview__choices button { min-height: 48px; }
-  .studio--sales .project-preview__choices button > span:last-child { font-size: .85rem; }
+  .studio--sales .project-preview__choices button { padding-block: 14px; }
   .studio--sales .trust-line { grid-template-columns: 1fr; padding-block: 14px; }
   .studio--sales .trust-line span { border: 0; padding: 7px 0; }
   .studio--sales .pricing-after { grid-template-columns: 1fr; }
