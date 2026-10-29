@@ -1,0 +1,227 @@
+.home:global(.studio--sales) {
+  --calm-paper: #f6f7f2;
+  --calm-wash: #e8eee7;
+  --calm-green: #203f35;
+  --calm-text: #4e6258;
+  --calm-line: #cbd5cc;
+  --studio-ink: var(--calm-green);
+  --studio-black: var(--calm-green);
+  --studio-blue: #285b46;
+  --studio-blue-dark: #1d4434;
+  --studio-orange: #a74325;
+  --studio-muted: var(--calm-text);
+  background: var(--calm-paper);
+  color: var(--calm-green);
+  font-family: var(--font-calm-sans), Arial, sans-serif;
+  font-size: 17px;
+}
+
+.home:global(.studio--sales) :global(.studio-shell) { width: min(1216px, calc(100% - 80px)); }
+.home:global(.studio--sales) :global(h1),
+.home:global(.studio--sales) :global(h3) { font-family: var(--font-calm-sans), Arial, sans-serif; font-weight: 500; }
+.home:global(.studio--sales) :global(h2) { font-family: var(--font-calm-serif), Georgia, serif; font-size: 44px; line-height: 1.16; font-weight: 400; }
+.home:global(.studio--sales) :global(p) { line-height: 1.75; }
+.home:global(.studio--sales) :global(.overline) { color: var(--calm-text); font-size: 13px; font-weight: 500; }
+.home:global(.studio--sales) :global(.button) { min-height: 50px; padding-inline: 22px; border-radius: 4px; font-weight: 600; font-size: 15px; }
+.home:global(.studio--sales) :global(.button:hover) { transform: none; }
+.home:global(.studio--sales) :global(.button:active) { transform: translateY(1px); }
+.home:global(.studio--sales) :global(.button--text) { padding-inline: 0; font-size: 14px; text-decoration-thickness: 1px; }
+.home:global(.studio--sales) :global(.studio-section) { padding-block: 88px; }
+.home:global(.studio--sales) :global(.studio-header) { background: var(--calm-paper); border-color: var(--calm-line); }
+.home:global(.studio--sales) :global(.studio-header__inner) { min-height: 84px; }
+.home:global(.studio--sales) :global(.studio-header__cta) { min-height: 44px; font-size: 13px; }
+.home:global(.studio--sales) :global(.studio-nav) { gap: 22px; }
+.home:global(.studio--sales) :global(.studio-nav a) { font-size: 13px; }
+.home:global(.studio--sales) :global(.studio-menu),
+.home:global(.studio--sales) :global(.studio-mobile-nav) { background: var(--calm-paper); }
+
+.home:global(.studio--sales) :global(.studio-hero) { padding-top: 48px; background: var(--calm-paper); }
+.home:global(.studio--sales) :global(.studio-hero__grid) { grid-template-columns: minmax(0, .85fr) minmax(0, 1.15fr); grid-template-rows: auto 1fr; align-items: start; gap: 32px 72px; padding-bottom: 36px; }
+.home:global(.studio--sales) :global(.studio-hero__copy) { grid-column: 1; grid-row: 1; }
+.home:global(.studio--sales) :global(.studio-hero__copy .overline) { max-width: 38ch; margin-bottom: 24px; }
+.home:global(.studio--sales) :global(.studio-hero__copy h1) { max-width: 10ch; margin: 0; font-size: 72px; line-height: 1.04; font-weight: 500; text-wrap: initial; }
+.home:global(.studio--sales) :global(.studio-hero__offer) { grid-column: 1; grid-row: 2; }
+.home:global(.studio--sales) :global(.studio-hero__intro) { max-width: 36ch; font-size: 17px; color: var(--calm-text); }
+.home:global(.studio--sales) :global(.studio-hero__micro) { max-width: 36ch; margin-top: 24px; font-size: 14px; color: var(--calm-text); }
+.home:global(.studio--sales) :global(.studio-hero__micro strong) { display: block; margin-bottom: 4px; font-size: 19px; font-weight: 500; }
+.home:global(.studio--sales) :global(.studio-actions) { gap: 22px; margin-top: 26px; }
+.home:global(.studio--sales) :global(.studio-hero__trust) { margin-top: 15px; font-size: 13px; }
+.home:global(.studio--sales) :global(.studio-projects) { grid-column: 2; grid-row: 1 / 3; padding: 0; background: none; scroll-margin-top: 110px; }
+.home:global(.studio--sales) :global(.showcase-heading) { margin-bottom: 12px; gap: 16px; }
+.home:global(.studio--sales) :global(.showcase-heading p) { font-size: 13px; font-weight: 500; }
+.home:global(.studio--sales) :global(.showcase-heading a) { font-size: 13px; }
+.home:global(.studio--sales) :global(.project-preview__toolbar) { min-height: 44px; padding-left: 14px; background: #e2e8df; border: 0; border-radius: 6px 6px 0 0; }
+.home:global(.studio--sales) :global(.project-preview__domain) { font-size: 12px; }
+.home:global(.studio--sales) :global(.project-preview__stage) { aspect-ratio: 16 / 9; background: #e2e8df; }
+.home:global(.studio--sales) :global(.project-preview__stage--mobile) { aspect-ratio: 16 / 9; }
+.home:global(.studio--sales) :global(.project-preview__phone) { width: 25%; max-height: 94%; }
+.home:global(.studio--sales) :global(.project-preview__choices) { grid-template-columns: 1fr; border: 0; }
+.home:global(.studio--sales) :global(.project-preview__choices button) { grid-template-columns: 56px minmax(0, 1fr) 18px; gap: 14px; min-height: 68px; padding: 10px 14px; border: 0; border-bottom: 1px solid var(--calm-line); }
+.home:global(.studio--sales) :global(.project-preview__choices button[aria-pressed='true']) { background: #e6ece3; }
+.home:global(.studio--sales) :global(.project-preview__choices button::after) { inset: 10px auto 10px 0; width: 2px; height: auto; }
+.home:global(.studio--sales) :global(.project-preview__choice-name) { font-family: inherit; font-size: 14px; font-weight: 500; line-height: 1.4; }
+.home:global(.studio--sales) :global(.project-preview__choice-industry) { font-size: 12px; line-height: 1.5; }
+.home:global(.studio--sales) :global(.project-preview__caption) { padding-block: 18px 0; gap: 8px 16px; }
+.home:global(.studio--sales) :global(.project-preview__caption h2) { font-family: inherit; font-size: 17px; line-height: 1.4; overflow-wrap: normal; }
+.home:global(.studio--sales) :global(.project-preview__caption > div p) { display: none; }
+.home:global(.studio--sales) :global(.project-preview__caption > a) { font-size: 13px; }
+.home:global(.studio--sales) :global(.project-preview__description) { max-width: 52ch; font-size: 13px; }
+.home:global(.studio--sales) :global(.trust-line) { padding-block: 20px; border-top: 1px solid var(--calm-line); }
+.home:global(.studio--sales) :global(.trust-line span) { padding-block: 0; font-size: 12px; }
+
+.home:global(.studio--sales) :global(.studio-pricing) { background: #e8eee7; }
+.home:global(.studio--sales) :global(.website-offer) { grid-template-columns: minmax(0, 1.15fr) minmax(0, .85fr); gap: 44px 96px; }
+.home:global(.studio--sales) :global(.website-offer__intro h2) { max-width: 18ch; margin: 20px 0 24px; }
+.home:global(.studio--sales) :global(.website-offer__intro > p:last-child) { max-width: 38ch; color: var(--calm-text); }
+.home:global(.studio--sales) :global(.website-offer__purchase) { gap: 18px; padding: 28px 0 0; border-top: 1px solid #8d9f91; background: transparent; color: var(--calm-green); }
+.home:global(.studio--sales) :global(.website-offer__purchase h3) { font-size: 16px; }
+.home:global(.studio--sales) :global(.website-offer__purchase strong) { font-family: var(--font-calm-sans), Arial, sans-serif; font-size: 64px; font-weight: 500; }
+.home:global(.studio--sales) :global(.website-offer__purchase span),
+.home:global(.studio--sales) :global(.website-offer__purchase p),
+.home:global(.studio--sales) :global(.website-offer__purchase small) { color: var(--calm-text); }
+.home:global(.studio--sales) :global(.website-offer__purchase p) { font-size: 14px; }
+.home:global(.studio--sales) :global(.website-offer__purchase .button--primary) { align-self: start; background: var(--studio-blue); color: #fff; border-color: var(--studio-blue); }
+.home:global(.studio--sales) :global(.website-offer__purchase .button--primary:hover) { background: var(--studio-blue-dark); }
+.home:global(.studio--sales) :global(.website-offer__included) { gap: 40px; }
+.home:global(.studio--sales) :global(.website-offer__included dt) { font-size: 16px; font-weight: 500; }
+.home:global(.studio--sales) :global(.website-offer__included dd) { font-size: 15px; color: var(--calm-text); }
+.home:global(.studio--sales) :global(.pricing-after) { margin-top: 32px; padding: 0; gap: 40px; border: 0; }
+.home:global(.studio--sales) :global(.pricing-after p) { font-size: 13px; color: var(--calm-text); }
+
+.home:global(.studio--sales) :global(.studio-process) { border: 0; background: var(--calm-paper); }
+.home:global(.studio--sales) :global(.studio-process .section-heading) { align-items: center; margin-bottom: 48px; }
+.home:global(.studio--sales) :global(.studio-process .section-heading p) { font-size: 15px; }
+.home:global(.studio--sales) :global(.process-steps) { gap: 40px; }
+.home:global(.studio--sales) :global(.process-steps li),
+.home:global(.studio--sales) :global(.process-steps li + li) { padding: 22px 0 0; border-top: 1px solid var(--calm-line); }
+.home:global(.studio--sales) :global(.process-steps li > span) { width: auto; height: auto; margin-bottom: 22px; border: 0; font-size: 13px; }
+.home:global(.studio--sales) :global(.process-steps h3) { font-size: 20px; }
+.home:global(.studio--sales) :global(.process-steps p) { max-width: 34ch; font-size: 15px; color: var(--calm-text); }
+.home:global(.studio--sales) :global(.studio-founder) { background: var(--calm-paper); border-top: 1px solid var(--calm-line); }
+.home:global(.studio--sales) :global(.studio-founder__grid) { grid-template-columns: minmax(0, .8fr) minmax(0, 1.2fr); gap: 120px; align-items: center; }
+.home:global(.studio--sales) :global(.experience-founder) { width: 100%; max-width: 340px; margin: 0; border: 0; }
+.home:global(.studio--sales) :global(.founder-portrait__stage) { overflow: hidden; border-radius: 160px 160px 4px 4px; }
+.home:global(.studio--sales) :global(.experience-founder figcaption) { background: transparent; color: var(--calm-text); font-family: inherit; font-size: 12px; }
+.home:global(.studio--sales) :global(.studio-founder__copy h2) { font-size: 52px; }
+.home:global(.studio--sales) :global(.studio-founder__copy > p) { max-width: 48ch; font-size: 16px; }
+.home:global(.studio--sales) :global(.studio-founder__copy > .overline) { font-size: 13px; }
+.home:global(.studio--sales) :global(.studio-founder__actions) { gap: 24px; }
+
+.home:global(.studio--sales) :global(.studio-management) { background: #e8eee7; color: var(--calm-green); }
+.home:global(.studio--sales) :global(.studio-management__grid) { gap: 96px; }
+.home:global(.studio--sales) :global(.studio-management .overline),
+.home:global(.studio--sales) :global(.studio-management p),
+.home:global(.studio--sales) :global(.management-price span),
+.home:global(.studio--sales) :global(.management-details dt),
+.home:global(.studio--sales) :global(.management-details dd) { color: var(--calm-text); }
+.home:global(.studio--sales) :global(.studio-management h2) { font-size: 44px; }
+.home:global(.studio--sales) :global(.studio-management__grid > div > p:not(.overline)) { max-width: 38ch; font-size: 16px; }
+.home:global(.studio--sales) :global(.management-price strong) { font-family: var(--font-calm-sans), Arial, sans-serif; font-size: 48px; font-weight: 500; }
+.home:global(.studio--sales) :global(.management-services),
+.home:global(.studio--sales) :global(.management-services > div) { border-color: var(--calm-line); }
+.home:global(.studio--sales) :global(.management-services h3) { font-size: 18px; }
+.home:global(.studio--sales) :global(.management-services p) { font-size: 15px; }
+.home:global(.studio--sales) :global(.management-details dl > div) { font-size: 13px; }
+.home:global(.studio--sales) :global(.management-note) { font-size: 13px; }
+
+.home:global(.studio--sales) :global(.studio-faq),
+.home:global(.studio--sales) :global(.studio-contact) { background: var(--calm-paper); }
+.home:global(.studio--sales) :global(.studio-faq__grid) { gap: 96px; }
+.home:global(.studio--sales) :global(.studio-faq__grid > div > p) { max-width: 30ch; font-size: 16px; }
+.home:global(.studio--sales) :global(.studio-faq__grid > div > a) { display: inline-flex; min-height: 44px; align-items: center; font-size: 14px; }
+.home:global(.studio--sales) :global(.studio-faq-list summary) { padding-block: 22px; font-size: 16px; font-weight: 500; }
+.home:global(.studio--sales) :global(.studio-faq-list p) { font-size: 15px; }
+.home:global(.studio--sales) :global(.studio-close) { background: var(--calm-green); color: var(--calm-paper); border: 0; }
+.home:global(.studio--sales) :global(.studio-close h2) { font-size: 52px; }
+.home:global(.studio--sales) :global(.studio-close p) { max-width: 44ch; font-size: 16px; color: #d8e2d7; }
+.home:global(.studio--sales) :global(.studio-close .button--primary) { background: #e6ede0; color: var(--calm-green); }
+.home:global(.studio--sales) :global(.studio-close .button--primary:hover) { background: #fff; }
+.home:global(.studio--sales) :global(.studio-close__inner > div:last-child > a:not(.button)),
+.home:global(.studio--sales) :global(.studio-close__inner > div:last-child > span) { color: #d8e2d7; }
+.home:global(.studio--sales) :global(.studio-contact__grid > div > p) { max-width: 32ch; font-size: 16px; }
+.home:global(.studio--sales) :global(.studio-contact-form input),
+.home:global(.studio--sales) :global(.studio-contact-form textarea) { background: #fff; border-color: #9baa9c; }
+.home:global(.studio--sales) :global(.social-feed) { background: #e8eee7; }
+.home:global(.studio--sales) :global(.social-feed__head h2) { font-size: 36px; }
+.home:global(.studio--sales) :global(.social-feed__copy > strong) { font-size: 24px; font-weight: 500; }
+.home:global(.studio--sales) :global(.studio-footer) { background: var(--calm-green); }
+.home:global(.studio--sales) :global(.studio-footer nav strong) { font-family: inherit; font-size: 13px; font-weight: 500; }
+.home:global(.studio--sales) :global(.studio-footer__brand p) { font-size: 15px; }
+
+@media (max-width: 1080px) {
+  .home:global(.studio--sales) :global(.studio-hero__grid) { gap: 28px 40px; }
+  .home:global(.studio--sales) :global(.studio-hero__copy h1) { font-size: 60px; }
+  .home:global(.studio--sales) :global(.studio-founder__grid),
+  .home:global(.studio--sales) :global(.website-offer),
+  .home:global(.studio--sales) :global(.studio-faq__grid),
+  .home:global(.studio--sales) :global(.studio-management__grid) { gap: 40px; }
+  .home:global(.studio--sales) :global(.studio-actions) { display: flex; flex-wrap: wrap; }
+}
+
+@media (max-width: 820px) {
+  .home:global(.studio--sales) :global(.studio-shell) { width: calc(100% - 48px); }
+  .home:global(.studio--sales) :global(.studio-section) { padding-block: 64px; }
+  .home:global(.studio--sales) :global(.studio-header__inner) { min-height: 72px; }
+  .home:global(.studio--sales) :global(.studio-hero__grid) { grid-template-columns: minmax(0, .9fr) minmax(0, 1.1fr); gap: 24px; }
+  .home:global(.studio--sales) :global(.studio-hero__copy h1) { font-size: 48px; }
+  .home:global(.studio--sales) :global(.studio-hero__intro) { font-size: 16px; }
+  .home:global(.studio--sales) :global(.studio-hero__micro) { margin-top: 18px; font-size: 13px; }
+  .home:global(.studio--sales) :global(.project-preview__choice-name) { font-size: 12px; }
+  .home:global(.studio--sales) :global(.project-preview__choices button) { grid-template-columns: 44px minmax(0, 1fr) 18px; gap: 8px; padding-inline: 10px; }
+  .home:global(.studio--sales) :global(.project-preview__choice-image) { width: 44px; }
+  .home:global(.studio--sales) :global(.project-preview__caption h2) { font-size: 14px; }
+  .home:global(.studio--sales) :global(.project-preview__caption) { grid-template-columns: 1fr; }
+  .home:global(.studio--sales) :global(.project-preview__caption > a) { grid-column: 1; grid-row: 3; }
+  .home:global(.studio--sales) :global(.project-preview__stage--mobile) { aspect-ratio: 4 / 5; }
+  .home:global(.studio--sales) :global(.project-preview__phone) { width: 48%; }
+  .home:global(.studio--sales) :global(.trust-line) { grid-template-columns: 1fr; gap: 8px; }
+  .home:global(.studio--sales) :global(.studio-process .section-heading) { margin-bottom: 30px; }
+  .home:global(.studio--sales) :global(.process-steps) { gap: 0; }
+  .home:global(.studio--sales) :global(.process-steps li),
+  .home:global(.studio--sales) :global(.process-steps li + li) { padding: 24px 0 24px 40px; border-bottom: 0; }
+  .home:global(.studio--sales) :global(.process-steps li > span) { top: 25px; }
+  .home:global(.studio--sales) :global(.process-steps p) { max-width: 54ch; }
+  .home:global(.studio--sales) :global(.studio-management__grid),
+  .home:global(.studio--sales) :global(.studio-faq__grid) { gap: 32px; }
+  .home:global(.studio--sales) :global(.studio-founder__grid) { gap: 40px; }
+  .home:global(.studio--sales) :global(.studio-founder__copy h2) { font-size: 40px; }
+}
+
+@media (max-width: 600px) {
+  .home:global(.studio--sales) :global(.studio-shell) { width: calc(100% - 40px); }
+  .home:global(.studio--sales) :global(.studio-hero) { padding-top: 30px; }
+  .home:global(.studio--sales) :global(.studio-hero__grid) { grid-template-columns: 1fr; grid-template-rows: auto; gap: 22px; }
+  .home:global(.studio--sales) :global(.studio-hero__copy),
+  .home:global(.studio--sales) :global(.studio-hero__offer),
+  .home:global(.studio--sales) :global(.studio-projects) { grid-column: 1; grid-row: auto; }
+  .home:global(.studio--sales) :global(.studio-hero__copy h1) { max-width: 11ch; font-size: 48px; }
+  .home:global(.studio--sales) :global(.studio-hero__copy .overline) { margin-bottom: 16px; font-size: 12px; }
+  .home:global(.studio--sales) :global(.studio-hero__intro) { max-width: 36ch; }
+  .home:global(.studio--sales) :global(.studio-actions) { display: flex; gap: 18px; margin-top: 20px; }
+  .home:global(.studio--sales) :global(.studio-actions .button--primary) { padding-inline: 18px; }
+  .home:global(.studio--sales) :global(.studio-actions .button--text) { font-size: 13px; }
+  .home:global(.studio--sales) :global(.studio-hero__trust) { margin-top: 10px; text-align: left; font-size: 12px; }
+  .home:global(.studio--sales) :global(.studio-projects) { margin-top: 8px; }
+  .home:global(.studio--sales) :global(.showcase-heading p) { max-width: none; font-size: 13px; }
+  .home:global(.studio--sales) :global(.project-preview__stage) { aspect-ratio: 16 / 11; }
+  .home:global(.studio--sales) :global(.project-preview__stage--mobile) { aspect-ratio: 4 / 5; }
+  .home:global(.studio--sales) :global(.project-preview__phone) { width: 50%; }
+  .home:global(.studio--sales) :global(.project-preview__choices button) { grid-template-columns: 56px minmax(0, 1fr) 18px; min-height: 72px; gap: 12px; padding: 12px; }
+  .home:global(.studio--sales) :global(.project-preview__choice-image) { width: 56px; }
+  .home:global(.studio--sales) :global(.project-preview__choice-name) { font-size: 14px; }
+  .home:global(.studio--sales) :global(.project-preview__caption h2) { font-size: 17px; }
+  .home:global(.studio--sales) :global(h2) { font-size: 34px; }
+  .home:global(.studio--sales) :global(.studio-management h2) { font-size: 34px; }
+  .home:global(.studio--sales) :global(.website-offer) { grid-template-columns: 1fr; gap: 28px; }
+  .home:global(.studio--sales) :global(.website-offer__intro h2) { margin-top: 16px; }
+  .home:global(.studio--sales) :global(.website-offer__purchase) { padding: 24px 0 0; }
+  .home:global(.studio--sales) :global(.website-offer__purchase strong) { font-size: 56px; }
+  .home:global(.studio--sales) :global(.website-offer__included) { gap: 24px; }
+  .home:global(.studio--sales) :global(.pricing-after) { gap: 16px; }
+  .home:global(.studio--sales) :global(.studio-founder__grid) { grid-template-columns: 1fr; gap: 32px; }
+  .home:global(.studio--sales) :global(.experience-founder) { max-width: 280px; margin-inline: auto; }
+  .home:global(.studio--sales) :global(.studio-founder__copy h2) { font-size: 40px; }
+  .home:global(.studio--sales) :global(.studio-founder__actions) { flex-direction: row; align-items: center; flex-wrap: wrap; gap: 20px; }
+  .home:global(.studio--sales) :global(.studio-close h2) { font-size: 40px; }
+  .home:global(.studio--sales) :global(.social-feed__head h2) { font-size: 32px; }
+}

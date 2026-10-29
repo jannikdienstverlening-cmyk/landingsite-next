@@ -52,7 +52,7 @@ export function ProjectPreview({ projects }: { projects: PortfolioProject[] }) {
             src={view === 'mobile' ? project.mobileImage : project.image}
             alt={view === 'mobile' ? project.mobileImageAlt : project.imageAlt}
             fill
-            sizes={view === 'mobile' ? '210px' : '(max-width: 600px) calc(100vw - 40px), (max-width: 1280px) calc(100vw - 64px), 1216px'}
+            sizes={view === 'mobile' ? '210px' : '(max-width: 600px) calc(100vw - 40px), (max-width: 820px) 52vw, (max-width: 1296px) 53vw, 658px'}
             preload={selected === 0 && view === 'desktop'}
             loading="eager"
           />

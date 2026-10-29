@@ -35,7 +35,7 @@ test('publieke funnel gebruikt de vaste hoofdacties', async () => {
   assert.match(source, /Start mijn website/)
   assert.match(source, /Bekijk live werk/)
   assert.match(source, /href=\{websiteOffer\.ctaHref\}/)
-  assert.match(source, /Jouw website\.<br \/>Eén vast maandbedrag\./)
+  assert.match(source, /Alles voor je website\.<br \/>Eén vast bedrag\./)
   assert.doesNotMatch(source, /pricing-grid|pricing-option|Kies \{item\.name\}/)
 })
 

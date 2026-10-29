@@ -130,7 +130,7 @@ export function StudioHero() {
         </div>
         <div className="studio-hero__offer">
           <p className="studio-hero__intro">
-            Wij maken een website die laat zien wat je doet en hoe klanten je bereiken. Jannik bouwt hem en verzorgt de hosting, updates en kleine wijzigingen.
+            Je vertelt wat je doet. Ik maak er een duidelijke website van. Voor jou als zelfstandige of klein bedrijf, met de hosting en het beheer erbij.
           </p>
           <p className="studio-hero__micro"><strong>€{commercialConfig.management.monthlyPrice} per maand</strong> inclusief btw. Websitebouw, hosting en beheer inbegrepen. Geen eenmalige bouwkosten.</p>
           <div className="studio-actions">
@@ -139,10 +139,8 @@ export function StudioHero() {
           </div>
           <p className="studio-hero__trust">Eerst bekijken. Pas online na jouw akkoord.</p>
         </div>
-      </div>
-      <div className="studio-projects" id="werk">
-        <div className="studio-shell">
-          <div className="showcase-heading"><p>Deze websites staan al online.</p><Link href="/werk" data-analytics-event="case_view">Bekijk het werk</Link></div>
+        <div className="studio-projects" id="werk">
+          <div className="showcase-heading"><p>Een kijkje in mijn werk</p><Link href="/werk" data-analytics-event="case_view">Alle projecten</Link></div>
           <ProjectPreview projects={portfolioProjects} />
           <noscript><div className="project-proof">Ook gebouwd: {additionalProjects.map(project => <a href={project.url} target="_blank" rel="noopener noreferrer" key={project.slug}>{project.name}</a>)}</div></noscript>
         </div>
@@ -158,13 +156,13 @@ export function StudioHero() {
 
 export function ProcessSection() {
   const process = [
-    ['1', 'Vertel over je bedrijf', 'Start je website en betaal de eerste maand. Daarna vul je een vragenlijst in en stuur je je logo, teksten en foto’s mee.'],
-    ['2', 'Bekijk de eerste versie', `Binnen ${commercialConfig.firstVersion.hours} uur na betaling en een complete intake krijg je een werkende website om te bekijken. Je stuurt je aanpassingen in één keer door, per ronde.`],
-    ['3', 'Geef akkoord', 'Tevreden? Na jouw akkoord koppelen we je domein en zetten we de website online. Ik blijf de hosting en het beheer verzorgen.'],
+    ['1', 'Vertel over je bedrijf', 'Je betaalt de eerste maand en vult de vragenlijst in. Je logo, teksten en foto’s stuur je daar ook mee.'],
+    ['2', 'Bekijk de eerste versie', `Binnen ${commercialConfig.firstVersion.hours} uur na betaling en complete intake bekijk je de eerste werkende versie. Je geeft je opmerkingen per ronde in één keer door.`],
+    ['3', 'Geef akkoord', 'Pas als jij tevreden bent, koppelen we je domein en gaat je website online. Ik blijf het beheer verzorgen.'],
   ]
   return (
       <section className="studio-section studio-process" id="aanpak">
-        <div className="studio-shell section-heading"><h2>Zo staat je website straks online.</h2><p>Je hoeft niets van techniek te weten.</p></div>
+        <div className="studio-shell section-heading"><h2>Van jouw verhaal<br />naar jouw website.</h2><p>In drie stappen. Je hoeft niets van techniek te weten.</p></div>
         <ol className="process-steps studio-shell">{process.map(([number, title, text]) => <li key={number}><span>{number}</span><h3>{title}</h3><p>{text}</p></li>)}</ol>
       </section>
   )
@@ -174,7 +172,7 @@ export function Pricing() {
   return (
     <section className="studio-section studio-pricing" id="pakketten" data-analytics-view="pricing_view">
       <div className="studio-shell website-offer">
-        <div className="website-offer__intro"><p className="overline">Website en beheer bij één persoon</p><h2>Jouw website.<br />Eén vast maandbedrag.</h2><p>Ik bouw je website en houd hem daarna bij. Jij hebt één aanspreekpunt voor je teksten, techniek en kleine wijzigingen.</p></div>
+        <div className="website-offer__intro"><p className="overline">De bouw én het beheer</p><h2>Alles voor je website.<br />Eén vast bedrag.</h2><p>Van je eerste pagina tot een foto vervangen. Ik bouw je website en blijf daarna je aanspreekpunt.</p></div>
         <div className="website-offer__purchase subscription-offer">
           <h3>{websiteOffer.name}</h3>
           <div><strong>€{commercialConfig.management.monthlyPrice}</strong><span>per maand, inclusief btw</span></div>
@@ -183,9 +181,9 @@ export function Pricing() {
           <small>Bij de start betaal je alleen de eerste maand.</small>
         </div>
         <dl className="website-offer__included">
-          <div><dt>Gebouwd voor je bedrijf</dt><dd>Tot {websiteOffer.pages} pagina’s, teksten op basis van je intake en een werkend contactformulier. Goed leesbaar op mobiel en met een SEO-basis.</dd></div>
-          <div><dt>Eerst bekijken, dan online</dt><dd>Een eerste werkende versie binnen {commercialConfig.firstVersion.hours} uur na betaling en complete intake. {websiteOffer.correctionRounds} gebundelde aanpassingsrondes; pas online na jouw akkoord.</dd></div>
-          <div><dt>Ook daarna geregeld</dt><dd>Hosting, updates, back-ups en formuliercontrole. Hulp per e-mail en {commercialConfig.management.includedChangeMinutes} minuten kleine wijzigingen per maand.</dd></div>
+          <div><dt>Jouw website</dt><dd>Tot {websiteOffer.pages} pagina’s, teksten vanuit je intake, een contactformulier en een SEO-basis. Ook goed leesbaar op mobiel.</dd></div>
+          <div><dt>Eerst bekijken</dt><dd>Je bekijkt de eerste versie en geeft je opmerkingen door. {websiteOffer.correctionRounds} gebundelde aanpassingsrondes inbegrepen. Pas online na jouw akkoord.</dd></div>
+          <div><dt>Daarna geregeld</dt><dd>Hosting, updates, back-ups en formuliercontrole. Hulp per e-mail en {commercialConfig.management.includedChangeMinutes} minuten kleine wijzigingen per maand.</dd></div>
         </dl>
       </div>
       <div className="studio-shell pricing-after"><p>Je domeinnaam blijft van jou. Niet-gebruikte wijzigingstijd wordt niet opgespaard.</p><p>Extra pagina’s, webshops, grote migraties en nieuwe functies vallen buiten dit aanbod. Extra werk spreken we vooraf apart af.</p></div>
@@ -200,7 +198,7 @@ export function ManagementSection() {
       <div className="studio-shell studio-management__grid">
         <div>
           <p className="overline">Hosting &amp; Websitebeheer</p>
-          <h2>Ook daarna kun je bij mij terecht.</h2>
+          <h2>Je website is af.<br />Ik blijf bereikbaar.</h2>
           <p>Een foto vervangen of een formulier dat niet aankomt? Mail me. Je hoeft niet zelf uit te zoeken hoe je website werkt.</p>
           <div className="management-price"><strong>€{management.monthlyPrice}</strong><span>per maand · incl. btw</span></div>
         </div>
@@ -228,9 +226,10 @@ export function FounderSection() {
       <div className="studio-shell studio-founder__grid">
         <FounderPortrait />
         <div className="studio-founder__copy">
-          <h2 id="founder-title">Hi, ik ben Jannik.</h2>
-          <p>De persoon die je website bouwt, leest ook je berichten. Dat ben ik. Ik help je vertellen wat je doet, bouw de pagina’s en test het formulier voordat je de eerste versie krijgt.</p>
-          <p>Je kunt bij mij terecht van je eerste vraag tot een wijziging nadat je website online staat.</p>
+          <p className="overline">De persoon achter je website</p>
+          <h2 id="founder-title">Hoi, ik ben Jannik.</h2>
+          <p>Ik bouw je website en lees ook zelf je berichten. Samen maken we duidelijk wat je doet. Ik werk de pagina’s uit en test het formulier.</p>
+          <p>Ook als je website online staat, kun je me gewoon mailen voor een vraag of een kleine wijziging.</p>
           <div className="studio-founder__actions">
             <Link className="button button--primary" href="/start" data-analytics-event="hero_start_click" data-analytics-location="founder">Start mijn website</Link>
             <Link href="/over-landingsite">Meer over mij</Link>
@@ -249,7 +248,7 @@ export function FAQAndClose({ faqs }: { faqs: StudioFaq[] }) {
       </section>
       <section className="studio-section studio-close">
         <div className="studio-shell studio-close__inner">
-          <div><h2>Maak ruimte voor je nieuwe website.</h2><p>Jij vertelt over je bedrijf. Ik zorg voor de bouw. Binnen {commercialConfig.firstVersion.hours} uur na betaling en een complete intake kun je de eerste versie bekijken.</p></div>
+          <div><h2>Zullen we jouw<br />website maken?</h2><p>Vertel over je bedrijf. Ik bouw de eerste versie en jij kijkt mee. Pas na jouw akkoord zetten we hem online.</p></div>
           <div><Link className="button button--primary" href="/start" data-analytics-event="hero_start_click" data-analytics-location="closing">Start mijn website</Link><a href="/werk" data-analytics-event="hero_work_click">Bekijk live werk</a><span>€{commercialConfig.management.monthlyPrice} per maand · incl. btw · bouw inbegrepen</span></div>
         </div>
       </section>
