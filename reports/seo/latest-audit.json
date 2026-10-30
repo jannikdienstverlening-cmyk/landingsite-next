@@ -1,15 +1,15 @@
 {
-  "generatedAt": "2026-10-23T07:18:05.443Z",
+  "generatedAt": "2026-10-30T08:02:13.690Z",
   "indexableRoutes": [
     {
       "slug": "/",
-      "title": "Website laten maken vanaf €299 | Landingsite.nl",
+      "title": "Website voor zzp en kleine bedrijven | €79 p/m | Landingsite.nl",
       "primaryKeyword": "website laten maken",
       "canonical": "https://www.landingsite.nl/"
     },
     {
       "slug": "/landingspagina-laten-maken",
-      "title": "Landingspagina laten maken vanaf €299 | Landingsite.nl",
+      "title": "Landingspagina laten maken voor €79 p/m | Landingsite.nl",
       "primaryKeyword": "landingspagina laten maken",
       "canonical": "https://www.landingsite.nl/landingspagina-laten-maken"
     },
@@ -54,6 +54,12 @@
       "title": "Privacybeleid voor klanten en bezoekers | Landingsite.nl",
       "primaryKeyword": "privacybeleid Landingsite.nl",
       "canonical": "https://www.landingsite.nl/privacybeleid"
+    },
+    {
+      "slug": "/blog/hoe-controleer-je-een-website-op-mobiel",
+      "title": "Hoe controleer je een website op mobiel? | Landingsite.nl",
+      "primaryKeyword": "website controleren op mobiel",
+      "canonical": "https://www.landingsite.nl/blog/hoe-controleer-je-een-website-op-mobiel"
     },
     {
       "slug": "/blog/wanneer-heeft-een-website-broodkruimels-nodig",

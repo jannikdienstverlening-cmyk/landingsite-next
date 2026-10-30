@@ -30,6 +30,85 @@ const baseUrl = 'https://www.landingsite.nl'
 
 export const blogPosts: BlogPost[] = [
   {
+    slug: 'hoe-controleer-je-een-website-op-mobiel',
+    status: 'published',
+    title: 'Hoe controleer je een website op mobiel?',
+    description: 'Controleer je zakelijke website op een klein scherm met een vaste praktijktest voor inhoud, navigatie, formulieren, leesbaarheid en techniek.',
+    excerpt: 'Een website die op desktop goed oogt, kan op mobiel alsnog onhandig zijn. Met een korte, vaste testronde vind je problemen die een snelle voorbeeldweergave makkelijk mist.',
+    category: 'Websitebeheer',
+    primaryKeyword: 'website controleren op mobiel',
+    secondaryKeywords: ['mobiele website testen', 'website mobielvriendelijk controleren', 'responsive website testen'],
+    searchIntent: 'Zelf de mobiele bruikbaarheid van een zakelijke website praktisch controleren',
+    publishedAt: '2026-10-30',
+    updatedAt: '2026-10-30',
+    author: 'Jannik',
+    reviewer: 'Jannik',
+    readingTime: '6 minuten',
+    sources: [
+      'https://developers.google.com/search/docs/crawling-indexing/mobile/mobile-sites-mobile-first-indexing',
+      'https://www.w3.org/WAI/WCAG22/Understanding/reflow',
+      'https://www.w3.org/WAI/WCAG22/Understanding/target-size-minimum',
+      'https://www.w3.org/WAI/test-evaluate/preliminary/',
+    ],
+    sections: [
+      {
+        heading: 'Test taken in plaats van alleen de vormgeving',
+        paragraphs: [
+          'Open je website op een smal scherm en voer uit waarvoor bezoekers komen. Zoek een dienst, open het menu, bekijk een project, vul een formulier in en ga terug naar de vorige pagina. Zo controleer je niet alleen of de pagina er netjes uitziet, maar ook of de belangrijkste route bruikbaar blijft.',
+          'Noteer per taak waar je moet zoeken, inzoomen, verkeerd tikt of opnieuw moet beginnen. Een mooi eerste scherm zegt weinig wanneer de contactknop buiten beeld raakt of een formulier na een foutmelding onduidelijk wordt.',
+        ],
+      },
+      {
+        heading: 'Begin met een echt toestel en gebruik daarna je browser',
+        paragraphs: [
+          'Test minstens één keer op een telefoon die je daadwerkelijk met je vingers bedient. Daarmee merk je bijvoorbeeld of knoppen dicht op elkaar staan, het toetsenbord een invoerveld bedekt of een vast element te veel ruimte inneemt. Draai het toestel ook een keer en controleer of de pagina bruikbaar blijft.',
+          'Gebruik daarna de apparaatweergave van je browser om extra schermbreedtes na te lopen. Zie die weergave als aanvulling: hij is handig om de lay-out snel smaller en breder te maken, maar bootst niet ieder verschil in bediening, browserbalken of mobiel toetsenbord na.',
+        ],
+      },
+      {
+        heading: 'Zoek horizontale overflow en afgebroken inhoud',
+        paragraphs: [
+          'Loop iedere belangrijke pagina van boven naar beneden door. Tekst, afbeeldingen, formulieren en navigatie horen binnen het scherm te blijven. W3C beschrijft bij het criterium Reflow dat gewone verticale content zonder informatieverlies of functionaliteitsverlies en zonder scrollen in twee richtingen moet kunnen worden weergegeven, met uitzonderingen voor onderdelen die echt een tweedimensionale lay-out nodig hebben.',
+          'Let vooral op lange woorden, tabellen, cookieknoppen, codevoorbeelden en brede afbeeldingen. Een element dat enkele pixels buiten het scherm valt, kan de hele pagina zijwaarts laten bewegen. Verberg het probleem niet met een algemene overflow-instelling; herstel de breedte of laat het betreffende onderdeel bewust en herkenbaar scrollen wanneer dat inhoudelijk nodig is.',
+        ],
+      },
+      {
+        heading: 'Controleer lezen, tikken en navigeren',
+        paragraphs: [
+          'Lees een volledige alinea zonder in te zoomen en controleer of regels prettig binnen het scherm vallen. Open vervolgens alle menu’s en probeer belangrijke links en knoppen met één hand te bedienen. W3C stelt voor aanwijsdoelen een minimummaat of voldoende tussenruimte vast, met uitzonderingen voor onder meer links in lopende tekst. Praktisch betekent dit dat losse knoppen en iconen niet klein of opeengepakt moeten zijn.',
+          'Controleer ook wat er na een tik gebeurt. Een geopend menu moet weer dicht kunnen, de terugknop moet logisch werken en een vaste contactknop mag geen tekst of formulieractie bedekken. Test zowel bovenaan als onderaan een lange pagina.',
+        ],
+      },
+      {
+        heading: 'Doorloop ieder formulier tot en met een fout',
+        paragraphs: [
+          'Vul een formulier eerst correct in en daarna bewust onvolledig. Controleer of het juiste toetsenbord verschijnt, labels zichtbaar blijven, foutmeldingen bij het betreffende veld staan en ingevoerde gegevens niet onnodig verdwijnen. Verstuur tijdens een productietest geen echte aanvraag wanneer dat een klantproces start; gebruik een veilige testomgeving of breek vóór de definitieve verzending af.',
+          'Bekijk ook de bevestiging en de route terug naar de website. Een formulier is pas mobiel bruikbaar wanneer de hele taak duidelijk blijft, niet alleen wanneer de lege velden binnen het scherm passen.',
+        ],
+      },
+      {
+        heading: 'Herhaal de controle na inhoudelijke wijzigingen',
+        paragraphs: [
+          'Google gebruikt de mobiele versie van de inhoud voor indexering. Controleer daarom niet alleen de vorm, maar ook of mobiel dezelfde belangrijke tekst, afbeeldingen, paginatitels en beschrijvende alt-teksten beschikbaar zijn als op desktop. Verberg essentiële inhoud niet alleen om het scherm rustiger te maken.',
+          'Maak van de test een korte checklist en herhaal hem na wijzigingen aan navigatie, formulieren, banners of lange teksten. W3C benadrukt dat snelle toegankelijkheidschecks slechts een eerste beoordeling zijn; een pagina kan die eenvoudige controles doorstaan en toch andere barrières bevatten.',
+        ],
+        bullets: [
+          'Voer de belangrijkste bezoekerstaken uit op een echte telefoon.',
+          'Test daarnaast meerdere smalle en brede weergaven in de browser.',
+          'Controleer op horizontale overflow en afgebroken inhoud.',
+          'Open menu’s en bedien losse knoppen en links met aanraking.',
+          'Test formulieren zowel correct als met invoerfouten.',
+          'Vergelijk belangrijke mobiele inhoud met de desktopversie.',
+          'Herhaal de ronde na iedere wijziging die de pagina kan verschuiven.',
+        ],
+      },
+    ],
+    relatedLinks: [
+      { label: 'Lees wanneer een afbeelding alt-tekst nodig heeft', href: '/blog/wanneer-heeft-een-afbeelding-alt-tekst-nodig' },
+      { label: 'Lees hoe je foutmeldingen in een formulier duidelijk maakt', href: '/blog/hoe-maak-je-foutmeldingen-in-een-formulier-duidelijk' },
+    ],
+  },
+  {
     slug: 'wanneer-heeft-een-website-broodkruimels-nodig',
     status: 'published',
     title: 'Wanneer gebruik je een kruimelpad?',
