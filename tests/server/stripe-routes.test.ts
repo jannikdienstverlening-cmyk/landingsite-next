@@ -32,7 +32,7 @@ beforeEach(context => {
 
 function request(body: unknown, origin = 'https://www.landingsite.nl') {
   return new NextRequest('https://www.landingsite.nl/api/stripe/checkout', {
-    method: 'POST', headers: { origin, 'content-type': 'application/json', 'x-forwarded-for': randomUUID() }, body: JSON.stringify(body),
+    method: 'POST', headers: { origin, 'content-type': 'application/json', 'x-forwarded-for': randomUUID() }, body: JSON.stringify({ termsVersion: commercialConfig.version, ...(body as Record<string, unknown>) }),
   })
 }
 
@@ -56,11 +56,29 @@ test('each new checkout adds only the recurring website and management item', as
     assert.equal(params.metadata?.build_price_including_vat, '0')
     assert.equal(params.metadata?.initial_payment_including_vat, '79')
     assert.equal(params.metadata?.billing_model, 'subscription-only')
+    assert.equal(params.metadata?.terms_version, commercialConfig.version)
+    assert.equal(params.metadata?.included_change_minutes, '60')
+    assert.equal(params.metadata?.website_rights_model, 'subscription-license')
     const submit = params.custom_text?.submit
     assert.ok(submit && typeof submit === 'object')
     assert.match(submit.message, /websitebouw is inbegrepen/i)
+    assert.match(submit.message, /60 minuten kleine wijzigingen/)
     assert.equal(args[1]?.idempotencyKey, `checkout-${requestId}`)
   }
+})
+
+test('stale or absent terms acceptance cannot create a checkout or contact providers', async context => {
+  const create = context.mock.method(getStripe().checkout.sessions, 'create', () => { throw new Error('Unexpected payment creation') })
+  const from = context.mock.method(getSupabase(), 'from', () => { throw new Error('Unexpected database access') })
+  const tax = context.mock.method(getStripe().tax.registrations, 'list', () => { throw new Error('Unexpected tax lookup') })
+  for (const termsVersion of ['2026-10-11-single-website-offer', undefined]) {
+    const response = await checkout(request({ pakket: 'pro', requestId: randomUUID(), termsAccepted: true, termsVersion }))
+    assert.equal(response.status, 409)
+    assert.equal((await response.json()).code, 'terms_changed')
+  }
+  assert.equal(create.mock.callCount(), 0)
+  assert.equal(from.mock.callCount(), 0)
+  assert.equal(tax.mock.callCount(), 0)
 })
 
 test('checkout rejects price injection and cross-origin requests before contacting Stripe', async context => {
@@ -166,6 +184,7 @@ test('cached checkout retries never redirect to expired or already completed pay
 
 for (const purchase of [
   { label: 'historical', build: '199', first: '278', version: '2026-08-13-zomeractie-v2', model: 'build-and-management' },
+  { label: 'previous monthly agreement', build: '0', first: '79', version: '2026-10-11-single-website-offer', model: 'subscription-only' },
   { label: 'subscription-only', build: '0', first: '79', version: commercialConfig.version, model: commercialConfig.model },
 ]) {
 test(`${purchase.label} paid checkout creates one order and sends the intake confirmation only once`, async context => {

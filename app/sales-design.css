@@ -180,6 +180,7 @@ body:has(> .studio--sales) { overflow-x: clip; }
 
 .studio--sales .start-page { padding-top: 64px; }
 .studio--sales .start-page__grid { gap: 64px; }
+.studio--sales .order-summary__rights { margin: 20px 0; padding: 18px 0; border-block: 1px solid #b7c9be; color: #122d27; font-size: 1rem; line-height: 1.65; }
 .studio--sales .start-choice h1 { font-size: 3.25rem; }
 .studio--sales .start-package-tabs a { min-height: 88px; }
 .studio--sales .start-package-tabs a.is-active { background: #17664d; color: #fff; }

@@ -28,7 +28,8 @@ Feiten over Landingsite.nl:
 - Er is één aanbod: ${websiteOffer.name}, met maximaal ${websiteOffer.pages} kernpagina's en ${websiteOffer.correctionRounds} gebundelde aanpassingsrondes.
 - Teksten worden uitgewerkt op basis van de intake. Mobiel ontwerp, één contactformulier en de SEO-basis zijn inbegrepen.
 - Starter, Pro en Premium worden niet meer als nieuwe pakketten aangeboden. Eerdere overeenkomsten blijven geldig.
-- Websitebeheer bevat managed hosting, SSL, back-ups, beveiligings- en technische updates, monitoring, controle van formulieren, ondersteuning, domeinkoppeling en maximaal ${websiteManagement.includedChangeMinutes} minuten kleine wijzigingen per kalendermaand.
+- Websitebeheer bevat managed hosting, SSL, back-ups, beveiligings- en technische updates, monitoring, controle van formulieren, ondersteuning, domeinkoppeling en maximaal ${websiteManagement.includedChangeMinutes} minuten kleine wijzigingen per betaalmaand. Tijd wordt niet opgespaard en is niet overdraagbaar.
+- Eigen aangeleverde materialen blijven van de klant of de betreffende rechthebbende. Onze code en ons ontwerp worden binnen het abonnement in gebruik gegeven, niet automatisch overgedragen. Zelfstandig verdergaan kan via een afzonderlijke schriftelijke afkoopofferte; noem nooit een niet-vastgestelde afkoopprijs. Rechten van derden blijven gelden en eerdere overeengekomen rechten worden niet met terugwerkende kracht veranderd.
 - Bij de start wordt alleen de eerste maand van EUR ${websiteManagement.monthlyPrice} inclusief btw betaald. Daarna volgt hetzelfde bedrag per maand.
 - Websitebeheer is per maand opzegbaar volgens de voorwaarden.
 - Het nieuwe aanbod wijzigt eerdere contracten en betalingen niet met terugwerkende kracht.
@@ -40,8 +41,11 @@ Feiten over Landingsite.nl:
 function automaticAnswer(question: string) {
   const normalized = question.toLocaleLowerCase('nl-NL')
   const { websiteManagement } = pricingConfig
+  if (/afkoop|afkopen|overnemen|overdracht|broncode|eigenaar|eigendom|licentie|auteursrecht/.test(normalized)) {
+    return 'Je eigen teksten, foto’s, logo en domeinnaam blijven van jou, met behoud van eventuele rechten van andere makers. Onze websitecode en ons ontwerp gebruik je binnen het abonnement; ze worden niet automatisch jouw eigendom. Zelfstandig verdergaan kan via een afzonderlijke afkoopofferte. De prijs, overdraagbare bestanden en rechten en eventuele verhuishulp spreken we vooraf schriftelijk af. Er is geen vast afkoopbedrag gepubliceerd. Eerder overeengekomen rechten blijven gelden. Bekijk /algemene-voorwaarden#website-rechten of vraag Jannik om een offerte.'
+  }
   const answers: string[] = []
-  const asksAboutManagement = /websitebeheer|beheer|hosting|ssl|back-?up|onderhoud|79/.test(normalized)
+  const asksAboutManagement = /websitebeheer|beheer|hosting|ssl|back-?up|onderhoud|wijzig|minuten|79/.test(normalized)
   const asksAboutPackages = /pakket|starter|pro|premium/.test(normalized)
     || (!asksAboutManagement && /prijs|prijzen|kost/.test(normalized))
   const asksAboutTiming = /48\s*uur|hoe snel|klaar/.test(normalized)

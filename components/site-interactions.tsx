@@ -3,7 +3,7 @@
 import type { FormEvent } from 'react'
 import { useEffect, useRef, useState } from 'react'
 import Link from 'next/link'
-import type { CommercialPackageId } from '@/config/commercial'
+import { commercialConfig, type CommercialPackageId } from '@/config/commercial'
 import { trackMarketingEvent, type MarketingEvent } from '@/lib/analytics'
 
 const navigation = [
@@ -124,11 +124,13 @@ export function CheckoutButton({ packageId, label }: { packageId: CommercialPack
   const [accepted, setAccepted] = useState(false)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
+  const [termsChanged, setTermsChanged] = useState(false)
   const requestId = useRef<string | null>(null)
   const inFlight = useRef(false)
 
   async function checkout() {
     if (inFlight.current) return
+    if (termsChanged) return
     if (!accepted) return setError('Accepteer eerst de zakelijke voorwaarden.')
     inFlight.current = true
     requestId.current ??= crypto.randomUUID()
@@ -139,10 +141,15 @@ export function CheckoutButton({ packageId, label }: { packageId: CommercialPack
       const response = await fetch('/api/stripe/checkout', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ pakket: packageId, requestId: requestId.current, termsAccepted: true }),
+        body: JSON.stringify({ pakket: packageId, requestId: requestId.current, termsAccepted: true, termsVersion: commercialConfig.version }),
         signal: AbortSignal.timeout(25_000),
       })
       const data = await response.json()
+      if (data.code === 'terms_changed') {
+        setAccepted(false)
+        setTermsChanged(true)
+        requestId.current = null
+      }
       if (data.code === 'checkout_expired') requestId.current = null
       if (!response.ok || !data.url) throw new Error(data.error || 'De checkout kan nu niet worden geopend.')
       window.location.assign(data.url)
@@ -158,13 +165,14 @@ export function CheckoutButton({ packageId, label }: { packageId: CommercialPack
   return (
     <div className="start-checkout">
       <label className="start-consent">
-        <input type="checkbox" checked={accepted} onChange={(event) => setAccepted(event.target.checked)} />
+        <input type="checkbox" checked={accepted} disabled={termsChanged} onChange={(event) => setAccepted(event.target.checked)} />
         <span>Ik bestel zakelijk, ga akkoord met de <a href="/algemene-voorwaarden" target="_blank">voorwaarden</a> en heb het <a href="/privacybeleid" target="_blank">privacybeleid</a> gelezen.</span>
       </label>
-      <button className="button button--primary button--full" type="button" disabled={!accepted || loading} onClick={checkout}>
+      <button className="button button--primary button--full" type="button" disabled={!accepted || loading || termsChanged} onClick={checkout}>
         {loading ? 'Veilige checkout openen…' : label}
       </button>
       {error && <p className="form-message form-message--error" role="alert">{error}</p>}
+      {termsChanged && <a className="button button--outline button--full" href="/start">Bekijk de bijgewerkte bestelling</a>}
     </div>
   )
 }

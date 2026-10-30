@@ -15,6 +15,7 @@ export const checkoutSchema = z.object({
   pakket: packageSchema,
   requestId: z.uuid(),
   termsAccepted: z.literal(true),
+  termsVersion: z.string().trim().max(80).optional(),
 }).strict()
 
 export const intakeFormSchema = z.object({

@@ -9,7 +9,7 @@ test('commerciële configuratie bevat de definitieve bedragen', () => {
   assert.equal(commercialConfig.packages.pro.oneTimePrice, 0)
   assert.equal(commercialConfig.packages.premium.oneTimePrice, 0)
   assert.equal(commercialConfig.management.monthlyPrice, 79)
-  assert.equal(commercialConfig.management.includedChangeMinutes, 20)
+  assert.equal(commercialConfig.management.includedChangeMinutes, 60)
   assert.equal(commercialConfig.pricesIncludeVat, true)
   assert.equal(commercialConfig.stripeTaxBehavior, 'inclusive')
 })
@@ -39,7 +39,7 @@ test('ook na de oude actieperiode blijven eerste en volgende maand 79 inclusief 
 
 test('abonnementsmodel is vast en niet afhankelijk van een oude actie', () => {
   assert.equal(commercialConfig.model, 'subscription-only')
-  assert.equal(commercialConfig.version, '2026-10-11-single-website-offer')
+  assert.equal(commercialConfig.version, '2026-10-30-website-license-60m')
   assert.equal('promotion' in commercialConfig, false)
 })
 

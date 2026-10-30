@@ -51,6 +51,7 @@ export default async function StartPage({ searchParams }: { searchParams: Promis
               </dl>
               <div className="order-summary__recurring"><span>Daarna maandelijks</span><strong>€{commercialConfig.management.monthlyPrice} incl. btw</strong><p>De volgende incasso volgt één maand na de eerste betaling. Stripe toont de exacte datum vóór bevestiging.</p></div>
               <ul className="order-summary__facts"><li>Geen eenmalige bouwkosten</li><li>Maandelijks opzegbaar aan het einde van de betaalperiode</li><li>Domein blijft van jou</li><li>Intake opent direct na betaling</li><li>Eerste versie binnen 48 uur na betaling en complete intake</li><li>Pas online na jouw akkoord</li></ul>
+              <p className="order-summary__rights" data-testid="website-rights-note">Je eigen teksten, foto’s en logo blijven van jou. Je gebruikt onze code en ons ontwerp binnen het abonnement. Later zelfstandig verder? Afkoop kan op aanvraag, met een aparte prijsafspraak. <Link href="/algemene-voorwaarden#website-rechten" target="_blank" rel="noopener noreferrer">Meer over eigendom en overdracht</Link>.</p>
               <CheckoutButton packageId={websiteOffer.packageId} label={`Start voor €${initialPayment} via Stripe`} />
               <p className="order-summary__help">Nog niet zeker? <Link href="/#contact">Stel eerst een vraag</Link>.</p>
             </aside>

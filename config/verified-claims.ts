@@ -44,8 +44,14 @@ export const verifiedClaims = {
       domainRemainsCustomerProperty: true,
     },
     publish: true,
-    verifiedAt,
-    evidence: 'config/commercial.ts en algemene voorwaarden artikelen 4, 6 en 12',
+    verifiedAt: '2026-10-30',
+    evidence: 'config/commercial.ts, algemene voorwaarden artikelen 4, 6 en 12, docs/commercial/2026-10-30-website-rights-60-minutes.md (expliciet verzoek)',
+  },
+  websiteRights: {
+    value: commercialConfig.websiteRights,
+    publish: true,
+    verifiedAt: '2026-10-30',
+    evidence: 'Algemene voorwaarden artikelen 3a, 6, 11, 11a en 11b; docs/commercial/2026-10-30-website-rights-60-minutes.md (expliciet verzoek)',
   },
   organization: {
     value: {

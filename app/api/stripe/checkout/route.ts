@@ -50,6 +50,9 @@ export async function POST(request: NextRequest) {
   }
   const parsed = checkoutSchema.safeParse(body)
   if (!parsed.success) return Response.json({ error: validationMessage(parsed.error) }, { status: 400 })
+  if (parsed.data.termsVersion !== TERMS_VERSION) {
+    return Response.json({ code: 'terms_changed', error: 'De voorwaarden zijn bijgewerkt. Bekijk de bijgewerkte bestelling en accepteer de actuele afspraken voordat je betaalt. Er is niets afgeschreven.' }, { status: 409 })
+  }
 
   const baseUrl = process.env.NEXT_PUBLIC_BASE_URL?.trim().replace(/\/$/, '')
   if (!baseUrl) return Response.json({ error: 'Basis-URL ontbreekt.' }, { status: 500 })
@@ -83,6 +86,8 @@ export async function POST(request: NextRequest) {
       terms_accepted: 'true',
       terms_version: TERMS_VERSION,
       commercial_version: commercialConfig.version,
+      included_change_minutes: String(commercialConfig.management.includedChangeMinutes),
+      website_rights_model: commercialConfig.websiteRights.model,
       billing_model: commercialConfig.model,
       promotion_code: '',
       build_price_including_vat: '0',
@@ -116,7 +121,7 @@ export async function POST(request: NextRequest) {
       }],
       custom_text: {
         submit: {
-          message: `${websiteOffer.name}: websitebouw is inbegrepen. Je betaalt nu €${initialPayment} inclusief btw voor de eerste maand en daarna €${commercialConfig.management.monthlyPrice} per maand inclusief btw. Maandelijks opzegbaar. Je bekijkt de eerste versie vóór publicatie.`,
+          message: `${websiteOffer.name}: websitebouw is inbegrepen. Je betaalt nu €${initialPayment} inclusief btw voor de eerste maand en daarna €${commercialConfig.management.monthlyPrice} per maand inclusief btw. Inclusief maximaal ${commercialConfig.management.includedChangeMinutes} minuten kleine wijzigingen per betaalmaand. Maandelijks opzegbaar. Onze code en ons ontwerp gebruik je binnen het abonnement; afkoop kan op aanvraag. Je eigen aangeleverde materialen blijven van jou of de rechthebbende. Je bekijkt de eerste versie vóór publicatie.`,
         },
         after_submit: {
           message: 'Na de betaling ga je direct door naar de beveiligde intake. De 48 uur starten zodra die intake compleet is.',
@@ -137,7 +142,7 @@ export async function POST(request: NextRequest) {
     // Never reopen a cached checkout carrying the previous one-time building fee.
     if (currentSession.status === 'open' && currentSession.metadata?.commercial_version !== commercialConfig.version) {
       await getStripe().checkout.sessions.expire(session.id)
-      return Response.json({ code: 'checkout_expired', error: 'De prijsafspraken zijn bijgewerkt. Klik opnieuw om een nieuw betaalscherm te openen.' }, { status: 409 })
+      return Response.json({ code: 'checkout_expired', error: 'De bestelafspraken zijn bijgewerkt. Klik opnieuw om een nieuw betaalscherm te openen.' }, { status: 409 })
     }
     if (currentSession.status !== 'open' || !currentSession.url) return Response.json({ error: 'Checkout kon niet worden geopend.' }, { status: 503 })
 

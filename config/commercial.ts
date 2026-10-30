@@ -1,10 +1,19 @@
+const includedChangeMinutes = 60
+
 export const commercialConfig = {
   currency: 'EUR',
   vatRate: 0.21,
   pricesIncludeVat: true,
   stripeTaxBehavior: 'inclusive',
   model: 'subscription-only',
-  version: '2026-10-11-single-website-offer',
+  version: '2026-10-30-website-license-60m',
+  terms: { updatedAt: '2026-10-30' },
+  websiteRights: {
+    model: 'subscription-license',
+    customerMaterialsRemainCustomerProperty: true,
+    transferRequiresWrittenAgreement: true,
+    buyoutPricing: 'on-request',
+  },
   offer: {
     packageId: 'pro',
     name: 'Website en beheer',
@@ -19,7 +28,7 @@ export const commercialConfig = {
     shortName: 'Websitebeheer',
     monthlyPrice: 79,
     billingInterval: 'month',
-    includedChangeMinutes: 20,
+    includedChangeMinutes,
     startsAt: 'checkout',
     cancellation: 'end-of-current-billing-period',
     stripePriceEnv: 'STRIPE_PRICE_WEBSITE_MANAGEMENT',
@@ -30,7 +39,7 @@ export const commercialConfig = {
       'Uptime-monitoring en technische foutopvolging',
       'Controle van het aanvraagformulier',
       'Ondersteuning per e-mail',
-      'Maximaal 20 minuten kleine tekst- of beeldwijzigingen per maand',
+      `Maximaal ${includedChangeMinutes} minuten kleine tekst- of beeldwijzigingen per maand`,
     ],
   },
   packages: {
