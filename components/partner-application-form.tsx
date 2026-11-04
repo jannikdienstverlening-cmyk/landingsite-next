@@ -1,7 +1,7 @@
 'use client'
 
 import Link from 'next/link'
-import { useState, type FormEvent } from 'react'
+import { useRef, useState, type FormEvent } from 'react'
 
 const emptyForm = {
   voornaam: '', achternaam: '', email: '', telefoon: '', type: 'particulier' as 'particulier' | 'ondernemer',
@@ -12,6 +12,8 @@ export function PartnerApplicationForm() {
   const [form, setForm] = useState(emptyForm)
   const [status, setStatus] = useState<'idle' | 'sending' | 'success' | 'error'>('idle')
   const [message, setMessage] = useState('')
+  const requestId = useRef<string | null>(null)
+  const inFlight = useRef(false)
 
   function update<K extends keyof typeof form>(key: K, value: (typeof form)[K]) {
     setForm((current) => ({ ...current, [key]: value }))
@@ -19,31 +21,38 @@ export function PartnerApplicationForm() {
 
   async function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
+    if (inFlight.current) return
+    inFlight.current = true
+    requestId.current ??= crypto.randomUUID()
     setStatus('sending')
     setMessage('')
     try {
       const response = await fetch('/api/partners/apply', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ ...form, requestId: crypto.randomUUID() }),
+        body: JSON.stringify({ ...form, requestId: requestId.current }),
       })
       const data = await response.json()
       if (!response.ok) throw new Error(data.error || 'Aanvraag versturen lukt nu niet.')
       setForm(emptyForm)
       setStatus('success')
-      setMessage('Je aanvraag is ontvangen en staat op pending. Na handmatige controle ontvang je bericht; er is nog geen partnercode of uitbetaling geactiveerd.')
+      requestId.current = null
+      setMessage(data.status === 'pending'
+        ? 'Je aanmelding is ontvangen. Na handmatige controle ontvang je bericht. Er is nog geen partnercode of uitbetaling geactiveerd.'
+        : 'Voor dit e-mailadres bestaat al een aanmelding. Neem contact op met Jannik als je daar een vraag over hebt.')
     } catch (error) {
       setStatus('error')
       setMessage(error instanceof Error ? error.message : 'Aanvraag versturen lukt nu niet.')
+    } finally {
+      inFlight.current = false
     }
   }
 
   return (
     <form className="partner-application-form" onSubmit={submit} id="aanmelden">
       <div className="partner-form-head">
-        <p className="section-kicker">Aanmelden</p>
-        <h2>Partneraanvraag versturen</h2>
-        <p>Na ontvangst controleren we de aanvraag handmatig. Een unieke partnercode volgt pas na goedkeuring.</p>
+        <h3>Je gegevens</h3>
+        <p>We gebruiken deze gegevens om je aanmelding te beoordelen en je te bereiken.</p>
       </div>
       <div className="form-pair">
         <label><span>Voornaam</span><input required minLength={2} autoComplete="given-name" value={form.voornaam} onChange={(event) => update('voornaam', event.target.value)} /></label>
@@ -54,7 +63,7 @@ export function PartnerApplicationForm() {
         <label><span>Telefoonnummer <small>optioneel</small></span><input type="tel" autoComplete="tel" value={form.telefoon} onChange={(event) => update('telefoon', event.target.value)} /></label>
       </div>
       <fieldset>
-        <legend>Type partner</legend>
+        <legend>Je meldt je aan als</legend>
         <label className="radio-option"><input type="radio" name="partner-type" checked={form.type === 'particulier'} onChange={() => update('type', 'particulier')} /> Particulier</label>
         <label className="radio-option"><input type="radio" name="partner-type" checked={form.type === 'ondernemer'} onChange={() => update('type', 'ondernemer')} /> Ondernemer</label>
       </fieldset>
@@ -68,7 +77,7 @@ export function PartnerApplicationForm() {
       <label className="honeypot" aria-hidden="true">Website<input tabIndex={-1} autoComplete="off" value={form.website} onChange={(event) => update('website', event.target.value)} /></label>
       <label className="consent-option"><input required type="checkbox" checked={form.termsAccepted} onChange={(event) => update('termsAccepted', event.target.checked)} /><span>Ik ga akkoord met de <Link href="/partnervoorwaarden" target="_blank" rel="noreferrer">partnervoorwaarden</Link>.</span></label>
       <label className="consent-option"><input required type="checkbox" checked={form.privacyAccepted} onChange={(event) => update('privacyAccepted', event.target.checked)} /><span>Ik heb het <Link href="/privacybeleid" target="_blank" rel="noreferrer">privacybeleid</Link> gelezen.</span></label>
-      <button className="primary-button partner-submit" disabled={status === 'sending'} type="submit">{status === 'sending' ? 'Aanvraag versturen...' : 'Partneraanvraag versturen'}</button>
+      <button className="primary-button partner-submit" disabled={status === 'sending'} type="submit">{status === 'sending' ? 'Aanmelding versturen...' : 'Verstuur mijn aanmelding'}</button>
       {message && <p className={`form-status ${status === 'success' ? 'success' : 'error'}`} role={status === 'error' ? 'alert' : 'status'}>{message}</p>}
       <p className="form-note">We vragen geen IBAN bij de openbare aanmelding. Uitbetalingen blijven geblokkeerd tot handmatige verificatie.</p>
     </form>

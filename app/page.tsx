@@ -1,6 +1,5 @@
 import type { Metadata } from 'next'
 import { connection } from 'next/server'
-import { DM_Sans, Lora } from 'next/font/google'
 import { AnalyticsLayer } from '@/components/site-interactions'
 import {
   ProcessSection,
@@ -20,9 +19,7 @@ import { seoPage } from '@/content/seo-pages'
 import { BUSINESS } from '@/lib/business'
 import { seoMetadata } from '@/lib/seo'
 import styles from './calm-home.module.css'
-
-const calmSans = DM_Sans({ subsets: ['latin'], variable: '--font-calm-sans', display: 'swap' })
-const calmSerif = Lora({ subsets: ['latin'], weight: '400', variable: '--font-calm-serif', display: 'swap' })
+import { calmSans, calmSerif } from './fonts'
 
 const homepageContent = seoPage('/')
 export const metadata: Metadata = seoMetadata(homepageContent)

@@ -68,8 +68,8 @@ export async function POST(request: NextRequest) {
       html: `<div style="font-family:Arial,sans-serif;line-height:1.6;color:#10231b;max-width:620px;margin:auto;padding:32px"><h1 style="font-size:25px">Nieuwe partneraanvraag</h1><p><strong>Naam:</strong> ${escapeHtml(fullName)}<br><strong>E-mail:</strong> ${escapeHtml(normalizedEmail)}<br><strong>Type:</strong> ${escapeHtml(input.type)}<br><strong>Bedrijf:</strong> ${escapeHtml(input.bedrijfsnaam || 'Niet van toepassing')}<br><strong>KvK:</strong> ${escapeHtml(input.kvkNummer || 'Niet van toepassing')}</p><p>Controleer en keur de aanvraag handmatig goed in het beheer.</p></div>`,
     }, { idempotencyKey: `partner-admin-${input.requestId}` }),
     ])
-  } catch (emailError) {
-    console.error('Partneraanvraag is opgeslagen maar e-mailen mislukt', { partnerId: partner.id, emailError })
+  } catch {
+    console.error('Partneraanvraag is opgeslagen maar de bevestigingsmail kon niet worden verzonden.')
   }
 
   return Response.json({ ok: true, status: 'pending' }, { status: 201 })

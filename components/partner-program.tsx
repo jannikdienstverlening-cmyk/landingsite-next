@@ -59,14 +59,14 @@ export function RollingCommissionExample() {
       <div>
         <p className="section-kicker">Rollend systeem</p>
         <h3>Voorbeeldketen A → B → C → D → E</h3>
-        <p>Voor het abonnement van E ontvangen D €20, C €5 en B €2. A ontvangt voor deze specifieke klant €0, omdat E voor A op niveau 4 staat.</p>
+        <p>Voor het abonnement van E ontvangen D €{partnerProgramConfig.commissions.level1}, C €{partnerProgramConfig.commissions.level2} en B €{partnerProgramConfig.commissions.level3}. A ontvangt voor deze specifieke klant €0, omdat E voor A op niveau 4 staat.</p>
       </div>
       <ol aria-label="Rollende commissieketen">
         {chain.map(([partner, amount, level]) => (
           <li key={partner}><strong>{partner}</strong><span>{amount}</span><small>{level}</small></li>
         ))}
       </ol>
-      <p className="rolling-note">Iedere partner heeft een eigen rollend venster van drie betaalde niveaus. Daardoor kan het netwerk verder groeien, terwijl per abonnement nooit meer dan €27 commissie wordt uitgekeerd.</p>
+      <p className="rolling-note">Per abonnement tellen maximaal {partnerProgramConfig.maximumPaidLevels} betaalde niveaus mee. De totale commissie is daarmee maximaal €{Object.values(partnerProgramConfig.commissions).reduce((total, amount) => total + amount, 0)} per betaalde abonnementsmaand.</p>
     </div>
   )
 }
@@ -79,7 +79,7 @@ export function PartnerConditionsSummary({ link = true }: { link?: boolean }) {
     `Uitbetaling is maandelijks vanaf €${partnerProgramConfig.minimumPayout}; lagere bedragen schuiven door.`,
     'Per abonnement worden maximaal drie niveaus beloond.',
     'Geen vergoeding voor registratie van partners, zelfverwijzingen of kunstmatige constructies.',
-    'Alle bedragen zijn rekenvoorbeelden en vormen geen gegarandeerd inkomen.',
+    'De rekenvoorbeelden vormen geen gegarandeerd inkomen.',
   ]
 
   return (
