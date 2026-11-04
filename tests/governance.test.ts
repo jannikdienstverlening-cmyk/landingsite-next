@@ -31,15 +31,20 @@ test('woordmerken bestaan uit vectorpaden zonder extern font', async () => {
   }
 })
 
-test('merkassets gebruiken het afgesproken inkt-, kobalt- en signaalpalet', async () => {
+test('het bestaande woordmerk blijft behouden en het nieuwe beeldmerk past bij de groene website', async () => {
   const dark = await readFile('public/brand/landingsite-wordmark-dark.svg', 'utf8')
   const mark = await readFile('public/brand/landingsite-mark.svg', 'utf8')
   assert.match(dark, /#0b1220/)
   assert.match(dark, /#246bfd/)
   assert.match(dark, /#ff6a2a/)
-  assert.match(mark, /#0b1220/)
-  assert.match(mark, /#246bfd/)
+  assert.match(mark, /#203f35/)
+  assert.match(mark, /#f6f7f2/)
+  assert.match(mark, /#dd9875/)
+  assert.doesNotMatch(mark, /#0b1220|#246bfd|gradient|filter/i)
   assert.doesNotMatch(mark, /<(?:rect|circle|text|image)\b/i)
+  for (const file of ['app/icon.svg', 'public/favicon.svg']) {
+    assert.equal(await readFile(file, 'utf8'), mark)
+  }
 })
 
 test('favicon-, app- en OG-assets hebben de afgesproken maten', async () => {
@@ -49,6 +54,10 @@ test('favicon-, app- en OG-assets hebben de afgesproken maten', async () => {
     ['public/apple-touch-icon.png', 180, 180],
     ['public/icon-192.png', 192, 192],
     ['public/icon-512.png', 512, 512],
+    ['public/favicon.png', 64, 64],
+    ['app/apple-icon.png', 180, 180],
+    ['public/brand/landingsite-mark-192.png', 192, 192],
+    ['public/brand/landingsite-mark-512.png', 512, 512],
     ['public/og/default.png', 1200, 630],
   ] as const
   for (const [path, width, height] of assets) {

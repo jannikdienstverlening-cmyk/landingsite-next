@@ -44,7 +44,7 @@ test('homepage begint met de echte hoofdcase en wisselt niet automatisch', async
   const preview = await readFile('components/project-preview.tsx', 'utf8')
   const page = await readFile('app/page.tsx', 'utf8')
   assert.match(homepage, /ProjectPreview projects=\{portfolioProjects\}/)
-  assert.equal(portfolioProjects[0].domain, 'ontwikkelbegeleiding.nl')
+  assert.equal(portfolioProjects[0].domain, 'dippingpools.com')
   assert.match(preview, /useState\(0\)/)
   assert.doesNotMatch(preview, /setInterval|setTimeout|requestAnimationFrame/)
   assert.doesNotMatch(homepage, /ProjectShowcase/)

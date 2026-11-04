@@ -15,6 +15,7 @@ export const metadata: Metadata = seoMetadata(content)
 
 export default function BlogPage() {
   const posts = publishedBlogPosts()
+  const example = portfolioProjects[0]
   const structuredData = {
     '@context': 'https://schema.org',
     '@type': 'Blog',
@@ -49,8 +50,8 @@ export default function BlogPage() {
             <a className="button button--outline" href="#artikelen">Bekijk de artikelen</a>
           </div>
           <figure className="blog-hero__visual">
-            <Image src={portfolioProjects[0].image} alt="Een voorbeeld uit ons werk: de homepage van Ontwikkelbegeleiding.nl met uitleg over begeleiding en een kennismakingsknop" width={1440} height={1000} sizes="(max-width: 820px) 90vw, 560px" preload />
-            <figcaption>Uit ons werk: <Link href={`/werk#${portfolioProjects[0].slug}`}>Ontwikkelbegeleiding.nl</Link></figcaption>
+            <Image src={example.image} alt={example.imageAlt} width={1440} height={1000} sizes="(max-width: 820px) 90vw, 560px" preload />
+            <figcaption>Uit ons werk: <Link href={`/werk#${example.slug}`}>{example.name}</Link></figcaption>
           </figure>
         </header>
 

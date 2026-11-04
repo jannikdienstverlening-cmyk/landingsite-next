@@ -41,7 +41,7 @@ export default function WebsiteForSoleTraderPage() {
 
       <section className="seo-section seo-light">
         <div className="studio-shell seo-section__split">
-          <div><p className="overline">Vergelijkbaar project</p><h2>{example.name}</h2><p>{example.description}</p><p>Opgeleverd: {example.result}</p><p><Link href="/werk#ontwikkelbegeleiding-rh" data-analytics-event="case_view" data-analytics-project={example.slug}>Bekijk alle projectdetails</Link></p></div>
+          <div><p className="overline">Vergelijkbaar project</p><h2>{example.name}</h2><p>{example.description}</p><p>Opgeleverd: {example.result}</p><p><Link href={`/werk#${example.slug}`} data-analytics-event="case_view" data-analytics-project={example.slug}>Bekijk alle projectdetails</Link></p></div>
           <div className="work-detail__media"><BrowserFrame project={example} /><MobileProjectFrame project={example} /></div>
         </div>
       </section>

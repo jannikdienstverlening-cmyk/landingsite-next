@@ -5,7 +5,11 @@ test('work page renders the new cases, live links and structured data on the ser
   const response = await page.goto('/werk')
   const html = await response!.text()
   expect(html).not.toMatch(/WIA Management|AIbouwers|wia-management|wiamanagement/i)
-  for (const project of portfolioProjects.slice(1)) {
+  const expectedOrder = ['dippingpools', 'ontwikkelbegeleiding-rh', 'hadak', 'jhszwembaden', 'happyhug']
+  expect(await page.locator('.work-detail').evaluateAll(articles => articles.map(article => article.id))).toEqual(expectedOrder)
+  const itemList = await page.locator('script[type="application/ld+json"]').evaluateAll(scripts => scripts.map(script => JSON.parse(script.textContent || '{}')).flatMap(schema => schema['@graph'] || []).find(schema => schema['@type'] === 'ItemList'))
+  expect(itemList.itemListElement.map((item: { position: number; url: string }) => [item.position, item.url])).toEqual(portfolioProjects.map((project, index) => [index + 1, project.url]))
+  for (const project of portfolioProjects) {
     const article = page.locator(`#${project.slug}`)
     await expect(article.getByRole('heading', { name: project.name.replace(/\.nl$/, ''), exact: true })).toBeVisible()
     await expect(article.getByRole('link', { name: `Bekijk live website: ${project.name}`, exact: true })).toHaveAttribute('href', project.url)
@@ -23,7 +27,7 @@ for (const width of [390, 768, 1440]) {
     await page.setViewportSize({ width, height: 1000 })
     await page.goto('/')
     const preview = page.locator('.project-preview')
-    for (const project of portfolioProjects.slice(1)) {
+    for (const project of portfolioProjects) {
       await preview.getByRole('button', { name: project.name, exact: true }).click()
       for (const [label, alt, device] of [
         ['Desktopweergave', project.imageAlt, 'desktop'],
@@ -39,7 +43,7 @@ for (const width of [390, 768, 1440]) {
     }
     expect(errors).toEqual([])
     await page.goto('/werk')
-    for (const project of portfolioProjects.slice(1)) {
+    for (const project of portfolioProjects) {
       const article = page.locator(`#${project.slug}`)
       await article.scrollIntoViewIfNeeded()
       const title = article.getByRole('heading', { name: project.name.replace(/\.nl$/, ''), exact: true })

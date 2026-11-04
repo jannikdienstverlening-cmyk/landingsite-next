@@ -7,8 +7,8 @@ export default function manifest(): MetadataRoute.Manifest {
     description: 'Websites en landingspagina\'s voor zzp en mkb.',
     start_url: '/',
     display: 'standalone',
-    background_color: '#f7f4ec',
-    theme_color: '#0b1220',
+    background_color: '#f6f7f2',
+    theme_color: '#203f35',
     icons: [
       { src: '/icon-192.png', sizes: '192x192', type: 'image/png' },
       { src: '/icon-512.png', sizes: '512x512', type: 'image/png' },

@@ -50,7 +50,7 @@ test('beheerblok visuele regressie mobiel', async ({ page }) => {
 test('hoofdcase op werkpagina visuele regressie tablet', async ({ page }) => {
   await page.setViewportSize({ width: 768, height: 1024 })
   await page.goto('/werk')
-  await settle(page, '.work-detail')
+  await settle(page, '.work-detail:first-child')
   await expect(page.locator('.work-detail').first()).toHaveScreenshot('work-maincase-tablet.png')
 })
 

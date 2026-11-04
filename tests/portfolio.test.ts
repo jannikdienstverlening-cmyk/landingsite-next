@@ -6,13 +6,15 @@ import sharp from 'sharp'
 import { portfolioProjects } from '../data/portfolio'
 import { seoPage } from '../content/seo-pages'
 
-test('portfolio keeps the main case and replaces the two additional projects', () => {
+test('portfolio zet Dippingpools eerst en JHS Zwembaden als vierde, zonder bestaande projecten te verwijderen', () => {
   assert.deepEqual(portfolioProjects.map(project => project.domain), [
-    'ontwikkelbegeleiding.nl', 'hadak.nl', 'happyhug.nl',
+    'dippingpools.com', 'ontwikkelbegeleiding.nl', 'hadak.nl', 'jhszwembaden.nl', 'happyhug.nl',
   ])
-  assert.equal(portfolioProjects[1].url, 'https://hadak.nl/nl')
-  assert.equal(portfolioProjects[2].url, 'https://happyhug.nl/')
-  assert.equal(new Set(portfolioProjects.map(project => project.slug)).size, 3)
+  assert.equal(portfolioProjects[0].url, 'https://dippingpools.com/')
+  assert.equal(portfolioProjects[2].url, 'https://hadak.nl/nl')
+  assert.equal(portfolioProjects[3].url, 'https://www.jhszwembaden.nl/')
+  assert.equal(portfolioProjects[4].url, 'https://happyhug.nl/')
+  assert.equal(new Set(portfolioProjects.map(project => project.slug)).size, 5)
 })
 
 test('replacement projects have actual local desktop and mobile WebP screenshots', async () => {
@@ -21,7 +23,7 @@ test('replacement projects have actual local desktop and mobile WebP screenshots
       [project.image, project.imageAlt, 1440, 1000],
       [project.mobileImage, project.mobileImageAlt, 390, 844],
     ] as const) {
-      assert.match(file, /^\/images\/portfolio\/[a-z]+-(?:desktop|mobile)-20261011\.webp$/)
+      assert.match(file, /^\/images\/portfolio\/[a-z]+-(?:desktop|mobile)-\d{8}\.webp$/)
       assert.ok(alt.length > 20)
       const bytes = await readFile(path.join(process.cwd(), 'public', file))
       assert.ok(bytes.length < 500_000)
