@@ -941,6 +941,19 @@ button, input, textarea, select { font: inherit; }
 
 .legal-content a { color: var(--green-dark); }
 
+.legal-content .buyout-rates {
+  width: 100%;
+  margin-block: 20px;
+  border-collapse: collapse;
+  text-align: left;
+  font-size: .92rem;
+}
+
+.buyout-rates caption { margin-bottom: 6px; text-align: left; font-weight: 600; }
+.buyout-rates th, .buyout-rates td { padding: 10px 0; border-bottom: 1px solid var(--line); }
+.buyout-rates th[scope="row"] { padding-right: 12px; font-weight: 400; }
+.buyout-rates :is(th, td):last-child { text-align: right; white-space: nowrap; }
+
 .management-success {
   margin: 0 0 28px;
   padding: 14px 16px;

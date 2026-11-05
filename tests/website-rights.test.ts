@@ -2,20 +2,28 @@ import assert from 'node:assert/strict'
 import { readFile, readdir } from 'node:fs/promises'
 import path from 'node:path'
 import test from 'node:test'
-import { commercialConfig } from '../config/commercial'
+import { commercialConfig, websiteBuyoutRates } from '../config/commercial'
 import { pricingConfig } from '../config/pricing'
 import { verifiedClaims } from '../config/verified-claims'
 
-test('60 minuten beheer blijft consistent zonder prijs- of afkoopbedrag te verzinnen', () => {
+test('60 minuten beheer en de maandprijs blijven ongewijzigd bij optionele overname', () => {
   assert.equal(commercialConfig.management.includedChangeMinutes, 60)
   assert.equal(pricingConfig.websiteManagement.includedChangeMinutes, 60)
   assert.equal(verifiedClaims.management.value.includedChangeMinutes, 60)
   assert.ok(commercialConfig.management.features.includes('Maximaal 60 minuten kleine tekst- of beeldwijzigingen per maand'))
   assert.equal(commercialConfig.management.monthlyPrice, 79)
-  assert.equal(commercialConfig.websiteRights.buyoutPricing, 'on-request')
-  assert.equal('buyoutPrice' in commercialConfig.websiteRights, false)
   assert.equal(verifiedClaims.websiteRights.publish, true)
-  assert.equal(verifiedClaims.websiteRights.verifiedAt, '2026-10-30')
+  assert.equal(verifiedClaims.websiteRights.verifiedAt, commercialConfig.terms.updatedAt)
+})
+
+test('overname is geprijsd op basis van 0, 12, 18 en 24 volledige betaalmaanden', () => {
+  assert.deepEqual(websiteBuyoutRates.map(({ fromPaidMonths, amount, period }) => [fromPaidMonths, amount, period]), [
+    [0, 750, 'Korter dan 12 maanden'],
+    [12, 500, '12 tot 18 maanden'],
+    [18, 250, '18 tot 24 maanden'],
+    [24, 0, 'Vanaf 24 maanden'],
+  ])
+  assert.equal(websiteBuyoutRates.at(-1)?.priceLabel, 'Gratis')
 })
 
 test('eigen materiaal, abonnementslicentie, afkoop en eerdere rechten staan apart vast', async () => {
@@ -28,7 +36,9 @@ test('eigen materiaal, abonnementslicentie, afkoop en eerdere rechten staan apar
   assert.match(terms, /niet met terugwerkende kracht/)
   assert.match(terms, /onder hun eigen licenties/)
   assert.match(terms, /maximaal \{websiteManagement.includedChangeMinutes\} minuten/)
-  assert.doesNotMatch(terms, /afkoopprijs.{0,40}€\d/)
+  assert.match(terms, /websiteBuyoutRates\.map/)
+  assert.match(terms, /Er wordt niets automatisch geïncasseerd voor overname/)
+  assert.match(terms, /ook als de overname gratis is/)
 })
 
 test('actieve bronteksten bevatten de oude maandelijkse wijzigingstijd niet meer', async () => {

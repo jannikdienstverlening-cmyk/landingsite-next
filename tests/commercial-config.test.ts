@@ -39,7 +39,7 @@ test('ook na de oude actieperiode blijven eerste en volgende maand 79 inclusief 
 
 test('abonnementsmodel is vast en niet afhankelijk van een oude actie', () => {
   assert.equal(commercialConfig.model, 'subscription-only')
-  assert.equal(commercialConfig.version, '2026-10-30-website-license-60m')
+  assert.equal(commercialConfig.version, '2026-11-05-optional-website-buyout')
   assert.equal('promotion' in commercialConfig, false)
 })
 

@@ -6,13 +6,18 @@ export const commercialConfig = {
   pricesIncludeVat: true,
   stripeTaxBehavior: 'inclusive',
   model: 'subscription-only',
-  version: '2026-10-30-website-license-60m',
-  terms: { updatedAt: '2026-10-30' },
+  version: '2026-11-05-optional-website-buyout',
+  terms: { updatedAt: '2026-11-05' },
   websiteRights: {
     model: 'subscription-license',
     customerMaterialsRemainCustomerProperty: true,
     transferRequiresWrittenAgreement: true,
-    buyoutPricing: 'on-request',
+    buyoutPricing: [
+      { fromPaidMonths: 0, amount: 750 },
+      { fromPaidMonths: 12, amount: 500 },
+      { fromPaidMonths: 18, amount: 250 },
+      { fromPaidMonths: 24, amount: 0 },
+    ],
   },
   offer: {
     packageId: 'pro',
@@ -135,6 +140,19 @@ export function euro(amount: number, decimals = 0) {
     maximumFractionDigits: decimals,
   }).format(amount)
 }
+
+export const websiteBuyoutRates = commercialConfig.websiteRights.buyoutPricing.map((rate, index, rates) => {
+  const until = rates[index + 1]?.fromPaidMonths
+  return {
+    ...rate,
+    period: until === undefined
+      ? `Vanaf ${rate.fromPaidMonths} maanden`
+      : rate.fromPaidMonths === 0
+        ? `Korter dan ${until} maanden`
+        : `${rate.fromPaidMonths} tot ${until} maanden`,
+    priceLabel: rate.amount === 0 ? 'Gratis' : euro(rate.amount),
+  }
+})
 
 export function cents(amount: number) {
   return Math.round(amount * 100)

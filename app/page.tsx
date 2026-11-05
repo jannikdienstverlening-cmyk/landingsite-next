@@ -35,7 +35,7 @@ function homepageFaqs(): StudioFaq[] {
     { question: 'Kan ik maandelijks opzeggen?', answer: 'Ja, tegen het einde van de betaalperiode. Daarna stoppen hosting, beheer en het gebruik van onze code en ons ontwerp binnen het abonnement. Je eigen materiaal en domeinnaam blijven van jou. Zelfstandig verdergaan met de website kan via een aparte afkoopafspraak. Opzeggen verplicht je niet tot afkoop. Eerder overeengekomen rechten blijven gelden.' },
     { question: 'Blijf ik eigenaar van mijn domein?', answer: 'Ja. Je domeinnaam blijft van jou en je houdt waar mogelijk zelf toegang tot de registrar.' },
     { question: 'Van wie zijn de teksten, foto’s en de website?', answer: 'Je eigen teksten, foto’s, logo en andere aangeleverde materialen blijven van jou. Je gebruikt onze websitecode en ons ontwerp binnen het abonnement; deze worden niet automatisch jouw eigendom. Onderdelen van andere makers houden hun eigen licenties. De voorwaarden leggen dit verder uit.' },
-    { question: 'Kan ik de website later overnemen?', answer: 'Je kunt een eenmalige afkoopofferte aanvragen. We spreken de prijs, de overdraagbare code en rechten en de hulp bij de verhuizing vooraf schriftelijk af. Afkoop zit niet in het maandbedrag. Je krijgt geen rechten op onderdelen die we zelf niet mogen overdragen.' },
+    { question: 'Kan ik de website later overnemen?', answer: 'Ja. Overname na opzegging is vrijwillig. Het eenmalige bedrag hangt af van je betaalde looptijd en staat in artikel 11b van de voorwaarden. We leggen vooraf schriftelijk vast welke bestanden en rechten we overdragen. Eerder overeengekomen rechten blijven gelden.' },
   ]
 }
 

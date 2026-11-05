@@ -9,10 +9,13 @@ test('beheerantwoord noemt 60 minuten en de ongewijzigde maandprijs', async () =
   assert.doesNotMatch(answer, /20 minuten/)
 })
 
-test('afkoopprijs wordt niet met de maandprijs verward en rechten worden niet verzonnen', async () => {
-  const answer = await answerSiteQuestion([{ role: 'user', content: 'Wat kost de afkoopprijs en word ik eigenaar van de broncode?' }])
-  assert.match(answer, /geen vast afkoopbedrag/)
+test('overnamebedragen zijn eenmalig en worden niet met opzegkosten of de maandprijs verward', async () => {
+  const answer = await answerSiteQuestion([{ role: 'user', content: 'Wat kost de overname?' }])
+  assert.match(answer, /overname na opzegging vrijwillig/)
+  assert.match(answer, /korter dan 12 maanden: €\s*750; 12 tot 18 maanden: €\s*500; 18 tot 24 maanden: €\s*250; vanaf 24 maanden: gratis/)
+  assert.match(answer, /inclusief btw/)
+  assert.match(answer, /Zonder overname betaal je geen overnamebedrag/)
   assert.match(answer, /schriftelijk/)
   assert.match(answer, /Eerder overeengekomen rechten blijven gelden/)
-  assert.doesNotMatch(answer, /€\d/)
+  assert.doesNotMatch(answer, /€\s*79\b/)
 })

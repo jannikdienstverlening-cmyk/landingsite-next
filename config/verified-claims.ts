@@ -50,8 +50,8 @@ export const verifiedClaims = {
   websiteRights: {
     value: commercialConfig.websiteRights,
     publish: true,
-    verifiedAt: '2026-10-30',
-    evidence: 'Algemene voorwaarden artikelen 3a, 6, 11, 11a en 11b; docs/commercial/2026-10-30-website-rights-60-minutes.md (expliciet verzoek)',
+    verifiedAt: commercialConfig.terms.updatedAt,
+    evidence: 'Algemene voorwaarden artikelen 3a, 6, 11, 11a en 11b; docs/commercial/2026-11-05-optional-website-buyout.md (expliciete goedkeuring)',
   },
   organization: {
     value: {

@@ -147,7 +147,7 @@ const coreSeoPages: SeoPageEntry[] = [
     description: 'Zakelijke voorwaarden voor websitebouw en Hosting & Websitebeheer van Landingsite.nl.',
     canonical: `${baseUrl}/algemene-voorwaarden`,
     h1: 'Algemene voorwaarden',
-    author: 'Jannik Dienstverlening', reviewer: 'Jannik', verifiedAt: '2026-10-11', updatedAt: '2026-10-11',
+    author: 'Jannik Dienstverlening', reviewer: 'Jannik', verifiedAt: commercialConfig.terms.updatedAt, updatedAt: commercialConfig.terms.updatedAt,
     indexable: true, includedInSitemap: true,
     sources: ['app/algemene-voorwaarden/page.tsx'],
     relatedPages: ['/', '/kosten-website-laten-maken', '/privacybeleid', '/start'],

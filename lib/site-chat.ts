@@ -1,7 +1,7 @@
 import 'server-only'
 
 import Anthropic from '@anthropic-ai/sdk'
-import { commercialConfig, websiteOffer } from '@/config/commercial'
+import { commercialConfig, websiteBuyoutRates, websiteOffer } from '@/config/commercial'
 import { pricingConfig } from '@/config/pricing'
 import { portfolioProjects } from '@/data/portfolio'
 import type { z } from 'zod'
@@ -10,6 +10,7 @@ import type { chatMessageSchema } from './validation'
 type ChatMessage = z.infer<typeof chatMessageSchema>
 
 let client: Anthropic | null = null
+const buyoutAmounts = websiteBuyoutRates.map(rate => `${rate.period.toLowerCase()}: ${rate.priceLabel.toLowerCase()}`).join('; ')
 
 function getClient() {
   const apiKey = process.env.ANTHROPIC_API_KEY
@@ -29,7 +30,7 @@ Feiten over Landingsite.nl:
 - Teksten worden uitgewerkt op basis van de intake. Mobiel ontwerp, één contactformulier en de SEO-basis zijn inbegrepen.
 - Starter, Pro en Premium worden niet meer als nieuwe pakketten aangeboden. Eerdere overeenkomsten blijven geldig.
 - Websitebeheer bevat managed hosting, SSL, back-ups, beveiligings- en technische updates, monitoring, controle van formulieren, ondersteuning, domeinkoppeling en maximaal ${websiteManagement.includedChangeMinutes} minuten kleine wijzigingen per betaalmaand. Tijd wordt niet opgespaard en is niet overdraagbaar.
-- Eigen aangeleverde materialen blijven van de klant of de betreffende rechthebbende. Onze code en ons ontwerp worden binnen het abonnement in gebruik gegeven, niet automatisch overgedragen. Zelfstandig verdergaan kan via een afzonderlijke schriftelijke afkoopofferte; noem nooit een niet-vastgestelde afkoopprijs. Rechten van derden blijven gelden en eerdere overeengekomen rechten worden niet met terugwerkende kracht veranderd.
+- Eigen aangeleverde materialen blijven van de klant of de betreffende rechthebbende. Onze code en ons ontwerp worden binnen het abonnement in gebruik gegeven, niet automatisch overgedragen. Voor nieuwe overeenkomsten is overname na opzegging vrijwillig. Eenmalig, inclusief btw, volgens het aantal volledige betaalmaanden op de einddatum: ${buyoutAmounts}. Zonder overname betaal je geen overnamebedrag. Bestanden, overdraagbare rechten en eventuele verhuishulp worden vooraf schriftelijk afgesproken. Rechten van derden en eerdere overeenkomsten blijven gelden.
 - Bij de start wordt alleen de eerste maand van EUR ${websiteManagement.monthlyPrice} inclusief btw betaald. Daarna volgt hetzelfde bedrag per maand.
 - Websitebeheer is per maand opzegbaar volgens de voorwaarden.
 - Het nieuwe aanbod wijzigt eerdere contracten en betalingen niet met terugwerkende kracht.
@@ -41,8 +42,8 @@ Feiten over Landingsite.nl:
 function automaticAnswer(question: string) {
   const normalized = question.toLocaleLowerCase('nl-NL')
   const { websiteManagement } = pricingConfig
-  if (/afkoop|afkopen|overnemen|overdracht|broncode|eigenaar|eigendom|licentie|auteursrecht/.test(normalized)) {
-    return 'Je eigen teksten, foto’s, logo en domeinnaam blijven van jou, met behoud van eventuele rechten van andere makers. Onze websitecode en ons ontwerp gebruik je binnen het abonnement; ze worden niet automatisch jouw eigendom. Zelfstandig verdergaan kan via een afzonderlijke afkoopofferte. De prijs, overdraagbare bestanden en rechten en eventuele verhuishulp spreken we vooraf schriftelijk af. Er is geen vast afkoopbedrag gepubliceerd. Eerder overeengekomen rechten blijven gelden. Bekijk /algemene-voorwaarden#website-rechten of vraag Jannik om een offerte.'
+  if (/afkoop|afkopen|overnemen|overname|overdracht|broncode|eigenaar|eigendom|licentie|auteursrecht/.test(normalized)) {
+    return `Je eigen teksten, foto’s, logo en domeinnaam blijven van jou, met behoud van eventuele rechten van andere makers. Onze code en ons ontwerp gebruik je binnen het abonnement. Voor nieuwe overeenkomsten is overname na opzegging vrijwillig. Eenmalig, inclusief btw, op basis van volledige betaalmaanden bij beëindiging: ${buyoutAmounts}. Zonder overname betaal je geen overnamebedrag. Welke bestanden en rechten je krijgt, leggen we vooraf schriftelijk vast. Eerder overeengekomen rechten blijven gelden. Bekijk /algemene-voorwaarden#website-overname.`
   }
   const answers: string[] = []
   const asksAboutManagement = /websitebeheer|beheer|hosting|ssl|back-?up|onderhoud|wijzig|minuten|79/.test(normalized)

@@ -71,7 +71,7 @@ test('stale or absent terms acceptance cannot create a checkout or contact provi
   const create = context.mock.method(getStripe().checkout.sessions, 'create', () => { throw new Error('Unexpected payment creation') })
   const from = context.mock.method(getSupabase(), 'from', () => { throw new Error('Unexpected database access') })
   const tax = context.mock.method(getStripe().tax.registrations, 'list', () => { throw new Error('Unexpected tax lookup') })
-  for (const termsVersion of ['2026-10-11-single-website-offer', undefined]) {
+  for (const termsVersion of ['2026-10-11-single-website-offer', '2026-10-30-website-license-60m', undefined]) {
     const response = await checkout(request({ pakket: 'pro', requestId: randomUUID(), termsAccepted: true, termsVersion }))
     assert.equal(response.status, 409)
     assert.equal((await response.json()).code, 'terms_changed')
@@ -185,6 +185,7 @@ test('cached checkout retries never redirect to expired or already completed pay
 for (const purchase of [
   { label: 'historical', build: '199', first: '278', version: '2026-08-13-zomeractie-v2', model: 'build-and-management' },
   { label: 'previous monthly agreement', build: '0', first: '79', version: '2026-10-11-single-website-offer', model: 'subscription-only' },
+  { label: 'pre-buyout agreement', build: '0', first: '79', version: '2026-10-30-website-license-60m', model: 'subscription-only' },
   { label: 'subscription-only', build: '0', first: '79', version: commercialConfig.version, model: commercialConfig.model },
 ]) {
 test(`${purchase.label} paid checkout creates one order and sends the intake confirmation only once`, async context => {
