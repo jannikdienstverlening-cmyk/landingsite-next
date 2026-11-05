@@ -59,7 +59,7 @@ console.log('OK /robots.txt')
 const sitemapResponse = await fetch(`${baseUrl}/sitemap.xml`)
 if (!sitemapResponse.ok) throw new Error(`/sitemap.xml antwoordt met ${sitemapResponse.status}.`)
 const sitemap = await sitemapResponse.text()
-for (const expected of ['https://www.landingsite.nl', 'https://www.landingsite.nl/werk', 'https://www.landingsite.nl/blog', 'https://www.landingsite.nl/blog/wat-moet-er-bovenaan-je-website-staan']) {
+for (const expected of ['https://www.landingsite.nl/', 'https://www.landingsite.nl/werk', 'https://www.landingsite.nl/blog', 'https://www.landingsite.nl/blog/wat-moet-er-bovenaan-je-website-staan']) {
   if (!sitemap.includes(`<loc>${expected}</loc>`)) throw new Error(`/sitemap.xml mist ${expected}.`)
 }
 for (const excluded of ['/start', '/partner', '/intake', '/beheer']) {

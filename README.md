@@ -20,6 +20,23 @@ npm run test
 npm run build
 ```
 
+### Visuele browsertests
+
+Playwright bewaart referentiebeelden per platform in `e2e/__screenshots__/`.
+Gebruik voor een visuele wijziging Chromium uit de vastgelegde Playwright-versie
+en test tegen de productiebuild. Werk alleen de bedoelde beelden bij, op het
+platform waarvoor ze gelden (Windows of Ubuntu 24.04).
+
+```powershell
+npm run build
+$env:PLAYWRIGHT_PRODUCTION = '1'
+npm run test:e2e -- e2e/visual.spec.ts --update-snapshots=none
+```
+
+GitHub vergelijkt de Linux-beelden zonder ze automatisch te vervangen.
+Een branch met prefix `codex/quality-` draait dezelfde controles zonder
+de productiebranch te wijzigen.
+
 ## Lead Engine-routes
 
 - `/dashboard` — kerncijfers en geprioriteerde hot leads.
