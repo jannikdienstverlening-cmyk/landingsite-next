@@ -10,7 +10,7 @@ export default defineConfig({
   forbidOnly: Boolean(process.env.CI),
   retries: process.env.CI ? 1 : 0,
   reporter: process.env.CI ? [['line'], ['html', { open: 'never' }]] : 'line',
-  snapshotPathTemplate: '{testDir}/__screenshots__/{arg}{ext}',
+  snapshotPathTemplate: '{testDir}/__screenshots__/{platform}/{arg}{ext}',
   expect: {
     toHaveScreenshot: { animations: 'disabled', maxDiffPixelRatio: 0.025 },
   },
