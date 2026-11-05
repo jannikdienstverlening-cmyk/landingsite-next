@@ -30,13 +30,22 @@ export default async function StartPage({ searchParams }: { searchParams: Promis
             <h1>Dit wordt jouw nieuwe website.</h1>
             <p>Voor €{commercialConfig.management.monthlyPrice} per maand inclusief btw bouw ik je website en verzorg ik de hosting en het beheer. Je betaalt geen eenmalige bouwkosten en hoeft geen pakket te kiezen.</p>
             {cancelled && <p id="checkout-cancelled" className="form-message form-message--error" role="status" data-analytics-view="checkout_cancel">De checkout is geannuleerd. Er is niets afgeschreven.</p>}
-            <div className="start-scope"><h2>Dit zit erbij</h2><dl className="start-simple-specs">
-              <div><dt>Pagina’s</dt><dd>Tot {websiteOffer.pages} pagina’s voor je bedrijf, diensten en contact</dd></div>
-              <div><dt>Teksten</dt><dd>Uitgewerkt met de informatie uit je intake</dd></div>
-              <div><dt>Ontwerp en techniek</dt><dd>Mobiel ontwerp, contactformulier en SEO-basis</dd></div>
-              <div><dt>Aanpassingen</dt><dd>{websiteOffer.correctionRounds} gebundelde aanpassingsrondes vóór oplevering</dd></div>
-              <div><dt>Na oplevering</dt><dd>Hosting, updates, back-ups, formuliercontrole en {commercialConfig.management.includedChangeMinutes} minuten kleine wijzigingen per maand</dd></div>
-            </dl><p>Na betaling vul je de intake over je bedrijf in. Binnen {commercialConfig.firstVersion.hours} uur na betaling en een complete intake krijg je de eerste werkende versie. Pas na jouw akkoord gaat de website online.</p><p>Extra pagina’s, functies, webshops en grote migraties vallen buiten dit aanbod. Extra werk spreken we vooraf apart af. Ongebruikte wijzigingstijd wordt niet opgespaard.</p></div>
+            <div className="start-scope">
+              <h2>Dit zit erbij</h2>
+              <p>We bouwen je website. Daarna heb je elke maand <strong>{commercialConfig.management.includedChangeMinutes} minuten voor kleine aanpassingen</strong>.</p>
+              <p>Na betaling vul je de intake over je bedrijf in. Binnen {commercialConfig.firstVersion.hours} uur na betaling en een complete intake krijg je de eerste werkende versie. Pas na jouw akkoord gaat de website online.</p>
+              <details>
+                <summary>Bekijk wat er precies bij zit</summary>
+                <dl className="start-simple-specs">
+                  <div><dt>Pagina’s</dt><dd>Tot {websiteOffer.pages} pagina’s voor je bedrijf, diensten en contact</dd></div>
+                  <div><dt>Teksten</dt><dd>Uitgewerkt met de informatie uit je intake</dd></div>
+                  <div><dt>Ontwerp en techniek</dt><dd>Mobiel ontwerp, contactformulier en SEO-basis</dd></div>
+                  <div><dt>Aanpassingen</dt><dd>{websiteOffer.correctionRounds} gebundelde aanpassingsrondes vóór oplevering</dd></div>
+                  <div><dt>Na oplevering</dt><dd>Hosting, updates, back-ups en formuliercontrole</dd></div>
+                </dl>
+                <p>Extra pagina’s, functies, webshops en grote migraties vallen buiten dit aanbod. Extra werk spreken we vooraf apart af. Ongebruikte wijzigingstijd wordt niet opgespaard.</p>
+              </details>
+            </div>
           </section>
 
             <aside className="order-summary" aria-label="Bestelsamenvatting voor je website" data-analytics-view="checkout_view">
