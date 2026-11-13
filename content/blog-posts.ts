@@ -30,6 +30,90 @@ const baseUrl = 'https://www.landingsite.nl'
 
 export const blogPosts: BlogPost[] = [
   {
+    slug: 'hoe-test-je-een-website-met-alleen-je-toetsenbord',
+    status: 'published',
+    title: 'Hoe test je een website met alleen je toetsenbord?',
+    description: 'Controleer stap voor stap of links, knoppen, formulieren en menu’s op je zakelijke website zonder muis te bedienen zijn.',
+    excerpt: 'Met een korte toetsenbordtest ontdek je of bezoekers kunnen navigeren, formulieren invullen en acties uitvoeren zonder muis. Deze checklist helpt je systematisch controleren.',
+    category: 'Toegankelijkheid',
+    primaryKeyword: 'website testen met toetsenbord',
+    secondaryKeywords: ['toetsenbordnavigatie website testen', 'website zonder muis bedienen', 'toegankelijkheid website controleren'],
+    searchIntent: 'Zelf de toetsenbordbediening van een zakelijke website praktisch controleren',
+    publishedAt: '2026-11-13',
+    updatedAt: '2026-11-13',
+    author: 'Jannik',
+    reviewer: 'Jannik',
+    readingTime: '6 minuten',
+    sources: [
+      'https://www.w3.org/WAI/test-evaluate/easy-checks/',
+      'https://www.w3.org/WAI/WCAG22/Understanding/keyboard.html',
+      'https://www.w3.org/WAI/WCAG22/Understanding/focus-order.html',
+      'https://www.w3.org/WAI/WCAG22/Understanding/focus-visible.html',
+      'https://www.w3.org/WAI/WCAG22/Understanding/focus-not-obscured-minimum.html',
+    ],
+    sections: [
+      {
+        heading: 'Begin zonder muis of touchpad',
+        paragraphs: [
+          'Open de pagina die je wilt controleren en leg je muis of touchpad even buiten bereik. Gebruik Tab om vooruit te gaan en Shift+Tab om terug te gaan. Zo merk je snel of je onbewust toch een aanwijzer nodig hebt.',
+          'Start op meer dan alleen de homepage. Controleer in ieder geval een dienstenpagina, het menu, een formulier en een pagina met bijzondere onderdelen, zoals een uitklapbaar blok of een dialoogvenster.',
+        ],
+      },
+      {
+        heading: 'Volg ieder interactief onderdeel',
+        paragraphs: [
+          'Druk rustig op Tab en kijk welk onderdeel actief wordt. Links, knoppen en formuliervelden horen bereikbaar te zijn wanneer je ze nodig hebt. Een onderdeel dat je alleen met een muisklik of muisbeweging kunt gebruiken, verdient nader onderzoek.',
+          'Controleer ook of je niet langs onzichtbare of niet-interactieve onderdelen tabt. Zulke onnodige tussenstappen maken de route lang en onduidelijk.',
+        ],
+        bullets: [
+          'Kun je het hoofdmenu openen en iedere link bereiken?',
+          'Kun je alle velden en de verzendknop van een formulier gebruiken?',
+          'Zijn cookieknoppen, filters en uitklapbare onderdelen bereikbaar?',
+          'Kom je na het laatste onderdeel logisch verder of terug?',
+        ],
+      },
+      {
+        heading: 'Controleer of de focus zichtbaar blijft',
+        paragraphs: [
+          'Bij iedere stap moet je kunnen zien waar je bent. Dat kan bijvoorbeeld met een rand, onderstreping of duidelijke kleurverandering. Verdwijnt de markering, dan weet een bezoeker die het scherm ziet niet welk onderdeel reageert op de volgende toets.',
+          'Let ook op vaste balken en meldingen. Het onderdeel met focus mag niet volledig achter een vaste header, cookiebanner of ander overlappend element verdwijnen.',
+        ],
+      },
+      {
+        heading: 'Beoordeel de volgorde, niet alleen de bereikbaarheid',
+        paragraphs: [
+          'Een pagina kan technisch alle onderdelen bereiken en toch verwarrend werken. De focusvolgorde moet de betekenis en bediening van de pagina behouden. Op een eenvoudige pagina voelt dat meestal als een logische route door menu, hoofdinhoud, formulier en afsluitende links.',
+          'Let op onverwachte sprongen. Wanneer de focus van bovenaan de pagina ineens naar een onderdeel onderaan gaat en daarna terugkeert, is de visuele opbouw moeilijk te volgen. De volgorde hoeft niet altijd exact gelijk te zijn aan de zichtbare indeling, maar moet wel begrijpelijk blijven.',
+        ],
+      },
+      {
+        heading: 'Voer iedere belangrijke actie uit',
+        paragraphs: [
+          'Bereikbaar zijn is niet genoeg: een onderdeel moet ook werken. Activeer links en knoppen met Enter. Test selectievakken en gewone knoppen waar passend met de spatiebalk. Gebruik bij keuzelijsten en samengestelde bedieningselementen ook de pijltjestoetsen volgens het gedrag dat het onderdeel aangeeft.',
+          'Open menu’s en dialoogvensters en sluit ze weer. Controleer dat de focus niet vastloopt op een plek waar je niet meer uitkomt. Na het sluiten van een dialoog hoort de route bovendien begrijpelijk verder te gaan, meestal vanaf het onderdeel waarmee je hem opende.',
+        ],
+      },
+      {
+        heading: 'Noteer problemen als concrete handelingen',
+        paragraphs: [
+          'Schrijf bij ieder probleem op welke pagina je testte, welke toetsen je gebruikte, wat je verwachtte en wat er gebeurde. “De offerteknop in het mobiele menu krijgt na drie keer Tab geen zichtbare focus” is beter te onderzoeken dan “het menu is niet toegankelijk”.',
+          'Een toetsenbordronde is een nuttige eerste controle, maar geen volledige toegankelijkheidsbeoordeling. Je controleert hiermee vooral bediening, focus en volgorde. Andere onderwerpen, zoals tekstalternatieven, labels, contrast en gebruik met hulpsoftware, vragen aanvullende controles.',
+        ],
+        bullets: [
+          'Pagina en onderdeel',
+          'Gebruikte toets of toetsencombinatie',
+          'Verwacht gedrag',
+          'Werkelijk gedrag',
+          'Browser en schermformaat',
+        ],
+      },
+    ],
+    relatedLinks: [
+      { label: 'Controleer je website ook op mobiel', href: '/blog/hoe-controleer-je-een-website-op-mobiel' },
+      { label: 'Schrijf duidelijke link- en knopteksten', href: '/blog/hoe-schrijf-je-duidelijke-link-en-knopteksten' },
+    ],
+  },
+  {
     slug: 'hoe-controleer-je-een-website-op-mobiel',
     status: 'published',
     title: 'Hoe controleer je een website op mobiel?',

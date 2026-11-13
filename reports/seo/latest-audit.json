@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-10-30T08:02:13.690Z",
+  "generatedAt": "2026-11-13T08:01:45.183Z",
   "indexableRoutes": [
     {
       "slug": "/",
@@ -54,6 +54,12 @@
       "title": "Privacybeleid voor klanten en bezoekers | Landingsite.nl",
       "primaryKeyword": "privacybeleid Landingsite.nl",
       "canonical": "https://www.landingsite.nl/privacybeleid"
+    },
+    {
+      "slug": "/blog/hoe-test-je-een-website-met-alleen-je-toetsenbord",
+      "title": "Hoe test je een website met alleen je toetsenbord? | Landingsite.nl",
+      "primaryKeyword": "website testen met toetsenbord",
+      "canonical": "https://www.landingsite.nl/blog/hoe-test-je-een-website-met-alleen-je-toetsenbord"
     },
     {
       "slug": "/blog/hoe-controleer-je-een-website-op-mobiel",
