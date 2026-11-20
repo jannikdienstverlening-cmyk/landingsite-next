@@ -30,6 +30,89 @@ const baseUrl = 'https://www.landingsite.nl'
 
 export const blogPosts: BlogPost[] = [
   {
+    slug: 'hoe-controleer-je-kleurcontrast-op-je-website',
+    status: 'published',
+    title: 'Hoe controleer je kleurcontrast op je website?',
+    description: 'Controleer stap voor stap het contrast van tekst, knoppen, invoervelden en andere belangrijke onderdelen van je zakelijke website.',
+    excerpt: 'Een lichte tekst, subtiele knoprand of foutmelding in alleen rood kan moeilijk waarneembaar zijn. Met deze praktische ronde controleer je de belangrijkste kleurcombinaties.',
+    category: 'Toegankelijkheid',
+    primaryKeyword: 'kleurcontrast website controleren',
+    secondaryKeywords: ['contrast website testen', 'kleurcontrast tekst meten', 'WCAG contrast controleren'],
+    searchIntent: 'Zelf het kleurcontrast van tekst en interfaceonderdelen op een zakelijke website praktisch controleren',
+    publishedAt: '2026-11-20',
+    updatedAt: '2026-11-20',
+    author: 'Jannik',
+    reviewer: 'Jannik',
+    readingTime: '6 minuten',
+    sources: [
+      'https://www.w3.org/WAI/WCAG22/Understanding/contrast-minimum.html',
+      'https://www.w3.org/WAI/WCAG22/Understanding/non-text-contrast.html',
+      'https://www.w3.org/WAI/WCAG22/Understanding/use-of-color.html',
+      'https://www.w3.org/WAI/test-evaluate/preliminary/',
+    ],
+    sections: [
+      {
+        heading: 'Maak eerst een lijst van echte kleurcombinaties',
+        paragraphs: [
+          'Open een paar representatieve pagina’s en noteer waar tekst of een belangrijk onderdeel tegen een achtergrond staat. Neem gewone alinea’s, kleine labels, links, knoppen, formuliervelden, foutmeldingen en navigatie mee. Controleer niet alleen de huisstijlkleuren los van elkaar: dezelfde tekstkleur kan op een witte achtergrond voldoende contrast hebben en op een gekleurde kaart niet.',
+          'Bekijk ook toestanden die pas na een handeling verschijnen. Denk aan een link waar je met de muis overheen gaat, een veld met een fout, een geselecteerde optie en de focusmarkering tijdens toetsenbordbediening. Juist daar worden vaak lichtere of subtielere kleuren gebruikt.',
+        ],
+      },
+      {
+        heading: 'Meet tekst tegen de werkelijke achtergrond',
+        paragraphs: [
+          'Gebruik een contrastmeter of de toegankelijkheidsfuncties van je browser om de voorgrond- en achtergrondkleur te selecteren. WCAG 2.2 vraagt voor gewone tekst op niveau AA een contrastverhouding van minstens 4,5:1. Voor grote tekst geldt minstens 3:1. W3C rekent tekst als groot vanaf 18 point, of vanaf 14 point wanneer die vet is.',
+          'Ga niet alleen op het verschil tussen twee kleurcodes af. De berekening is gebaseerd op relatieve luminantie, niet op de kleurnaam of verzadiging. Meet daarom iedere combinatie die echt op de pagina voorkomt, inclusief tekst boven een afbeelding, verloop of transparante laag.',
+        ],
+        bullets: [
+          'Lopende tekst, onderschriften en kleine navigatielinks',
+          'Tekst op primaire en secundaire knoppen',
+          'Placeholdertekst, veldlabels en helptekst',
+          'Meldingen, badges en tekst in kaarten of banners',
+        ],
+      },
+      {
+        heading: 'Controleer ook knoppen, velden en grafische informatie',
+        paragraphs: [
+          'Tekstcontrast is maar een deel van de controle. WCAG 2.2 stelt voor visuele informatie die nodig is om interfaceonderdelen en hun toestand te herkennen een verhouding van minstens 3:1 tegenover aangrenzende kleuren. Dat kan bijvoorbeeld gelden voor de rand van een invoerveld, een vinkje, een geselecteerde tab of een zichtbare focusmarkering.',
+          'Dezelfde 3:1-eis geldt voor delen van een grafiek die nodig zijn om de inhoud te begrijpen. Een decoratieve lijn hoeft niet hetzelfde te worden behandeld als een lijn die een waarde of categorie onderscheidt. Beoordeel dus eerst welke visuele informatie werkelijk nodig is om het onderdeel of de boodschap te herkennen.',
+        ],
+      },
+      {
+        heading: 'Test of kleur niet de enige aanwijzing is',
+        paragraphs: [
+          'Voldoende contrast betekent nog niet dat kleurgebruik duidelijk is. WCAG verlangt ook dat kleur niet het enige visuele middel is om informatie, een actie of een toestand over te brengen. Een rood veld zonder tekstuele foutmelding kan bijvoorbeeld onduidelijk blijven voor iemand die dat kleurverschil niet waarneemt.',
+          'Bekijk de pagina in grijstinten of stel jezelf per gekleurd signaal de vraag wat er overblijft wanneer de kleur wegvalt. Voeg waar nodig tekst, een herkenbaar pictogram, onderstreping, een duidelijke vorm of een andere zichtbare aanwijzing toe. Zorg dat die aanwijzing zelf ook begrijpelijk en waarneembaar is.',
+        ],
+      },
+      {
+        heading: 'Herstel de combinatie, niet alleen één losse kleur',
+        paragraphs: [
+          'Bij onvoldoende contrast kun je de voorgrond donkerder of lichter maken, de achtergrond aanpassen of een onrustige afbeelding achter tekst vervangen. Controleer na iedere wijziging opnieuw de exacte combinatie. Een aanpassing die op de ene achtergrond werkt, kan een andere variant juist verslechteren.',
+          'Leg goedgekeurde combinaties vast voor terugkerende onderdelen zoals tekst, links, knoppen, velden en meldingen. Daarmee voorkom je dat dezelfde fout op iedere pagina apart terugkomt. Behoud daarbij een zichtbare hiërarchie: niet alle tekst hoeft dezelfde kleur te krijgen zolang iedere gebruikte combinatie aan de benodigde controle voldoet.',
+        ],
+      },
+      {
+        heading: 'Combineer hulpmiddelen met een handmatige ronde',
+        paragraphs: [
+          'Een automatische controle kan veel voorkomende tekstcombinaties vinden, maar mist bijvoorbeeld toestanden die nog niet zichtbaar zijn of tekst boven een wisselende afbeelding. Een pipetmeting is nauwkeuriger voor één gekozen combinatie, maar kost meer tijd. W3C beschrijft beide methoden en noemt een grijstintenweergave als nuttige, maar niet exacte aanvulling.',
+          'Begin met een automatische scan en loop daarna de belangrijkste taken handmatig door. Open het menu, gebruik een formulier, veroorzaak een foutmelding en bedien de pagina met het toetsenbord. Noteer per probleem het onderdeel, de gemeten kleuren, de verhouding en de toestand waarin het voorkomt. Een snelle contrastcontrole is waardevol, maar vormt op zichzelf geen volledige toegankelijkheidsbeoordeling.',
+        ],
+        bullets: [
+          'Meet gewone en grote tekst tegen de echte achtergrond.',
+          'Controleer herkenbare randen, toestanden en betekenisvolle graphics.',
+          'Bekijk hover-, focus-, geselecteerde en fouttoestanden.',
+          'Controleer of informatie zonder kleur nog te begrijpen is.',
+          'Herhaal de meting na iedere kleuraanpassing.',
+        ],
+      },
+    ],
+    relatedLinks: [
+      { label: 'Test je website ook met alleen het toetsenbord', href: '/blog/hoe-test-je-een-website-met-alleen-je-toetsenbord' },
+      { label: 'Controleer je website op mobiel', href: '/blog/hoe-controleer-je-een-website-op-mobiel' },
+    ],
+  },
+  {
     slug: 'hoe-test-je-een-website-met-alleen-je-toetsenbord',
     status: 'published',
     title: 'Hoe test je een website met alleen je toetsenbord?',
