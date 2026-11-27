@@ -30,6 +30,86 @@ const baseUrl = 'https://www.landingsite.nl'
 
 export const blogPosts: BlogPost[] = [
   {
+    slug: 'hoe-test-je-de-snelheid-van-je-website',
+    status: 'published',
+    title: 'Hoe test je de snelheid van je website?',
+    description: 'Test stap voor stap de laadsnelheid, responsiviteit en visuele stabiliteit van de belangrijkste pagina’s op je zakelijke website.',
+    excerpt: 'Eén snelheidsscore vertelt niet hoe iedere bezoeker je website ervaart. Met deze praktische aanpak meet je belangrijke pagina’s, lees je de uitkomsten en controleer je verbeteringen.',
+    category: 'Websitebeheer',
+    primaryKeyword: 'website snelheid testen',
+    secondaryKeywords: ['laadsnelheid website testen', 'PageSpeed Insights gebruiken', 'Core Web Vitals controleren'],
+    searchIntent: 'Zelf de laadsnelheid en responsiviteit van een zakelijke website praktisch controleren',
+    publishedAt: '2026-11-27',
+    updatedAt: '2026-11-27',
+    author: 'Jannik',
+    reviewer: 'Jannik',
+    readingTime: '6 minuten',
+    sources: [
+      'https://developers.google.com/speed/docs/insights/v5/about',
+      'https://web.dev/articles/vitals',
+      'https://developer.chrome.com/docs/lighthouse/performance/performance-scoring',
+    ],
+    sections: [
+      {
+        heading: 'Kies pagina’s en handelingen die ertoe doen',
+        paragraphs: [
+          'Test niet alleen de homepage. Kies een kleine, representatieve set: bijvoorbeeld de homepage, een dienstenpagina, een projectpagina en de pagina met je belangrijkste formulier. Een snel gemiddelde kan anders een trage pagina verbergen die voor aanvragen juist belangrijk is.',
+          'Noteer per pagina wat een bezoeker moet kunnen doen. Denk aan de hoofdinhoud lezen, het menu openen, een formulier starten of een volgende pagina kiezen. Daarmee controleer je later niet alleen hoe snel de pagina verschijnt, maar ook of hij vlot reageert en tijdens het laden rustig blijft staan.',
+        ],
+      },
+      {
+        heading: 'Meet mobiel en desktop afzonderlijk',
+        paragraphs: [
+          'Voer iedere gekozen URL in bij PageSpeed Insights en bekijk zowel de mobiele als de desktopweergave. Die metingen gebruiken verschillende gesimuleerde omstandigheden. Een goede desktopuitkomst betekent daarom niet automatisch dat dezelfde pagina op een telefoon en mobiele verbinding ook prettig werkt.',
+          'Bewaar de datum, URL, apparaatweergave en belangrijkste uitkomsten. Test steeds de openbare URL die bezoekers werkelijk gebruiken. Een lokale ontwikkelversie, afgeschermde voorbeeldomgeving of pagina zonder dezelfde scripts en afbeeldingen geeft geen vergelijkbare uitslag.',
+        ],
+        bullets: [
+          'Test dezelfde URL op mobiel en desktop.',
+          'Gebruik dezelfde set pagina’s bij een volgende meetronde.',
+          'Noteer opvallende verschillen per pagina en apparaatweergave.',
+        ],
+      },
+      {
+        heading: 'Maak onderscheid tussen praktijkdata en een labtest',
+        paragraphs: [
+          'PageSpeed Insights kan twee soorten informatie tonen. Praktijkdata uit het Chrome User Experience Report beschrijft geaggregeerde ervaringen van echte Chrome-gebruikers over de voorgaande 28 dagen. Labdata komt uit één gesimuleerde Lighthouse-test en is vooral bruikbaar om technische oorzaken te onderzoeken.',
+          'Voor een pagina met weinig verkeer kan onvoldoende praktijkdata beschikbaar zijn. Dat betekent niet dat de pagina snel of traag is; er zijn dan niet genoeg representatieve metingen om deze rapportage te tonen. Gebruik de labtest om problemen op te sporen en controleer waar mogelijk daarnaast praktijkdata voor de pagina of het hele domein.',
+        ],
+      },
+      {
+        heading: 'Lees de drie Core Web Vitals apart',
+        paragraphs: [
+          'De Core Web Vitals bekijken verschillende delen van de ervaring. Largest Contentful Paint meet wanneer het grootste zichtbare inhoudselement is weergegeven. Interaction to Next Paint meet hoe snel de pagina na een gebruikershandeling de volgende visuele reactie toont. Cumulative Layout Shift meet onverwachte verschuivingen van zichtbare inhoud.',
+          'Google hanteert voor een goede ervaring als richtwaarden: LCP binnen 2,5 seconden, INP van maximaal 200 milliseconden en CLS van maximaal 0,1. Bij praktijkdata wordt naar het 75e percentiel gekeken. Behandel de drie waarden afzonderlijk: een snelle eerste weergave kan nog steeds samengaan met trage interacties of verspringende knoppen.',
+        ],
+      },
+      {
+        heading: 'Onderzoek oorzaken in plaats van alleen de score',
+        paragraphs: [
+          'Open onder de labmeting de kansen en diagnostische informatie. Kijk welk zichtbaar element als LCP is gemeten, welke scripts lang werk op de hoofddraad veroorzaken en welke onderdelen verschuiven. Koppel iedere aanbeveling aan de pagina die je hebt getest; niet iedere algemene suggestie is even belangrijk voor de handeling van je bezoeker.',
+          'Jaag niet blind op één perfecte totaalscore. Lighthouse-scores kunnen tussen metingen verschillen door onder meer netwerkroute, beschikbare hardware en andere belasting. Voer daarom meerdere metingen uit en zoek naar een terugkerend probleem voordat je een grote wijziging laat uitvoeren.',
+        ],
+        bullets: [
+          'Grote afbeelding of groot tekstblok dat laat zichtbaar wordt',
+          'Knop, menu of formulier dat vertraagd reageert',
+          'Afbeelding, banner of lettertype dat de indeling verschuift',
+          'Script of externe dienst die veel verwerking vraagt',
+        ],
+      },
+      {
+        heading: 'Controleer de verbetering onder gelijke omstandigheden',
+        paragraphs: [
+          'Pas eerst één logisch samenhangende verbetering toe en test daarna dezelfde URL opnieuw met dezelfde apparaatweergave. Vergelijk niet een mobiele meting van de homepage met een desktopmeting van een dienstenpagina. Leg ook vast wat er is gewijzigd, zodat een betere of slechtere uitkomst te verklaren blijft.',
+          'Loop de pagina daarnaast op een echte telefoon door. Open het menu, scroll, activeer een knop en start een formulier. Een labrapport helpt bij het vinden van oorzaken, maar vervangt geen controle van de volledige taak. Herhaal de vaste set metingen na wijzigingen aan afbeeldingen, lettertypen, scripts, formulieren of externe diensten.',
+        ],
+      },
+    ],
+    relatedLinks: [
+      { label: 'Controleer je website ook op mobiel', href: '/blog/hoe-controleer-je-een-website-op-mobiel' },
+      { label: 'Test je website met alleen het toetsenbord', href: '/blog/hoe-test-je-een-website-met-alleen-je-toetsenbord' },
+    ],
+  },
+  {
     slug: 'hoe-controleer-je-kleurcontrast-op-je-website',
     status: 'published',
     title: 'Hoe controleer je kleurcontrast op je website?',

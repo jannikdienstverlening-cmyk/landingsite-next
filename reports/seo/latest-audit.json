@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-20T08:04:57.279Z",
+  "generatedAt": "2026-11-27T08:01:24.347Z",
   "indexableRoutes": [
     {
       "slug": "/",
@@ -54,6 +54,12 @@
       "title": "Privacybeleid voor klanten en bezoekers | Landingsite.nl",
       "primaryKeyword": "privacybeleid Landingsite.nl",
       "canonical": "https://www.landingsite.nl/privacybeleid"
+    },
+    {
+      "slug": "/blog/hoe-test-je-de-snelheid-van-je-website",
+      "title": "Hoe test je de snelheid van je website? | Landingsite.nl",
+      "primaryKeyword": "website snelheid testen",
+      "canonical": "https://www.landingsite.nl/blog/hoe-test-je-de-snelheid-van-je-website"
     },
     {
       "slug": "/blog/hoe-controleer-je-kleurcontrast-op-je-website",

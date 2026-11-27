@@ -1,5 +1,5 @@
 {
-  "version": "2026-11-20",
+  "version": "2026-11-27",
   "rules": {
     "onePrimaryIntentPerPage": true,
     "doorwayPagesAllowed": false,
@@ -12,6 +12,7 @@
     { "path": "/kosten-website-laten-maken", "primaryKeyword": "wat kost een website laten maken", "intent": "prijsopbouw en terugkerende kosten begrijpen" },
     { "path": "/werk", "primaryKeyword": "voorbeelden websites laten maken", "intent": "echt opgeleverd werk controleren" },
     { "path": "/blog", "primaryKeyword": "webdesign blog voor ondernemers", "intent": "praktische informatie over website-inhoud, ontwerp en beheer lezen" },
+    { "path": "/blog/hoe-test-je-de-snelheid-van-je-website", "primaryKeyword": "website snelheid testen", "intent": "zelf de laadsnelheid en responsiviteit van een zakelijke website praktisch controleren" },
     { "path": "/blog/hoe-controleer-je-kleurcontrast-op-je-website", "primaryKeyword": "kleurcontrast website controleren", "intent": "zelf het kleurcontrast van tekst en interfaceonderdelen op een zakelijke website praktisch controleren" },
     { "path": "/blog/hoe-test-je-een-website-met-alleen-je-toetsenbord", "primaryKeyword": "website testen met toetsenbord", "intent": "zelf de toetsenbordbediening van een zakelijke website praktisch controleren" },
     { "path": "/blog/hoe-controleer-je-een-website-op-mobiel", "primaryKeyword": "website controleren op mobiel", "intent": "zelf de mobiele bruikbaarheid van een zakelijke website praktisch controleren" },
